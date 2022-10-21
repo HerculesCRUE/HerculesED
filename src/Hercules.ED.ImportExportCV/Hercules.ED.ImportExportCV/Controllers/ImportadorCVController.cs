@@ -78,6 +78,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
         {
             try
             {
+
+                Utility.updateFechaImportacion(pCVID);
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
                 List<string> listaDOI = new List<string>();
@@ -91,7 +93,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.SincroTextoLibre(Secciones);
 
                 sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
-
+                Utility.updateFechaImportacion(pCVID, true);
                 return Ok();
             }
             catch (Exception ex)
@@ -207,6 +209,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
                 //Estado de la peticion
+                Utility.updateFechaImportacion(pCVID);
                 PetitionStatus estadoPostimport = new PetitionStatus(0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
                 petitionStatus[petitionID] = estadoPostimport;
 
@@ -221,13 +224,22 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
                 accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
-
+                Utility.updateFechaImportacion(pCVID,true);
                 return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpPost ("fechaCheck")]
+        public ActionResult fechaCheck(string pCVID)
+        {
+            //Utility.updateFechaImportacion(pCVID);
+            bool isToday = Utility.checkFecha(pCVID);
+            //Utility.quitarFechaImportacion(pCVID);
+
+            return Ok(isToday);
         }
     }
 }
