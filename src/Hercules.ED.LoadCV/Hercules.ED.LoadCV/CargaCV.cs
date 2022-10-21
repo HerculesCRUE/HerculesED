@@ -78,6 +78,10 @@ namespace Hercules.ED.LoadCV
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
                                 }
                             }
+                            else
+                            {
+                                mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
+                            }
                         }
                     }
                     catch (Exception ex)
