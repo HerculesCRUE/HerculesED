@@ -57,7 +57,7 @@ namespace Hercules.ED.LoadCV
                                 if (!ComprobarORCID(ORCID))
                                 {
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
-                                    return;
+                                    continue;
                                 }
 
                                 SincroORCID sincroORCID = new SincroORCID();
