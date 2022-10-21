@@ -147,27 +147,27 @@ Tras seleccionar los ítems que se desean exportar, se debe seleccionar el botó
 
 ## Configuración en el appsetting.json
 ```json{
-	{
-		"Logging": {
-			"LogLevel": {
-				"Default": "",
-				"Microsoft": "",
-				"Microsoft.Hosting.Lifetime": ""
-			}
-		},
-		"AllowedHosts": "*",
-		"Usuario_PDF": "",
-		"PSS_PDF": "",
-		"Version": "",
-		"ConnectionStrings": {
-			"RabbitMQ": ""
-		},
-		"UrlEnriquecimiento": "",
-		"UrlPublicationAPI": "",
-		"DenormalizerQueueRabbit": ""
-	}
+{
+	"Logging": {
+		"LogLevel": {
+			"Default": "",
+			"Microsoft": "",
+			"Microsoft.Hosting.Lifetime": ""
+		}
+	},
+	"AllowedHosts": "*",
+	"Usuario_PDF": "",
+	"PSS_PDF": "",
+	"Version": "",
+	"ConnectionStrings": {
+		"RabbitMQ": ""
+	},
+	"UrlEnriquecimiento": "",
+	"UrlPublicationAPI": "",
+	"DenormalizerQueueRabbit": ""
 }
 ```
+
 - LogLevel.Default: Nivel de error por defecto.
 - LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
 - LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
