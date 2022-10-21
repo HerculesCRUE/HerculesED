@@ -53,7 +53,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 SincroDatos sincro = new SincroDatos(_Configuracion, File);
                 if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
                 {
-                    return BadRequest();
+                    if (sincro.getCVN() != null)
+                    {
+                        return BadRequest(sincro.getCVN().errorMessage);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
 
                 string ORCID = sincro.ObtenerORCID(sincro, crisArchivo);

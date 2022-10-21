@@ -21,6 +21,7 @@ namespace Models
             this.actualWork = actualWork;
             this.totalWorks = totalWorks;
             this.actualWorkTitle = actualWorkTitle;
+            this.actualWorkSubtitle = "";
             this.subActualWork = 0;
             this.subTotalWorks = 0;
             this.actualSubWorks = 0;

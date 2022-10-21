@@ -305,7 +305,7 @@ namespace Hercules.ED.ImportExportCV
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
 
             //Sobrescribir
             base.cvn = sobrescribirResultBean;
@@ -319,7 +319,7 @@ namespace Hercules.ED.ImportExportCV
             base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
             base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
 
             //Despues de duplicar, fusionar y sobrescribir los ítems, llamo al servicio de FE para buscar aquellos ítems duplicados con DOI.

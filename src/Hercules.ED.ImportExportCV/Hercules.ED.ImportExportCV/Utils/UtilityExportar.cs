@@ -19,8 +19,8 @@ namespace Utils
         /// <summary>
         /// Devuelve true si <paramref name="lang"/> es alguno de los idiomas validos.
         /// </summary>
-        /// <param name="lang"></param>
-        /// <returns></returns>
+        /// <param name="lang">Idioma</param>
+        /// <returns>True si es un idioma valido</returns>
         public static bool EsMultiidioma(string lang)
         {
             if (lang.Equals("es") || lang.Equals("ca") || lang.Equals("eu") ||
@@ -34,8 +34,8 @@ namespace Utils
         /// <summary>
         /// Devuelve con el codigo del idioma <paramref name="lang"/>
         /// </summary>
-        /// <param name="lang"></param>
-        /// <returns></returns>
+        /// <param name="lang">Idioma</param>
+        /// <returns>Codigo del idioma</returns>
         public static string CvnLangCode(string lang)
         {
             Dictionary<string, string> langCodeGnossCVN = new Dictionary<string, string>();
@@ -47,12 +47,13 @@ namespace Utils
             langCodeGnossCVN.Add("en", "eng");
             return langCodeGnossCVN[lang];
         }
+
         /// <summary>
         /// Devuelve una lista de tuplas con la persona, nombre, apellidos.
         /// </summary>
-        /// <param name="pResourceApi"></param>
+        /// <param name="pResourceApi">ResourceApi</param>
         /// <param name="dicPersonas">Key:BFO, Value:Person</param>
-        /// <returns></returns>
+        /// <returns>Lista de tuplas con (persona, nombre, apellidos)</returns>
         public static List<Tuple<string, string, string>> GetListadoAutores(ResourceApi pResourceApi, Dictionary<string, string> dicPersonas)
         {
             if (dicPersonas.Count() == 0)
@@ -99,10 +100,10 @@ namespace Utils
         /// <summary>
         /// Devuelve una lista de tuplas con las entidades del CV.
         /// </summary>
-        /// <param name="pResourceApi"></param>
-        /// <param name="propiedadesItem"></param>
-        /// <param name="pCVID"></param>
-        /// <returns></returns>
+        /// <param name="pResourceApi">ResourceApi</param>
+        /// <param name="propiedadesItem">Listado de propiedades</param>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <returns>Listado de tuplas con las entidades del CV</returns>
         public static List<Tuple<string, string, string>> GetListadoEntidadesCV(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
@@ -149,10 +150,10 @@ namespace Utils
         /// <summary>
         /// Devuelve las entidades con propiedad/es <paramref name="propiedadesItem"/> del CV con valor <paramref name="pCVID"/>.
         /// </summary>
-        /// <param name="pResourceApi"></param>
-        /// <param name="propiedadesItem"></param>
-        /// <param name="pCVID"></param>
-        /// <returns></returns>
+        /// <param name="pResourceApi">ResourceApi</param>
+        /// <param name="propiedadesItem">Listado de propiedades</param>
+        /// <param name="pCVID">Identificador del CV</param>
+        /// <returns>Listado de las entidades</returns>
         public static List<Tuple<string, string>> GetListadoEntidades(ResourceApi pResourceApi, List<string> propiedadesItem, string pCVID)
         {
             //Compruebo que no es nulo y que tiene 1 o más valores
@@ -209,8 +210,8 @@ namespace Utils
         /// <summary>
         /// Añade en cvnRootBean de <paramref name="cvn"/> los valores de <paramref name="listado"/>
         /// </summary>
-        /// <param name="cvn"></param>
-        /// <param name="listado"></param>
+        /// <param name="cvn">cvnRootResultBean</param>
+        /// <param name="listado">Lista de CvnItemBean</param>
         public static void AniadirItems(cvnRootResultBean cvn, List<CvnItemBean> listado)
         {
             if (cvn.cvnRootBean == null)
@@ -226,8 +227,8 @@ namespace Utils
         /// <summary>
         /// Elimina las propiedades RDF intermedias de la cadena concatenando por "|" los valores restantes.
         /// </summary>
-        /// <param name="cadena"></param>
-        /// <returns></returns>
+        /// <param name="cadena">Cadena</param>
+        /// <returns>Cadena concatenada por | y eliminando las propiedades RDF intermedias</returns>
         public static string EliminarRDF(string cadena)
         {
             if (string.IsNullOrEmpty(cadena))
@@ -241,8 +242,8 @@ namespace Utils
         /// True si la enumeracion contiene algun elemento
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="enumeracion"></param>
-        /// <returns></returns>
+        /// <param name="enumeracion">IEnumerable</param>
+        /// <returns>True si la enumeracion contiene algun elemento</returns>
         public static bool Comprobar<T>(IEnumerable<T> enumeracion)
         {
             return enumeracion.Any();
@@ -251,11 +252,11 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="section"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="section">Seccion</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -280,9 +281,9 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> y valor <paramref name="value"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="code"></param>
-        /// <param name="value"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="value">Valor</param>
         public static void AddCvnItemBeanCvnStringSimple(CvnItemBean itemBean, string code, string value)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -302,10 +303,10 @@ namespace Utils
         /// Inserta las palabras clave de propiedad <paramref name="property"/> en <paramref name="itemBean"/>.
         /// La palabra clave se seleccionará del ultimo valor al separar por "_"
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnKeyword(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -333,8 +334,8 @@ namespace Utils
         /// <summary>
         /// Devuelve los hijos del listado de palabras clave, eliminando a los padres.
         /// </summary>
-        /// <param name="listaPalabrasClave"></param>
-        /// <returns></returns>
+        /// <param name="listaPalabrasClave">Listado de palabras clave</param>
+        /// <returns>Hijos del listado de palabras clave sin los padres</returns>
         public static Dictionary<string, string> GetHijosListadoPalabrasClave(List<string> listaPalabrasClave)
         {
             List<decimal> ld = new List<decimal>();
@@ -366,10 +367,10 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnString(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -394,10 +395,10 @@ namespace Utils
         ///  Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/> 
         ///  concatenado por "@@@"
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnStringTipoSoporte(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -423,10 +424,10 @@ namespace Utils
         /// <summary>
         /// Añade un listado de <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnStringList(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -457,10 +458,10 @@ namespace Utils
         /// Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// dentro de entity.properties_cv
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnString_cv(CvnItemBean itemBean, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -489,11 +490,11 @@ namespace Utils
         /// <summary>
         /// Añade un objeto CvnItemBeanCvnString con formato de una direccion
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="section"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="section">Seccion</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddDireccion(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -518,11 +519,11 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnFamilyNameBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="section"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="section">Seccion</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanCvnFamilyNameBean(CvnItemBean itemBean, string section, List<string> property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -551,9 +552,9 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="familyNameBean"/> la propiedad del primer apellido
         /// </summary>
-        /// <param name="familyNameBean"></param>
-        /// <param name="prop"></param>
-        /// <param name="entity"></param>
+        /// <param name="familyNameBean">CvnItemBeanCvnFamilyNameBean</param>
+        /// <param name="prop">Propiedad</param>
+        /// <param name="entity">Entity</param>
         private static void AddCvnItemBeanCvnFamilyNameBeanFirstFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
@@ -567,9 +568,9 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="familyNameBean"/> la propiedad del segundo apellido
         /// </summary>
-        /// <param name="familyNameBean"></param>
-        /// <param name="prop"></param>
-        /// <param name="entity"></param>
+        /// <param name="familyNameBean">CvnItemBeanCvnFamilyNameBean</param>
+        /// <param name="prop">Propiedad</param>
+        /// <param name="entity">Entity</param>
         private static void AddCvnItemBeanCvnFamilyNameBeanSecondFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
@@ -584,11 +585,11 @@ namespace Utils
         /// Inserta en <paramref name="entity"/> con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe estar Concatenado por "_", y se seleccionará el ultimo valor de la concatenación de "_"
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="section"></param>
-        /// <param name="property"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="section">Seccion</param>
+        /// <param name="property">Propiedad</param>
+        /// <param name="code">codigo</param>
+        /// <param name="entity">Entity</param>
         public static void AddCvnItemBeanNumericValue(CvnItemBean itemBean, string section, string property, string code, Entity entity)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -613,10 +614,10 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnRichText con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="value"></param>
-        /// <param name="code"></param>
-        /// <param name="secciones"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="value">Valor</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="secciones">Secciones</param>
         public static void AddCvnItemBeanCvnRichText(CvnItemBean itemBean, string value, string code, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -635,11 +636,11 @@ namespace Utils
         /// <summary>
         /// Añade un CvnItemBeanCvnAuthorBeanCvnFamilyNameBean en <paramref name="itemBean"/>
         /// </summary>
-        /// <param name="itemBean"></param>
-        /// <param name="properties"></param>
-        /// <param name="code"></param>
-        /// <param name="entity"></param>
-        /// <param name="secciones"></param>
+        /// <param name="itemBean">CvnItemBean</param>
+        /// <param name="properties">Diccionario de propiedades</param>
+        /// <param name="code">Codigo</param>
+        /// <param name="entity">Entity</param>
+        /// <param name="secciones">Secciones</param>
         public static void AddCvnItemBeanCvnAuthorBean(CvnItemBean itemBean, Dictionary<string, string> properties, string code, Entity entity, [Optional] string secciones)
         {
             //Compruebo si el codigo pasado está bien formado
@@ -681,10 +682,10 @@ namespace Utils
         /// <summary>
         /// Devuelve un lista de tuplas con persona, nombre, apellidos.
         /// </summary>
-        /// <param name="propiedad"></param>
-        /// <param name="entity"></param>
-        /// <param name="resourceApi"></param>
-        /// <returns></returns>
+        /// <param name="propiedad">Propiedad</param>
+        /// <param name="entity">Entity</param>
+        /// <param name="resourceApi">ResourceApi</param>
+        /// <returns>Listado de tuplas con persona, nombre, apellidos</returns>
         public static List<Tuple<string, string, string>> GetNombreApellidoAutor(string propiedad, Entity entity, ResourceApi resourceApi)
         {
             List<Tuple<string, string, string>> autorNombreApellido = new List<Tuple<string, string, string>>();
@@ -707,9 +708,9 @@ namespace Utils
         /// <summary>
         /// Devuelve un diccionario con el BFO y las firmas de los autores
         /// </summary>
-        /// <param name="propiedad"></param>
-        /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <param name="propiedad">Propiedad</param>
+        /// <param name="entity">Entity</param>
+        /// <returns>Diccionario con el BFO y las firmas de los autores</returns>
         public static Dictionary<string, string> GetFirmasAutores(string propiedad, Entity entity)
         {
             Dictionary<string, string> dicFirmas = new Dictionary<string, string>();
@@ -731,9 +732,9 @@ namespace Utils
         /// </summary>
         /// <param name="propiedadNombre">Propiedad para el nombre de la fuente</param>
         /// <param name="propiedadNumero">Propiedad para el nº de citas</param>
-        /// <param name="entity"></param>
-        /// <param name="resourceApi"></param>
-        /// <returns></returns>
+        /// <param name="entity">Entity</param>
+        /// <param name="resourceApi">ResourceApi</param>
+        /// <returns>Lista de tuplas con las citas de other</returns>
         public static List<Tuple<string, string>> GetCitasOther(string propiedadNombre, string propiedadNumero, Entity entity, ResourceApi resourceApi)
         {
             List<Tuple<string, string>> nombreCitas = new List<Tuple<string, string>>();
@@ -766,11 +767,11 @@ namespace Utils
         }
 
         /// <summary>
-        /// Devuelve un lista de tuplas con os indices de impacto
+        /// Devuelve un lista de tuplas con los indices de impacto
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="resourceApi"></param>
-        /// <returns></returns>
+        /// <param name="entity">Entity</param>
+        /// <param name="resourceApi">ResourceApi</param>
+        /// <returns>Lista de tuplas con los indices de impacto</returns>
         public static List<Tuple<string, string, string, string, string, string, string>> GetImpactIndex(Entity entity, ResourceApi resourceApi)
         {
             //Source
@@ -901,7 +902,7 @@ namespace Utils
         /// <summary>
         /// Añade un CvnItemBeanCvnAuthorBeanCvnFamilyNameBean en <paramref name="itemBean"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="autorNombreApellido"></param>
         /// <param name="dicFirmas"></param>
         /// <param name="code"></param>
@@ -940,7 +941,7 @@ namespace Utils
         /// <summary>
         /// Añade un listado de autores, CvnItemBeanCvnAuthorBeanCvnFamilyNameBean, en <paramref name="itemBean"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="properties"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1041,7 +1042,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnBoolean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="property"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1071,7 +1072,7 @@ namespace Utils
         /// Añade en <paramref name="itemBean"/> un CvnBoolean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// en entity.properties_cv
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="property"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1101,7 +1102,7 @@ namespace Utils
         /// Añade en <paramref name="itemBean"/> los valores CodeGroup.
         /// Tipos de dato: "String", "Double","Boolean","EntityBean","TitleBean".
         /// </summary>
-        /// <param name="itemBean">iteamBean</param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="dicCodigos">Tupla de <TipoDato, Codigo, Propiedad> </param>
         /// <param name="code">Codigo del CodeGroup</param>
         /// <param name="entity"></param>
@@ -1230,7 +1231,7 @@ namespace Utils
         /// <summary>
         /// Añade citas al objeto <paramref name="itemBean"/>.
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="dicCodigos">1º elemento Double con la propiedad
         /// 2º elemento String con "WOS/SCOPUS/INRECS/OTHERS"</param>
         /// <param name="code"></param>
@@ -1382,7 +1383,7 @@ namespace Utils
         /// <summary>
         /// Añade índices de impacto al objeto <paramref name="itemBean"/>.
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="source"></param>
         /// <param name="sourceOther"></param>
         /// <param name="categoria"></param>
@@ -1485,7 +1486,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnDouble con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="code"></param>
         /// <param name="value"></param>
         /// <param name="secciones"></param>
@@ -1506,7 +1507,7 @@ namespace Utils
         /// Añade en <paramref name="itemBean"/> un CvnDuration con codigo <paramref name="code"/> si existe algun valor con propiedades
         /// "http://w3id.org/roh/durationYears", "http://w3id.org/roh/durationMonths" y "http://w3id.org/roh/durationDays"
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
         /// <param name="secciones"></param>
@@ -1565,7 +1566,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnDuration con codigo <paramref name="code"/> si existe algun valor con propiedad "http://w3id.org/roh/durationHours"
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
         /// <param name="secciones"></param>
@@ -1607,7 +1608,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnEntityBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyName"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1636,7 +1637,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un listado de CvnEntityBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyName"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1670,7 +1671,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnPageBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propPagIniPagFin"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propPagIniPagFin"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1705,7 +1706,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyIdentification"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyIdentification"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1743,7 +1744,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyName"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1774,7 +1775,7 @@ namespace Utils
         /// Añade en <paramref name="itemBean"/> un CvnTitleBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyName"/>.
         /// Con Identification: <paramref name="propertyIdentification"/> y Name: <paramref name="propertyName"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyIdentification"></param>
         /// <param name="propertyName"></param>
         /// <param name="code"></param>
@@ -1808,7 +1809,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnvolumeBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propVolNum"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propVolNum"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1847,7 +1848,7 @@ namespace Utils
         ///  "http://w3id.org/roh/hasInternationalCode" -> InternationalCode,
         ///  "https://www.w3.org/2006/vcard/ns#hasValue" -> Number.
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="property"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1888,7 +1889,7 @@ namespace Utils
         /// Debe estar Concatenado por @@@, el valor del tipo debe encontrarse entre "/" y ";", los bytes de la imagen 
         /// deben estar despues de la primera ",".
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="section"></param>
         /// <param name="property"></param>
         /// <param name="code"></param>
@@ -1921,7 +1922,7 @@ namespace Utils
         /// Inserta en <paramref name="entity"/> el DateDayMonthYear con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe tener formato de fecha GNOSS "yyyMMddHHmmSS" y estar concatenado por "@@@"
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="section"></param>
         /// <param name="property"></param>
         /// <param name="code"></param>
@@ -1958,7 +1959,7 @@ namespace Utils
         /// Inserta en <paramref name="entity"/> el DateDayMonthYear con propiedad <paramref name="property"/> de <paramref name="itemBean"/>,
         /// Debe tener formato de fecha GNOSS "yyyMMddHHmmSS"
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="property"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -1991,7 +1992,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="propertyList"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="propertyList"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -2048,7 +2049,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="property"></param>
         /// <param name="code"></param>
         /// <param name="entity"></param>
@@ -2137,7 +2138,7 @@ namespace Utils
         /// <summary>
         /// Añade en <paramref name="itemBean"/> un CvnExternalPKBean con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
-        /// <param name="itemBean"></param>
+        /// <param name="itemBean">CvnItemBean</param>
         /// <param name="section"></param>
         /// <param name="property"></param>
         /// <param name="code"></param>

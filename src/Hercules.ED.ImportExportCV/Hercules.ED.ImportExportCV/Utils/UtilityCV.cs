@@ -55,10 +55,10 @@ namespace Utils
         }
         
         /// <summary>
-        /// Devuelve el identificador numerico apartir del tipo de documento.
+        /// Devuelve el identificador numerico apartir del tipo de documento(SAD1, SAD2, SAD3).
         /// </summary>
-        /// <param name="tipoDocumento"></param>
-        /// <returns></returns>
+        /// <param name="tipoDocumento">Tipo de documento</param>
+        /// <returns>Identificador del FECYT</returns>
         public static string IdentificadorFECYT(string tipoDocumento)
         {
             if (string.IsNullOrEmpty(tipoDocumento))
@@ -258,7 +258,7 @@ namespace Utils
         /// Transforma el valor de la propiedad para su carga en una entiadad auxiliar
         /// </summary>
         /// <param name="pValue">Valor</param>
-        /// <returns></returns>
+        /// <returns>Valor trasnformado</returns>
         private static string GetValueUpdateEntityAux(string pValue)
         {
             return pValue.Replace("@@@", "|");
@@ -268,7 +268,7 @@ namespace Utils
         /// Transforma la propiedad para su carga en una entiadad auxiliar
         /// </summary>
         /// <param name="pProp">Propiedad</param>
-        /// <returns></returns>
+        /// <returns>Propiedad transformada</returns>
         private static string GetPropUpdateEntityAux(string pProp)
         {
             while (pProp.Contains("@@@"))
@@ -290,8 +290,8 @@ namespace Utils
         /// <summary>
         /// Obtiene la entidad del valor
         /// </summary>
-        /// <param name="pValue"></param>
-        /// <returns></returns>
+        /// <param name="pValue">Valor</param>
+        /// <returns>Valor de la entidad</returns>
         private static string GetEntityOfValue(string pValue)
         {
             string entityID = "";
