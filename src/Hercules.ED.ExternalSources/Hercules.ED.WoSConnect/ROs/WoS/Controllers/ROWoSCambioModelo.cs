@@ -180,7 +180,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Título de la publicación.</returns>
         public string getTitle(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any() && pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content != null)
             {
                 return pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content;
             }
@@ -428,10 +428,8 @@ namespace WoSConnect.ROs.WoS.Controllers
             SparqlObject resultadoQuery = pResourceApi.VirtuosoQuery(select, where, "taxonomy");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return new Tuple<string, string>(fila["id"].value, fila["nombre"].value);
-                }
+                Dictionary<string, SparqlObject.Data> fila = resultadoQuery.results.bindings.First();
+                return new Tuple<string, string>(fila["id"].value, fila["nombre"].value);
             }
             return null;
         }
