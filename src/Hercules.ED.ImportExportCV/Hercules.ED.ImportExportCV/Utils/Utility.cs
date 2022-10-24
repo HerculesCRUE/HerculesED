@@ -46,7 +46,11 @@ namespace Utils
             }
             return null;
         }
-
+        /// <summary>
+        /// Funcion que devuelve la fecha de la ultima importacion realizada en un cv.
+        /// </summary>
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
         public static DateTime getFechaImportacion(string pCVID)
         {
 
@@ -88,7 +92,11 @@ namespace Utils
             return getFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
         }
 
-
+        /// <summary>
+        /// Funcion que actualiza la fecha de la ultima importacion.
+        /// </summary>
+        /// <param name="pCVID">CVID del cv en el que se ha realizado la importacion.</param>
+        /// <param name="revertir">En caso de que la importacion este completa ""elimina"" la fecha para que no se bloqueé el editor.</param>
         public static void updateFechaImportacion(string pCVID, bool revertir = false)
         {
 
@@ -119,6 +127,11 @@ namespace Utils
                 mResourceApi.InsertPropertiesLoadedResources(dicTriplesInsertar);
             }
         }
+
+        /// <summary>
+        ///  Funcion que borra la fecha de la ultima importacion realizada en un cv con pCVID.
+        /// </summary>
+        /// <param name="pCVID"></param>
         public static void quitarFechaImportacion(string pCVID)
         {
             DateTime fecha = getFechaImportacion(pCVID);
