@@ -87,7 +87,6 @@ namespace Hercules.ED.LoadCV
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }
@@ -138,7 +137,6 @@ namespace Hercules.ED.LoadCV
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }
