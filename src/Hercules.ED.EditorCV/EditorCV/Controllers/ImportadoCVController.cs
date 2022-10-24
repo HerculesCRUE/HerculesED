@@ -40,13 +40,39 @@ namespace EditorCV.Controllers
         }
 
         /// <summary>
-        /// Servicio de Preimportación del CV
+        /// Obtiene si la ultima imporatacion se empezo hace menos de un dia
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="File"></param>
-        /// <param name="petitionID">ID de la petición</param>
+        /// <param name="pCVID"></param>
         /// <returns></returns>
-        [HttpPost("PreimportarCV")]
+        [HttpPost("fechaCheck")]
+        public IActionResult FechaCheck(string pCVID)
+        {
+            string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
+            HttpClient http = new HttpClient();
+
+            var informacion = new FormUrlEncodedContent(new[] {
+                new KeyValuePair<string, string>("pCVID", pCVID)
+            });
+            var response = http.PostAsync(url, informacion).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+
+       /// <summary>
+       /// Servicio de Preimportación del CV
+       /// </summary>
+       /// <param name="userID"></param>
+       /// <param name="File"></param>
+       /// <param name="petitionID">ID de la petición</param>
+       /// <returns></returns>
+       [HttpPost("PreimportarCV")]
         public IActionResult PreimportarCV([Required][FromForm] string userID, [Required][FromForm] string petitionID, [Required] IFormFile File)
         {
             try
@@ -91,6 +117,10 @@ namespace EditorCV.Controllers
                 return Ok(new Models.API.Response.JsonResult() { error = ex.Message + " " + ex.StackTrace });
             }
         }
+
+       
+        
+
 
         /// <summary>
         /// Devuelve el estado actual de la peticion con identificador <paramref name="petitionID"/>
