@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Hercules.ED.ImportExportCV.Sincro.Secciones
 {
-    public class SincroORCID
+    public static class SincroORCID
     {
 
         /// <summary>
