@@ -186,7 +186,7 @@ namespace Utils
         /// </summary>
         /// <param name="owner">Persona a la que enviar la notificación</param>
         /// <param name="rohType">Tipo de notificación</param>
-        /// <param name="textoExtra">Texto extra de la notificación</param>
+        /// <param name="mensaje">Texto extra de la notificación</param>
         public static void EnvioNotificacion(string owner, string rohType, string mensaje)
         {
             Notification notificacion = new Notification();

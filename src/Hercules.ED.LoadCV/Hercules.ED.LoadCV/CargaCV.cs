@@ -57,7 +57,7 @@ namespace Hercules.ED.LoadCV
                                 if (!ComprobarORCID(ORCID))
                                 {
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
-                                    return;
+                                    continue;
                                 }
 
                                 SincroORCID sincroORCID = new SincroORCID();
@@ -173,8 +173,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado un crisIdentifier, indica si está bien formado
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisID">crisIdentifier</param>
+        /// <returns>True si tiene formato valido</returns>
         private static bool ValidarCrisID(string crisID)
         {
             //Compruebo que no sea nulo
@@ -232,8 +232,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado el crisIdentifier devuleve si existe el investigador en BBDD, y está activo
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisIdentifier">crisIdentifier de la persona</param>
+        /// <returns>true si el investigador existe en BBDD</returns>
         private static bool ExisteInvestigadorActivo(string crisIdentifier)
         {
             if (!ValidarCrisID(crisIdentifier))
@@ -258,8 +258,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado el crisIdentifier devuelve el identificador del CV.
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisIdentifier">crisIdentifier de la persona</param>
+        /// <returns>Devuelve el identificador del CV</returns>
         private static string CVInvestigadorActivo(string crisIdentifier)
         {
             if (!ValidarCrisID(crisIdentifier))
