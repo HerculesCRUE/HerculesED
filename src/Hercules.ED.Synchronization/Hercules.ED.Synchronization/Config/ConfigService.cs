@@ -99,7 +99,6 @@ namespace Hercules.ED.Synchronization.Config
                 {
                     rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
-                rabbitConnectionString = rabbitConnectionString;
             }
             return rabbitConnectionString;
         }

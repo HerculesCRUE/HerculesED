@@ -22,7 +22,8 @@ namespace WoSConnect.Controllers
     public class APIController : ControllerBase
     {
         private readonly ILogger<APIController> _logger;
-        public Dictionary<string, string> ds = LeerDatosExcel(@"Files/Taxonomy.xlsx");
+        public Dictionary<string, string> ds = LeerDatosExcel();
+        const string pRuta = @"Files/Taxonomy.xlsx";
 
         //Resource API.
         private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
@@ -32,7 +33,7 @@ namespace WoSConnect.Controllers
             _logger = logger;
         }
 
-        public static Dictionary<string, string> LeerDatosExcel(string pRuta)
+        public static Dictionary<string, string> LeerDatosExcel()
         {
             DataSet ds = new DataSet();
 
