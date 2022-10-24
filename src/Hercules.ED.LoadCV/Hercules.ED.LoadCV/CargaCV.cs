@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace Hercules.ED.LoadCV
 {
-    public class CargaCV
+    public static class CargaCV
     {
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
 
