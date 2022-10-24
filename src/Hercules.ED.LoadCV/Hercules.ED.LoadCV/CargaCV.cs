@@ -37,49 +37,48 @@ namespace Hercules.ED.LoadCV
                         {
                             continue;
                         }
+
+                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
+
+                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+
+                        MemoryStream ms = new MemoryStream();
+                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
+                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
+
+                        HttpClient httpClient = new HttpClient();
+                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+
+                        if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
+                        { 
+                            mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
+                            continue;
+                        }
+
+                        string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
+                        if (!ComprobarORCID(ORCID))
+                        {
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
+                            continue;
+                        }
+
+                        Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
+                        string idPersona = dicPersonaORCID.First().Key;
+                        //Si el investigador NO tiene ORCID lo inserto
+                        if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
+                        {
+                            SincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
+
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
+                        }
+                        //Si el investigador tiene ORCID se actualiza
                         else
                         {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
+                            SincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
 
-                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-
-                            MemoryStream ms = new MemoryStream();
-                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
-                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
-
-                            HttpClient httpClient = new HttpClient();
-                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                            if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
-                                if (!ComprobarORCID(ORCID))
-                                {
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
-                                    continue;
-                                }
-
-                                Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
-                                string idPersona = dicPersonaORCID.First().Key;
-                                //Si el investigador NO tiene ORCID lo inserto
-                                if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
-                                {
-                                    SincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
-
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
-                                }
-                                //Si el investigador tiene ORCID se actualiza
-                                else
-                                {
-                                    SincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
-
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
-                                }
-                            }
-                            else
-                            {
-                                mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
-                            }
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
                         }
+
                     }
                     catch (Exception ex)
                     {
