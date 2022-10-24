@@ -9,6 +9,17 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
+
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+
+
+
 ## Introducción
 Este documento describe el funcionamiento detallado del proceso de carga/modificación de los datos obtenidos por las fuentes externas.
 El programa va a estar comprobando constantemente si en un directorio (files_publications) le llega un fichero json con nuevos datos. En el caso que haya un json nuevo, va a comprobar de que tipo de datos es y va a hacer el proceso de carga con todo lo que conlleva. Una vez cargados los datos en la BBDD, generará una copia en .rar en otro directorio (files_publications_backups) a modo de backup y borrará el json leido. Finalmente se volverá a quedar a la escucha de detección de nuevos json.
