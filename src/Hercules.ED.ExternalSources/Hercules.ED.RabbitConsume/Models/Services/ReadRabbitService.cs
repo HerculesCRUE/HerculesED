@@ -254,7 +254,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
-            else if (message.Count() == 2 & message[0] == "publicación")
+            else if (message != null && message.Count() == 2 && message[0] == "publicación")
             {
                 try
                 {
