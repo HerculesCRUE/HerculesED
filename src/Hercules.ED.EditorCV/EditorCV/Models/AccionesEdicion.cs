@@ -290,10 +290,7 @@ namespace EditorCV.Models
         /// <summary>
         /// Obtiene una serie de datos para conseguir un mini item para la importación
         /// </summary>
-        /// <param name="pUserId"></param>
-        /// <param name="pIdSection"></param>
         /// <param name="pIdBBDD"></param>
-        /// <param name="pLang"></param>
         /// <returns></returns>
         public string[] GetDataItemMiniImport(string pIdBBDD)
         {
