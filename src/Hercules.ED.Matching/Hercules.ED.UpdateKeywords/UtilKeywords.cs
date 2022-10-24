@@ -692,7 +692,7 @@ namespace Hercules.ED.UpdateKeywords
                     }
                 }
             }
-
+            webClient.Dispose();
             return dicResultados;
         }
 
@@ -769,7 +769,7 @@ namespace Hercules.ED.UpdateKeywords
                     }
                 }
             }
-
+            webClient.Dispose();
             if (dicResultados.Count() != 1)
             {
                 return new Dictionary<string, string>();
@@ -963,7 +963,7 @@ namespace Hercules.ED.UpdateKeywords
                     }
                 }
             }
-
+            webClient.Dispose();
             pListaData.Add(data);
         }
 
