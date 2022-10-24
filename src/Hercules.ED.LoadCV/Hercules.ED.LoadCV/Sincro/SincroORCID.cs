@@ -14,7 +14,7 @@ namespace Hercules.ED.ImportExportCV.Sincro.Secciones
         /// </summary>
         /// <param name="idPersona">Identificador largo de la persona</param>
         /// <param name="orcid">ORCID</param>
-        public bool InsertaORCIDPersona(string idPersona, string orcid, ResourceApi resourceApi)
+        public static bool InsertaORCIDPersona(string idPersona, string orcid, ResourceApi resourceApi)
         {
             List<TriplesToInclude> triplesToIncludes = new List<TriplesToInclude>();
             Guid idMainEntity = resourceApi.GetShortGuid(idPersona);
@@ -36,7 +36,7 @@ namespace Hercules.ED.ImportExportCV.Sincro.Secciones
         /// </summary>
         /// <param name="idPersona">Identificador largo de la persona</param>
         /// <param name="orcid">ORCID</param>
-        public bool ActualizaORCIDPersona(string idPersona, string oldOrcid, string orcid, ResourceApi resourceApi)
+        public static bool ActualizaORCIDPersona(string idPersona, string oldOrcid, string orcid, ResourceApi resourceApi)
         {
             List<TriplesToModify> triplesToModifies = new List<TriplesToModify>();
             Guid idMainEntity = resourceApi.GetShortGuid(idPersona);
