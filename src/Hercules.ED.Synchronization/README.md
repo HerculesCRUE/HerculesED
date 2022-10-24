@@ -9,6 +9,17 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Modificada documentación|
 
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Synchronization)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Synchronization&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Synchronization)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Synchronization&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Synchronization)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Synchronization&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Synchronization)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Synchronization&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Synchronization)
+
+
+
+
 # Hércules ED. Servicio de sincronización
 Este servicio se encarga de obtener los códigos ORCID de los investigadores de la plataforma para recuperar información de sus fuentes externas. 
 El proceso estará determinado por una expresión cron que marcará su ejecución. Al obtener los ORCID, los introducirá a una cola RabbitMQ para que la tarea en encargada de leer dicha cola los procese.

@@ -215,10 +215,8 @@ namespace EditorCV.Controllers
         /// <summary>
         /// Obtiene una minificha de una entidad del CV para el importador
         /// </summary>
-        /// <param name="pCVId">Identificador del CV</param>
         /// <param name="pIdSection">Identificador de la sección</param>
-        /// <param name="pRdfTypeTab">Rdftype del tab</param>
-        /// <param name="pEntityID">Identificador de la entidad</param>
+        /// <param name="pIdBBDD">Id del ítem importado</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
         [HttpGet("GetItemMiniImport")]
