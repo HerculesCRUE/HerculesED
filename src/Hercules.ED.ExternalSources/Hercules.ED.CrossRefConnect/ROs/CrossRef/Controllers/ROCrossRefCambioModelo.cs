@@ -433,19 +433,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         {
                             apellido.Add(autor.family);
                         }
-                        if (name_inicial != null || apellido != null)
+                        Name nombre = new Name();
+                        if (name_inicial.Any())
                         {
-                            Name nombre = new Name();
-                            if (name_inicial != new List<string>())
-                            {
-                                nombre.given = name_inicial;
-                            }
-                            if (apellido != new List<string>())
-                            {
-                                nombre.familia = apellido;
-                            }
-                            persona.name = nombre;
+                            nombre.given = name_inicial;
                         }
+                        if (apellido.Any())
+                        {
+                            nombre.familia = apellido;
+                        }
+                        persona.name = nombre;
                         return persona;
                     }
                 }
@@ -485,20 +482,17 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     {
                         apellido.Add(autor.family);
                     }
-                    if (name_inicial != null || apellido != null)
+                    Name nombre = new Name();
+                    if (name_inicial.Any())
                     {
-                        Name nombre = new Name();
-                        if (name_inicial != new List<string>())
-                        {
-                            nombre.given = name_inicial;
-                        }
-                        if (apellido != new List<string>())
-                        {
-                            nombre.familia = apellido;
-                        }
-                        persona.name = nombre;
+                        nombre.given = name_inicial;
                     }
-
+                    if (apellido.Any())
+                    {
+                        nombre.familia = apellido;
+                    }
+                    persona.name = nombre;
+                    
                     autores.Add(persona);
                 }
                 return autores;

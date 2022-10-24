@@ -40,11 +40,13 @@ namespace EditorCV.Controllers
         }
 
         /// <summary>
-        /// Obtiene si la ultima imporatacion se empezo hace menos de un dia
+        /// Servicio de Preimportación del CV
         /// </summary>
-        /// <param name="pCVID"></param>
+        /// <param name="userID"></param>
+        /// <param name="File"></param>
+        /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
-        [HttpPost("fechaCheck")]
+        [HttpPost("FechaCheck")]
         public IActionResult FechaCheck(string pCVID)
         {
             string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
