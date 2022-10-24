@@ -1,4 +1,4 @@
-name: Build_Sonar_Hercules.ED.ImportExportCV
+name: Build_Sonar_Hercules.ED.Matching
 on:
   push:
     branches:
@@ -39,9 +39,9 @@ jobs:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_Hercules_ED_ImportExportCV }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_Hercules_ED_Matching }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Hercules.ED.ImportExportCV" /o:"herculescrue" /d:sonar.login="${{ secrets.SONAR_TOKEN_Hercules_ED_ImportExportCV }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build src/Hercules.ED.ImportExportCV/Hercules.ED.ImportExportCV
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN_Hercules_ED_ImportExportCV }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Hercules.ED.Matching" /o:"herculescrue" /d:sonar.login="${{ secrets.SONAR_TOKEN_Hercules_ED_Matching }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build src/Hercules.ED.Matching/Hercules.ED.UpdateKeywords
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN_Hercules_ED_Matching }}"
