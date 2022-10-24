@@ -12,11 +12,9 @@ using System.Text.RegularExpressions;
 
 namespace Hercules.ED.LoadCV
 {
-    public class CargaCV
+    public static class CargaCV
     {
-        readonly ConfigService _Configuracion;
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-
 
         /// <summary>
         /// Recorremos los ficheros.
@@ -60,20 +58,19 @@ namespace Hercules.ED.LoadCV
                                     continue;
                                 }
 
-                                SincroORCID sincroORCID = new SincroORCID();
                                 Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
                                 string idPersona = dicPersonaORCID.First().Key;
                                 //Si el investigador NO tiene ORCID lo inserto
                                 if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
                                 {
-                                    sincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
+                                    SincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
 
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
                                 }
                                 //Si el investigador tiene ORCID se actualiza
                                 else
                                 {
-                                    sincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
+                                    SincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
 
                                     mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
                                 }
@@ -87,7 +84,6 @@ namespace Hercules.ED.LoadCV
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }
@@ -138,7 +134,6 @@ namespace Hercules.ED.LoadCV
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }

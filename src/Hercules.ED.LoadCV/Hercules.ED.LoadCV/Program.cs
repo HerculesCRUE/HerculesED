@@ -12,11 +12,12 @@ namespace Hercules.ED.LoadCV
             while (true)
             {
                 Console.WriteLine("Selecciona acción");
-                Console.WriteLine("1. Opción 1 (Carga de ORCID de CVs)");
-                Console.WriteLine("2. Opción 2 (Carga de CVs)");
+                Console.WriteLine("1. Carga de ORCID de CVs");
+                Console.WriteLine("2. Carga de CVs");
+                Console.WriteLine("3. Salir");
 
                 string? opcion = Console.ReadLine();
-                if (string.IsNullOrEmpty(opcion) || opcion != "1" && opcion != "2") 
+                if (string.IsNullOrEmpty(opcion) || opcion != "1" && opcion != "2" && opcion != "3") 
                 {
                     Console.WriteLine("El valor introducido no es valido");
                     continue;
@@ -34,6 +35,12 @@ namespace Hercules.ED.LoadCV
                 {
                     CargaCV.CargarCV(new ConfigService());
                     continue;
+                }
+
+                //3. Salida
+                if (opcion == "3")
+                {
+                    return;
                 }
             }
         }
