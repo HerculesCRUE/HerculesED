@@ -284,7 +284,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         public string getTitle(PublicacionInicial objInicial)
         {
-            if (objInicial.title != null & objInicial.title.Count >= 1)
+            if (objInicial.title != null && objInicial.title.Count >= 1)
             {
                 return objInicial.title[0];
 
@@ -509,7 +509,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     journal.issn = objInicial.ISSN;
                 }
-                if (objInicial.ContainerTitle != null & objInicial.ContainerTitle.Count >= 1)
+                if (objInicial.ContainerTitle != null && objInicial.ContainerTitle.Count >= 1)
                 {
                     journal.name = objInicial.ContainerTitle[0];
                 }
