@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EditorCV.Controllers
 {
@@ -50,12 +51,15 @@ namespace EditorCV.Controllers
         public IActionResult FechaCheck(string pCVID)
         {
             string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
-            HttpClient http = new HttpClient();
+            HttpClient client = new HttpClient();
 
-            var informacion = new FormUrlEncodedContent(new[] {
-                new KeyValuePair<string, string>("pCVID", pCVID)
-            });
-            var response = http.PostAsync(url, informacion).Result;
+            Dictionary<string, string> a = new Dictionary<string, string>();
+            a.Add("pCVID", pCVID);
+            string json = JsonConvert.SerializeObject(a);
+
+            StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 return Ok(response.Content.ReadAsStringAsync().Result);

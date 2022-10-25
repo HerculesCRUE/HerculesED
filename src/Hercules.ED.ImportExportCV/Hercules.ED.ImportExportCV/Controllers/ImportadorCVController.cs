@@ -239,7 +239,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost ("fechaCheck")]
+        [HttpPost("fechaCheck")]
         public ActionResult fechaCheck(string pCVID)
         {
             //Utility.updateFechaImportacion(pCVID);
