@@ -2515,12 +2515,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             List<string> listaIds = new List<string>();
 
             // Consulta sparql.
-            string select = $"SELECT ?project FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT ?project";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/project> ?project
                             }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document" , "researchobject" });
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2541,13 +2541,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public static string ObtenerAssessmentStatusPublicacionResearchObject(string pId)
         {
             // Consulta sparql.
-            //TODO  from
-            string select = $"SELECT ?estado FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT ?estado ";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/assessmentStatus> ?estado
                             }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document", "researchobject" });
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
