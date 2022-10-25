@@ -240,7 +240,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
         }
         [HttpPost("fechaCheck")]
-        public ActionResult fechaCheck(string pCVID)
+        public ActionResult fechaCheck([FromForm][Required] string pCVID)
         {
             //Utility.updateFechaImportacion(pCVID);
             bool isToday = Utility.checkFecha(pCVID);

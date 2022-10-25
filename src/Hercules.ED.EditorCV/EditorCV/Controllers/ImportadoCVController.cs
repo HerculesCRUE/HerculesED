@@ -52,14 +52,12 @@ namespace EditorCV.Controllers
         {
             string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
             HttpClient client = new HttpClient();
+            FormUrlEncodedContent form = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string,string>("pCVID",pCVID)
+            });
 
-            Dictionary<string, string> a = new Dictionary<string, string>();
-            a.Add("pCVID", pCVID);
-            string json = JsonConvert.SerializeObject(a);
-
-            StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            HttpResponseMessage response = client.PostAsync(url, form).Result;
             if (response.IsSuccessStatusCode)
             {
                 return Ok(response.Content.ReadAsStringAsync().Result);
