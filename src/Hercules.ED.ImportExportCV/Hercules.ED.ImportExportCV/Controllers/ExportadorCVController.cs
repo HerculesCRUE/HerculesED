@@ -172,6 +172,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                     if (resp.returnCode != "00")
                     {
                         _logger.LogError("Error code " + resp.returnCode);
+                        _logger.LogError("Error info " + Encoding.UTF8.GetString(resp.dataHandler));
                         return NotFound();
                     }
 
