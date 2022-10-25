@@ -25,26 +25,9 @@ namespace GitHubAPI.Models.Data
         public bool? site_admin { get; set; }
     }
 
-    public class Uploader
+    public class Uploader : Author
     {
-        public string login { get; set; }
-        public int? id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool? site_admin { get; set; }
+       
     }
 
     public class Asset
@@ -87,49 +70,14 @@ namespace GitHubAPI.Models.Data
     }
 
 
-    public class Contributors
-    {
-        public string login { get; set; }
-        public int? id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool? site_admin { get; set; }
+    public class Contributors : Author
+    {       
         public int? contributions { get; set; }
     }
 
-    public class Owner
+    public class Owner : Author
     {
-        public string login { get; set; }
-        public int? id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool? site_admin { get; set; }
+       
     }
 
     public class License
