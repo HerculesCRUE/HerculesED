@@ -180,7 +180,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Título de la publicación.</returns>
         public string getTitle(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
+            if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any() && pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item") != null)
             {
                 return pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content;
             }
@@ -716,7 +716,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Métrica.</returns>
         public List<PublicationMetric> getPublicationMetric(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.citation_related != null & pPublicacionIn.dynamic_data.citation_related.tc_list != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.coll_id == "WOS")
+            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.citation_related != null && pPublicacionIn.dynamic_data.citation_related.tc_list != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.coll_id == "WOS")
             {
                 List<PublicationMetric> listaMetricas = new List<PublicationMetric>();
                 PublicationMetric metrica = new PublicationMetric();
@@ -737,7 +737,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns></returns>
         public bool? getOpenAccess(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
             {
                 if (pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "S")
                 {
@@ -755,7 +755,7 @@ namespace WoSConnect.ROs.WoS.Controllers
 
         public string getVolume(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.vol))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.vol))
             {
                 return pPublicacionIn.static_data.summary.pub_info.vol;
             }
