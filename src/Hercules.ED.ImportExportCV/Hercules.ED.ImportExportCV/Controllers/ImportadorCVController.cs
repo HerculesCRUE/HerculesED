@@ -248,5 +248,11 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
             return Ok(isToday);
         }
+        [HttpPost("fecha")]
+        public ActionResult fecha(string pCVID)
+        {
+            Utility.updateFechaImportacion(pCVID);
+            return Ok();
+        }
     }
 }

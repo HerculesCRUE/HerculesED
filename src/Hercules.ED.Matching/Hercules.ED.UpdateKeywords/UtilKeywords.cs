@@ -54,7 +54,7 @@ namespace Hercules.ED.UpdateKeywords
 
             // Consulta sparql.
             select.Append(mPrefijos);
-            select.Append($@"SELECT DISTINCT ?s FROM <{mResourceApi.GraphsUrl}person.owl> ");
+            select.Append($@"SELECT DISTINCT ?s ");
             where.Append("WHERE { ");
             where.Append("?s a bibo:Document. ");
             where.Append("?s roh:getKeyWords 'true'. ");
@@ -70,7 +70,7 @@ namespace Hercules.ED.UpdateKeywords
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                    resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select.ToString(), where.ToString(), new() { "document" ,"person"});
                     break;
                 }
                 catch (Exception error)

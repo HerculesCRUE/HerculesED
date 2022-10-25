@@ -1023,7 +1023,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 //Selecciono los RO de autor
 
-                string select = $"SELECT * WHERE {{ SELECT DISTINCT ?ro ?titulo FROM <{mResourceApi.GraphsUrl}person.owl>";
+                string select = $"SELECT * WHERE {{ SELECT DISTINCT ?ro ?titulo";
                 string where = $@"WHERE {{
                                 ?ro a <http://w3id.org/roh/ResearchObject> . 
                                 ?ro <http://w3id.org/roh/title> ?titulo. 
@@ -1033,7 +1033,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 FILTER(?orcid = '{orcidAutor}') 
                             }} ORDER BY DESC(?ro) }} LIMIT {limit} OFFSET {offset}";
 
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, new() { "researchobject","person" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     offset += limit;
@@ -1125,8 +1125,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 //TODO  from
                 string select = $@"SELECT * 
                                    WHERE {{ 
-                                       SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId ?sad
-                                       FROM <{mResourceApi.GraphsUrl}person.owl> ";
+                                       SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId ?sad";
                 string where = $@"WHERE {{
                                 ?documento a <http://purl.org/ontology/bibo/Document>. 
                                 OPTIONAL{{?documento <http://purl.org/ontology/bibo/doi> ?doi. }}
@@ -1140,7 +1139,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> <{pGnossId}>. 
                             }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
 
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document" ,"person"});
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     offset += limit;
@@ -2400,12 +2399,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             // Consulta sparql.
             //TODO from
-            string select = $"SELECT ?userKeywords FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT ?userKeywords";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/userKeywords> ?userKeywords
                             }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document" , "researchobject" });
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2428,12 +2427,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
             // Consulta sparql.
             //TODO from
-            string select = $"SELECT ?suggestedKeywords FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT ?suggestedKeywords ";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/suggestedKeywords> ?suggestedKeywords
                             }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document" , "researchobject" });
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -2454,12 +2453,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             Dictionary<string, List<string>> listaCategorias = new Dictionary<string, List<string>>();
             //TODO  from
-            string select = $"SELECT * FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT *";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/userKnowledgeArea> ?userAreas.
                                 ?userAreas <http://w3id.org/roh/categoryNode> ?nodo.
                             }}";
-            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new() { "document" , "researchobject" });
 
 
             foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
@@ -2485,12 +2484,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         {
             Dictionary<string, List<string>> listaCategorias = new Dictionary<string, List<string>>();
             //TODO  from
-            string select = $"SELECT * FROM <{mResourceApi.GraphsUrl}researchobject.owl>";
+            string select = $"SELECT *";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/suggestedKnowledgeArea> ?userAreas.
                                 ?userAreas <http://w3id.org/roh/categoryNode> ?nodo.
                             }}";
-            SparqlObject resultado = mResourceApi.VirtuosoQuery(select, where, "document");
+            SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document" , "researchobject" });
 
             foreach (Dictionary<string, SparqlObject.Data> fila in resultado.results.bindings)
             {
