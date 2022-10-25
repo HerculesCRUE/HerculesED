@@ -289,7 +289,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
-            else if (message.Count() == 2 & message[0] == "zenodo")
+            else if (message != null && message.Count() == 2 && message[0] == "zenodo")
             {
                 try
                 {
@@ -324,7 +324,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
-            else if (message.Count() == 2 & message[0] == "figshare")
+            else if (message != null && message.Count() == 2 && message[0] == "figshare")
             {
                 try
                 {
@@ -359,7 +359,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     FileLogger.Log($@"{DateTime.Now} - {e}");
                 }
             }
-            else if (message.Count() == 3 & message[0] == "github")
+            else if (message != null && message.Count() == 3 && message[0] == "github")
             {
                 try
                 {
