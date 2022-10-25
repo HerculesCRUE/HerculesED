@@ -15,13 +15,10 @@ using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using EditorCV.Models.PreimportModels;
-using System.Text.Json;
-using System.Xml.Serialization;
-using System.IO;
+
 using System.Text;
 using Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace EditorCV.Controllers
 {
@@ -48,7 +45,7 @@ namespace EditorCV.Controllers
         /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
         [HttpPost("FechaCheck")]
-        public IActionResult FechaCheck(string pCVID)
+        public IActionResult FechaCheck([FromForm][Required] string pCVID)
         {
             string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
             HttpClient client = new HttpClient();
