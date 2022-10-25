@@ -1122,7 +1122,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             // Consulta sparql.
             while (true)
             {
-                //TODO  from
                 string select = $@"SELECT * 
                                    WHERE {{ 
                                        SELECT DISTINCT ?documento ?doi ?titulo ?id ?fuenteId ?sad";
@@ -2398,7 +2397,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             List<string> listaEtiquetas = new List<string>();
 
             // Consulta sparql.
-            //TODO from
             string select = $"SELECT ?userKeywords";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/userKeywords> ?userKeywords
@@ -2426,7 +2424,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             List<string> listaEtiquetas = new List<string>();
 
             // Consulta sparql.
-            //TODO from
             string select = $"SELECT ?suggestedKeywords ";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/suggestedKeywords> ?suggestedKeywords
@@ -2452,7 +2449,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public static Dictionary<string, List<string>> ObtenerUserKnowledgeAreaPublicacionResearchObject(string pId)
         {
             Dictionary<string, List<string>> listaCategorias = new Dictionary<string, List<string>>();
-            //TODO  from
             string select = $"SELECT *";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/userKnowledgeArea> ?userAreas.
@@ -2483,7 +2479,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public static Dictionary<string, List<string>> ObtenerSuggestedKnowledgeAreaPublicacionResearchObject(string pId)
         {
             Dictionary<string, List<string>> listaCategorias = new Dictionary<string, List<string>>();
-            //TODO  from
             string select = $"SELECT *";
             string where = $@"WHERE {{
                                 <{pId}> <http://w3id.org/roh/suggestedKnowledgeArea> ?userAreas.
