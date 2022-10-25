@@ -391,6 +391,16 @@ namespace Utils
             }
         }
 
+        public static bool CheckCvnString(string property, Entity entity)
+        {
+            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            {
+                return true;
+            }
+            return false;
+
+        }
+
         /// <summary>
         ///  Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/> 
         ///  concatenado por "@@@"
