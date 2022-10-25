@@ -1033,7 +1033,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 FILTER(?orcid = '{orcidAutor}') 
                             }} ORDER BY DESC(?ro) }} LIMIT {limit} OFFSET {offset}";
 
-                SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, new() { "researchobject","person" });
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "researchobject","person" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     offset += limit;

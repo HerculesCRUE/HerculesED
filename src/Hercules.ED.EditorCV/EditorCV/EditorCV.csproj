@@ -48,7 +48,7 @@
 
   <ItemGroup>
     <Reference Include="Hercules.CommonsEDMA.DisambiguationEngine">
-      <HintPath>..\Hercules.CommonsEDMA.DisambiguationEngine.dll</HintPath>
+      <HintPath>..\..\EDMACommonsLibs\Hercules.CommonsEDMA.DisambiguationEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
 
