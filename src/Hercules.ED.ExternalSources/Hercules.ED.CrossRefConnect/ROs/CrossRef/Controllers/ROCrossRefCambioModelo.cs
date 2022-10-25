@@ -1,18 +1,13 @@
 using System.Collections.Generic;
-//using CrossRefConnect.ROs.CrossRef.Models;
 using CrossRefConnect.ROs.CrossRef.Models.Inicial;
 using CrossRefConnect.ROs.CrossRef.Models;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Threading;
-
-using Newtonsoft.Json;
 using CrossRefAPI.ROs.CrossRef.Models;
 using System.Linq;
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
 {
-    public class ROCrossRefControllerJSON //: ROScopusLogic
+    public class ROCrossRefControllerJSON
     {
         public ROCrossRefLogic CrossRefLogic;
         public ROCrossRefControllerJSON(ROCrossRefLogic CrossRefLogic)
