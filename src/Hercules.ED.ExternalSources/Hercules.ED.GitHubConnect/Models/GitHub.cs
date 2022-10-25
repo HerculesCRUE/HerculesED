@@ -297,7 +297,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaReleases = JsonConvert.DeserializeObject<List<Releases>>(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return 0;
             }
