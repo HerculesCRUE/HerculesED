@@ -218,9 +218,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial != null)
             {
                 publicacion.typeOfPublication = getType(objInicial);
-                //publicacion.IDs = getIDs(objInicial);
                 publicacion.title = getTitle(objInicial);
-                //publicacion.Abstract = getAbstract(objInicial);
                 publicacion.language = getLanguage(objInicial);
                 publicacion.doi = doi;
                 publicacion.url = getLinks(objInicial);
@@ -228,7 +226,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 publicacion.pageStart = getPageStart(objInicial);
                 publicacion.pageEnd = getPageEnd(objInicial);
                 publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
-                //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
                 publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
@@ -236,7 +233,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 if (publicacion_principal == true)
                 {
                     publicacion.bibliografia = getBiblografia(objInicial);
-                    //publicacion.citas = getCitas(objInicial);
                 }
                 return publicacion;
             }
@@ -271,12 +267,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<String> getIDs(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
-
-
         public string getTitle(PublicacionInicial objInicial)
         {
             if (objInicial.title != null && objInicial.title.Count >= 1)
@@ -288,11 +278,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public string getAbstract(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
-
         public string getLanguage(PublicacionInicial objInicial)
         {
             if (objInicial.language != null)
@@ -302,10 +287,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             return null;
         }
-        // public string getDoi(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
+
         public List<string> getLinks(PublicacionInicial objInicial)
         {
             if (objInicial.URL != null)
@@ -388,11 +370,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             return null;
         }
-
-        // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
-        // {
-        //     return new List<string>();
-        // }
 
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
         {
@@ -592,9 +569,5 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<Publication> getCitas(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
     }
 }
