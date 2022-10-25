@@ -58,7 +58,7 @@ namespace Utils
             string select = "select distinct ?fecha ";
             string where = @$"
                 where {{
-                    <http://gnoss.com/{pCVID}><http://gnoss/hasEntidad> ?s. 
+                    <http://gnoss.com/{mResourceApi.GetShortGuid(pCVID).ToString()}><http://gnoss/hasEntidad> ?s. 
                     ?s ?p <http://w3id.org/roh/CV>.
                     ?s <http://w3id.org/roh/importDate> ?fecha
                 }} LIMIT 100";
@@ -91,6 +91,7 @@ namespace Utils
 
         public static bool checkFecha(string pCVID)
         {
+
             return getFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
         }
 
