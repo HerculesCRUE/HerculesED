@@ -305,7 +305,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 lastCommitDate.datimeTime = date;
                 infoCommits.lastCommit = lastCommitDate;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error when deserialize commits " + commitsJson);
             }
@@ -394,9 +394,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 throw new Exception("Error while deserialize Issues " + resultJson);
             }
             return infoIssues;
-
         }
-
 
         /// <summary>
         /// Get basic information about the licenses of a repository
