@@ -180,9 +180,11 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Título de la publicación.</returns>
         public string getTitle(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any() && pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item") != null)
+            if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
             {
-                return pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content;
+                Title title = pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item");
+                if (title != null)
+                return title.content;
             }
 
             return null;
