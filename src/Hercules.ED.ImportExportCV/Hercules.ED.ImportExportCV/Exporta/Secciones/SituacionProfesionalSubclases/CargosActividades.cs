@@ -126,16 +126,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
                 : null;
 
                 //Compruebo que los correo tienen el formato correcto
-                if (listadoCorreos != null && listadoCorreos.Count > 0)
-                {
-                    foreach (string correo in listadoCorreos)
-                    {
-                        if (!UtilitySecciones.IsEmailValid(correo))
-                        {
-                            listadoCorreos.Remove(correo);
-                        }
-                    }
-                }
+                UtilityExportar.ComprobarCorreos(listadoCorreos);
 
                 // Si hay algún correo, guardo los correos concatenados con ';' en un string. En caso contrario guardo null.
                 string correos = (listadoCorreos != null && listadoCorreos.Any()) ? string.Join(";", listadoCorreos) : null;
