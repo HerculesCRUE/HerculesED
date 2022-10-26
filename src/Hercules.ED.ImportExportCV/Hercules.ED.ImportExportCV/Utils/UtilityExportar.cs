@@ -1950,6 +1950,10 @@ namespace Utils
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).First(x => x.Count == 1).First().Split("@@@").LastOrDefault();
+                if (string.IsNullOrEmpty(gnossDate))
+                {
+                    return;
+                }
 
                 int anio = int.Parse(gnossDate.Substring(0, 4));
                 int mes = int.Parse(gnossDate.Substring(4, 2));
@@ -1984,6 +1988,10 @@ namespace Utils
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).First().FirstOrDefault();
+                if (string.IsNullOrEmpty(gnossDate))
+                {
+                    return;
+                }
 
                 int anio = int.Parse(gnossDate.Substring(0, 4));
                 int mes = int.Parse(gnossDate.Substring(4, 2));
@@ -2024,6 +2032,10 @@ namespace Utils
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyList["ID"]))))
             {
                 listaIdentificadores = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyList["ID"])).Select(x => x.values).FirstOrDefault();
+            }
+            if (listaNombres == null || listaIdentificadores == null)
+            {
+                return;
             }
 
             Dictionary<string, Tuple<string, string>> diccionario = new Dictionary<string, Tuple<string, string>>();

@@ -161,7 +161,6 @@ namespace Hercules.ED.ImportExportCV
                 if (seccionAgrupada.Key.Equals("000.010.000.000"))
                 {
                     List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-                    List<CvnItemBean> listaIndicadoresItemsAux = listadoItemsAgrupados.Where(x => x.Key.Equals(seccionAgrupada.Key)).First().Select(x => x).ToList();
 
                     if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
                     {
@@ -180,7 +179,6 @@ namespace Hercules.ED.ImportExportCV
                 if (seccionAgrupada.Key.Equals("060.010.060.000"))
                 {
                     List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-                    List<CvnItemBean> listaIndicadoresItemsAux = listadoItemsAgrupados.Where(x => x.Key.Equals(seccionAgrupada.Key)).First().Select(x => x).ToList();
 
                     if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
                     {
@@ -199,7 +197,6 @@ namespace Hercules.ED.ImportExportCV
                 if (seccionAgrupada.Key.Equals("070.010.000.000"))
                 {
                     List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-                    List<CvnItemBean> listaIndicadoresItemsAux = listadoItemsAgrupados.Where(x => x.Key.Equals(seccionAgrupada.Key)).First().Select(x => x).ToList();
 
                     //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
                     // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
@@ -229,7 +226,7 @@ namespace Hercules.ED.ImportExportCV
                 }
 
                 List<SubseccionItem> listaAux = preimport.secciones.Where(x => x.id.Equals(seccionAgrupada.Key)).Select(x => x.subsecciones).FirstOrDefault().ToList();
-                List<CvnItemBean> listaItemsAux = listadoItemsAgrupados.Where(x => x.Key.Equals(seccionAgrupada.Key)).First().Select(x => x).ToList();
+                List<CvnItemBean> listaItemsAux = listadoItemsAgrupados.First(x => x.Key.Equals(seccionAgrupada.Key)).Select(x => x).ToList();
                 foreach (SubseccionItem subseccionItem in listaAux)
                 {
                     if (!filtrador.Select(x => x.Item1).Contains(subseccionItem.guid))

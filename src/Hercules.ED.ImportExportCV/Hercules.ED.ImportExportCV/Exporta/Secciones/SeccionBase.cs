@@ -399,7 +399,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                                 property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                                 pEntity.properties.Add(property);
                             }
-                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Where(x => x.value.Equals(p)).Any()))
+                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Any(x => x.value.Equals(p))))
                             {
                                 List<Dictionary<string, Data>> xx = MultilangProp[pId].Where(x => x["prop"].value.Equals(p)).ToList();
                                 foreach (Dictionary<string, Data> keyValuePairs in xx)
