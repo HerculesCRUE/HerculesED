@@ -27,13 +27,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         readonly ConfigService mConfiguracion;
 
 
-        public SeccionBase(cvnRootResultBean cvn, string cvID, ConfigService configuracion)
+        protected SeccionBase(cvnRootResultBean cvn, string cvID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
             mConfiguracion = configuracion;
         }
-        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion)
+        protected SeccionBase(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
@@ -75,10 +75,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                mResourceApi.Log.Error(ex.Message);
             }
+
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
             {
                 Entity entity = new Entity()
@@ -435,7 +436,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 if (listadoBloqueados.Count != equivalencias.Count)
                 {
-                    throw new Exception("El listado de items bloqueados y el listado de equivalencias no concuerdan");
+                    throw new ArgumentException("El listado de items bloqueados y el listado de equivalencias no concuerdan");
                 }
 
                 if (petitionStatus != null)
@@ -444,7 +445,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     petitionStatus.actualSubTotalWorks = equivalencias.Count;
                 }
 
-                if (propertiesCV != null && propertiesCV)
+                if (propertiesCV)
                 {
                     List<SubseccionItem> listaAux = new List<SubseccionItem>();
                     for (int i = 0; i < equivalencias.Count; i++)
@@ -526,15 +527,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Persona persona in entityXML.autores)
                 {
                     string idTemporal = equivalencias.First(x => x.Value.Select(x => x.Split('|')[1]).Contains(persona.ID)).Key;
-                    if (Guid.TryParse(idTemporal, out Guid aux))
+                    if (Guid.TryParse(idTemporal, out Guid aux) && personasAniadidas.Add(idTemporal))
                     {
-                        if (personasAniadidas.Add(idTemporal))
-                        {
-                            Entity entidadPersona = new Entity();
-                            entidadPersona.rdfType = "http://xmlns.com/foaf/0.1/Person";
-                            entidadPersona.ontology = "person";
-                            entidadPersona.propTitle = "http://xmlns.com/foaf/0.1/name";
-                            entidadPersona.properties = new List<Entity.Property>()
+                        Entity entidadPersona = new Entity();
+                        entidadPersona.rdfType = "http://xmlns.com/foaf/0.1/Person";
+                        entidadPersona.ontology = "person";
+                        entidadPersona.propTitle = "http://xmlns.com/foaf/0.1/name";
+                        entidadPersona.properties = new List<Entity.Property>()
                             {
                                 new Entity.Property()
                                 {
@@ -552,12 +551,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     values = new List<string>() { (persona.primerApellido?.Trim()+" "+ persona.segundoApellido?.Trim()).Trim() }
                                 }
                             };
-                            entidadPersona.id = mResourceApi.GraphsUrl + "items/Person_" + Guid.NewGuid().ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                            identificadoresPersonasAniadidas[idTemporal] = entidadPersona.id;
+                        entidadPersona.id = mResourceApi.GraphsUrl + "items/Person_" + Guid.NewGuid().ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        identificadoresPersonasAniadidas[idTemporal] = entidadPersona.id;
 
-                            ComplexOntologyResource resource = ToGnossApiResource(entidadPersona);
-                            personasCargar.Add(resource);
-                        }
+                        ComplexOntologyResource resource = ToGnossApiResource(entidadPersona);
+                        personasCargar.Add(resource);
+
                     }
                 }
             }
@@ -683,7 +682,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         }
                                     }
                                     //Compruebo que la persona propietaria de la notificación está en BBDD
-                                    if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                    if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                     {
                                         continue;
                                     }
@@ -692,7 +691,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     notificacion.IdRoh_trigger = idPersona;
                                     notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                     notificacion.Roh_entity = idBBDD;
-                                    notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                    notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                     notificacion.Dct_issued = DateTime.Now;
                                     notificacion.Roh_type = "create";
                                     notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -730,7 +729,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -739,7 +738,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -776,7 +775,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -785,7 +784,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -823,7 +822,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     continue;
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -832,7 +831,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "create";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -859,7 +858,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 continue;
                             }
                             //Compruebo que la persona propietaria de la notificación está en BBDD
-                            if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                            if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                             {
                                 continue;
                             }
@@ -868,7 +867,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             notificacion.IdRoh_trigger = idPersona;
                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                             notificacion.Roh_entity = idBBDD;
-                            notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                            notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = "edit";
                             notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -1066,8 +1065,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(equivalencias[idXML], graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1095,8 +1094,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1116,8 +1115,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = OverwriteLoadedEntity(entityBBDD, entityXML);
@@ -1388,9 +1387,17 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         public static Tuple<string, string, string> GetIdentificadoresItemPresentation(string pId, List<string> pPropiedades, List<string> rdfTypeItem)
         {
-            if (pPropiedades.Count != 3) { return null; }
+            if (pPropiedades.Count != 3)
+            {
+                return null;
+            }
+
             try
             {
+                string item1 = "";
+                string item2 = "";
+                string item3 = "";
+
                 string selectID = "select ?item1 ?item2 ?item3";
                 string whereID = $@"where{{
                                     <{pId}> <{pPropiedades[0]}> ?item1 .
@@ -1403,39 +1410,41 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 }}";
 
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
-                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                if (resultData == null || resultData.results == null || resultData.results.bindings == null)
                 {
-                    string item1 = "";
-                    string item2 = "";
-                    string item3 = "";
-                    if (fila.ContainsKey("item1"))
-                    {
-                        item1 = fila["item1"].value;
-                    }
-                    if (fila.ContainsKey("item2"))
-                    {
-                        item2 = fila["item2"].value;
-                    }
-                    else
-                    {
-                        item2 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[0].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                    }
-                    if (fila.ContainsKey("item3"))
-                    {
-                        item3 = fila["item3"].value;
-                    }
-                    else
-                    {
-                        item3 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[1].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                    }
-                    return new Tuple<string, string, string>(item1, item2, item3);
+                    return null;
                 }
-                throw new Exception($"No existe la propiedad {pPropiedades[0]}");
+
+                Dictionary<string, Data> fila = resultData.results.bindings.First();
+                if (fila.ContainsKey("item1"))
+                {
+                    item1 = fila["item1"].value;
+                }
+
+                if (fila.ContainsKey("item2"))
+                {
+                    item2 = fila["item2"].value;
+                }
+                else
+                {
+                    item2 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[0].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                }
+
+                if (fila.ContainsKey("item3"))
+                {
+                    item3 = fila["item3"].value;
+                }
+                else
+                {
+                    item3 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[1].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                }
+
+                return new Tuple<string, string, string>(item1, item2, item3);
             }
             catch (NullReferenceException e)
             {
                 Console.Error.WriteLine("Errores al cargar mResourceApi " + e.Message);
-                throw new NullReferenceException("Errores al cargar mResourceApi");
+                return null;
             }
         }
 

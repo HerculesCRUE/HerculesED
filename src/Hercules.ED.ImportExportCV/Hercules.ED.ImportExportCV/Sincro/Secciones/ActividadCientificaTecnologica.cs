@@ -16,11 +16,11 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ActividadCientificaTecnologica : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoSituacionProfesional = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private readonly List<CvnItemBean> listadoDatos;
+        private readonly List<CvnItemBean> listadoSituacionProfesional;
+        private readonly List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificActivity";
-        private Person personaCV = new Person();
+        private readonly Person personaCV;
 
         public ActividadCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
@@ -196,14 +196,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
-            string personaCV = Utility.PersonaCV(mCvID);
-            List<string> listado = new List<string>() { personaCV };
+            string idPersonaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { idPersonaCV };
 
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
-            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
-            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
-            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> proyectos);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -317,14 +317,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
-            string personaCV = Utility.PersonaCV(mCvID);
-            List<string> listado = new List<string>() { personaCV };
+            string idPersonaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { idPersonaCV };
 
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
-            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
-            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
-            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> proyectos);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)
@@ -439,14 +439,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 entidadesXML[idPublicacion].distincts = new HashSet<string>(entidadesXML.Keys.Except(new List<string> { idPublicacion }));
             }
 
-            string personaCV = Utility.PersonaCV(mCvID);
-            List<string> listado = new List<string>() { personaCV };
+            string idPersonaCV = Utility.PersonaCV(mCvID);
+            List<string> listado = new List<string>() { idPersonaCV };
 
             //Obtenemos Organización, Departamento, Grupos y Publicaciones del propietario del CV.
-            Utility.DatosDepartamentoPersona(listado).TryGetValue(personaCV, out HashSet<string> departamentos);
-            Utility.DatosOrganizacionPersona(listado).TryGetValue(personaCV, out HashSet<string> organizaciones);
-            Utility.DatosGrupoPersona(listado).TryGetValue(personaCV, out HashSet<string> grupos);
-            Utility.DatosProyectoPersona(listado).TryGetValue(personaCV, out HashSet<string> proyectos);
+            Utility.DatosDepartamentoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> departamentos);
+            Utility.DatosOrganizacionPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> organizaciones);
+            Utility.DatosGrupoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> grupos);
+            Utility.DatosProyectoPersona(listado).TryGetValue(idPersonaCV, out HashSet<string> proyectos);
 
             //Añado los autores del documento para la desambiguación
             for (int i = 0; i < listadoAux.Count; i++)

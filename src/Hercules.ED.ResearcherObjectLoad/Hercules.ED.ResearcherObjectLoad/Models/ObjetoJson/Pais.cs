@@ -19,19 +19,5 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
         string region_code { get; set; }
         string sub_region_code { get; set; }
         string intermediate_region_code { get; set; }
-        Pais()
-        {
-            name = "";
-            alpha_2 = "";
-            alpha_3 = "";
-            country_code = "";
-            iso_3166_2 = "";
-            region = "";
-            sub_region = "";
-            intermediate_region = "";
-            region_code = "";
-            sub_region_code = "";
-            intermediate_region_code = "";
-        }
     }
 }
