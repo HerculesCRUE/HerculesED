@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](../../../Docs/media/CabeceraDocumentosMD.png)
 
 | Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
@@ -15,6 +15,6 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.CrossRefConnect)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
 
