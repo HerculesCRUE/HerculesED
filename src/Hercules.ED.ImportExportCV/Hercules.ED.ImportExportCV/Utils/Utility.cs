@@ -41,11 +41,14 @@ namespace Utils
                                     FILTER(?s=<{pCVID}>)
                                 }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
             {
-                return fila["person"].value;
+                return null;
             }
-            return null;
+
+            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            return fila["person"].value;
+
         }
         /// <summary>
         /// Funcion que devuelve la fecha de la ultima importacion realizada en un cv.
@@ -59,35 +62,22 @@ namespace Utils
             string select = "select distinct ?fecha ";
             string where = @$"
                 where {{
-                    <http://gnoss.com/{mResourceApi.GetShortGuid(pCVID).ToString()}><http://gnoss/hasEntidad> ?s. 
+                    <http://gnoss.com/{mResourceApi.GetShortGuid(pCVID)}><http://gnoss/hasEntidad> ?s. 
                     ?s ?p <http://w3id.org/roh/CV>.
                     ?s <http://w3id.org/roh/importDate> ?fecha
                 }} LIMIT 100";
             SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-
                 if (fila.ContainsKey("fecha"))
                 {
                     valorActual = fila["fecha"].value;
                 }
-
-
             }
             DateTime fecha;
-            if (DateTime.TryParse(valorActual, out fecha))
-            {
-                return fecha;
-            }
-            else
-            {
-                return fecha;
-            }
+            DateTime.TryParse(valorActual, out fecha);
 
-
-
-
-
+            return fecha;
         }
 
         public static bool checkFecha(string pCVID)
@@ -168,7 +158,7 @@ namespace Utils
                                 FILTER(?cv=<{pCVID}>)
                             }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-            if (resultData == null || resultData.results == null || resultData.results.bindings == null)
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
             {
                 return null;
             }
@@ -238,7 +228,7 @@ namespace Utils
                 {
                     if (organizaciones.ContainsKey(fila["person"].value))
                     {
-                        organizaciones[fila["person"].value].Append(fila["organization"].value);
+                        organizaciones[fila["person"].value].Add(fila["organization"].value);
                     }
                     else
                     {
@@ -272,7 +262,7 @@ namespace Utils
                 {
                     if (departamentos.ContainsKey(fila["person"].value))
                     {
-                        departamentos[fila["person"].value].Append(fila["departament"].value);
+                        departamentos[fila["person"].value].Add(fila["departament"].value);
                     }
                     else
                     {
@@ -309,7 +299,7 @@ namespace Utils
                 {
                     if (proyectos.ContainsKey(fila["person"].value))
                     {
-                        proyectos[fila["person"].value].Append(fila["project"].value);
+                        proyectos[fila["person"].value].Add(fila["project"].value);
                     }
                     else
                     {
@@ -346,7 +336,7 @@ namespace Utils
                 {
                     if (grupos.ContainsKey(fila["person"].value))
                     {
-                        grupos[fila["person"].value].Append(fila["group"].value);
+                        grupos[fila["person"].value].Add(fila["group"].value);
                     }
                     else
                     {

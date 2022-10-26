@@ -1408,7 +1408,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 }}";
 
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
-                if (resultData == null || resultData.results == null || resultData.results.bindings == null)
+                if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
                 {
                     return null;
                 }
@@ -1571,9 +1571,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         private Ontology ProcesarEntidadPrincipal(EntityRdf pEntidadPrincipal)
         {
             List<string> prefList = new();
-            foreach (string key in UtilityCV.dicPrefix.Keys)
+            foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
-                prefList.Add($"xmlns:{key}=\"{UtilityCV.dicPrefix[key]}\"");
+                prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");
             }
 
             List<OntologyEntity> entList = new();
@@ -1620,9 +1620,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         private OntologyEntity ProcesarEntidadAuxiliar(string pProperty, EntityRdf pEntidadAuxiliar)
         {
             List<string> prefList = new ();
-            foreach (string key in UtilityCV.dicPrefix.Keys)
+            foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
-                prefList.Add($"xmlns:{key}=\"{UtilityCV.dicPrefix[key]}\"");
+                prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");
             }
 
             List<OntologyEntity> entList = new();

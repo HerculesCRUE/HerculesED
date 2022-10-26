@@ -19,14 +19,19 @@ namespace Utils
         /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad
         /// de las claves algún valor de los valores
         /// </summary>
-        public readonly static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
+        private static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
         {
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
             { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
             { "http://w3id.org/roh/validationStatusPRC", new List<string>(){ "pendiente", "validado" } }
         };
 
-        public static Dictionary<string, string> dicPrefix = new () {
+        public static Dictionary<string, List<string>> GetPropertyNotEditable()
+        {
+            return PropertyNotEditable;
+        }
+
+        private static Dictionary<string, string> dicPrefix = new () {
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
             {"rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
             {"foaf", "http://xmlns.com/foaf/0.1/" },
@@ -41,6 +46,11 @@ namespace Utils
             {"dc", "http://purl.org/dc/elements/1.1/" },
             {"gn", "http://www.geonames.org/ontology#" }
         };
+
+        public static Dictionary<string, string> GetDicPrefix()
+        {
+            return dicPrefix;
+        }
 
 
         /// <summary>
