@@ -295,5 +295,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
             return null;
         }
+
     }
 }

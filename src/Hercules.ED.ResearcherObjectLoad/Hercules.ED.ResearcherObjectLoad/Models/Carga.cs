@@ -1255,15 +1255,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 // Consulta sparql.
                 while (true)
                 {
-                    string select = "SELECT * WHERE { SELECT DISTINCT ?documento ?autor ";
-                    string where = $@"WHERE {{
-                                ?documento a <http://purl.org/ontology/bibo/Document>. 
-                                ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
-                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor. 
-                                FILTER(?documento in (<{string.Join(">,<", lista)}>)) 
-                            }} ORDER BY DESC(?documento) }} LIMIT {limit} OFFSET {offset}";
+                    SparqlObject resultadoQuery = GetAutorsFromDocumentQuery(lista, limit, offset, "document", "documento");
 
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                     if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
                         offset += limit;
@@ -1301,15 +1294,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                 // Consulta sparql.
                 while (true)
                 {
-                    string select = "SELECT * WHERE { SELECT DISTINCT ?ro ?autor ";
-                    string where = $@"WHERE {{
-                                ?ro a <http://w3id.org/roh/ResearchObject> . 
-                                ?ro <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
-                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor. 
-                                FILTER(?ro in (<{string.Join(">,<", lista)}>)) 
-                            }} ORDER BY DESC(?ro) }} LIMIT {limit} OFFSET {offset}";
-
-                    SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "researchobject");
+                    SparqlObject resultadoQuery = GetAutorsFromDocumentQuery(lista, limit, offset, "researchobject", "ro");
                     if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                     {
                         offset += limit;
@@ -2892,6 +2877,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             //TODO
             // Recuperación del AssessmentStatus
             Tuple<string> assessmentStatus = new Tuple<string>(ObtenerAssessmentStatusPublicacionResearchObject(pIdResearchObject));
+        }
+
+
+
+
+        /// <summary>
+        /// Consulta para obtener los autores de un documento
+        /// </summary>
+        /// <param name="lista">Listado de los documentos</param>
+        /// <param name="limit">Límite de resultados</param>
+        /// <param name="offset">Ofset de resultados</param>
+        /// <returns>Devuelve Sparql Object</returns>
+        private static SparqlObject GetAutorsFromDocumentQuery(List<string> lista, int limit, int offset, string type, string varType)
+        {
+            string select = "SELECT * WHERE { SELECT DISTINCT ?"+varType+" ?autor ";
+            string where = $@"WHERE {{
+                                ?{varType} a <http://purl.org/ontology/bibo/Document>. 
+                                ?{varType} <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
+                                ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor. 
+                                FILTER(?{varType} in (<{string.Join(">,<", lista)}>)) 
+                            }} ORDER BY DESC(?{varType}) }} LIMIT {limit} OFFSET {offset}";
+
+            return mResourceApi.VirtuosoQuery(select, where, type);
         }
     }
 }
