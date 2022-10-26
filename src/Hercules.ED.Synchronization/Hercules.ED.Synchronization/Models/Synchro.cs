@@ -69,7 +69,7 @@ namespace Hercules.ED.Synchronization.Models
         /// <summary>
         /// Obtiene la fecha de la última actualización.
         /// </summary>
-        /// <param name="pOrcid">ORCID del usuario.</param>
+        /// <param name="pGnossId">GnossId del usuario.</param>
         /// <returns></returns>
         public string GetLastUpdatedDate(string pGnossId)
         {
@@ -155,7 +155,6 @@ namespace Hercules.ED.Synchronization.Models
         public void ProcessComplete()
         {
             Queue colaRabbit = new Queue(configuracion);
-            string expresionCron = configuracion.GetCronExternalSource();
 
             new Thread(() =>
             {
@@ -163,7 +162,7 @@ namespace Hercules.ED.Synchronization.Models
                 {
                     try
                     {
-                        var expression = new CronExpression(expresionCron);
+                        var expression = new CronExpression(configuracion.cronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
 
                         if (time.HasValue)
