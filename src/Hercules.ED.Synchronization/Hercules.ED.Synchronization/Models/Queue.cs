@@ -1,11 +1,7 @@
 ﻿using Hercules.ED.Synchronization.Config;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.Synchronization.Models
 {
@@ -13,7 +9,6 @@ namespace Hercules.ED.Synchronization.Models
     {
         private ConfigService configService;
         private readonly ConnectionFactory connectionFactory;
-        private readonly IConnection connection;
 
         /// <summary>
         /// Main queue.
@@ -28,7 +23,6 @@ namespace Hercules.ED.Synchronization.Models
             };
             configService.GetCronExternalSource();
             configService.GetFuentesExternasQueueRabbit();
-            connection = connectionFactory.CreateConnection();
         }
 
         /// <summary>
