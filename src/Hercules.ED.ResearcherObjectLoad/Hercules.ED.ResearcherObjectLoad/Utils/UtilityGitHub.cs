@@ -46,7 +46,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             string where = $@"WHERE {{
                                 ?person a <http://xmlns.com/foaf/0.1/Person>. 
                                 ?person <http://w3id.org/roh/usuarioGitHub> ?nombre. 
-                                FILTER(?nombre = '{pNombre}')
+                                FILTER(?nombre = '{pNombre}') 
                             }}";
 
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
