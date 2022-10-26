@@ -155,13 +155,13 @@ namespace ImportadorWebCV.Exporta
             OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
             otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(MultilangProp, listaId);
 
-            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
+            ComitesCta comitesCTA = new ComitesCta(cvn, cvID);
             comitesCTA.ExportaComitesCTA(MultilangProp, listaId);
 
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(MultilangProp, listaId);
 
-            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
+            GestionIdi gestionIDI = new GestionIdi(cvn, cvID);
             gestionIDI.ExportaGestionIDI(MultilangProp, listaId);
 
             ForosComites forosComites = new ForosComites(cvn, cvID);
@@ -170,7 +170,7 @@ namespace ImportadorWebCV.Exporta
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(MultilangProp, listaId);
 
-            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
+            EstanciasIdi estanciasIDI = new EstanciasIdi(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(MultilangProp, listaId);
 
             AyudaBecas ayudaBecas = new AyudaBecas(cvn, cvID);

@@ -9,12 +9,12 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class GestionIDI:SeccionBase
+    public class GestionIdi : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/activitiesManagement", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "activity";
-        public GestionIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        readonly string graph = "activity";
+        public GestionIdi(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
 

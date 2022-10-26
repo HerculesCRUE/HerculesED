@@ -14,8 +14,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ExperienciaCientificaTecnologica : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoDatos;
+        private List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
         public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {

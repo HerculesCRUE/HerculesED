@@ -91,7 +91,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     return fila["o"].value;
                 }
-                throw new Exception("No existe la entidad http://w3id.org/roh/personalData");
+                throw new KeyNotFoundException("No existe la entidad http://w3id.org/roh/personalData");
             }
             catch (NullReferenceException e)
             {

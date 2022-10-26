@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro
             return cvn;
         }
 
-        private readonly List<string> listadoSecciones = new List<string>()
+        private readonly List<string> listadoIdentificadorSecciones = new List<string>()
         {
             //Datos identificacion
             "000.010.000.000",
@@ -286,7 +286,7 @@ namespace ImportadorWebCV.Sincro
             List<CvnItemBean> listCvnRootBean = cvn.cvnRootBean.ToList();
             foreach (CvnItemBean itemBean in new List<CvnItemBean>(listCvnRootBean))
             {
-                if (!listadoSecciones.Contains(itemBean.Code))
+                if (!listadoIdentificadorSecciones.Contains(itemBean.Code))
                 {
                     listCvnRootBean.Remove(itemBean);
                 }

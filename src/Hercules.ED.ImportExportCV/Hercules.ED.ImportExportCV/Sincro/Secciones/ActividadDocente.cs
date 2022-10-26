@@ -14,9 +14,9 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ActividadDocente : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private readonly List<CvnItemBean> listadoDatos;
+        private readonly List<CvnItemBean> listadoPremios;
+        private readonly List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
         public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)

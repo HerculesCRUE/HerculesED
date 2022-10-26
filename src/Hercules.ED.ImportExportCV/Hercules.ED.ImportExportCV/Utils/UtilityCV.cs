@@ -19,14 +19,14 @@ namespace Utils
         /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad
         /// de las claves algún valor de los valores
         /// </summary>
-        public static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
+        public readonly static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
         {
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
-            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} }
-            //TODO estado de validacion
+            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
+            { "http://w3id.org/roh/validationStatusPRC", new List<string>(){ "pendiente", "validado" } }
         };
 
-        public static Dictionary<string, string> dicPrefix = new Dictionary<string, string>() {
+        public static Dictionary<string, string> dicPrefix = new () {
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
             {"rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
             {"foaf", "http://xmlns.com/foaf/0.1/" },
@@ -53,7 +53,7 @@ namespace Utils
             KeyValuePair<string, string> prefix = dicPrefix.First(x => pProperty.StartsWith(x.Value));
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
-        
+
         /// <summary>
         /// Devuelve el identificador numerico apartir del tipo de documento(SAD1, SAD2, SAD3).
         /// </summary>
@@ -194,7 +194,7 @@ namespace Utils
                         }
                     }
                 }
-                else if (remove)
+                else if (pLoadedEntity != null)
                 {
                     List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
@@ -215,7 +215,7 @@ namespace Utils
             {
                 foreach (string auxEntityRemove in pUpdatedEntity.auxEntityRemove)
                 {
-                    if (auxEntityRemove.StartsWith("http"))
+                    if (auxEntityRemove.StartsWith("http") && pLoadedEntity != null)
                     {
                         foreach (Entity.Property property in pLoadedEntity.properties)
                         {
@@ -241,7 +241,7 @@ namespace Utils
             }
             if (triplesRemove[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
+                update = mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
             }
             if (triplesInclude[pIdMainEntity].Count > 0)
             {

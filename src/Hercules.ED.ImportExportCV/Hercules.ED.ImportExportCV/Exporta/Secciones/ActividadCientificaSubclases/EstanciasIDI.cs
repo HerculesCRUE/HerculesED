@@ -9,12 +9,12 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class EstanciasIDI : SeccionBase
+    public class EstanciasIdi : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/stays", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "stay";
-        public EstanciasIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        readonly string graph = "stay";
+        public EstanciasIdi(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
 
@@ -103,9 +103,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.050.150", keyValue.Value);
 
                 // Palabras clave
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIPalabrasClave), 
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIPalabrasClave),
                     "060.010.050.240", keyValue.Value);
-                
+
                 listado.Add(itemBean);
             }
 

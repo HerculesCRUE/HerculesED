@@ -56,7 +56,7 @@ namespace Utils
         /// <returns>Lista de tuplas con (persona, nombre, apellidos)</returns>
         public static List<Tuple<string, string, string>> GetListadoAutores(ResourceApi pResourceApi, Dictionary<string, string> dicPersonas)
         {
-            if (dicPersonas.Count() == 0)
+            if (!dicPersonas.Any())
             {
                 return new List<Tuple<string, string, string>>();
             }
@@ -265,8 +265,8 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -379,7 +379,7 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -393,7 +393,7 @@ namespace Utils
 
         public static bool CheckCvnString(string property, Entity entity)
         {
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 return true;
             }
@@ -417,7 +417,7 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -485,7 +485,7 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties_cv.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -513,8 +513,8 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -549,7 +549,7 @@ namespace Utils
             CvnItemBeanCvnFamilyNameBean cvnFamilyNameBean = new CvnItemBeanCvnFamilyNameBean();
             cvnFamilyNameBean.Code = code;
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() == 0)
+            if (!entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)))
             {
                 return;
             }
@@ -567,7 +567,7 @@ namespace Utils
         /// <param name="entity">Entity</param>
         private static void AddCvnItemBeanCvnFamilyNameBeanFirstFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
+            if (!entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(prop)))
             {
                 return;
             }
@@ -583,7 +583,7 @@ namespace Utils
         /// <param name="entity">Entity</param>
         private static void AddCvnItemBeanCvnFamilyNameBeanSecondFamilyName(CvnItemBeanCvnFamilyNameBean familyNameBean, string prop, Entity entity)
         {
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(prop)).Count() == 0)
+            if (!entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(prop)))
             {
                 return;
             }
@@ -608,8 +608,8 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 itemBean.Items.Add(new CvnItemBeanCvnString()
                 {
@@ -1072,7 +1072,7 @@ namespace Utils
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))))
             {
                 cvnBoolean.Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true");
 
                 itemBean.Items.Add(cvnBoolean);
             }
@@ -1102,7 +1102,7 @@ namespace Utils
             if (Comprobar(entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))))
             {
                 cvnBoolean.Value = entity.properties_cv.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true") ? true : false;
+                        .Select(x => x.values).FirstOrDefault().FirstOrDefault().ToLower().Equals("true");
 
                 itemBean.Items.Add(cvnBoolean);
             }
@@ -1134,7 +1134,7 @@ namespace Utils
                 {
                     continue;
                 }
-                for (int i = 0; i < entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().Count(); i++)
+                for (int i = 0; i < entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().Count; i++)
                 {
                     listadoTuplas.Add(new Tuple<string, string, string, string, string>(tuple.Item1, tuple.Item2, tuple.Item3,
                         entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3)).Select(x => x.values).FirstOrDefault().ElementAt(i).Split("@@@").FirstOrDefault(),
@@ -1191,7 +1191,7 @@ namespace Utils
                     {
                         CvnItemBeanCvnCodeGroupCvnBoolean cvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
                         cvnBoolean.Code = tupla.ElementAt(j).Item2;
-                        cvnBoolean.Value = tupla.ElementAt(j).Item4.Split("@@@").Last().ToLower().Equals("true") ? true : false;
+                        cvnBoolean.Value = tupla.ElementAt(j).Item4.Split("@@@").Last().ToLower().Equals("true");
 
 
                         codeGroup.CvnBoolean = new CvnItemBeanCvnCodeGroupCvnBoolean();
@@ -1218,7 +1218,6 @@ namespace Utils
 
                         codeGroup.CvnTitleBean = new CvnItemBeanCvnCodeGroupCvnTitleBean();
                         codeGroup.CvnTitleBean = cvnTitleBean;
-                        continue;
                     }
                 }
 
@@ -1532,9 +1531,9 @@ namespace Utils
             CvnItemBeanCvnDuration duration = new CvnItemBeanCvnDuration();
             duration.Code = code;
             string duracion = "P";
-            if (entity.properties.Where(x => EliminarRDF(x.prop).Contains("http://w3id.org/roh/duration")).Any())
+            if (entity.properties.Any(x => EliminarRDF(x.prop).Contains("http://w3id.org/roh/duration")))
             {
-                string anio = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Count() != 0 ?
+                string anio = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")) ?
                     entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(anio))
@@ -1542,15 +1541,15 @@ namespace Utils
                     duracion += anio + "Y";
                 }
 
-                string mes = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Count() != 0
-                    ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                string mes = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")) ?
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(mes))
                 {
                     duracion += mes + "M";
                 }
 
-                string dia = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Count() != 0 ?
+                string dia = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")) ?
                     entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(dia))
@@ -1592,7 +1591,7 @@ namespace Utils
             duration.Code = code;
             string duracion = "PT";
 
-            string horas = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Count() != 0 ?
+            string horas = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")) ?
                 entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
                 : null;
             if (!string.IsNullOrEmpty(horas))
@@ -1731,8 +1730,8 @@ namespace Utils
 
             if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
-                string IdNombre = entity.properties.Where(x => x.prop.Equals(propertyIdentification)).First().values.First().Split("_").Last();
-                if (!UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Any())
+                string IdNombre = entity.properties.First(x => x.prop.Equals(propertyIdentification)).values.First().Split("_").Last();
+                if (!UtilitySecciones.Lenguajes.Any(x => x.Item2.Equals(IdNombre)))
                 {
                     return;
                 }
@@ -1912,8 +1911,8 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 string datos = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@")[1];
@@ -1945,12 +1944,12 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).Where(x => x.Count() == 1).Any())
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)) &&
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Select(x => x.values).Any(x => x.Count == 1))
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).Where(x => x.Count() == 1).FirstOrDefault().FirstOrDefault().Split("@@@").LastOrDefault();
+                    .Select(x => x.values).FirstOrDefault(x => x.Count == 1).FirstOrDefault().Split("@@@").LastOrDefault();
 
                 int anio = int.Parse(gnossDate.Substring(0, 4));
                 int mes = int.Parse(gnossDate.Substring(4, 2));
@@ -1981,7 +1980,7 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                     .Select(x => x.values).FirstOrDefault().FirstOrDefault();
@@ -2072,7 +2071,7 @@ namespace Utils
             }
 
             if (entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)) == null
-                || entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() == 0)
+                || !entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 return;
             }
@@ -2161,8 +2160,8 @@ namespace Utils
                 return;
             }
 
-            if (entity.properties.Where(x => EliminarRDF(x.prop).StartsWith(section)).Count() > 0 &&
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property)).Count() > 0)
+            if (entity.properties.Any(x => EliminarRDF(x.prop).StartsWith(section)) &&
+                entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 CvnItemBeanCvnExternalPKBean externalPKBean = new CvnItemBeanCvnExternalPKBean();
                 externalPKBean.Code = code;

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Utils
 {
     public static class Utility
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static readonly int splitListNum = 500;
 
@@ -167,11 +168,12 @@ namespace Utils
                                 FILTER(?cv=<{pCVID}>)
                             }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null)
             {
-                return fila["name"].value;
+                return null;
             }
-            return null;
+            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            return fila["name"].value;
         }
 
         /// <summary>
@@ -598,6 +600,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 if (Y == -1)
                 {
@@ -628,6 +634,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 int M = aux.IndexOf("M");
                 if (M == -1)
@@ -662,6 +672,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 int M = aux.IndexOf("M");
                 int D = aux.IndexOf("D");
@@ -701,6 +715,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int T = aux.IndexOf("T");
                 int H = aux.IndexOf("H");
                 if (H == -1)
@@ -796,16 +814,15 @@ namespace Utils
                                 if (score == 1)
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                                    sbUnion.AppendLine(" ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@" {{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
                                     unions.Add(sbUnion.ToString());
                                 }
                                 else
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				{FilterWordComplete(word, "name")} BIND({score} as ?num) ");
-                                    //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                    sbUnion.AppendLine(" ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@" {FilterWordComplete(word, "name")} BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
                                 }
                             }
@@ -1899,7 +1916,7 @@ namespace Utils
         /// <returns>ORCID</returns>
         public static string GetORCID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("140")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("140"))?.Value;
         }
 
         /// <summary>
@@ -1910,7 +1927,7 @@ namespace Utils
         /// <returns>Scopus</returns>
         public static string GetScopus(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("150")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("150"))?.Value;
         }
 
         /// <summary>
@@ -1921,7 +1938,7 @@ namespace Utils
         /// <returns>ResearcherID</returns>
         public static string GetResearcherID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("160"))?.Value;
         }
 
         /// <summary>
@@ -2039,7 +2056,7 @@ namespace Utils
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
 
-                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
                 if (campo != null)
                 {
                     return campo.Value;
@@ -2067,7 +2084,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_PCLD_" + campo.Value;
@@ -2089,7 +2106,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_ADM1_" + campo.Value;
@@ -2235,9 +2252,12 @@ namespace Utils
                 {
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
-                if (codeGroup.CvnEntityBean == null) { return null; }
+                if (codeGroup.CvnEntityBean == null)
+                {
+                    return null;
+                }
 
-                if ((bool)codeGroup.CvnEntityBean?.Code.Equals(codigo))
+                if (codeGroup.CvnEntityBean.Code.Equals(codigo))
                 {
                     return codeGroup.CvnEntityBean.Name;
                 }
@@ -2266,7 +2286,7 @@ namespace Utils
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
 
-                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
                 if (campo != null && !string.IsNullOrEmpty(campo.Value))
                 {
                     return mResourceApi.GraphsUrl + "items/organizationtype_" + campo.Value;
@@ -2966,8 +2986,10 @@ namespace Utils
         public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
         {
             if (mResourceApi == null || titulacion == null ||
-                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadTitulacion))
-            { return; }
+                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadNombreTitulacion))
+            {
+                return;
+            }
 
             if (!string.IsNullOrEmpty(titulacion.Identification))
             {
