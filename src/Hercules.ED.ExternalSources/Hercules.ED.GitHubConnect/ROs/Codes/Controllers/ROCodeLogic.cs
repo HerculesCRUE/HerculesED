@@ -560,7 +560,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             }
             catch (Exception)
             {
-                
+                return new List<FileFolderFinal>();
             }
 
             return result;
