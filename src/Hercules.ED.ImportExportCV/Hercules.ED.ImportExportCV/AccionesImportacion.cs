@@ -57,8 +57,8 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listaOpciones"></param>
         public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones, PetitionStatus petitionStatus)
         {
-            Dictionary<string, Dictionary<string, string>> dicOpciones = new Dictionary<string, Dictionary<string, string>>();
-            List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
+            Dictionary<string, Dictionary<string, string>> dicOpciones = new();
+            List<Tuple<string, string>> filtrador = new();
             foreach (string str in listaId)
             {
                 if (string.IsNullOrEmpty(str))
@@ -69,14 +69,14 @@ namespace Hercules.ED.ImportExportCV
             }
             Preimport preimport;
 
-            XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
+            XmlSerializer serializer = new(typeof(Preimport));
             using (TextReader reader = new StringReader(filePreimport))
             {
                 preimport = (Preimport)serializer.Deserialize(reader);
             }
 
             //Fichero preimport
-            List<SubseccionItem> listadoSubsetionItems = new List<SubseccionItem>();
+            List<SubseccionItem> listadoSubsetionItems = new();
             foreach (Subseccion subseccion in preimport.secciones)
             {
                 foreach (SubseccionItem subseccionItem in subseccion.subsecciones)
@@ -99,7 +99,7 @@ namespace Hercules.ED.ImportExportCV
                     guidOpcion = opcion.Split("|||").First().Split("_").First();
                     idOpcion = opcion.Split("|||").First().Split("_").Last();
                     valueOpcion = opcion.Split("|||").Last();
-                    Dictionary<string, string> keyValues = new Dictionary<string, string>();
+                    Dictionary<string, string> keyValues = new();
                     keyValues.Add(idOpcion, valueOpcion);
                     if (dicOpciones.ContainsKey(guidOpcion))
                     {
@@ -144,29 +144,20 @@ namespace Hercules.ED.ImportExportCV
 
             string opcionSeleccionada = "";
 
-            List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
-            List<CvnItemBean> listadoFusionar = new List<CvnItemBean>();
-            List<CvnItemBean> listadoSobrescribir = new List<CvnItemBean>();
-            List<string> listadoDuplicarBBDD = new List<string>();
-            List<string> listadoFusionarBBDD = new List<string>();
-            List<string> listadoSobrescribirBBDD = new List<string>();
-            List<string> listadoTextoLibreBBDD = new List<string>();
+            List<CvnItemBean> listadoDuplicar = new();
+            List<CvnItemBean> listadoFusionar = new();
+            List<CvnItemBean> listadoSobrescribir = new();
+            List<string> listadoDuplicarBBDD = new();
+            List<string> listadoFusionarBBDD = new();
+            List<string> listadoSobrescribirBBDD = new();
+            List<string> listadoTextoLibreBBDD = new();
 
             foreach (IGrouping<string, CvnItemBean> seccionAgrupada in listadoItemsAgrupados)
             {
                 //Seccion datos personales
                 if (seccionAgrupada.Key.Equals("000.010.000.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
-                    {
-                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                    }
-                    if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
-                    {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
-                    }
+                    SobrescribirDatosPersonales(preimport, listadoSobrescribir, listadoSobrescribirBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -275,46 +266,13 @@ namespace Hercules.ED.ImportExportCV
 
 
             //Duplicar
-            base.cvn = duplicadosResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
-            petitionStatus.actualWorkSubtitle = "";
-            petitionStatus.totalWorks = listadoDuplicar.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            Duplicar(duplicadosResultBean, listadoDuplicar, listadoDuplicarBBDD, petitionStatus);
 
             //Fusionar
-            base.cvn = fusionResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
-            petitionStatus.totalWorks = listadoFusionar.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            Fusionar(fusionResultBean, listadoFusionar, listadoFusionarBBDD, petitionStatus);
 
             //Sobrescribir
-            base.cvn = sobrescribirResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
-            petitionStatus.totalWorks = listadoSobrescribir.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
-            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
+            Sobrescribir(sobrescribirResultBean, listadoSobrescribir, listadoSobrescribirBBDD, listadoTextoLibreBBDD, listaDOI, petitionStatus);
 
             //Despues de duplicar, fusionar y sobrescribir los ítems, llamo al servicio de FE para buscar aquellos ítems duplicados con DOI.
             string personId = Utils.Utility.PersonaCV(pCVID);
@@ -346,6 +304,73 @@ namespace Hercules.ED.ImportExportCV
             }
 
         }
+
+
+        private void Duplicar(cvnRootResultBean duplicadosResultBean, List<CvnItemBean> listadoDuplicar, List<string> listadoDuplicarBBDD, PetitionStatus petitionStatus)
+        {
+            base.cvn = duplicadosResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
+            petitionStatus.actualWorkSubtitle = "";
+            petitionStatus.totalWorks = listadoDuplicar.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+        }
+
+        private void Fusionar(cvnRootResultBean fusionResultBean, List<CvnItemBean> listadoFusionar, List<string> listadoFusionarBBDD, PetitionStatus petitionStatus)
+        {
+            base.cvn = fusionResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
+            petitionStatus.totalWorks = listadoFusionar.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+
+        }
+
+        private void Sobrescribir(cvnRootResultBean sobrescribirResultBean, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<string> listadoTextoLibreBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
+        {
+            base.cvn = sobrescribirResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
+            petitionStatus.totalWorks = listadoSobrescribir.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
+
+        }
+
+        private void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+            if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
+            {
+                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+            }
+            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
+            {
+                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
+            }
+
+        }
+
+
     }
 }
 
