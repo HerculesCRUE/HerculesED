@@ -7,7 +7,7 @@ namespace Hercules.ED.Synchronization
 {
     class Program
     {
-        private static ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
 
         /// <summary>
@@ -16,7 +16,7 @@ namespace Hercules.ED.Synchronization
         /// <param name="args">Argumentos.</param>
         static void Main(string[] args)
         {
-            Synchro synchro = new Synchro();
+            Synchro synchro = new ();
             synchro.mResourceApi = mResourceApi;
             synchro.mConfiguracion = new ConfigService();
             synchro.mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));

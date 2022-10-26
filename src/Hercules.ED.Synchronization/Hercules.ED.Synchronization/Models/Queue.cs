@@ -35,24 +35,24 @@ namespace Hercules.ED.Synchronization.Models
         public void InsertToQueueFuentesExternas(string pOrcid, Queue pRabbitMQService, string pUltimaFechaMod, Dictionary<string, string> pDicIDs, string pGnossId)
         {
             // Publicaciones.
-            List<string> listaDatos = new List<string>() { "investigador", pOrcid, pUltimaFechaMod, pGnossId };
+            List<string> listaDatos = new() { "investigador", pOrcid, pUltimaFechaMod, pGnossId };
             pRabbitMQService.PublishMessage(listaDatos, configService.GetFuentesExternasQueueRabbit());
 
             // Zenodo.
-            List<string> listaDatosZenodo = new List<string>() { "zenodo", pOrcid };
+            List<string> listaDatosZenodo = new() { "zenodo", pOrcid };
             pRabbitMQService.PublishMessage(listaDatosZenodo, pUltimaFechaMod);
 
             // FigShare.
             if (pDicIDs.ContainsKey("usuarioFigshare") && pDicIDs.ContainsKey("tokenFigshare"))
             {
-                List<string> listaDatosFigShare = new List<string>() { "figshare", pDicIDs["tokenFigshare"] };
+                List<string> listaDatosFigShare = new() { "figshare", pDicIDs["tokenFigshare"] };
                 pRabbitMQService.PublishMessage(listaDatosFigShare, configService.GetFuentesExternasQueueRabbit());
             }
 
             // GitHub.
             if (pDicIDs.ContainsKey("usuarioGitHub") && pDicIDs.ContainsKey("tokenGitHub"))
             {
-                List<string> listaDatosGitHub = new List<string>() { "github", pDicIDs["usuarioGitHub"], pDicIDs["tokenGitHub"] };
+                List<string> listaDatosGitHub = new() { "github", pDicIDs["usuarioGitHub"], pDicIDs["tokenGitHub"] };
                 pRabbitMQService.PublishMessage(listaDatosGitHub, configService.GetFuentesExternasQueueRabbit());
             }
         }

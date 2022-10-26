@@ -18,7 +18,7 @@ namespace Hercules.ED.Synchronization.Models
         /// <returns>Lista de identificadores.</returns>
         public Dictionary<string, string> GetPersons()
         {
-            Dictionary<string, string> dicOrcid = new Dictionary<string, string>();
+            Dictionary<string, string> dicOrcid = new();
             int limit = 10000;
             int offset = 0;
             bool salirBucle = false;
@@ -96,7 +96,7 @@ namespace Hercules.ED.Synchronization.Models
         /// <returns>Diccionario con el tipo de usuario/token y el valor.</returns>
         public Dictionary<string, string> GetUsersIDs(string pGnossId)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            Dictionary<string, string> dicResultados = new();
 
             // Consulta sparql.
             string select = $@"{mPrefijos} SELECT ?usuarioFigshare ?tokenFigshare ?usuarioGitHub ?tokenGitHub ";
@@ -140,7 +140,7 @@ namespace Hercules.ED.Synchronization.Models
         public void ProcessComplete()
         {
             // Inicializa la configuración.
-            Queue colaRabbit = new Queue(mConfiguracion);
+            Queue colaRabbit = new (mConfiguracion);
 
             new Thread(() =>
             {
@@ -149,7 +149,7 @@ namespace Hercules.ED.Synchronization.Models
                     try
                     {
                         // Obtiene la diferencia entre horas.
-                        CronExpression expression = new CronExpression(mConfiguracion.cronExternalSource);
+                        CronExpression expression = new (mConfiguracion.cronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
                         Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
