@@ -7,6 +7,7 @@ using Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
@@ -19,15 +20,15 @@ namespace Utils
 {
     public class UtilitySecciones
     {
-        private static Dictionary<string, string> mListaRevistas = new Dictionary<string, string>();
-        private static Dictionary<string, string> mListaPalabrasClave = new Dictionary<string, string>();
-        public static List<Tuple<string, string>> Lenguajes = new List<Tuple<string, string>>();
-        private static Dictionary<string, string> mOrgsNombreIds = new Dictionary<string, string>();
-        private static Dictionary<string, string> dicTopics = new Dictionary<string, string>();
-        private static Dictionary<string, string> dicDOI = new Dictionary<string, string>();
+        private static Dictionary<string, string> mListaRevistas = new ();
+        private static Dictionary<string, string> mListaPalabrasClave = new ();
+        public static List<Tuple<string, string>> Lenguajes = new ();
+        private static Dictionary<string, string> mOrgsNombreIds = new ();
+        private static Dictionary<string, string> dicTopics = new ();
+        private static Dictionary<string, string> dicDOI = new ();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static Dictionary<string, string> GetIDPersona(string crisID)
         {
@@ -204,8 +205,6 @@ where{{
                     string where = $@"where {{
                                 ?identificador a <http://w3id.org/roh/MainDocument> .
                                 ?identificador <http://w3id.org/roh/title> ?nombreRevista .
-                                #OPTIONAL{{ ?identificador <http://purl.org/ontology/bibo/issn> ?issn }}
-                                #OPTIONAL{{ ?identificador <http://purl.org/ontology/bibo/editor> ?editorial }}
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
@@ -765,7 +764,7 @@ where{{
             string propIdHandle, string propIdDOI, string propIdPMID, string propIdOtroPub, string nombreOtroPub)
         {
             //Si alguna propiedad es nula no hago nada
-            if (string.IsNullOrEmpty(propIdHandle) && string.IsNullOrEmpty(propIdHandle)
+            if (string.IsNullOrEmpty(propIdHandle) && string.IsNullOrEmpty(propIdDOI)
                 && string.IsNullOrEmpty(propIdPMID) && string.IsNullOrEmpty(propIdOtroPub)
                 && string.IsNullOrEmpty(nombreOtroPub))
             { return; }

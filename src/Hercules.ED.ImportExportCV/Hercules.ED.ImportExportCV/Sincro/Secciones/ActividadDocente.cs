@@ -14,9 +14,9 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ActividadDocente : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoPremios = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private readonly List<CvnItemBean> listadoDatos;
+        private readonly List<CvnItemBean> listadoPremios;
+        private readonly List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/TeachingExperience";
 
         public ActividadDocente(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
@@ -48,6 +48,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ACADEMICA";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetFormacionAcademica(listadoDatos, petitionStatus);
@@ -106,6 +111,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_DIRECCION_TESIS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetDireccionTesis(listadoDatos, petitionStatus);
 
@@ -161,6 +171,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_TUTORIAS_ACADEMICAS";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetTutoriasAcademicas(listadoDatos, petitionStatus);
@@ -218,6 +233,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_SEMINARIOS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCursosSeminarios(listadoDatos, petitionStatus);
 
@@ -273,6 +293,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PUBLICACIONES_DOCENTES";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPublicacionDocentes(listadoDatos, petitionStatus);
@@ -330,6 +355,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_PROYECTOS_INNOVACION_DOCENTE";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionProyectosInnovacionDocente(listadoDatos, petitionStatus);
 
@@ -385,6 +415,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_CONGRESOS_FORMACION_DOCENTE";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetParticipacionCongresosFormacionDocente(listadoDatos, petitionStatus);
@@ -442,6 +477,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_INNOVACION_DOCENTE";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPremiosInovacionDocente(listadoPremios, petitionStatus);
 
@@ -497,6 +537,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetOtrasActividades(listadoDatos, petitionStatus);
@@ -554,6 +599,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_APORTACIONES_RELEVANTES";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetAportacionesRelevantes(listadoDatos, petitionStatus);
 
@@ -605,7 +655,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoDireccionTesis.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_DIRECCION_TESIS";
                 }
 
                 foreach (CvnItemBean item in listadoDireccionTesis)
@@ -760,7 +809,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoFormacionAcademica.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ACADEMICA";
                 }
 
                 foreach (CvnItemBean item in listadoFormacionAcademica)
@@ -933,7 +981,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoTutoriasAcademicas.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_TUTORIAS_ACADEMICAS";
                 }
 
                 foreach (CvnItemBean item in listadoTutoriasAcademicas)
@@ -1035,7 +1082,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoCursosSeminarios.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_SEMINARIOS";
                 }
 
                 foreach (CvnItemBean item in listadoCursosSeminarios)
@@ -1169,7 +1215,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoPublicacionDocentes.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PUBLICACIONES_DOCENTES";
                 }
 
                 foreach (CvnItemBean item in listadoPublicacionDocentes)
@@ -1309,7 +1354,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoParticipacionProyectosInnovacionDocente.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_PROYECTOS_INNOVACION_DOCENTE";
                 }
 
                 foreach (CvnItemBean item in listadoParticipacionProyectosInnovacionDocente)
@@ -1470,7 +1514,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoParticipacionCongresosFormacionDocente.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PARTICIPACION_CONGRESOS_FORMACION_DOCENTE";
                 }
 
                 foreach (CvnItemBean item in listadoParticipacionCongresosFormacionDocente)
@@ -1623,7 +1666,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoPremiosInovacionDocente.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PREMIOS_INNOVACION_DOCENTE";
                 }
 
                 foreach (CvnItemBean item in listadoPremiosInovacionDocente)
@@ -1701,7 +1743,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoOtrasActividades.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRAS_ACTIVIDADES";
                 }
 
                 foreach (CvnItemBean item in listadoOtrasActividades)
@@ -1805,7 +1846,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoAportacionesRelevantes.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_APORTACIONES_RELEVANTES";
                 }
 
                 foreach (CvnItemBean item in listadoAportacionesRelevantes)

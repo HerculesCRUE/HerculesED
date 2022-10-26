@@ -14,8 +14,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class ExperienciaCientificaTecnologica : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private List<CvnItemBean> listadoDatos;
+        private List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/ScientificExperience";
         public ExperienciaCientificaTecnologica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
@@ -47,6 +47,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PROYECTOS_IDI_COMPETITIVOS";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetProyectosIDI(listadoDatos, petitionStatus);
@@ -104,6 +109,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_CONTRATOS_NO_COMPETITIVOS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetContratos(listadoDatos, petitionStatus);
 
@@ -157,6 +167,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_PROPIEDAD_INDUSTRIAL_INTELECTUAL";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetPropiedadIndustrialIntelectual(listadoDatos, petitionStatus);
@@ -216,6 +231,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_GRUPOS_IDI";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetGrupoIDI(listadoDatos, petitionStatus);
 
@@ -270,6 +290,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_OBRAS_ARTISTICAS";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetObrasArtisticas(listadoDatos, petitionStatus);
@@ -327,6 +352,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_RESULTADOS_TECNOLOGICOS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetResultadosTecnologicos(listadoDatos, petitionStatus);
             if (listadoIdBBDD == null)
@@ -374,7 +404,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoProyectosIDI.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PROYECTOS_IDI_COMPETITIVOS";
                 }
 
                 foreach (CvnItemBean item in listadoProyectosIDI)
@@ -666,7 +695,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoContratos.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CONTRATOS_NO_COMPETITIVOS";
                 }
 
                 foreach (CvnItemBean item in listadoContratos)
@@ -946,7 +974,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoPropiedadIndustrialIntelectual.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_PROPIEDAD_INDUSTRIAL_INTELECTUAL";
                 }
 
                 foreach (CvnItemBean item in listadoPropiedadIndustrialIntelectual)
@@ -1183,7 +1210,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoGrupoIDI.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_GRUPOS_IDI";
                 }
 
                 foreach (CvnItemBean item in listadoGrupoIDI)
@@ -1337,7 +1363,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoObrasArtisticas.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OBRAS_ARTISTICAS";
                 }
 
                 foreach (CvnItemBean item in listadoObrasArtisticas)
@@ -1444,7 +1469,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoResultadosTecnologicos.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_RESULTADOS_TECNOLOGICOS";
                 }
 
                 foreach (CvnItemBean item in listadoResultadosTecnologicos)

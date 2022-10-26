@@ -14,8 +14,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class FormacionAcademica : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
-        private List<CvnItemBean> listadoCvn = new List<CvnItemBean>();
+        private readonly List<CvnItemBean> listadoDatos;
+        private readonly List<CvnItemBean> listadoCvn;
         private readonly string RdfTypeTab = "http://w3id.org/roh/Qualifications";
         public FormacionAcademica(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion) : base(cvn, cvID, personID, configuracion)
         {
@@ -47,13 +47,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTUDIOS_CICLOS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetEstudiosCiclos(listadoDatos, petitionStatus);
             if (listadoIdBBDD == null)
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    EstudiosCiclos estudiosCiclos = new EstudiosCiclos();
+                    EstudiosCiclos estudiosCiclos = new ();
                     estudiosCiclos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloNombreTitulo)?.values.FirstOrDefault();
                     estudiosCiclos.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloEntidadTitulacionNombre)?.values.FirstOrDefault();
                     estudiosCiclos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloFechaTitulacion)?.values.FirstOrDefault();
@@ -101,13 +106,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_DOCTORADOS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetDoctorados(listadoDatos, petitionStatus);
             if (listadoIdBBDD == null)
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    Doctorados doctorados = new Doctorados();
+                    Doctorados doctorados = new ();
                     doctorados.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosProgramaDoctoradoNombre)?.values.FirstOrDefault();
                     doctorados.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosFechaTitulacion)?.values.FirstOrDefault();
                     doctorados.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosEntidadTitulacionNombre)?.values.FirstOrDefault();
@@ -156,13 +166,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRA_FORMACION_POSGRADO";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetOtraFormacionPosgrado(listadoDatos, petitionStatus);
             if (listadoIdBBDD == null)
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    OtraFormacionPosgrado otraFormacionPosgrado = new OtraFormacionPosgrado();
+                    OtraFormacionPosgrado otraFormacionPosgrado = new ();
                     otraFormacionPosgrado.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionTipoFormacion)?.values.FirstOrDefault();
                     otraFormacionPosgrado.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionEntidadTitulacionNombre)?.values.FirstOrDefault();
                     otraFormacionPosgrado.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionFechaTitulacion)?.values.FirstOrDefault();
@@ -211,6 +226,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ESPECIALIZADA";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetFormacionEspecializada(listadoDatos, petitionStatus);
 
@@ -218,7 +238,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    FormacionEspecializada formacionEspecializada = new FormacionEspecializada();
+                    FormacionEspecializada formacionEspecializada = new ();
                     formacionEspecializada.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeTituloFormacion)?.values.FirstOrDefault();
                     formacionEspecializada.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeEntidadTitulacionNombre)?.values.FirstOrDefault();
                     formacionEspecializada.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeFechaFinalizacion)?.values.FirstOrDefault();
@@ -266,6 +286,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
+
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_MEJORA_DOCENTE";
+            }
 
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCursosMejoraDocente(listadoDatos, petitionStatus);
@@ -323,6 +348,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_CONOCIMIENTO_IDIOMAS";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetConocimientoIdiomas(listadoDatos, preimportar, petitionStatus);
 
@@ -370,7 +400,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoEstudiosCiclos.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_ESTUDIOS_CICLOS";
                 }
 
                 foreach (CvnItemBean item in listadoEstudiosCiclos)
@@ -382,8 +411,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetNameTitleBeanPorIDCampo("020.010.010.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -515,7 +544,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoDoctorados.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_DOCTORADOS";
                 }
 
                 foreach (CvnItemBean item in listadoDoctorados)
@@ -527,8 +555,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetNameTitleBeanPorIDCampo("020.010.020.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -750,7 +778,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoOtraFormacionPosgrado.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_OTRA_FORMACION_POSGRADO";
                 }
 
                 foreach (CvnItemBean item in listadoOtraFormacionPosgrado)
@@ -762,8 +789,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.030.020")?.Name))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -864,7 +891,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoFormacionEspecializada.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_FORMACION_ESPECIALIZADA";
                 }
 
                 foreach (CvnItemBean item in listadoFormacionEspecializada)
@@ -876,8 +902,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("020.020.000.030")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -970,7 +996,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoCursosMejoraDocente.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CURSOS_MEJORA_DOCENTE";
                 }
 
                 foreach (CvnItemBean item in listadoCursosMejoraDocente)
@@ -982,8 +1007,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("020.050.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -1067,7 +1092,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoConocimientoIdiomas.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CONOCIMIENTO_IDIOMAS";
                 }
 
                 foreach (CvnItemBean item in listadoConocimientoIdiomas)
@@ -1079,8 +1103,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     CvnItemBeanCvnTitleBean idioma = item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.060.000.010");
 
                     //Si el TitleBean es nulo o no tiene identificador, no hago nada. 

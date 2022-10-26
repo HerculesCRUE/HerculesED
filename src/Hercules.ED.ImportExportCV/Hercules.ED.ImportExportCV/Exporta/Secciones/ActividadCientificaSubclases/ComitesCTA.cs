@@ -9,12 +9,12 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class ComitesCTA : SeccionBase
+    public class ComitesCta : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/committees", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "committee";
-        public ComitesCTA(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        readonly string graph = "committee";
+        public ComitesCta(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
 
@@ -23,7 +23,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// </summary>
         /// <param name="MultilangProp"></param>
         /// <param name="listaId"></param>
-        public void ExportaComitesCTA( Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
+        public void ExportaComitesCTA(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 

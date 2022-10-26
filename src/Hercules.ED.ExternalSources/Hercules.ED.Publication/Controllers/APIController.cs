@@ -16,15 +16,13 @@ namespace PublicationConnect.Controllers
     [Route("Publication/[action]")]
     public class APIController : ControllerBase
     {
-        private readonly ILogger<APIController> _logger;
-
         readonly ConfigService _Configuracion;
 
-        public APIController(ILogger<APIController> logger, ConfigService pConfig)
+        public APIController(ConfigService pConfig)
         {
-            _logger = logger;
             _Configuracion = pConfig;
         }
+
         /// <summary>
         /// Get all repositories from a specified user account and RO
         /// </summary>

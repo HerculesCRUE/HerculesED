@@ -9,6 +9,16 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ImportExportCV)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ImportExportCV&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ImportExportCV)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ImportExportCV&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ImportExportCV)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ImportExportCV&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ImportExportCV)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ImportExportCV&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ImportExportCV)
+
+
+
 # Introducción
 El servicio de procesamiento de CV, es el encargado de leer los archivos recibidos por FECYT y tratar los datos leidos, para posteriormente insertarlos en base de datos (BBDD).
 Tambien es posible extraer los datos almacenados en BBDD, y recibir un CV en formato .pdf acorde a la normativa de FECYT.
@@ -147,27 +157,27 @@ Tras seleccionar los ítems que se desean exportar, se debe seleccionar el botó
 
 ## Configuración en el appsetting.json
 ```json{
-	{
-		"Logging": {
-			"LogLevel": {
-				"Default": "",
-				"Microsoft": "",
-				"Microsoft.Hosting.Lifetime": ""
-			}
-		},
-		"AllowedHosts": "*",
-		"Usuario_PDF": "",
-		"PSS_PDF": "",
-		"Version": "",
-		"ConnectionStrings": {
-			"RabbitMQ": ""
-		},
-		"UrlEnriquecimiento": "",
-		"UrlPublicationAPI": "",
-		"DenormalizerQueueRabbit": ""
-	}
+{
+	"Logging": {
+		"LogLevel": {
+			"Default": "",
+			"Microsoft": "",
+			"Microsoft.Hosting.Lifetime": ""
+		}
+	},
+	"AllowedHosts": "*",
+	"Usuario_PDF": "",
+	"PSS_PDF": "",
+	"Version": "",
+	"ConnectionStrings": {
+		"RabbitMQ": ""
+	},
+	"UrlEnriquecimiento": "",
+	"UrlPublicationAPI": "",
+	"DenormalizerQueueRabbit": ""
 }
 ```
+
 - LogLevel.Default: Nivel de error por defecto.
 - LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
 - LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.

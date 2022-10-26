@@ -180,9 +180,11 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Título de la publicación.</returns>
         public string getTitle(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
+            if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
             {
-                return pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item").content;
+                Title title = pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item");
+                if (title != null)
+                return title.content;
             }
 
             return null;
@@ -428,10 +430,8 @@ namespace WoSConnect.ROs.WoS.Controllers
             SparqlObject resultadoQuery = pResourceApi.VirtuosoQuery(select, where, "taxonomy");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return new Tuple<string, string>(fila["id"].value, fila["nombre"].value);
-                }
+                Dictionary<string, SparqlObject.Data> fila = resultadoQuery.results.bindings.First();
+                return new Tuple<string, string>(fila["id"].value, fila["nombre"].value);
             }
             return null;
         }
@@ -718,7 +718,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Métrica.</returns>
         public List<PublicationMetric> getPublicationMetric(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.citation_related != null & pPublicacionIn.dynamic_data.citation_related.tc_list != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.coll_id == "WOS")
+            if (pPublicacionIn.dynamic_data != null && pPublicacionIn.dynamic_data.citation_related != null && pPublicacionIn.dynamic_data.citation_related.tc_list != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc != null && pPublicacionIn.dynamic_data.citation_related.tc_list.silo_tc.coll_id == "WOS")
             {
                 List<PublicationMetric> listaMetricas = new List<PublicationMetric>();
                 PublicationMetric metrica = new PublicationMetric();
@@ -739,7 +739,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns></returns>
         public bool? getOpenAccess(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.journal_oas_gold))
             {
                 if (pPublicacionIn.static_data.summary.pub_info.journal_oas_gold == "S")
                 {
@@ -757,7 +757,7 @@ namespace WoSConnect.ROs.WoS.Controllers
 
         public string getVolume(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null & pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.vol))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.summary.pub_info.vol))
             {
                 return pPublicacionIn.static_data.summary.pub_info.vol;
             }

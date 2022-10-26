@@ -16,7 +16,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 {
     public class RabbitServiceWriterDenormalizer
     {
-        private ConfigService _configService;
+        private readonly ConfigService _configService;
         private readonly ConnectionFactory connectionFactory;
 
 

@@ -15,9 +15,7 @@ using System.Net.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using EditorCV.Models.PreimportModels;
-using System.Text.Json;
-using System.Xml.Serialization;
-using System.IO;
+
 using System.Text;
 using Models;
 using Newtonsoft.Json;
@@ -46,7 +44,36 @@ namespace EditorCV.Controllers
         /// <param name="File"></param>
         /// <param name="petitionID">ID de la petición</param>
         /// <returns></returns>
-        [HttpPost("PreimportarCV")]
+        [HttpPost("FechaCheck")]
+        public IActionResult FechaCheck([FromForm][Required] string pCVID)
+        {
+            string url = _Configuracion.GetUrlImportador()+"/fechaCheck";
+            HttpClient client = new HttpClient();
+            FormUrlEncodedContent form = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string,string>("pCVID",pCVID)
+            });
+
+            HttpResponseMessage response = client.PostAsync(url, form).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(response.Content.ReadAsStringAsync().Result);
+            }
+            else
+            {
+                return Ok();
+            }
+        }
+
+
+       /// <summary>
+       /// Servicio de Preimportación del CV
+       /// </summary>
+       /// <param name="userID"></param>
+       /// <param name="File"></param>
+       /// <param name="petitionID">ID de la petición</param>
+       /// <returns></returns>
+       [HttpPost("PreimportarCV")]
         public IActionResult PreimportarCV([Required][FromForm] string userID, [Required][FromForm] string petitionID, [Required] IFormFile File)
         {
             try

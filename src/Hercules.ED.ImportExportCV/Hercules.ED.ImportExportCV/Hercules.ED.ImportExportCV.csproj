@@ -12,11 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Commons-ED-MA\src\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.ServiceModel" />
+    <Reference Include="Hercules.CommonsEDMA.DisambiguationEngine">
+      <HintPath>..\..\EDMACommonsLibs\Hercules.CommonsEDMA.DisambiguationEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

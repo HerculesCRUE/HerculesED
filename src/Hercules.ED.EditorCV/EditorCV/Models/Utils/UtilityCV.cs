@@ -88,6 +88,101 @@ namespace EditorCV.Models.Utils
         }
 
         /// <summary>
+        /// Dado el identificador del usuario devuelve el Identificador de la persona.
+        /// </summary>
+        /// <param name="idUser">Identificador del usuario</param>
+        /// <returns>identificador del CV</returns>
+        public static string GetInvestigadorByID(string idUser)
+        {
+            string orcid = GetInvestigadorByORCID(idUser);
+            string email = GetInvestigadorByEmail(idUser);
+            string crisID = GetInvestigadorByCrisIdentifier(idUser);
+
+            if (!string.IsNullOrEmpty(crisID))
+            {
+                return crisID;
+            }
+            else if (!string.IsNullOrEmpty(email))
+            {
+                return email;
+            }
+            else if (!string.IsNullOrEmpty(orcid))
+            {
+                return orcid;
+            }
+            return null;
+        }
+        
+        /// <summary>
+        /// Dado el ORCID del usuario devuelve el identificador de la persona
+        /// </summary>
+        /// <param name="idUser">Identificador del usuario</param>
+        /// <returns>Identificador del CV</returns>
+        public static string GetInvestigadorByORCID(string idUser)
+        {
+            string select = "SELECT ?cvOf";
+            string where = $@"WHERE{{
+                                ?cvOf <http://w3id.org/roh/ORCID> '{idUser}' .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cvOf"))
+                {
+                    return fila["cvOf"].value;
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Dado el email del usuario devuelve el identificador de la persona
+        /// </summary>
+        /// <param name="idUser">Identificador del usuario</param>
+        /// <returns>Identificador del CV</returns>
+        public static string GetInvestigadorByEmail(string idUser)
+        {
+            string select = "SELECT ?cvOf";
+            string where = $@"WHERE{{
+                                ?cvOf <https://www.w3.org/2006/vcard/ns#email> '{idUser}' .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cvOf"))
+                {
+                    return fila["cvOf"].value;
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// Dado el Cris identifier del usuario devuelve el identificador de la persona
+        /// </summary>
+        /// <param name="idUser">Identificador del usuario</param>
+        /// <returns>Identificador del CV</returns>
+        public static string GetInvestigadorByCrisIdentifier(string idUser)
+        {
+            string select = "SELECT ?cvOf";
+            string where = $@"WHERE{{
+                                ?cvOf <http://w3id.org/roh/crisIdentifier> '{idUser}' .
+                            }}";
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "person" });
+            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            {
+                if (fila.ContainsKey("cvOf"))
+                {
+                    return fila["cvOf"].value;
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
         /// Dado el identificador del CV devuelve el crisIdentifier, el email o el orcid del investigador.
         /// </summary>
         /// <param name="cvOf">Identificador del CV</param>

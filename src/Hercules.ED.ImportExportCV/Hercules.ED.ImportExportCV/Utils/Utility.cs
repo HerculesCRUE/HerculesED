@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Utils
 {
     public static class Utility
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static readonly int splitListNum = 500;
 
@@ -40,11 +41,105 @@ namespace Utils
                                     FILTER(?s=<{pCVID}>)
                                 }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
+            {
+                return null;
+            }
+
+            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            return fila["person"].value;
+
+        }
+        /// <summary>
+        /// Funcion que devuelve la fecha de la ultima importacion realizada en un cv.
+        /// </summary>
+        /// <param name="pCVID"></param>
+        /// <returns></returns>
+        public static DateTime getFechaImportacion(string pCVID)
+        {
+
+            string valorActual = "";
+            string select = "select distinct ?fecha ";
+            string where = @$"
+                where {{
+                    <http://gnoss.com/{mResourceApi.GetShortGuid(pCVID)}><http://gnoss/hasEntidad> ?s. 
+                    ?s ?p <http://w3id.org/roh/CV>.
+                    ?s <http://w3id.org/roh/importDate> ?fecha
+                }} LIMIT 100";
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
-                return fila["person"].value;
+                if (fila.ContainsKey("fecha"))
+                {
+                    valorActual = fila["fecha"].value;
+                }
             }
-            return null;
+            DateTime fecha;
+            DateTime.TryParse(valorActual, out fecha);
+
+            return fecha;
+        }
+
+        public static bool checkFecha(string pCVID)
+        {
+
+            return getFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
+        }
+
+        /// <summary>
+        /// Funcion que actualiza la fecha de la ultima importacion.
+        /// </summary>
+        /// <param name="pCVID">CVID del cv en el que se ha realizado la importacion.</param>
+        /// <param name="revertir">En caso de que la importacion este completa ""elimina"" la fecha para que no se bloqueé el editor.</param>
+        public static void updateFechaImportacion(string pCVID, bool revertir = false)
+        {
+
+
+            DateTime fecha = getFechaImportacion(pCVID);
+
+            if (fecha != DateTime.MinValue)
+            {
+                List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+                TriplesToModify triple = new TriplesToModify();
+                triple.Predicate = $@"http://w3id.org/roh/importDate";
+                triple.OldValue = fecha.ToString();
+                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
+                listaTriplesModificacion.Add(triple);
+                Dictionary<Guid, List<TriplesToModify>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToModify>>();
+                dicTriplesInsertar.Add(mResourceApi.GetShortGuid(pCVID), listaTriplesModificacion);
+                mResourceApi.ModifyPropertiesLoadedResources(dicTriplesInsertar);
+            }
+            else
+            {
+                List<TriplesToInclude> listaTriplesModificacion = new List<TriplesToInclude>();
+                TriplesToInclude triple = new TriplesToInclude();
+                triple.Predicate = $@"http://w3id.org/roh/importDate";
+                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
+                listaTriplesModificacion.Add(triple);
+                Dictionary<Guid, List<TriplesToInclude>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToInclude>>();
+                dicTriplesInsertar.Add(mResourceApi.GetShortGuid(pCVID), listaTriplesModificacion);
+                mResourceApi.InsertPropertiesLoadedResources(dicTriplesInsertar);
+            }
+        }
+
+        /// <summary>
+        ///  Funcion que borra la fecha de la ultima importacion realizada en un cv con pCVID.
+        /// </summary>
+        /// <param name="pCVID"></param>
+        public static void quitarFechaImportacion(string pCVID)
+        {
+            DateTime fecha = getFechaImportacion(pCVID);
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
+            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+            RemoveTriples triple = new RemoveTriples();
+            triple.Predicate = $@"http://w3id.org/roh/importDate";
+            triple.Value = fecha.ToString();
+            triple.Title = false;
+            triple.Description = false;
+            listaTriplesBorrado.Add(triple);
+            dicBorrado.Add(new Guid(pCVID), listaTriplesBorrado);
+            mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
+
         }
 
         /// <summary>
@@ -63,11 +158,12 @@ namespace Utils
                                 FILTER(?cv=<{pCVID}>)
                             }}";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
             {
-                return fila["name"].value;
+                return null;
             }
-            return null;
+            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            return fila["name"].value;
         }
 
         /// <summary>
@@ -85,7 +181,7 @@ namespace Utils
         /// </summary>
         /// <param name="owner">Persona a la que enviar la notificación</param>
         /// <param name="rohType">Tipo de notificación</param>
-        /// <param name="textoExtra">Texto extra de la notificación</param>
+        /// <param name="mensaje">Texto extra de la notificación</param>
         public static void EnvioNotificacion(string owner, string rohType, string mensaje)
         {
             Notification notificacion = new Notification();
@@ -132,7 +228,7 @@ namespace Utils
                 {
                     if (organizaciones.ContainsKey(fila["person"].value))
                     {
-                        organizaciones[fila["person"].value].Append(fila["organization"].value);
+                        organizaciones[fila["person"].value].Add(fila["organization"].value);
                     }
                     else
                     {
@@ -166,7 +262,7 @@ namespace Utils
                 {
                     if (departamentos.ContainsKey(fila["person"].value))
                     {
-                        departamentos[fila["person"].value].Append(fila["departament"].value);
+                        departamentos[fila["person"].value].Add(fila["departament"].value);
                     }
                     else
                     {
@@ -203,7 +299,7 @@ namespace Utils
                 {
                     if (proyectos.ContainsKey(fila["person"].value))
                     {
-                        proyectos[fila["person"].value].Append(fila["project"].value);
+                        proyectos[fila["person"].value].Add(fila["project"].value);
                     }
                     else
                     {
@@ -240,7 +336,7 @@ namespace Utils
                 {
                     if (grupos.ContainsKey(fila["person"].value))
                     {
-                        grupos[fila["person"].value].Append(fila["group"].value);
+                        grupos[fila["person"].value].Add(fila["group"].value);
                     }
                     else
                     {
@@ -494,6 +590,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 if (Y == -1)
                 {
@@ -524,6 +624,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 int M = aux.IndexOf("M");
                 if (M == -1)
@@ -558,6 +662,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int Y = aux.IndexOf("Y");
                 int M = aux.IndexOf("M");
                 int D = aux.IndexOf("D");
@@ -597,6 +705,10 @@ namespace Utils
             if (campo != null)
             {
                 string aux = campo.Value?.Replace("P", "");
+                if (string.IsNullOrEmpty(aux))
+                {
+                    return null;
+                }
                 int T = aux.IndexOf("T");
                 int H = aux.IndexOf("H");
                 if (H == -1)
@@ -692,16 +804,15 @@ namespace Utils
                                 if (score == 1)
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                                    sbUnion.AppendLine(" ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@" {{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
                                     unions.Add(sbUnion.ToString());
                                 }
                                 else
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                    sbUnion.AppendLine($@"				{FilterWordComplete(word, "name")} BIND({score} as ?num) ");
-                                    //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                                    sbUnion.AppendLine(" ?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine($@" {FilterWordComplete(word, "name")} BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
                                 }
                             }
@@ -1795,7 +1906,7 @@ namespace Utils
         /// <returns>ORCID</returns>
         public static string GetORCID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("140")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("140"))?.Value;
         }
 
         /// <summary>
@@ -1806,7 +1917,7 @@ namespace Utils
         /// <returns>Scopus</returns>
         public static string GetScopus(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("150")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("150"))?.Value;
         }
 
         /// <summary>
@@ -1817,7 +1928,7 @@ namespace Utils
         /// <returns>ResearcherID</returns>
         public static string GetResearcherID(this List<CvnItemBeanCvnExternalPKBean> listado)
         {
-            return listado.Where(x => x.Type.Equals("160")).FirstOrDefault()?.Value;
+            return listado.FirstOrDefault(x => x.Type.Equals("160"))?.Value;
         }
 
         /// <summary>
@@ -1935,7 +2046,7 @@ namespace Utils
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
 
-                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
                 if (campo != null)
                 {
                     return campo.Value;
@@ -1963,7 +2074,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_PCLD_" + campo.Value;
@@ -1985,7 +2096,7 @@ namespace Utils
                 throw new ArgumentException("Codigo de campo incorrecto" + codigo);
             }
 
-            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+            CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
             if (campo != null && !string.IsNullOrEmpty(campo.Value))
             {
                 return mResourceApi.GraphsUrl + "items/feature_ADM1_" + campo.Value;
@@ -2131,9 +2242,12 @@ namespace Utils
                 {
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
-                if (codeGroup.CvnEntityBean == null) { return null; }
+                if (codeGroup.CvnEntityBean == null)
+                {
+                    return null;
+                }
 
-                if ((bool)codeGroup.CvnEntityBean?.Code.Equals(codigo))
+                if (codeGroup.CvnEntityBean.Code.Equals(codigo))
                 {
                     return codeGroup.CvnEntityBean.Name;
                 }
@@ -2162,7 +2276,7 @@ namespace Utils
                     throw new ArgumentException("Codigo de campo incorrecto" + codigo);
                 }
 
-                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.Where(x => x.Code.Equals(codigo)).FirstOrDefault();
+                CvnItemBeanCvnCodeGroupCvnString campo = codeGroup.CvnString?.FirstOrDefault(x => x.Code.Equals(codigo));
                 if (campo != null && !string.IsNullOrEmpty(campo.Value))
                 {
                     return mResourceApi.GraphsUrl + "items/organizationtype_" + campo.Value;
@@ -2195,7 +2309,7 @@ namespace Utils
         /// <returns>CvnDouble del CvnItemBeanCvnCodeGroup </returns>
         public static string GetCvnDoubleCvnCodeGroup(this CvnItemBeanCvnCodeGroup item, string codigo)
         {
-            return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.FirstOrDefault().ToString();
+            return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.First().ToString();
         }
 
         /// <summary>
@@ -2862,8 +2976,10 @@ namespace Utils
         public static void AniadirTitulacion(ResourceApi mResourceApi, CvnItemBeanCvnTitleBean titulacion, string propiedadNombreTitulacion, string propiedadTitulacion, Entity entidadAux)
         {
             if (mResourceApi == null || titulacion == null ||
-                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadTitulacion))
-            { return; }
+                   string.IsNullOrEmpty(propiedadTitulacion) || string.IsNullOrEmpty(propiedadNombreTitulacion))
+            {
+                return;
+            }
 
             if (!string.IsNullOrEmpty(titulacion.Identification))
             {

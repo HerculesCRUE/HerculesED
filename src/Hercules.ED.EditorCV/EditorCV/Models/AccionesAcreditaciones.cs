@@ -70,6 +70,9 @@ namespace EditorCV.Models
         /// <param name="idUsuario">Identificador del usuario</param>
         public void NotifyAcreditaciones(string url, string idUsuario)
         {
+            string person = Utils.UtilityCV.GetInvestigadorByID(idUsuario);
+            Utils.UtilityCV.EnvioNotificacion(url, person, "notifyAcreditaciones");
+
             mResourceApi.Log.Info("Acreditación Usuario: " + idUsuario + ", URL: " + url);
 
         }

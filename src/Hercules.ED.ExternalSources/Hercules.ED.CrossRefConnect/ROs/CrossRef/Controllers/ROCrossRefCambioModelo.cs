@@ -1,18 +1,13 @@
 using System.Collections.Generic;
-//using CrossRefConnect.ROs.CrossRef.Models;
 using CrossRefConnect.ROs.CrossRef.Models.Inicial;
 using CrossRefConnect.ROs.CrossRef.Models;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Threading;
-
-using Newtonsoft.Json;
 using CrossRefAPI.ROs.CrossRef.Models;
 using System.Linq;
 
 namespace CrossRefConnect.ROs.CrossRef.Controllers
 {
-    public class ROCrossRefControllerJSON //: ROScopusLogic
+    public class ROCrossRefControllerJSON
     {
         public ROCrossRefLogic CrossRefLogic;
         public ROCrossRefControllerJSON(ROCrossRefLogic CrossRefLogic)
@@ -223,9 +218,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             if (objInicial != null)
             {
                 publicacion.typeOfPublication = getType(objInicial);
-                //publicacion.IDs = getIDs(objInicial);
                 publicacion.title = getTitle(objInicial);
-                //publicacion.Abstract = getAbstract(objInicial);
                 publicacion.language = getLanguage(objInicial);
                 publicacion.doi = doi;
                 publicacion.url = getLinks(objInicial);
@@ -233,7 +226,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 publicacion.pageStart = getPageStart(objInicial);
                 publicacion.pageEnd = getPageEnd(objInicial);
                 publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial);
-                //publicacion.freetextKeyword = getFreetextKeyword(objInicial);
                 publicacion.correspondingAuthor = getAuthorPrincipal(objInicial);
                 publicacion.seqOfAuthors = getAuthors(objInicial);
                 publicacion.hasPublicationVenue = getJournal(objInicial);
@@ -241,7 +233,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 if (publicacion_principal == true)
                 {
                     publicacion.bibliografia = getBiblografia(objInicial);
-                    //publicacion.citas = getCitas(objInicial);
                 }
                 return publicacion;
             }
@@ -276,15 +267,9 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<String> getIDs(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
-
-
         public string getTitle(PublicacionInicial objInicial)
         {
-            if (objInicial.title != null & objInicial.title.Count >= 1)
+            if (objInicial.title != null && objInicial.title.Count >= 1)
             {
                 return objInicial.title[0];
 
@@ -292,11 +277,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             return null;
         }
-
-        // public string getAbstract(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
 
         public string getLanguage(PublicacionInicial objInicial)
         {
@@ -307,10 +287,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             }
             return null;
         }
-        // public string getDoi(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
+
         public List<string> getLinks(PublicacionInicial objInicial)
         {
             if (objInicial.URL != null)
@@ -394,11 +371,6 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<string> getFreetextKeyword(PublicacionInicial objInicial)
-        // {
-        //     return new List<string>();
-        // }
-
         public Person getAuthorPrincipal(PublicacionInicial objInicial)
         {
 
@@ -433,19 +405,16 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                         {
                             apellido.Add(autor.family);
                         }
-                        if (name_inicial != null || apellido != null)
+                        Name nombre = new Name();
+                        if (name_inicial.Any())
                         {
-                            Name nombre = new Name();
-                            if (name_inicial != new List<string>())
-                            {
-                                nombre.given = name_inicial;
-                            }
-                            if (apellido != new List<string>())
-                            {
-                                nombre.familia = apellido;
-                            }
-                            persona.name = nombre;
+                            nombre.given = name_inicial;
                         }
+                        if (apellido.Any())
+                        {
+                            nombre.familia = apellido;
+                        }
+                        persona.name = nombre;
                         return persona;
                     }
                 }
@@ -485,20 +454,17 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                     {
                         apellido.Add(autor.family);
                     }
-                    if (name_inicial != null || apellido != null)
+                    Name nombre = new Name();
+                    if (name_inicial.Any())
                     {
-                        Name nombre = new Name();
-                        if (name_inicial != new List<string>())
-                        {
-                            nombre.given = name_inicial;
-                        }
-                        if (apellido != new List<string>())
-                        {
-                            nombre.familia = apellido;
-                        }
-                        persona.name = nombre;
+                        nombre.given = name_inicial;
                     }
-
+                    if (apellido.Any())
+                    {
+                        nombre.familia = apellido;
+                    }
+                    persona.name = nombre;
+                    
                     autores.Add(persona);
                 }
                 return autores;
@@ -515,7 +481,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     journal.issn = objInicial.ISSN;
                 }
-                if (objInicial.ContainerTitle != null & objInicial.ContainerTitle.Count >= 1)
+                if (objInicial.ContainerTitle != null && objInicial.ContainerTitle.Count >= 1)
                 {
                     journal.name = objInicial.ContainerTitle[0];
                 }
@@ -603,9 +569,5 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
             return null;
         }
 
-        // public List<Publication> getCitas(PublicacionInicial objInicial)
-        // {
-        //     return null;
-        // }
     }
 }

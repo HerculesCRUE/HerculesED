@@ -53,11 +53,11 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.dni), "000.010.000.100", entity);
 
             //Si no he insertado el DNI busco NIE
-            if (!itemBean.Items.Where(x => x.Code.Equals("000.010.000.100")).Any()) {
+            if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.100"))) {
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nie), "000.010.000.110", entity);
 
                 //Si no he insertado DNI o NIE busco el pasaporte
-                if (!itemBean.Items.Where(x => x.Code.Equals("000.010.000.110")).Any()) {
+                if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.110"))) {
                     UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.pasaporte), "000.010.000.120", entity);
                 }
             }

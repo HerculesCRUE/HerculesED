@@ -54,8 +54,11 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProd),
                     "060.010.010.010", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros),
+                if (UtilityExportar.CheckCvnString(UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros), keyValue.Value))
+                {
+                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosTipoProdOtros),
                     "060.010.010.020", keyValue.Value);
+                }
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo),
                     "060.010.010.030", keyValue.Value);
 
@@ -108,7 +111,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.100", keyValue.Value);
 
                 //Compruebo si hay algun tipo de soporte
-                if (itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).Any())
+                if (itemBean.Items.Any(x => x.Code.Equals("060.010.010.070")))
                 {
                     //Compruebo si el soporte es una revista
                     CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).First();

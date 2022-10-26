@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class GrupoIDI:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
+        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
             "http://w3id.org/roh/groups","http://w3id.org/roh/relatedGroupCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "group";
+        readonly string graph = "group";
         public GrupoIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
@@ -115,7 +115,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDITipoEntidadAfiliacionOtros),
                     "050.010.000.120", keyValue.Value);
 
-                // TODO Palabras clave
 
                 listado.Add(itemBean);
             }

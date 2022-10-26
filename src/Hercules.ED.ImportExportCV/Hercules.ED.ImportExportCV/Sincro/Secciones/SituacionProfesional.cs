@@ -46,6 +46,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if(petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_SITUACION_PROFESIONAL";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetSituacionProfesionalActual(listadoDatos, petitionStatus);
 
@@ -100,6 +105,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
             List<bool> listadoBloqueados = new List<bool>();
 
+            if (petitionStatus != null)
+            {
+                petitionStatus.actualWorkSubtitle = "IMPORTACION_CARGOS_ACTIVIDADES";
+            }
+
             //1º Obtenemos la entidad del XML.
             List<Entity> listadoAux = GetCargosActividades(listadoDatos, petitionStatus);
 
@@ -149,7 +159,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoSituacionProfesionalActual.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_SITUACION_PROFESIONAL";
                 }
 
                 foreach (CvnItemBean item in listadoSituacionProfesionalActual)
@@ -347,7 +356,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     petitionStatus.actualSubWorks = 1;
                     petitionStatus.actualSubTotalWorks = listadoCargosActividades.Count;
-                    petitionStatus.actualWorkSubtitle = "IMPORTACION_CARGOS_ACTIVIDADES";
                 }
 
                 foreach (CvnItemBean item in listadoCargosActividades)

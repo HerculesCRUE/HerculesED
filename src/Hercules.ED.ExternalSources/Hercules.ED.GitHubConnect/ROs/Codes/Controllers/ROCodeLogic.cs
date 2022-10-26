@@ -24,16 +24,14 @@ namespace GitHubAPI.ROs.Codes.Controllers
 
         protected string bareer;
         protected string baseUri { get; set; }
-        //protected List<Repository> respositories = new List<Repository>();
-        protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
+        protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         public ROCodeLogic(string baseUri, string bareer)
         {
             this.baseUri = baseUri;
             this.bareer = bareer;
         }
-
 
         /// <summary>
         /// A Http calls function
@@ -44,8 +42,6 @@ namespace GitHubAPI.ROs.Codes.Controllers
         /// <returns></returns>
         protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
-            //Console.Write(url);
-            //   Console.Write("--------------");
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
             {
@@ -57,10 +53,6 @@ namespace GitHubAPI.ROs.Codes.Controllers
 
                     if (headers != null && headers.Count > 0)
                     {
-                        // if (headers.ContainsKey("Authorization"))
-                        // {
-                        //     request.Headers.TryAddWithoutValidation("Authorization", headers["Authorization"]);
-                        // }
                         foreach (var item in headers)
                         {
                             request.Headers.TryAddWithoutValidation(item.Key, item.Value);
@@ -93,7 +85,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
         /// <param name="userId">The user of the repositories</param>
         /// <param name="uri">The uri for the call</param>
         /// <returns></returns>
-        public List<repositorio_roh> getAllRepositories(string userId, string uri = "/users/{0}/repos")
+        public List<repositorio_roh> getAllRepositories(string userId, string uri)
         {
             Uri url = new Uri(baseUri + string.Format(uri, userId));
             string repos = httpCall(url.ToString(), "GET", headers).Result;
@@ -104,85 +96,97 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 respositories = JsonConvert.DeserializeObject<List<Repository_inicial>>(repos);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error when deserialize the respositories: " + repos);
             }
+
             // Get all data from each repository
             for (int i = 0; i < respositories.Count; i++)
             {
                 repositorio_roh repo = new repositorio_roh();
                 string userlogin = respositories[i].owner.login;
                 string repositoryId = respositories[i].name;
-                //----------------------Licencia----------------------------------------
+
+                // Licencia
                 repo.hasLicense = getRepositoryLicense(userlogin, repositoryId);
-                //-----------------------lenguajes -------------------------------------
+
+                // Lenguajes
                 repo.language = getRepositoryLanguages(userlogin, repositoryId);
-                //---------------------------Topics-----------------------------------
+
+                // Topics
                 repo.freetextKeyword = getRepositoryTopics(userlogin, repositoryId);
-                //---------------------------Status-------------------------------------
+
+                // Status
                 repo.repositoryStatus = getStatusRepository(respositories[i].@private);
-                //-----------date time ---------------------------------------------------------
+
+                // DateTime
                 repo.dataIssued = getDateIssued(respositories[i]);
-                //------------title----------------------------------------------------------------
+
+                // Title
                 repo.title = respositories[i].name;
-                //----------------description----------------------------------------------
+
+                // Description
                 repo.description = "GitHub_id:" + respositories[i].id;
-                //------------------- autor principal -----------------------------------------
+
+                // Autor Principal
                 repo.correspondingAuthor = getAuthorPrincipal(respositories[i]);
-                //---------------------------Contributors----------------------------------
+
+                // Contributos
                 repo.seqOfAuthors = getRepositoryContributors(userlogin, repositoryId);
-                //-----------------------README----------------------
+
+                // README
                 repo.hasReadme = getRepositoryFile(userlogin, repositoryId, "README.md");
-                //-------------------Issues-------------------------------------------------
+
+                // ISSUES
                 repo.infoIssues = getRepositoryIssues(userlogin, repositoryId);
-                //----------------------Commits-------------------------------------------------
+
+                // Commits
                 repo.commit = getRepositoryCommits(userlogin, repositoryId);
-                //------------------------------fileFolkder-----------------------------------
+
+                // FileFolkder
                 repo.fileFolder = getRepositoryDir(userlogin, repositoryId, "");
-                //---------------------------Tags---------------------------------------------
+
+                // Tags
                 repo.tags = getRepositoryTags(userlogin, repositoryId);
-                //-----------------------------------Fork------------------------------------
-                repo.infoforks=getInfoFork(respositories[i]);
+
+                // Fork
+                repo.infoforks = getInfoFork(respositories[i]);
 
                 sol.Add(repo);
             }
+
             return sol;
-            //respositories[i].branches = getRepositoryBranches(userIdBranches, repositoryId);
-            //respositories[i].issues = getRepositoryIssues(userIdBranches, repositoryId);
-            //respositories[i].listForks = getRepositoryForks(userIdBranches, repositoryId);
         }
-      /// <summary>
+        /// <summary>
         /// Get a specified repository RO
         /// </summary>
         /// <param Repository_inicial="repository">Repository returned by GitHub </param>
         /// <returns></returns>
         public DateTimeValue getDateIssued(Repository_inicial respository)
         {
-                DateTimeValue dateTime = new DateTimeValue();
-                dateTime.datimeTime = respository.created_at.Date.ToString();
-                return dateTime;
+            DateTimeValue dateTime = new DateTimeValue();
+            dateTime.datimeTime = respository.created_at.Date.ToString();
+            return dateTime;
         }
-         /// <summary>
+        /// <summary>
         /// Get a specified repository RO
         /// </summary>
         /// <param Repository_inicial="repository">Repository returned by GitHub </param>
         /// <returns></returns>
         public Person getAuthorPrincipal(Repository_inicial respository)
         {
-            
             Person autor_principal = new Person();
-                 List<string> names = new List<string>();
-                if (respository.owner.login != null) { names.Add(respository.owner.login); }
-                    autor_principal.name = names;
-                autor_principal.identifier = "GitHub_id: " + respository.owner.login;
-                List<Url> links = new List<Url>();
-                Url link = new Url();
-                link.link = respository.owner.avatar_url;
-                links.Add(link);
-                autor_principal.link = links;
-                return autor_principal;
-
+            List<string> names = new List<string>();
+            if (respository.owner.login != null) { names.Add(respository.owner.login); }
+            autor_principal.name = names;
+            autor_principal.identifier = "GitHub_id: " + respository.owner.login;
+            List<Url> links = new List<Url>();
+            Url link = new Url();
+            link.link = respository.owner.avatar_url;
+            links.Add(link);
+            autor_principal.link = links;
+            return autor_principal;
         }
 
         /// <summary>
@@ -194,11 +198,11 @@ namespace GitHubAPI.ROs.Codes.Controllers
         {
             InfoForks infoForks = new InfoForks();
             Console.Write(respository.forks_count);
-            infoForks.nForks= respository.forks_count;
-            infoForks.isFork=respository.fork;
+            infoForks.nForks = respository.forks_count;
+            infoForks.isFork = respository.fork;
             return infoForks;
-
         }
+
         /// <summary>
         /// Get a specified repository RO
         /// </summary>
@@ -236,7 +240,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 repository = JsonConvert.DeserializeObject<Repository_inicial>(repos);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error when deserialize the respository " + repos);
             }
@@ -244,48 +248,17 @@ namespace GitHubAPI.ROs.Codes.Controllers
         }
 
         /// <summary>
-        /// Get all branches from a repository
-        /// </summary>
-        /// <param name="userId">The user of the repositories</param>
-        /// <param name="repositoryId">Token for the user.</param>
-        /// <param name="uri">The uri for the call</param>
-        /// <param name="method">Crud method for the call</param>
-        /// <returns></returns>
-      /*   public List<Branch> getRepositoryBranches(string userId, string repositoryId, string uri = "/repos/{0}/{1}/branches", string method = "GET")
-        {
-            Uri url;
-            List<Branch> branches = new List<Branch>();
-            string branchesJson;
-            url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
-            // Http GET call
-            branchesJson = httpCall(url.ToString(), method, headers).Result;
-            try
-            {
-                branches = JsonConvert.DeserializeObject<List<Branch>>(branchesJson);
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("Error when deserialize branches " + branchesJson);
-            }
-            return branches;
-        } */
-
-
-        /// <summary>
         /// Get all code languages of a repository
         /// </summary>
         /// <param name="userId">The user of the repositories</param>
         /// <param name="repositoryId">Token for the user.</param>
-        /// <param name="uri">The uri for the call</param>
         /// <param name="method">Crud method for the call</param>
         /// <returns></returns>
-        public List<String> getRepositoryLanguages(string userId, string repositoryId, string uri = "/repos/{0}/{1}/languages", string method = "GET")
+        public List<String> getRepositoryLanguages(string userId, string repositoryId, string method = "GET")
         {
-            List<string> sol = new List<string>();
             Uri url = new Uri(baseUri + string.Format("/repos/{0}/{1}/languages", userId, repositoryId));
             string langs = httpCall(url.ToString(), method, headers).Result;
-            sol = iteratorLanguagesJson(langs);
-            return sol;
+            return iteratorLanguagesJson(langs);
         }
 
         /// <summary>
@@ -332,7 +305,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 lastCommitDate.datimeTime = date;
                 infoCommits.lastCommit = lastCommitDate;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error when deserialize commits " + commitsJson);
             }
@@ -380,13 +353,15 @@ namespace GitHubAPI.ROs.Codes.Controllers
                         issueFinal.dateClosed = dateClosed;
                     }
                     issueFinal.title = issue.title;
-                    //------------------------------ links
+
+                    // Links
                     List<Url> links = new List<Url>();
                     Url url_1 = new Url();
                     url_1.link = issue.html_url;
                     links.Add(url_1);
                     issueFinal.links = links;
-                    //------------------------------ date created
+
+                    // Date created
                     DateTimeValue dateOpen = new DateTimeValue();
                     dateOpen.datimeTime = issue.created_at.ToString();
                     issueFinal.dateIssued = dateOpen;
@@ -414,40 +389,12 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 dateCreadLast.datimeTime = date;
                 infoIssues.lastIssuedOpen = dateCreadLast;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error while deserialize Issues " + resultJson);
             }
             return infoIssues;
-
         }
-
-        /// <summary>
-        /// Get all forks of a repository
-        /// </summary>
-        /// <param name="userId">The user of the repositories</param>
-        /// <param name="repositoryId">Token for the user.</param>
-        /// <param name="uri">The uri for the call</param>
-        /// <param name="method">Crud method for the call</param>
-        /// <returns></returns>
-        /* public List<Fork> getRepositoryForks(string userId, string repositoryId, string uri = "/repos/{0}/{1}/forks", string method = "GET")
-        {
-            Uri url;
-            List<Fork> forks = new List<Fork>();
-            string resultJson;
-            url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
-            // Http GET call
-            resultJson = httpCall(url.ToString(), method, headers).Result;
-            try
-            {
-                forks = JsonConvert.DeserializeObject<List<Fork>>(resultJson);
-            }
-            catch (System.Exception)
-            {
-                throw new Exception("Error while deserialize the Forks " + resultJson);
-            }  
-            return forks;
-        } */
 
         /// <summary>
         /// Get basic information about the licenses of a repository
@@ -459,7 +406,6 @@ namespace GitHubAPI.ROs.Codes.Controllers
         /// <returns></returns>
         public vivoLicense getRepositoryLicense(string userId, string repositoryId, string uri = "/repos/{0}/{1}/license", string method = "GET")
         {
-
             FullLicense license = new FullLicense();
             Uri url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
             string resultJson = httpCall(url.ToString(), method, headers).Result;
@@ -467,13 +413,11 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 license = JsonConvert.DeserializeObject<FullLicense>(resultJson);
                 vivoLicense licencia_roh = new vivoLicense();
-                //------------------------ rellenar los datos de licencia! 
-                // ---- name! 
+
                 List<string> names = new List<string>();
                 names.Add(license.name);
                 names.Add(license.license.name);
                 licencia_roh.title = names;
-                //-------------links
                 List<Url> links = new List<Url>();
                 if (license.git_url != null)
                 {
@@ -500,16 +444,12 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     links.Add(link_4);
                 }
                 licencia_roh.url = links;
-                //TODO rellenar mas... (no se como...)
+                
                 return licencia_roh;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                //Aqui una extepcion asi me parece demasiado.... salta si el repo no tiene licencia... ya que
-                // en este caos al estructura deñ json devuelto no es la de FullLicense. 
-                //throw new Exception("Error while deserialize the licence " + resultJson);
                 vivoLicense licencia_roh = null;
-
                 return licencia_roh;
             }
         }
@@ -534,13 +474,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 foreach (User user in autres_inicial)
                 {
                     Person person = new Person();
-                    //-----------------------------
                     List<string> names = new List<string>();
                     if (user.login != null) { names.Add(user.login); }
                     person.name = names;
-                    //--------------------
                     person.identifier = "GitHub_id: " + user.id;
-                    //---------------------------------------------
                     List<Url> links = new List<Url>();
                     Url link = new Url();
                     link.link = user.url;
@@ -550,41 +487,11 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 }
                 return contributors;
             }
-            catch (System.Exception)
+            catch 
             {
-
                 return null;
-                //throw new Exception("Error while deserialize the licence " + resultJson);
             }
         }
-
-        /// <summary>
-        /// Get all repository relations (with other repositories)
-        /// </summary>
-        /// <param name="userId">The user of the repositories</param>
-        /// <param name="repositoryId">Token for the user.</param>
-        /// <param name="uri">The uri for the call</param>
-        /// <param name="method">Crud method for the call</param>
-        /// <returns></returns>
-        /*  public List<Repository> getRepositoryRelations(string userId, string repositoryId, string uri = "/repos/{0}/{1}/relations", string method = "GET")
-         {
-             Uri url;
-             List<Repository> relations = new List<Repository>();
-             string resultJson;
-             url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
-             // Http GET call
-             resultJson = httpCall(url.ToString(), method, headers).Result;
-             try
-             {
-                 relations = JsonConvert.DeserializeObject<List<Repository>>(resultJson);
-             }
-             catch (System.Exception)
-             {
-                 throw new Exception("Error while deserialize the licence " + resultJson);
-             }   
-             return relations;
-         } */
-
 
         /// <summary>
         /// Get a specified file data of a Repository
@@ -614,11 +521,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 readmee.title = "README.md";
                 return readmee;
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                Readmee readmee = null;
-                return readmee;
-                // throw new Exception("Error while deserialize the file");
+                return null;
             }
         }
 
@@ -638,7 +543,6 @@ namespace GitHubAPI.ROs.Codes.Controllers
             List<FileFolder> files_Folders = new List<FileFolder>();
             string resultJson;
 
-
             url = new Uri(baseUri + string.Format(uri, userId, repositoryId, route));
 
             // Http GET call
@@ -654,10 +558,11 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     result.Add(fileFolderFinal);
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                // throw new Exception("Error while deserialize the file");
+                
             }
+
             return result;
         }
 
@@ -675,16 +580,16 @@ namespace GitHubAPI.ROs.Codes.Controllers
             List<string> topics = new List<string>();
             string resultJson;
             url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
+            
             // Http GET call
             resultJson = httpCall(url.ToString(), method, headers).Result;
             try
             {
                 topics = JsonConvert.DeserializeObject<List<string>>(resultJson);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                topics=null;
-                // throw new Exception("Error while deserialize the topics");
+                topics = null;
             }
 
             return topics;
@@ -727,9 +632,8 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     result.Add(tagFinal);
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-
                 throw new Exception("Error while deserialize the topics " + resultJson);
             }
 
@@ -744,7 +648,6 @@ namespace GitHubAPI.ROs.Codes.Controllers
         /// <returns></returns>
         protected List<string> iteratorLanguagesJson(string json)
         {
-
             List<string> languages = new List<string>();
 
             try
@@ -799,7 +702,7 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 }
 
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 throw new Exception("Error when deserialize Languages " + json);
             }
@@ -812,7 +715,5 @@ namespace GitHubAPI.ROs.Codes.Controllers
         {
             return new JsonResult("");
         }
-
-
     }
 }

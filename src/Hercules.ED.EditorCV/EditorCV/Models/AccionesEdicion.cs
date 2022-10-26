@@ -288,6 +288,36 @@ namespace EditorCV.Models
         }
 
         /// <summary>
+        /// Obtiene una serie de datos para conseguir un mini item para la importación
+        /// </summary>
+        /// <param name="pIdBBDD"></param>
+        /// <returns></returns>
+        public string[] GetDataItemMiniImport(string pIdBBDD)
+        {
+            string[] dataImport = new string[3];
+            string select = "SELECT distinct ?cv ?rdftype ?entity";
+            string where = $@"WHERE {{
+                ?cv <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://w3id.org/roh/CV>.
+                ?cv ?x ?s.
+                ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?rdftype.
+                ?s <http://w3id.org/roh/scientificPublications> ?entity.
+                ?entity ?p <{pIdBBDD}>.
+            }}";
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    dataImport[0] = fila["cv"].value;
+                    dataImport[1] = fila["rdftype"].value;
+                    dataImport[2] = fila["entity"].value;
+                }
+            }
+
+            return dataImport;
+        }
+
+        /// <summary>
         /// Obtiene datos de una entidad
         /// </summary>
         /// <param name="pGraph">Grafo</param>

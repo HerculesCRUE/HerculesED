@@ -23,7 +23,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
     public class ExportadorCVController : ControllerBase
     {
         private readonly ILogger<ExportadorCVController> _logger;
-        private cvnRootResultBean _cvn;
+        private readonly cvnRootResultBean _cvn;
         readonly ConfigService _Configuracion;
 
         public ExportadorCVController(ILogger<ExportadorCVController> logger, ConfigService pConfig)
@@ -44,7 +44,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
-                throw new Exception("El lenguaje de exportación es incorrecto");
+                throw new FormatException("El lenguaje de exportación es incorrecto");
             }
 
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
@@ -107,7 +107,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else
                 {
-                    throw new Exception("La versión de exportación no es correcta");
+                    throw new FormatException("La versión de exportación no es correcta");
                 }
 
             }
@@ -126,12 +126,12 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
         /// <param name="listaId">Listado de identificadores de los recursos a devolver</param>
         /// <returns>Archivo pdf con los datos del CV</returns>
         [HttpPost("ExportarLimitado")]
-        public ActionResult Exportar([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion,
+        public ActionResult ExportarLimitado([FromForm][Required] string pCVID, [FromForm][Required] string lang, [FromForm][Required] string tipoCVNExportacion,
             [FromForm][Required] string versionExportacion, [FromForm][Optional] List<string> listaId)
         {
             if (!Utils.UtilityExportar.EsMultiidioma(lang))
             {
-                throw new Exception("El lenguaje de exportación es incorrecto");
+                throw new FormatException("El lenguaje de exportación es incorrecto");
             }
 
             ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
@@ -172,6 +172,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                     if (resp.returnCode != "00")
                     {
                         _logger.LogError("Error code " + resp.returnCode);
+                        _logger.LogError("Error info " + Encoding.UTF8.GetString(resp.dataHandler));
                         return NotFound();
                     }
 
@@ -193,6 +194,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                     if (resp.returnCode != "00")
                     {
                         _logger.LogError("Error code " + resp.returnCode);
+                        _logger.LogError("Error info " + Encoding.UTF8.GetString(resp.dataHandler));
                         return NotFound();
                     }
 
@@ -200,7 +202,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else
                 {
-                    throw new Exception("La versión de exportación no es correcta");
+                    throw new FormatException("La versión de exportación no es correcta");
                 }
 
             }

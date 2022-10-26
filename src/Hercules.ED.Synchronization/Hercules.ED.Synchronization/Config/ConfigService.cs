@@ -28,7 +28,7 @@ namespace Hercules.ED.Synchronization.Config
         /// </summary>
         public ConfigService()
         {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/appsettings/appsettings.json").Build();
+            configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}appsettings{Path.DirectorySeparatorChar}appsettings.json").Build();
         }
 
         /// <summary>
@@ -90,16 +90,17 @@ namespace Hercules.ED.Synchronization.Config
             if (string.IsNullOrEmpty(rabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string rabbitConnectionString = string.Empty;
+                string connectionString = string.Empty;
                 if (environmentVariables.Contains("RabbitMQ"))
                 {
-                    rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
+                    connectionString = environmentVariables["RabbitMQ"] as string;
                 }
                 else
                 {
-                    rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
+                    connectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
-                rabbitConnectionString = rabbitConnectionString;
+
+                rabbitConnectionString = connectionString;
             }
             return rabbitConnectionString;
         }

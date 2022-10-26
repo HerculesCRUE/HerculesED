@@ -9,6 +9,16 @@
 |Tipo|Especificación|
 |Cambios de la Versión|Versión inicial|
 
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Matching)
+
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Matching&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Matching)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Matching&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Matching)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Matching&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Matching)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Matching&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Matching)
+
+
+
 Introducción
 ============
 El servicio de matching se ocupa de matchear los descriptores específicos de las publicaciones con términos de MESH y SNOMED para ofrecer más información. En Hércules ED esta función va a ser offline, es decir, se mandará a ejecutar e irá trabajando por detrás. Obtendrá todas las publicaciones de BBDD en las que no se haya hecho el matching e irá consultando a MESH y SNOMED para la recuperación de información. Una vez obtenidos los datos, se mostrarán en las fichas de Hércules MA.

@@ -5,6 +5,7 @@ using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Utils;
@@ -14,7 +15,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -95,7 +96,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new Dictionary<string, List<Dictionary<string, Data>>>();
 
             //Si no envio un listado devuelvo un diccionario vacio
-            if (listadoId == null || listadoId.Count() == 0)
+            if (listadoId == null || !listadoId.Any())
             {
                 return new Dictionary<string, Entity>();
             }
@@ -217,7 +218,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
 
             //Si no envio un listado devuelvo un diccionario vacio
-            if (listadoId == null || listadoId.Count() == 0)
+            if (listadoId == null || !listadoId.Any())
             {
                 return new Dictionary<string, Entity>();
             }
@@ -398,7 +399,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                                 property = new Entity.Property(pPropAcumuladoAux, new List<string>());
                                 pEntity.properties.Add(property);
                             }
-                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Where(x => x.value.Equals(p)).Any()))
+                            if (MultilangProp != null && MultilangProp.ContainsKey(pId) && MultilangProp[pId].Any(x => x.Values.Any(x => x.value.Equals(p))))
                             {
                                 List<Dictionary<string, Data>> xx = MultilangProp[pId].Where(x => x["prop"].value.Equals(p)).ToList();
                                 foreach (Dictionary<string, Data> keyValuePairs in xx)

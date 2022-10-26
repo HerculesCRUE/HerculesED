@@ -53,7 +53,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 SincroDatos sincro = new SincroDatos(_Configuracion, File);
                 if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
                 {
-                    return BadRequest();
+                    if (sincro.getCVN() != null)
+                    {
+                        return BadRequest(sincro.getCVN().errorMessage);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
 
                 string ORCID = sincro.ObtenerORCID(sincro, crisArchivo);
@@ -72,12 +79,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="pCVID">ID curriculum</param>
         /// <param name="File">Archivo en formato PDF o XML</param>
         /// <param name="Secciones">Listado de secciones a importar</param>
-        /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
+        /// <returns>200Ok si ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Importar")]
         public ActionResult Importar([FromForm][Required] string pCVID, [Required] IFormFile File, [FromForm][Optional] List<string> Secciones)
         {
             try
             {
+
+                Utility.updateFechaImportacion(pCVID);
                 SincroDatos sincro = new SincroDatos(_Configuracion, pCVID, File);
 
                 List<string> listaDOI = new List<string>();
@@ -91,7 +100,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.SincroTextoLibre(Secciones);
 
                 sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
-
+                Utility.updateFechaImportacion(pCVID, true);
                 return Ok();
             }
             catch (Exception ex)
@@ -199,7 +208,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         /// <param name="petitionID">Identificador para la petición de estado</param>
         /// <param name="listaId">Listado de identificadores de los recursos a añadir</param>
         /// <param name="listaOpciones">Listado de identificadores de los recursos a añadir y las opciones seleccionadas de cada uno, separado por "|||"</param>
-        /// <returns>200Ok si todo ha ido correctamente, 400BadRequest en caso contrario</returns>
+        /// <returns>200Ok si ha ido correctamente, 400BadRequest en caso contrario</returns>
         [HttpPost("Postimportar")]
         public ActionResult PostImportar([FromForm][Required] string pCVID, [FromForm] byte[] file, [FromForm] string filePreimport,
             [FromForm][Required] string petitionID, [FromForm] List<string> listaId, [FromForm][Optional] List<string> listaOpciones)
@@ -207,6 +216,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
                 //Estado de la peticion
+                Utility.updateFechaImportacion(pCVID);
                 PetitionStatus estadoPostimport = new PetitionStatus(0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
                 petitionStatus[petitionID] = estadoPostimport;
 
@@ -221,13 +231,26 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 AccionesImportacion accionesImportacion = new AccionesImportacion(_Configuracion, pCVID, stringFile);
                 accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
-
+                Utility.updateFechaImportacion(pCVID,true);
                 return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpPost("fechaCheck")]
+        public ActionResult fechaCheck([FromForm][Required] string pCVID)
+        {
+            bool isToday = Utility.checkFecha(pCVID);
+
+            return Ok(isToday);
+        }
+        [HttpPost("fecha")]
+        public ActionResult fecha(string pCVID)
+        {
+            Utility.updateFechaImportacion(pCVID);
+            return Ok();
         }
     }
 }

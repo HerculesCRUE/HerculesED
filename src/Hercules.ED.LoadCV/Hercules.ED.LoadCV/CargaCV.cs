@@ -12,11 +12,9 @@ using System.Text.RegularExpressions;
 
 namespace Hercules.ED.LoadCV
 {
-    public class CargaCV
+    public static class CargaCV
     {
-        readonly ConfigService _Configuracion;
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
         /// Recorremos los ficheros.
@@ -39,51 +37,52 @@ namespace Hercules.ED.LoadCV
                         {
                             continue;
                         }
+
+                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
+
+                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+
+                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
+                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
+
+                        HttpClient httpClient = new HttpClient();
+                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+
+                        if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
+                        { 
+                            mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
+                            continue;
+                        }
+
+                        string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
+                        if (!ComprobarORCID(ORCID))
+                        {
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
+                            continue;
+                        }
+
+                        Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
+                        string idPersona = dicPersonaORCID.First().Key;
+                        
+                        //Si el investigador NO tiene ORCID lo inserto
+                        if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
+                        {
+                            SincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
+
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
+                        }
+                        //Si el investigador tiene ORCID se actualiza
                         else
                         {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
+                            SincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
 
-                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-
-                            MemoryStream ms = new MemoryStream();
-                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
-                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
-
-                            HttpClient httpClient = new HttpClient();
-                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                            if (responseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-                            {
-                                string ORCID = responseMessage.Content.ReadAsStringAsync().Result;
-                                if (!ComprobarORCID(ORCID))
-                                {
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Formato de ORCID invalido");
-                                    return;
-                                }
-
-                                SincroORCID sincroORCID = new SincroORCID();
-                                Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
-                                string idPersona = dicPersonaORCID.First().Key;
-                                //Si el investigador NO tiene ORCID lo inserto
-                                if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
-                                {
-                                    sincroORCID.InsertaORCIDPersona(idPersona, ORCID, mResourceApi);
-
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha insertado el ORCID");
-                                }
-                                //Si el investigador tiene ORCID se actualiza
-                                else
-                                {
-                                    sincroORCID.ActualizaORCIDPersona(idPersona, dicPersonaORCID[idPersona], ORCID, mResourceApi);
-
-                                    mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
-                                }
-                            }
+                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: Se ha actualizado el ORCID");
                         }
+
                     }
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }
@@ -123,7 +122,7 @@ namespace Hercules.ED.LoadCV
                             multipartFormData.Add(new StringContent(CVID), "pCVID");
 
                             MemoryStream ms = new MemoryStream();
-                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
+                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
                             multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
                             HttpClient httpClient = new HttpClient();
@@ -134,7 +133,6 @@ namespace Hercules.ED.LoadCV
                     catch (Exception ex)
                     {
                         mResourceApi.Log.Error(ex.Message);
-                        continue;
                     }
                 }
             }
@@ -169,8 +167,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado un crisIdentifier, indica si está bien formado
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisID">crisIdentifier</param>
+        /// <returns>True si tiene formato valido</returns>
         private static bool ValidarCrisID(string crisID)
         {
             //Compruebo que no sea nulo
@@ -214,12 +212,21 @@ namespace Hercules.ED.LoadCV
                                 ?person a <http://xmlns.com/foaf/0.1/Person> .
                                 ?person <http://w3id.org/roh/crisIdentifier> '{crisIdentifier.Substring(0, crisIdentifier.Length - 1)}' .
                                 ?person <http://w3id.org/roh/isActive> 'true' .
-                                ?person <http://w3id.org/roh/ORCID> ?orcid .
+                                OPTIONAL{{ ?person <http://w3id.org/roh/ORCID> ?orcid }}
                             }}";
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "curriculumvitae" });
             foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
             {
-                dicPersonaORCID.Add(fila["person"].value, fila["orcid"].value);
+                if (fila.ContainsKey("person") && fila.ContainsKey("orcid"))
+                {
+                    dicPersonaORCID.Add(fila["person"].value, fila["orcid"].value);
+                    return dicPersonaORCID;
+                }
+                if (fila.ContainsKey("person"))
+                {
+                    dicPersonaORCID.Add(fila["person"].value, "");
+                    return dicPersonaORCID;
+                }
             }
 
             return dicPersonaORCID;
@@ -228,8 +235,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado el crisIdentifier devuleve si existe el investigador en BBDD, y está activo
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisIdentifier">crisIdentifier de la persona</param>
+        /// <returns>true si el investigador existe en BBDD</returns>
         private static bool ExisteInvestigadorActivo(string crisIdentifier)
         {
             if (!ValidarCrisID(crisIdentifier))
@@ -254,8 +261,8 @@ namespace Hercules.ED.LoadCV
         /// <summary>
         /// Dado el crisIdentifier devuelve el identificador del CV.
         /// </summary>
-        /// <param name="crisIdentifier"></param>
-        /// <returns></returns>
+        /// <param name="crisIdentifier">crisIdentifier de la persona</param>
+        /// <returns>Devuelve el identificador del CV</returns>
         private static string CVInvestigadorActivo(string crisIdentifier)
         {
             if (!ValidarCrisID(crisIdentifier))
