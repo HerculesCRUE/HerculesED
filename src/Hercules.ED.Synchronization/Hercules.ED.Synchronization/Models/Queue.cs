@@ -26,7 +26,8 @@ namespace Hercules.ED.Synchronization.Models
             {
                 Uri = new Uri(configService.GetRabbitConnectionString())
             };
-
+            configService.GetCronExternalSource();
+            configService.GetFuentesExternasQueueRabbit();
             connection = connectionFactory.CreateConnection();
         }
 
