@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.6" />
+    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.7" />
     <PackageReference Include="RabbitMQ.Client" Version="6.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
@@ -29,8 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Commons-ED-MA\src\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine\Hercules.CommonsEDMA.DisambiguationEngine.csproj" />
     <ProjectReference Include="..\ClasesGeneradas\hercules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Hercules.CommonsEDMA.DisambiguationEngine">
+      <HintPath>..\..\EDMACommonsLibs\Hercules.CommonsEDMA.DisambiguationEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
