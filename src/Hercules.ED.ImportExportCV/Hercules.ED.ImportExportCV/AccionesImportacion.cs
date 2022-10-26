@@ -25,7 +25,7 @@ namespace Hercules.ED.ImportExportCV
             this.mConfiguracion = Configuracion;
         }
 
-        private List<string> listadoSecciones = new List<string>()
+        private readonly List<string> listadoSecciones = new List<string>()
         {
             //Datos identificacion
             "000.010.000.000", "000.020.000.000",
@@ -67,7 +67,7 @@ namespace Hercules.ED.ImportExportCV
                 }
                 filtrador.Add(new Tuple<string, string>(str.Split("_").First(), str.Split("_").Last()));
             }
-            Preimport preimport = new Preimport();
+            Preimport preimport;
 
             XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
             using (TextReader reader = new StringReader(filePreimport))
@@ -125,7 +125,7 @@ namespace Hercules.ED.ImportExportCV
             }
 
             List<IGrouping<string, CvnItemBean>> listadoItemsAgrupados = listadoItems.GroupBy(x => x.Code).ToList();
-            petitionStatus.totalWorks = listadoItems.Count();
+            petitionStatus.totalWorks = listadoItems.Count;
 
             //Elimino las secciones no deseadas
             foreach (var item in listadoItemsAgrupados)
@@ -285,7 +285,7 @@ namespace Hercules.ED.ImportExportCV
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
             petitionStatus.actualWorkSubtitle = "";
-            petitionStatus.totalWorks = listadoDuplicar.Count();
+            petitionStatus.totalWorks = listadoDuplicar.Count;
             petitionStatus.actualWork = 0;
 
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
@@ -298,7 +298,7 @@ namespace Hercules.ED.ImportExportCV
             base.cvn = fusionResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
-            petitionStatus.totalWorks = listadoFusionar.Count();
+            petitionStatus.totalWorks = listadoFusionar.Count;
             petitionStatus.actualWork = 0;
 
             base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
@@ -311,7 +311,7 @@ namespace Hercules.ED.ImportExportCV
             base.cvn = sobrescribirResultBean;
 
             petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
-            petitionStatus.totalWorks = listadoSobrescribir.Count();
+            petitionStatus.totalWorks = listadoSobrescribir.Count;
             petitionStatus.actualWork = 0;
 
             base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
