@@ -7,7 +7,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
     public class ConfigService
     {
         // Archivo de configuración.
-        public static IConfigurationRoot configuracion;
+        public readonly static IConfigurationRoot configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
 
         // URLs
         private string Usuario_PDF { get; set; }
@@ -22,13 +22,6 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private string RabbitConnectionString { get; set; }
         private string DenormalizerQueueRabbit { get; set; }
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public ConfigService()
-        {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
-        }
 
         public string GetPathFichero()
         {
