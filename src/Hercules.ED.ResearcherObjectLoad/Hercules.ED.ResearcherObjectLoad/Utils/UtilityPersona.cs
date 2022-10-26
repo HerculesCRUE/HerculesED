@@ -123,7 +123,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 if (!string.IsNullOrEmpty(pPersonaRO.nombreCompleto) && pPersonaRO.nombreCompleto.Contains(" "))
                 {
-                    // TODO
                     person.Foaf_firstName = pPersonaRO.nombreCompleto.Split(" ")[0].Trim();
                     person.Foaf_lastName = pPersonaRO.nombreCompleto.Substring(pPersonaRO.nombreCompleto.IndexOf(" ")).Trim();
                     person.Foaf_name = pPersonaRO.nombreCompleto;
@@ -344,7 +343,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     #region Buscamos en nombres
                     {
                         List<string> unions = new List<string>();
-                        List<string> unionsOut = new List<string>();
                         foreach (string wordOut in wordsTexto)
                         {
                             List<string> words = new List<string>();
@@ -368,16 +366,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 if (score == 1)
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine("\t?personID <http://xmlns.com/foaf/0.1/name> ?name.");
                                     sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
                                     unions.Add(sbUnion.ToString());
                                 }
                                 else
                                 {
                                     StringBuilder sbUnion = new StringBuilder();
-                                    sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                                    sbUnion.AppendLine("\t?personID <http://xmlns.com/foaf/0.1/name> ?name.");
                                     sbUnion.AppendLine($@"				{FilterWordComplete(word, "name")} BIND({score} as ?num) ");
-                                    //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
                                 }
                             }
@@ -499,7 +496,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 foreach (string firma in listado)
                 {
-                    HashSet<int> scores = new HashSet<int>();
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
                     {
                         string personID = fila["personID"].value;
@@ -579,7 +575,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     if (!string.IsNullOrEmpty(item.seqOfAuthors[i].name.nombre_completo.FirstOrDefault()))
                     {
                         listaNombres.Add(item.seqOfAuthors[i].name.nombre_completo.First());
-                    };
+                    }
                 }
             }
 
@@ -659,7 +655,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         {
                             break;
                         }
-                    };
+                    }
                 }
             }
 
@@ -713,14 +709,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         {
                             break;
                         }
-                    };
+                    }
                 }
 
                 foreach (string idDoc in autoresDocRos.Keys)
                 {
                     foreach (string idPersona in autoresDocRos[idDoc])
                     {
-                        DisambiguationPerson persona = (DisambiguationPerson)(listaPersonas.Where(x => x.Key == idPersona).FirstOrDefault().Value);
+                        DisambiguationPerson persona = listaPersonas.FirstOrDefault(x => x.Key == idPersona).Value;
                         if (persona != null)
                         {
                             if (persona.documentos == null)
@@ -956,7 +952,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         {
                             break;
                         }
-                    };
+                    }
                 }
             }
 
@@ -1009,14 +1005,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         {
                             break;
                         }
-                    };
+                    }
                 }
 
                 foreach (string idDoc in autoresDocRos.Keys)
                 {
                     foreach (string idPersona in autoresDocRos[idDoc])
                     {
-                        DisambiguationPerson persona = (DisambiguationPerson)(listaPersonas.Where(x => x.Key == idPersona).FirstOrDefault().Value);
+                        DisambiguationPerson persona = listaPersonas.FirstOrDefault(x => x.Key == idPersona).Value;
                         if (persona != null)
                         {
                             if (persona.documentos == null)

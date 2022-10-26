@@ -93,7 +93,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     if (!string.IsNullOrEmpty(item.autores[i].nombreCompleto))
                     {
                         listaNombres.Add(item.autores[i].nombreCompleto);
-                    };
+                    }
                 }
             }
         }

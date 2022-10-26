@@ -52,10 +52,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return fila["person"].value;
-                }
+                return resultadoQuery.results.bindings.First()["person"].value;
             }
 
             return string.Empty;
@@ -146,7 +143,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                 foreach (string firma in listado)
                 {
-                    HashSet<int> scores = new HashSet<int>();
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
                     {
                         string personID = fila["personID"].value;
@@ -191,7 +187,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     if (!string.IsNullOrEmpty(item.listaAutores[i]))
                     {
                         listaGitHub.Add(item.listaAutores[i]);
-                    };
+                    }
                 }
             }
         }
