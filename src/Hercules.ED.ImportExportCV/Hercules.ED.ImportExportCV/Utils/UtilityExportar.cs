@@ -1534,7 +1534,7 @@ namespace Utils
             if (entity.properties.Any(x => EliminarRDF(x.prop).Contains("http://w3id.org/roh/duration")))
             {
                 string anio = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")) ?
-                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationYears")).Select(x => x.values)?.First().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(anio))
                 {
@@ -1542,7 +1542,7 @@ namespace Utils
                 }
 
                 string mes = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")) ?
-                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationMonths")).Select(x => x.values)?.First().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(mes))
                 {
@@ -1550,7 +1550,7 @@ namespace Utils
                 }
 
                 string dia = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")) ?
-                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                    entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationDays")).Select(x => x.values)?.First().FirstOrDefault()
                     : null;
                 if (!string.IsNullOrEmpty(dia))
                 {
@@ -1592,7 +1592,7 @@ namespace Utils
             string duracion = "PT";
 
             string horas = entity.properties.Any(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")) ?
-                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Select(x => x.values)?.FirstOrDefault().FirstOrDefault()
+                entity.properties.Where(x => EliminarRDF(x.prop).EndsWith("http://w3id.org/roh/durationHours")).Select(x => x.values)?.First().FirstOrDefault()
                 : null;
             if (!string.IsNullOrEmpty(horas))
             {
@@ -1769,7 +1769,7 @@ namespace Utils
             CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
             titleBean.Code = code;
             titleBean.Name = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).First().FirstOrDefault()
                 : null;
 
 
@@ -1804,7 +1804,7 @@ namespace Utils
                 ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyIdentification)).Select(x => x.values).First().First().Split("_").Last()
                 : null;
             titleBean.Name = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyName)).Select(x => x.values).First().FirstOrDefault()
                 : null;
 
 
@@ -1983,7 +1983,7 @@ namespace Utils
             if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
             {
                 string gnossDate = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                    .Select(x => x.values).FirstOrDefault().FirstOrDefault();
+                    .Select(x => x.values).First().FirstOrDefault();
 
                 int anio = int.Parse(gnossDate.Substring(0, 4));
                 int mes = int.Parse(gnossDate.Substring(4, 2));

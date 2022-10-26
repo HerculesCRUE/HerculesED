@@ -2309,7 +2309,7 @@ namespace Utils
         /// <returns>CvnDouble del CvnItemBeanCvnCodeGroup </returns>
         public static string GetCvnDoubleCvnCodeGroup(this CvnItemBeanCvnCodeGroup item, string codigo)
         {
-            return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.FirstOrDefault().ToString();
+            return item.CvnDouble?.Where(x => x.Code.Equals(codigo))?.Select(x => x.Value)?.First().ToString();
         }
 
         /// <summary>

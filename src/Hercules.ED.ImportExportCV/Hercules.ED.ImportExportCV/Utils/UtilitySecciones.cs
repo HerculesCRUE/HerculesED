@@ -764,7 +764,7 @@ where{{
             string propIdHandle, string propIdDOI, string propIdPMID, string propIdOtroPub, string nombreOtroPub)
         {
             //Si alguna propiedad es nula no hago nada
-            if (string.IsNullOrEmpty(propIdHandle) && string.IsNullOrEmpty(propIdHandle)
+            if (string.IsNullOrEmpty(propIdHandle) && string.IsNullOrEmpty(propIdDOI)
                 && string.IsNullOrEmpty(propIdPMID) && string.IsNullOrEmpty(propIdOtroPub)
                 && string.IsNullOrEmpty(nombreOtroPub))
             { return; }
