@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class EstanciasIdi : SeccionBase
     {
-        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/stays", "http://vivoweb.org/ontology/core#relatedBy" };
-        readonly string graph = "stay";
+        private readonly string graph = "stay";
         public EstanciasIdi(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

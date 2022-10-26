@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class AyudaBecas : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/grants", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "grant";
+        private readonly string graph = "grant";
         public AyudaBecas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

@@ -12,9 +12,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
     public class RedesCooperacion :SeccionBase
     {
 
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "network";
+        private readonly string graph = "network";
         public RedesCooperacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
 

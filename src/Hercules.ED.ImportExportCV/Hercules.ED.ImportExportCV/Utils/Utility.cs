@@ -1253,29 +1253,6 @@ namespace Utils
 
         /// <summary>
         /// Devuelve el tipo de evento como respuesta,
-        /// con formato mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + valor
-        /// </summary>
-        /// <param name="item">CvnItemBean</param>
-        /// <param name="codigo">Codigo</param>
-        /// <returns>TipoInscripcionEvento</returns>
-        public static string GetTipoInscripcionEventoPorIDCampo(this CvnItemBean item, string codigo)
-        {
-            if (!CodigoCampoCorrecto(codigo))
-            {
-                throw new ArgumentException("Codigo de campo incorrecto" + codigo);
-            }
-
-            if (codigo.Length != 15) { return null; }
-            CvnItemBeanCvnString campo = item.Items?.Where(x => x.Code.StartsWith(codigo) && x is CvnItemBeanCvnString).Cast<CvnItemBeanCvnString>().FirstOrDefault();
-            if (campo != null && !string.IsNullOrEmpty(campo.Value))
-            {
-                return mResourceApi.GraphsUrl + "items/eventinscriptiontype_" + campo.Value;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Devuelve el tipo de evento como respuesta,
         /// con formato mResourceApi.GraphsUrl + "items/seminarinscriptiontype_" + valor
         /// </summary>
         /// <param name="item">CvnItemBean</param>

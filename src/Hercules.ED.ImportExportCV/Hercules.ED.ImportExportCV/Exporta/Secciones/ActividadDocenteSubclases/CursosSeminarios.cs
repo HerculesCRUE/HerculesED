@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class CursosSeminarios : SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience",
             "http://w3id.org/roh/impartedCoursesSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
-        private string graph = "impartedcoursesseminars";
+        private readonly string graph = "impartedcoursesseminars";
 
         public CursosSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

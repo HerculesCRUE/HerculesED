@@ -17,9 +17,9 @@ namespace ImportadorWebCV.Exporta
 {
     public class ExportaDatos : SeccionBase
     {
-        private string cvID;
-        private cvnRootResultBean cvn;
-        private ResourceApi resourceApi;
+        private readonly string cvID;
+        private readonly cvnRootResultBean cvn;
+        private readonly ResourceApi resourceApi;
         protected Dictionary<string, List<Dictionary<string, Data>>> MultilangProp;
 
         public ExportaDatos(cvnRootResultBean cvn, string cvID, string lang) : base(cvn, cvID)

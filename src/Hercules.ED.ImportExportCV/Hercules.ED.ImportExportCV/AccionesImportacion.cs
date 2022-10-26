@@ -137,12 +137,9 @@ namespace Hercules.ED.ImportExportCV
             }
 
             //En el caso de que la seccion de Texto libre no esté en listadoSubsectionItems tambien la elimino.
-            if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))))
+            if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))) && listadoItemsAgrupados.Last().Key.Equals("070.010.000.000"))
             {
-                if (listadoItemsAgrupados.Last().Key.Equals("070.010.000.000"))
-                {
-                    listadoItemsAgrupados.RemoveAt(listadoItemsAgrupados.Count - 1);
-                }
+                listadoItemsAgrupados.RemoveAt(listadoItemsAgrupados.Count - 1);
             }
 
             string opcionSeleccionada = "";
@@ -335,7 +332,6 @@ namespace Hercules.ED.ImportExportCV
                 catch (Exception ex)
                 {
                     mResourceApi.Log.Error(ex.Message);
-                    continue;
                 }
             }
 

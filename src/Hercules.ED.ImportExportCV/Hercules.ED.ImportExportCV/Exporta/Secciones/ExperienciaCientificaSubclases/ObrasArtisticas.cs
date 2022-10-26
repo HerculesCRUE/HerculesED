@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class ObrasArtisticas:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
             "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "supervisedartisticproject";
+        private readonly string graph = "supervisedartisticproject";
         public ObrasArtisticas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

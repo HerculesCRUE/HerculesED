@@ -14,9 +14,9 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class CargosActividades : SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation",
                 "http://w3id.org/roh/previousPositions", "http://vivoweb.org/ontology/core#relatedBy" };
-        private string graph = "position";
+        private readonly string graph = "position";
 
         public CargosActividades(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

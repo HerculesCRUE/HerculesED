@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class AcreditacionesReconocimientos : SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/obtainedRecognitions", "http://vivoweb.org/ontology/core#relatedBy" };
-        private string graph = "accreditation";
+        private readonly string graph = "accreditation";
 
         public AcreditacionesReconocimientos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
