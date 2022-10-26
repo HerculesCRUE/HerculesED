@@ -147,6 +147,10 @@ namespace Utils
             return listaResultado;
         }
 
+        /// <summary>
+        /// Comprueba el formato de correo, si es erroneo lo elimina del listado
+        /// </summary>
+        /// <param name="listadoCorreos">Listado de correos</param>
         public static void ComprobarCorreos(List<string> listadoCorreos)
         {
             if (listadoCorreos != null && listadoCorreos.Count > 0)
