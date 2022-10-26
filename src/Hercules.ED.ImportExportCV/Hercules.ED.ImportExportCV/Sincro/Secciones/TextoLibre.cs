@@ -73,7 +73,18 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                     foreach (string eliminar in listadoEliminacion)
                     {
-                        entityXML.properties.RemoveAt(int.Parse(eliminar));
+                        if (eliminar.Equals("0") && entityXML.properties.Any(x => x.prop.Equals(Variables.TextoLibre.resumenLibre)))
+                        {
+                            entityXML.properties.Remove(entityXML.properties.First(x => x.prop.Equals(Variables.TextoLibre.resumenLibre)));
+                        }
+                        if (eliminar.Equals("1") && entityXML.properties.Any(x => x.prop.Equals(Variables.TextoLibre.b1DescripcionTFG)))
+                        {
+                            entityXML.properties.Remove(entityXML.properties.First(x => x.prop.Equals(Variables.TextoLibre.b1DescripcionTFG)));
+                        }
+                        if (eliminar.Equals("2") && entityXML.properties.Any(x => x.prop.Equals(Variables.TextoLibre.b2DescripcionTFM)))
+                        {
+                            entityXML.properties.Remove(entityXML.properties.First(x => x.prop.Equals(Variables.TextoLibre.b2DescripcionTFM)));
+                        }
                     }
                 }
                 UpdateEntityAux(mResourceApi.GetShortGuid(mCvID), propiedadesItem, new List<string>() { identificadores.Item1, identificadores.Item2, identificadores.Item3 }, entityBBDD, entityXML);
