@@ -50,7 +50,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 
                 string propIndicadores = UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.indicadoresGeneralesCalidad);
                 string texto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores))) ?
-                    keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores)).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last()
+                    keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores)).Select(x => x.values).First().First().Split("@@@").Last()
                     : null;
 
                 UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, texto, "060.010.060.010");
