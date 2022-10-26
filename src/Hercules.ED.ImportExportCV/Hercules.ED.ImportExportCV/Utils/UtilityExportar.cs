@@ -666,20 +666,20 @@ namespace Utils
             familyNameBean.Code = code;
 
             familyNameBean.FirstFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["PrimerApellido"])).Select(x => x.values).First().First().Split("_").Last().Split("@@@").Last()
                 : null;
             familyNameBean.SecondFamilyName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["SegundoApellido"])).Select(x => x.values).First().First().Split("_").Last().Split("@@@").Last()
                 : null;
             if (!string.IsNullOrEmpty(familyNameBean.FirstFamilyName) && !string.IsNullOrEmpty(familyNameBean.SecondFamilyName))
             {
                 authorBean.CvnFamilyNameBean = familyNameBean;
             }
             authorBean.GivenName = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Nombre"])).Select(x => x.values).First().First().Split("_").Last().Split("@@@").Last()
                 : null;
             authorBean.Signature = Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])))
-                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("_").Last().Split("@@@").Last()
+                ? entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(properties["Firma"])).Select(x => x.values).First().First().Split("_").Last().Split("@@@").Last()
                 : null;
 
             if (!string.IsNullOrEmpty(authorBean.GivenName)
