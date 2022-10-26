@@ -7,7 +7,7 @@
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión| Versión inicial |
 
 ## Sobre Hercules.ED.FigShare
 
