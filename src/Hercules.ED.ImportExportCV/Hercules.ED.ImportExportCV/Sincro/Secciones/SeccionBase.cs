@@ -75,10 +75,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                mResourceApi.Log.Error(ex.Message);
             }
+
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
             {
                 Entity entity = new Entity()
@@ -681,7 +682,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         }
                                     }
                                     //Compruebo que la persona propietaria de la notificación está en BBDD
-                                    if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                    if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                     {
                                         continue;
                                     }
@@ -690,7 +691,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     notificacion.IdRoh_trigger = idPersona;
                                     notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                     notificacion.Roh_entity = idBBDD;
-                                    notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                    notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                     notificacion.Dct_issued = DateTime.Now;
                                     notificacion.Roh_type = "create";
                                     notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -728,7 +729,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -737,7 +738,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -774,7 +775,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -783,7 +784,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -821,7 +822,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     continue;
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                                 {
                                     continue;
                                 }
@@ -830,7 +831,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "create";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -857,7 +858,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 continue;
                             }
                             //Compruebo que la persona propietaria de la notificación está en BBDD
-                            if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                            if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains("_"))
                             {
                                 continue;
                             }
@@ -866,7 +867,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                             notificacion.IdRoh_trigger = idPersona;
                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                             notificacion.Roh_entity = idBBDD;
-                            notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                            notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = "edit";
                             notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -1064,8 +1065,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(equivalencias[idXML], graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1093,8 +1094,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1114,8 +1115,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
             //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = OverwriteLoadedEntity(entityBBDD, entityXML);
