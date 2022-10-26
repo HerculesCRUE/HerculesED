@@ -166,16 +166,7 @@ namespace Hercules.ED.ImportExportCV
                 //Seccion Indicadores generales
                 if (seccionAgrupada.Key.Equals("060.010.060.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
-                    {
-                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                    }
-                    if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
-                    {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
-                    }
+                    SobrescribirIndicadoresGenerales(preimport, listadoSobrescribir, listadoSobrescribirBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -184,22 +175,7 @@ namespace Hercules.ED.ImportExportCV
                 //Seccion texto libre
                 if (seccionAgrupada.Key.Equals("070.010.000.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
-                    // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
-                    for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
-                    {
-                        if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid) && filtrador.Select(x => x.Item2).Contains(contadorTexto.ToString()))
-                        {
-                            //Si no existe el CvnItemBean de la sección "070.010.000.000" lo añado, en otro caso sigo.
-                            if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
-                            {
-                                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                            }
-                            listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@" + contadorTexto);
-                        }
-                    }
+                    SobrescribirTextoLibre(preimport, listadoSobrescribir, listadoTextoLibreBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -305,7 +281,85 @@ namespace Hercules.ED.ImportExportCV
 
         }
 
+        /// <summary>
+        /// Añade la seccion de datos personales para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+            if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
+            {
+                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+            }
+            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
+            {
+                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
+            }
 
+        }
+
+        /// <summary>
+        /// Añade la seccion de indicadores personales para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirIndicadoresGenerales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+
+            if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
+            {
+                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+            }
+            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
+            {
+                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
+            }
+        }
+
+        /// <summary>
+        /// Añade la seccion de texto libre para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoTextoLibreBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirTextoLibre(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoTextoLibreBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+
+            //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
+            // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
+            for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
+            {
+                if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid) && filtrador.Select(x => x.Item2).Contains(contadorTexto.ToString()))
+                {
+                    //Si no existe el CvnItemBean de la sección "070.010.000.000" lo añado, en otro caso sigo.
+                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
+                    {
+                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+                    }
+                    listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@" + contadorTexto);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Duplicar
+        /// </summary>
+        /// <param name="duplicadosResultBean">cvnRootResultBean con los datos a duplicar</param>
+        /// <param name="listadoDuplicar">Listado de items a duplicar</param>
+        /// <param name="listadoDuplicarBBDD">Listado de ítems en BBDD</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
         private void Duplicar(cvnRootResultBean duplicadosResultBean, List<CvnItemBean> listadoDuplicar, List<string> listadoDuplicarBBDD, PetitionStatus petitionStatus)
         {
             base.cvn = duplicadosResultBean;
@@ -322,6 +376,13 @@ namespace Hercules.ED.ImportExportCV
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
         }
 
+        /// <summary>
+        /// Fusionar
+        /// </summary>
+        /// <param name="fusionResultBean">cvnRootResultBean con los datos a fusionar</param>
+        /// <param name="listadoFusionar">Listado de items a fusionar</param>
+        /// <param name="listadoFusionarBBDD">Listado de ítems en BBDD</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
         private void Fusionar(cvnRootResultBean fusionResultBean, List<CvnItemBean> listadoFusionar, List<string> listadoFusionarBBDD, PetitionStatus petitionStatus)
         {
             base.cvn = fusionResultBean;
@@ -338,6 +399,15 @@ namespace Hercules.ED.ImportExportCV
 
         }
 
+        /// <summary>
+        /// Sobrescribir
+        /// </summary>
+        /// <param name="sobrescribirResultBean">cvnRootResultBean con los datos a duplicar</param>
+        /// <param name="listadoSobrescribir">Listado de items a sobrescribir</param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="listadoTextoLibreBBDD">Listado de ítems en BBDD</param>
+        /// <param name="listaDOI">Listado de DOI</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
         private void Sobrescribir(cvnRootResultBean sobrescribirResultBean, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<string> listadoTextoLibreBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
         {
             base.cvn = sobrescribirResultBean;
@@ -353,20 +423,6 @@ namespace Hercules.ED.ImportExportCV
             base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
             base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
             base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
-
-        }
-
-        private void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
-        {
-            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-            if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
-            {
-                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-            }
-            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
-            {
-                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
-            }
 
         }
 
