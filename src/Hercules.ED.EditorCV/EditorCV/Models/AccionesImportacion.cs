@@ -466,11 +466,11 @@ namespace EditorCV.Models
             if (sectionItem.title == null)
             {
                 valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?
-                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            .Select(x => x.values.First().Split("@@@").Last()).ToList();
                 if (valor == null || valor.Count == 0)
                 {
                     valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
-                        .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                        .Select(x => x.values.First().Split("@@@").Last()).ToList();
                 }
                 if (tabSectionListItem.propertyTitle.child != null)
                 {
@@ -513,7 +513,7 @@ namespace EditorCV.Models
                                 //Si es 
                                 property = UtilityCV.GetPropComplete(data),
                                 values = subseccionItem.propiedades.Where(x => x.prop.StartsWith(GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
-                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList()
+                                    .Select(x => x.values.First().Split("@@@").Last()).ToList()
                             };
                             if (sectionItem.orderProperties.Any(x => x.property.Contains(itemOrderProperty.property)))
                             {
@@ -544,11 +544,11 @@ namespace EditorCV.Models
                         {
                             propComplete = UtilityCV.GetPropComplete(propertyDataTemplate.child);
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
-                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                .Select(x => x.values.First().Split("@@@").Last()).ToList();
                             if (valor == null || valor.Count == 0)
                             {
                                 valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
-                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                    .Select(x => x.values.First().Split("@@@").Last()).ToList();
                             }
 
                             int lengthProp = propComplete.Split("@@@").Length;
@@ -569,11 +569,11 @@ namespace EditorCV.Models
                         propComplete = UtilityCV.GetPropComplete(property.child);
 
                         valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
-                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            .Select(x => x.values.First().Split("@@@").Last()).ToList();
                         if (valor == null || valor.Count == 0)
                         {
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
-                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                .Select(x => x.values.First().Split("@@@").Last()).ToList();
                         }
 
                         int lengthProp = propComplete.Split("@@@").Length;
