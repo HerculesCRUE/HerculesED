@@ -131,7 +131,8 @@ where {{
 
             SparqlObject resultadoQuery = null;
 
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false);
+            string valorEnviado = "";
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false,out valorEnviado);
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
@@ -684,7 +685,8 @@ where {{
 
             SparqlObject resultadoQuery = null;
 
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true);
+            string valorEnviado = "";
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true,out valorEnviado);
 
             #region --- Obtención de Revistas
             if (PRC.epigrafeCVN == "060.010.010.000")
@@ -1139,7 +1141,7 @@ where {{
             #endregion
         }
 
-        private ProduccionCientifica CrearPRC(string pIdDocumento,bool pEliminar)
+        private ProduccionCientifica CrearPRC(string pIdDocumento,bool pEliminar,out string valorEnviado)
         {
             ProduccionCientifica PRC = new ProduccionCientifica();
             string propStatus = "";
@@ -1159,7 +1161,7 @@ where {{
 
             #region --- Estado de validación
             // Comprobar si está el triple del estado.
-            string valorEnviado = string.Empty;
+            valorEnviado = string.Empty;
 
             string selectEstadoValidacion = mPrefijos;
             selectEstadoValidacion += "SELECT DISTINCT ?enviado ";
