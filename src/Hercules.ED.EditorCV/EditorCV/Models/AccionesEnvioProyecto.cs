@@ -135,44 +135,6 @@ namespace EditorCV.Models
         }
 
         /// <summary>
-        /// Inserta un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
-        {
-            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
-            TriplesToInclude triple = new TriplesToInclude();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            listaTriplesInsercion.Add(triple);
-            dicInsercion.Add(pGuid, listaTriplesInsercion);
-            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
-        }
-
-        /// <summary>
-        /// Modifica un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        /// <param name="pValorAntiguo"></param>
-        private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
-        {
-            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            triple.OldValue = pValorAntiguo;
-            listaTriplesModificacion.Add(triple);
-            dicModificacion.Add(pGuid, listaTriplesModificacion);
-            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
-        }
-
-        /// <summary>
         /// Obtiene los datos de los Proyectos a enviar a validación.
         /// </summary>
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
