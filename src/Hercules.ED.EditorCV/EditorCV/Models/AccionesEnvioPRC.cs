@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace EditorCV.Models
 {
-    public class AccionesEnvioPRC: AccionesEnvio
+    public class AccionesEnvioPRC : AccionesEnvio
     {
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
@@ -132,7 +132,7 @@ where {{
             SparqlObject resultadoQuery = null;
 
             string valorEnviado = "";
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false,out valorEnviado);
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false, out valorEnviado);
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
@@ -231,7 +231,7 @@ where {{
                                            FILTER(?s = <{pIdDocumento}>)
                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document","maindocument", "documentformat" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document", "maindocument", "documentformat" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -273,7 +273,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document" ,"maindocument", "documentformat", "referencesource" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document", "maindocument", "documentformat", "referencesource" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -308,7 +308,9 @@ where {{
                         indiceImpacto.revista25 = revista25;
 
                         if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
-                        PRC.indicesImpacto.Add(indiceImpacto);
+                        {
+                            PRC.indicesImpacto.Add(indiceImpacto);
+                        }
                     }
                 }
 
@@ -381,7 +383,7 @@ where {{
                                                 FILTER(?s = <{pIdDocumento}>) 
                                             }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto,new List<string> { "document", "documentformat", "publicationtype" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto, new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -486,7 +488,7 @@ where {{
                 string whereDatosCongresos = "";
 
                 selectDatosCongresos = mPrefijos;
-                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?";
+                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType";
                 whereDatosCongresos = $@"WHERE {{
                                             ?s a bibo:Document . 
                                             ?s roh:title ?title . 
@@ -522,7 +524,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos,new List<string> { "document", "documentformat", "publicationtype" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -574,7 +576,6 @@ where {{
                         }
                     }
                 }
-                // TODO Añadir Clase 1 clase 2 Clase 3 al congreso (consulta + envío)
                 List<string> listaIds = new List<string>();
                 List<string> listaValores = new List<string>();
                 foreach (KeyValuePair<string, string> item in dicIds)
@@ -658,7 +659,7 @@ where {{
             }
             #endregion
         }
-        
+
         /// <summary>
         /// Permite enviar a eliminar en Producción Científica los datos necesarios para la validación.
         /// </summary>
@@ -686,7 +687,7 @@ where {{
             SparqlObject resultadoQuery = null;
 
             string valorEnviado = "";
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true,out valorEnviado);
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true, out valorEnviado);
 
             #region --- Obtención de Revistas
             if (PRC.epigrafeCVN == "060.010.010.000")
@@ -699,18 +700,20 @@ where {{
                 selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
                 whereIndicesImpacto = $@"WHERE {{
                                            ?s a bibo:Document.
-                                           OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
-                                           ?revista roh:title ?titulo . 
-                                           OPTIONAL{{?revista bibo:editor ?editor . }} 
-                                           OPTIONAL{{?revista bibo:issn ?issn . }}
                                            OPTIONAL{{
-                                                ?revista roh:format ?formatoAux .
-                                                ?formatoAux dc:identifier ?formato .
-                                           }} 
+                                                ?s vivo:hasPublicationVenue ?revista . 
+                                                OPTIONAL{{?revista bibo:editor ?editor . }} 
+                                                OPTIONAL{{?revista bibo:issn ?issn . }}
+                                                OPTIONAL{{
+                                                    ?revista roh:format ?formatoAux .
+                                                    ?formatoAux dc:identifier ?formato .
+                                               }} 
+                                            }}
+                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}                                           
                                            FILTER(?s = <{pIdDocumento}>)
                                        }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto,new List<string> { "document", "maindocument", "documentformat" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document", "maindocument", "documentformat" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -728,29 +731,31 @@ where {{
                 selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
                 whereFuenteImpacto = $@"WHERE {{ 
                                             ?s a bibo:Document . 
-                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista . }}
-                                            ?revista roh:title ?titulo . 
-                                            OPTIONAL{{
-                                                ?revista roh:impactIndex ?indicesImpacto . 
+                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
                                                 OPTIONAL{{
-                                                    ?indicesImpacto roh:impactSource ?impactSource .
-                                                    ?impactSource dc:identifier ?fuenteImpacto . 
-                                                }} 
-                                                ?indicesImpacto roh:year ?anio . 
-                                                ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
-                                                OPTIONAL{{
-                                                    ?indicesImpacto  roh:impactCategory ?categoria . 
-                                                    ?categoria roh:quartile ?cuartil . 
+                                                    ?revista roh:impactIndex ?indicesImpacto . 
                                                     OPTIONAL{{
-                                                        ?categoria roh:publicationPosition ?posicionPublicacion .
-                                                        ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                        ?indicesImpacto roh:impactSource ?impactSource .
+                                                        ?impactSource dc:identifier ?fuenteImpacto . 
+                                                    }} 
+                                                    ?indicesImpacto roh:year ?anio . 
+                                                    ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
+                                                    OPTIONAL{{
+                                                        ?indicesImpacto  roh:impactCategory ?categoria . 
+                                                        ?categoria roh:quartile ?cuartil . 
+                                                        OPTIONAL{{
+                                                            ?categoria roh:publicationPosition ?posicionPublicacion .
+                                                            ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                        }}
                                                     }}
                                                 }}
                                             }}
+                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
+                                            
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto,new List<string> { "document", "maindocument", "documentformat", "referencesource" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document", "maindocument", "documentformat", "referencesource" });
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
                     foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
@@ -784,7 +789,10 @@ where {{
                         }
                         indiceImpacto.revista25 = revista25;
 
-                        PRC.indicesImpacto.Add(indiceImpacto);
+                        if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
+                        {
+                            PRC.indicesImpacto.Add(indiceImpacto);
+                        }
                     }
                 }
 
@@ -1005,7 +1013,7 @@ where {{
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document" , "documentformat" , "publicationtype" });
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document", "documentformat", "publicationtype" });
 
                 if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                 {
@@ -1141,7 +1149,7 @@ where {{
             #endregion
         }
 
-        private ProduccionCientifica CrearPRC(string pIdDocumento,bool pEliminar,out string valorEnviado)
+        private ProduccionCientifica CrearPRC(string pIdDocumento, bool pEliminar, out string valorEnviado)
         {
             ProduccionCientifica PRC = new ProduccionCientifica();
             string propStatus = "";
@@ -1271,12 +1279,12 @@ where {{
             SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
             if (query.results.bindings.Count != 0)
             {
-                pIdDocumento = query.results.bindings[0]["documento"].value;                
+                pIdDocumento = query.results.bindings[0]["documento"].value;
             }
             return pIdDocumento;
         }
 
-        
+
 
         /// <summary>
         /// Mapea el código CVN con la propiedad usada en SPARQL de PUBLICACIONES.
