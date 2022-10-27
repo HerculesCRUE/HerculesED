@@ -982,7 +982,7 @@ namespace EditorCV.Models
 
                 string propiedad = "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
                 //Generamos notificaciones de edición
-                List<string> personasEdicion = entity.properties.FirstOrDefault(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
+                List<string> personasEdicion = entity.properties.First(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
                     .Where(x => !notificaciones.Select(x => x.IdRoh_owner).Contains(x) && x != personaCV && !string.IsNullOrEmpty(x)).ToList();
                 foreach (string persona in personasEdicion)
                 {
@@ -1305,16 +1305,18 @@ namespace EditorCV.Models
                 properties.Add(pProperty);
             }
             List<string> rdftypes = new List<string>();
-            bool continuar = true;
-            while (continuar)
+
+            while (true)
             {
-                continuar = false;
                 SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s a ?rdftype. ?s ?p <" + pEntity + ">. }", "curriculumvitae");
+                if(resultData.results.bindings.Count==0 || !resultData.results.bindings.Any(x=> x["p"].value != "http://gnoss/hasEntidad"))
+                {
+                    break;
+                }
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     if (fila["p"].value != "http://gnoss/hasEntidad")
                     {
-                        continuar = true;
                         properties.Add(fila["p"].value);
                         entities.Add(fila["s"].value);
                         pEntity = fila["s"].value;
@@ -1399,19 +1401,22 @@ namespace EditorCV.Models
                 {
                     if (auxEntityRemove.StartsWith("http"))
                     {
-                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        if (pLoadedEntity != null && pLoadedEntity.properties != null)
                         {
-                            List<string> eliminar = new List<string>();
-                            foreach (string value in property.values)
+                            foreach (Entity.Property property in pLoadedEntity.properties)
                             {
-                                if (value.Contains(auxEntityRemove))
+                                List<string> eliminar = new List<string>();
+                                foreach (string value in property.values)
                                 {
-                                    eliminar.Add(value);
+                                    if (value.Contains(auxEntityRemove))
+                                    {
+                                        eliminar.Add(value);
+                                    }
                                 }
-                            }
-                            if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
-                            {
-                                change = true;
+                                if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
+                                {
+                                    change = true;
+                                }
                             }
                         }
                     }
