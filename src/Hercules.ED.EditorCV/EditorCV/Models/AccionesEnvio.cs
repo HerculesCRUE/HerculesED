@@ -152,7 +152,7 @@ namespace EditorCV.Models
         /// <param name="pValorAntiguo"></param>
         protected void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
         {
-            Modificacion(pGuid, pPropiedad, new List<string>() { pValorNuevo }, new List<string>() { pValorAntiguo };
+            Modificacion(pGuid, pPropiedad, new List<string>() { pValorNuevo }, new List<string>() { pValorAntiguo });
         }
 
         /// <summary>
