@@ -16,7 +16,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using System.Xml.Serialization;
 using static Hercules.ED.UpdateKeywords.Program;
 
 namespace Hercules.ED.UpdateKeywords
