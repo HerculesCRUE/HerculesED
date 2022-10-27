@@ -1401,9 +1401,9 @@ namespace EditorCV.Models
         private bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
         {
             bool update = true;
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
+            Dictionary<Guid, List<TriplesToInclude>> triplesIncludeGuardado = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<RemoveTriples>> triplesRemoveGuardado = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<TriplesToModify>> triplesModifyGuardado = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
 
             foreach (Entity.Property property in pUpdatedEntity.properties)
             {
@@ -1420,7 +1420,7 @@ namespace EditorCV.Models
                     {
                         foreach (string valor in propertyLoadedEntity.values)
                         {
-                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                            triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                             {
                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
                                 Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
@@ -1450,7 +1450,7 @@ namespace EditorCV.Models
                             {
                                 if (numLoaded == 1 && numNew == 1)
                                 {
-                                    triplesModify[pIdMainEntity].Add(new TriplesToModify()
+                                    triplesModifyGuardado[pIdMainEntity].Add(new TriplesToModify()
                                     {
 
                                         Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
@@ -1463,7 +1463,7 @@ namespace EditorCV.Models
                                     //Eliminaciones
                                     foreach (string valor in valuesLoadedEntity.Except(property.values))
                                     {
-                                        triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                        triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
                                             Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
@@ -1475,7 +1475,7 @@ namespace EditorCV.Models
                                     {
                                         if (!valor.EndsWith("@@@"))
                                         {
-                                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
+                                            triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                                             {
 
                                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
@@ -1494,7 +1494,7 @@ namespace EditorCV.Models
                     {
                         if (!valor.EndsWith("@@@"))
                         {
-                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
+                            triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                             {
 
                                 Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
@@ -1512,7 +1512,7 @@ namespace EditorCV.Models
                         {
                             foreach (string valor in propertyToRemove.values)
                             {
-                                triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                 {
 
                                     Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
@@ -1538,9 +1538,9 @@ namespace EditorCV.Models
                                     if (valor.Contains(auxEntityRemove))
                                     {
                                         //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
-                                        triplesRemove[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
+                                        triplesRemoveGuardado[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
                                         //Eliminamos la entidad auxiliar
-                                        triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                        triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
                                             Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
@@ -1554,17 +1554,17 @@ namespace EditorCV.Models
                     }
                 }
             }
-            if (triplesRemove[pIdMainEntity].Count > 0)
+            if (triplesRemoveGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
+                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemoveGuardado)[pIdMainEntity];
             }
-            if (triplesInclude[pIdMainEntity].Count > 0)
+            if (triplesIncludeGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[pIdMainEntity];
+                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesIncludeGuardado)[pIdMainEntity];
             }
-            if (triplesModify[pIdMainEntity].Count > 0)
+            if (triplesModifyGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[pIdMainEntity];
+                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModifyGuardado)[pIdMainEntity];
             }
             return update;
         }
