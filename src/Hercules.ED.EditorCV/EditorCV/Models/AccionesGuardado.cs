@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +35,7 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
         /// Cambia la privacidad de un item
@@ -1405,14 +1406,14 @@ namespace EditorCV.Models
             Dictionary<Guid, List<RemoveTriples>> triplesRemoveGuardado = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
             Dictionary<Guid, List<TriplesToModify>> triplesModifyGuardado = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
 
-            foreach (Entity.Property property in pUpdatedEntity.properties)
+            foreach (Entity.Property propertyGuardado in pUpdatedEntity.properties)
             {
-                bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
+                bool remove = propertyGuardado.values == null || propertyGuardado.values.Count == 0 || !propertyGuardado.values.Exists(x => !string.IsNullOrEmpty(x));
                 //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
                 Entity.Property propertyLoadedEntity = null;
                 if (pLoadedEntity != null)
                 {
-                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == propertyGuardado.prop);
                 }
                 if (propertyLoadedEntity != null)
                 {
@@ -1422,8 +1423,8 @@ namespace EditorCV.Models
                         {
                             triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                             {
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                             });
                         }
                     }
@@ -1434,7 +1435,7 @@ namespace EditorCV.Models
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
-                        foreach (string valor in property.values)
+                        foreach (string valor in propertyGuardado.values)
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
@@ -1442,7 +1443,7 @@ namespace EditorCV.Models
                         foreach (string item in items)
                         {
                             List<string> valuesLoadedEntity = propertyLoadedEntity.values.Where(x => GetEntityOfValue(x) == item).ToList();
-                            List<string> valuesEntity = property.values.Where(x => GetEntityOfValue(x) == item).ToList();
+                            List<string> valuesEntity = propertyGuardado.values.Where(x => GetEntityOfValue(x) == item).ToList();
                             int numLoaded = valuesLoadedEntity.Count;
                             int numNew = valuesEntity.Count;
                             int numIntersect = valuesLoadedEntity.Intersect(valuesEntity).Count();
@@ -1453,21 +1454,21 @@ namespace EditorCV.Models
                                     triplesModifyGuardado[pIdMainEntity].Add(new TriplesToModify()
                                     {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesEntity[0], property.prop),
-                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesLoadedEntity[0], property.prop)
+                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesEntity[0], propertyGuardado.prop),
+                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesLoadedEntity[0], propertyGuardado.prop)
                                     });
                                 }
                                 else
                                 {
                                     //Eliminaciones
-                                    foreach (string valor in valuesLoadedEntity.Except(property.values))
+                                    foreach (string valor in valuesLoadedEntity.Except(propertyGuardado.values))
                                     {
                                         triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
-                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                         });
                                     }
                                     //Inserciones
@@ -1478,8 +1479,8 @@ namespace EditorCV.Models
                                             triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                                             {
 
-                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                             });
                                         }
                                     }
@@ -1490,15 +1491,15 @@ namespace EditorCV.Models
                 }
                 else if (!remove)
                 {
-                    foreach (string valor in property.values)
+                    foreach (string valor in propertyGuardado.values)
                     {
                         if (!valor.EndsWith("@@@"))
                         {
                             triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                             {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                             });
                         }
                     }
@@ -1507,7 +1508,7 @@ namespace EditorCV.Models
                 {
                     if (pLoadedEntity != null)
                     {
-                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(propertyGuardado.prop)).ToList();
                         foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                         {
                             foreach (string valor in propertyToRemove.values)
@@ -1515,8 +1516,8 @@ namespace EditorCV.Models
                                 triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                 {
 
-                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                 });
                             }
                         }

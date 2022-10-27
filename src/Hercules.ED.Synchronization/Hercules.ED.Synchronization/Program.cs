@@ -45,11 +45,11 @@ namespace Hercules.ED.Synchronization
                 }
 
                 // Modo del fichero.
-                using var fileStream = new FileStream($"{FilePath}{Path.DirectorySeparatorChar}{CreateTimeStamp()}.log", FileMode.Append);
+                using var fileStream = new FileStream($"{FilePath}{Path.DirectorySeparatorChar}Synchronization_{CreateTimeStamp()}.log", FileMode.Append);
 
                 // Writer.
                 using var writter = new StreamWriter(fileStream);
-                writter.WriteLine(pMesssage);
+                writter.WriteLine(pMesssage + Environment.NewLine);
             }
 
             /// <summary>

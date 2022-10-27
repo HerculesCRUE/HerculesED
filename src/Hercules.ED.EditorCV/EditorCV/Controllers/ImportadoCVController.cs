@@ -165,39 +165,29 @@ namespace EditorCV.Controllers
                             }
                             else if (estadoRespuesta != null && accion == "POSTIMPORTAR")
                             {
+                                bool actualizar = false;
                                 if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_LECTURA")
                                 {
                                     petitionStatus[petitionID].actualWork = 2;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
                                 {
                                     petitionStatus[petitionID].actualWork = 3;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
                                 {
                                     petitionStatus[petitionID].actualWork = 4;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
                                 {
                                     petitionStatus[petitionID].actualWork = 5;
+                                    actualizar = true;
+                                }
+                                if (actualizar)
+                                {
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;

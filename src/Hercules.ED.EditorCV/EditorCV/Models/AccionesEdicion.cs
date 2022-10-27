@@ -19,6 +19,7 @@ using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using EditorCV.Models.Similarity;
+using System.IO;
 
 namespace EditorCV.Models
 {
@@ -30,8 +31,8 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
@@ -1655,13 +1656,7 @@ namespace EditorCV.Models
                             if (value.Count > 0)
                             {
                                 string fecha = value.First();
-                                int anio = int.Parse(fecha.Substring(0, 4));
-                                int mes = int.Parse(fecha.Substring(4, 2));
-                                int dia = int.Parse(fecha.Substring(6, 2));
-                                int horas = int.Parse(fecha.Substring(8, 2));
-                                int minutos = int.Parse(fecha.Substring(10, 2));
-                                int segundos = int.Parse(fecha.Substring(12, 2));
-                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateTime = ConvertirFechaGnossADateTimeDia(fecha);
                                 DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
 
                                 if (dateTime > dateMenos5Anio)
@@ -1681,13 +1676,7 @@ namespace EditorCV.Models
                             if (value.Count > 0)
                             {
                                 string fecha = value.First();
-                                int anio = int.Parse(fecha.Substring(0, 4));
-                                int mes = int.Parse(fecha.Substring(4, 2));
-                                int dia = int.Parse(fecha.Substring(6, 2));
-                                int horas = int.Parse(fecha.Substring(8, 2));
-                                int minutos = int.Parse(fecha.Substring(10, 2));
-                                int segundos = int.Parse(fecha.Substring(12, 2));
-                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateTime = ConvertirFechaGnossADateTimeDia(fecha);
                                 DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
 
                                 if (dateTime > dateMenos5Anio)
@@ -1957,6 +1946,13 @@ namespace EditorCV.Models
             return item;
         }
 
+        private DateTime ConvertirFechaGnossADateTimeDia(string pFecha)
+        {
+            int anio = int.Parse(pFecha.Substring(0, 4));
+            int mes = int.Parse(pFecha.Substring(4, 2));
+            int dia = int.Parse(pFecha.Substring(6, 2));
+            return new DateTime(anio, mes, dia);
+        }
 
         #endregion
 
