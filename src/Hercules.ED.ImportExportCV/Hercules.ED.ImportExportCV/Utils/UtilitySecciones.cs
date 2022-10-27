@@ -814,7 +814,6 @@ where{{
                         break;
                     case "OTHERS":
                         Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == propIdOtroPub);
-                        //Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                         string valorID = StringGNOSSID(entityPartAux, identificador.Value);

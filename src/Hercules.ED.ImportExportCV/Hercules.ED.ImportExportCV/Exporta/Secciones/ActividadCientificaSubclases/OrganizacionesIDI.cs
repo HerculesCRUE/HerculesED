@@ -37,7 +37,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean()
+                CvnItemBean itemBean = new ()
                 {
                     Code = "060.020.030.000",
                     Items = new List<CVNObject>()

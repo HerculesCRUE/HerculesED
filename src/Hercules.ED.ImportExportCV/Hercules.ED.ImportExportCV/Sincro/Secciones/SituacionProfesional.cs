@@ -33,20 +33,20 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/currentProfessionalSituation", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/currentProfessionalSituation", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "position";
             string propTitle = "http://w3id.org/roh/employerOrganizationTitle";
             string rdfType = "http://vivoweb.org/ontology/core#Position";
             string rdfTypePrefix = "RelatedCurrentProfessionalSituation";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new();
+            Dictionary<string, string> equivalencias = new();
+            List<bool> listadoBloqueados = new();
 
-            if(petitionStatus != null)
+            if (petitionStatus != null)
             {
                 petitionStatus.actualWorkSubtitle = "IMPORTACION_SITUACION_PROFESIONAL";
             }
@@ -58,7 +58,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    SituacionProfesionalActual situacionProfesional = new SituacionProfesionalActual();
+                    SituacionProfesionalActual situacionProfesional = new();
                     situacionProfesional.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre)?.values.FirstOrDefault();
                     situacionProfesional.categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCategoriaProfesional)?.values.FirstOrDefault();
                     situacionProfesional.ID = Guid.NewGuid().ToString();
@@ -92,18 +92,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/previousPositions", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new() { "http://w3id.org/roh/professionalSituation", "http://w3id.org/roh/previousPositions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "position";
             string propTitle = "http://w3id.org/roh/employerOrganizationTitle";
             string rdfType = "http://vivoweb.org/ontology/core#Position";
             string rdfTypePrefix = "RelatedPreviousPositions";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new();
+            Dictionary<string, string> equivalencias = new();
+            List<bool> listadoBloqueados = new();
 
             if (petitionStatus != null)
             {
@@ -117,7 +117,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    CargosActividades cargosActividades = new CargosActividades();
+                    CargosActividades cargosActividades = new();
                     cargosActividades.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre)?.values.FirstOrDefault();
                     cargosActividades.categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCategoriaProfesional)?.values.FirstOrDefault();
                     cargosActividades.fechaIni = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFechaInicio)?.values.FirstOrDefault();
@@ -150,7 +150,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetSituacionProfesionalActual(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new();
 
             List<CvnItemBean> listadoSituacionProfesionalActual = listadoDatos.Where(x => x.Code.Equals("010.010.000.000")).ToList();
             if (listadoSituacionProfesionalActual.Count > 0)
@@ -170,8 +170,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new();
+                    entidadAux.properties = new();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.010.000.170")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -220,7 +220,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.010.000.260");
 
@@ -246,7 +246,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalEntidadEmpleadora(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalEntidadEmpleadora(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.010.000.020"))) { return; }
@@ -271,11 +271,16 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalCorreoElectronico(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalCorreoElectronico(CvnItemBean item, Entity entidadAux)
         {
             if (string.IsNullOrEmpty(item.GetStringPorIDCampo("010.010.000.160"))) { return; }
 
             List<string> listado = item.GetStringPorIDCampo("010.010.000.160").Split(";")?.ToList();
+            if (listado == null || !listado.Any())
+            {
+                return;
+            }
+
             foreach (string correo in listado)
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -290,7 +295,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalTelefono(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalTelefono(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.010.000.140");
 
@@ -307,7 +312,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalFax(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalFax(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.010.000.150");
 
@@ -324,7 +329,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SituacionProfesionalCodUnesco(CvnItemBean item, Entity entidadAux)
+        private static void SituacionProfesionalCodUnesco(CvnItemBean item, Entity entidadAux)
         {
             //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.010.000.220");
@@ -347,7 +352,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetCargosActividades(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoCargosActividades = listadoDatos.Where(x => x.Code.Equals("010.020.000.000")).ToList();
             if (listadoCargosActividades.Count > 0)
@@ -367,8 +372,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new();
+                    entidadAux.properties = new();
                     if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020")) && !string.IsNullOrEmpty(item.GetStringPorIDCampo("010.020.000.170")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -421,7 +426,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.020.000.270");
 
@@ -447,7 +452,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesEntidadEmpleadora(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesEntidadEmpleadora(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("010.020.000.020"))) { return; }
@@ -472,11 +477,16 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesCorreoElectronico(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesCorreoElectronico(CvnItemBean item, Entity entidadAux)
         {
             if (string.IsNullOrEmpty(item.GetStringPorIDCampo("010.020.000.160"))) { return; }
 
             List<string> listado = item.GetStringPorIDCampo("010.020.000.160").Split(";")?.ToList();
+            if (listado == null || !listado.Any())
+            {
+                return;
+            }
+
             foreach (string correo in listado)
             {
                 entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -491,7 +501,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesTelefono(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesTelefono(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.020.000.140");
 
@@ -508,7 +518,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesFax(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesFax(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnPhoneBean> listado = item.GetListaElementosPorIDCampo<CvnItemBeanCvnPhoneBean>("010.020.000.150");
 
@@ -525,7 +535,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CargosActividadesCodUnesco(CvnItemBean item, Entity entidadAux)
+        private static void CargosActividadesCodUnesco(CvnItemBean item, Entity entidadAux)
         {
             //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("010.020.000.230");
