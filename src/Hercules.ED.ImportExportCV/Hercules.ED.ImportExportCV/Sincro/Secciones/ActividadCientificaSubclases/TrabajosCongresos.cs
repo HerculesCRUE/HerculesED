@@ -67,18 +67,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    TrabajosCongresos trabajosCongresos = new TrabajosCongresos
+                    TrabajosCongresos trabajosCongresos = new()
                     {
                         ID = fila["item"].value,
                         titulo = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        autores = new HashSet<string>()
                     };
-
-                    trabajosCongresos.autores = new HashSet<string>();
                     if (fila.ContainsKey("autores"))
                     {
-                        string[] autores = fila["autores"].value.Split("|");
-                        foreach (string autor in autores)
+                        string[] filasAutores = fila["autores"].value.Split("|");
+                        foreach (string autor in filasAutores)
                         {
                             trabajosCongresos.autores.Add(autor);
                         }
