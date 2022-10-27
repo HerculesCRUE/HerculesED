@@ -167,7 +167,7 @@ namespace Hercules.ED.UpdateKeywords
             string where = $@"WHERE {{
                                 ?s a roh:KeyWordConcept. 
                                 ?s roh:url '{pUrl}'. 
-                            ";
+                            }}";
 
             while (true)
             {
