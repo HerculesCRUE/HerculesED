@@ -499,14 +499,14 @@ namespace EditorCV.Models
             Dictionary<Guid, List<RemoveTriples>> triplesRemoveExportacion = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
             Dictionary<Guid, List<TriplesToModify>> triplesModifyExportacion = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
 
-            foreach (Entity.Property property in pUpdatedEntity.properties)
+            foreach (Entity.Property propertyExportacion in pUpdatedEntity.properties)
             {
-                bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
+                bool remove = propertyExportacion.values == null || propertyExportacion.values.Count == 0 || !propertyExportacion.values.Exists(x => !string.IsNullOrEmpty(x));
                 //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
                 Entity.Property propertyLoadedEntity = null;
                 if (pLoadedEntity != null)
                 {
-                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == propertyExportacion.prop);
                 }
                 if (propertyLoadedEntity != null)
                 {
@@ -516,7 +516,7 @@ namespace EditorCV.Models
                         {
                             triplesRemoveExportacion[pIdMainEntity].Add(new RemoveTriples()
                             {
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                 Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valor)
                             });
                         }
@@ -528,7 +528,7 @@ namespace EditorCV.Models
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
-                        foreach (string valor in property.values)
+                        foreach (string valor in propertyExportacion.values)
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
@@ -536,7 +536,7 @@ namespace EditorCV.Models
                         foreach (string item in items)
                         {
                             List<string> valuesLoadedEntity = propertyLoadedEntity.values.Where(x => GetEntityOfValue(x) == item).ToList();
-                            List<string> valuesEntity = property.values.Where(x => GetEntityOfValue(x) == item).ToList();
+                            List<string> valuesEntity = propertyExportacion.values.Where(x => GetEntityOfValue(x) == item).ToList();
                             int numLoaded = valuesLoadedEntity.Count;
                             int numNew = valuesEntity.Count;
                             int numIntersect = valuesLoadedEntity.Intersect(valuesEntity).Count();
@@ -547,7 +547,7 @@ namespace EditorCV.Models
                                     triplesModifyExportacion[pIdMainEntity].Add(new TriplesToModify()
                                     {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                         NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valuesEntity[0]),
                                         OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valuesLoadedEntity[0])
                                     });
@@ -555,12 +555,12 @@ namespace EditorCV.Models
                                 else
                                 {
                                     //Eliminaciones
-                                    foreach (string valor in valuesLoadedEntity.Except(property.values))
+                                    foreach (string valor in valuesLoadedEntity.Except(propertyExportacion.values))
                                     {
                                         triplesRemoveExportacion[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
-                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                             Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valor)
                                         });
                                     }
@@ -572,7 +572,7 @@ namespace EditorCV.Models
                                             triplesIncludeExportacion[pIdMainEntity].Add(new TriplesToInclude()
                                             {
 
-                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                                 NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valor)
                                             });
                                         }
@@ -584,14 +584,14 @@ namespace EditorCV.Models
                 }
                 else if (!remove)
                 {
-                    foreach (string valor in property.values)
+                    foreach (string valor in propertyExportacion.values)
                     {
                         if (!valor.EndsWith("@@@"))
                         {
                             triplesIncludeExportacion[pIdMainEntity].Add(new TriplesToInclude()
                             {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                 NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valor)
                             });
                         }
@@ -602,7 +602,7 @@ namespace EditorCV.Models
                     List<Entity.Property> propertiesLoadedEntityRemove = new List<Entity.Property>();
                     if (pLoadedEntity != null && pLoadedEntity.properties != null)
                     {
-                        propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                        propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(propertyExportacion.prop)).ToList();
                     }
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                     {
@@ -611,7 +611,7 @@ namespace EditorCV.Models
                             triplesRemoveExportacion[pIdMainEntity].Add(new RemoveTriples()
                             {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyExportacion.prop),
                                 Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(valor)
                             });
                         }
