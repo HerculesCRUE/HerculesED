@@ -13,8 +13,10 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.Zenodo)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 

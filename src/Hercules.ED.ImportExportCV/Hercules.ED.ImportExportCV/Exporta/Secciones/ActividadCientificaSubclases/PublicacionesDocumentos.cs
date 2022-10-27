@@ -30,6 +30,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaPublicacionesDocumentos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
+
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
@@ -41,7 +42,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
-
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
