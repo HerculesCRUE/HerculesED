@@ -15,64 +15,19 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string entidadRealizacion { get; set; }
         public string fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFunciones = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configER = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFunciones = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadRealizacion",
-                    config = configER,
-                    value = entidadRealizacion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "funciones",
-                    config = configFunciones,
-                    value = funciones
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                }
+                new DisambiguationData(configDescripcion,"descripcion",descripcion),
+                new DisambiguationData(configER,"entidadRealizacion",entidadRealizacion),
+                new DisambiguationData(configFunciones,"funciones",funciones),
+                new DisambiguationData(configFecha,"fecha",fecha)
             };
             return data;
         }
@@ -116,13 +71,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                         funciones = fila.ContainsKey("itemFunciones") ? fila["itemFunciones"].value : "",
                         entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
                         fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
-                };
+                    };
 
-                resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), gestionIDI);
+                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), gestionIDI);
+                }
             }
-        }
 
             return resultados;
         }
-}
+    }
 }
