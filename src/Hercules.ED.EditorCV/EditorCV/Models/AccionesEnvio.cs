@@ -1,4 +1,5 @@
 ﻿using Gnoss.ApiWrapper;
+using Gnoss.ApiWrapper.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -108,6 +109,73 @@ namespace EditorCV.Models
             {
                 return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Inserta un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        protected void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
+        {
+            Insercion(pGuid, pPropiedad, new List<string>() { pValorNuevo });
+        }
+
+        /// <summary>
+        /// Inserta un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        protected void Insercion(Guid pGuid, string pPropiedad, List<string> pValorNuevo)
+        {
+            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
+            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
+            foreach (string item in pValorNuevo)
+            {
+                TriplesToInclude triple = new TriplesToInclude();
+                triple.Predicate = pPropiedad;
+                triple.NewValue = item;
+                listaTriplesInsercion.Add(triple);
+            }
+            dicInsercion.Add(pGuid, listaTriplesInsercion);
+            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+        }
+
+        /// <summary>
+        /// Modifica un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        /// <param name="pValorAntiguo"></param>
+        protected void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
+        {
+            Modificacion(pGuid, pPropiedad, new List<string>() { pValorNuevo }, new List<string>() { pValorAntiguo };
+        }
+
+        /// <summary>
+        /// Modifica un triple.
+        /// </summary>
+        /// <param name="pGuid"></param>
+        /// <param name="pPropiedad"></param>
+        /// <param name="pValorNuevo"></param>
+        /// <param name="pValorAntiguo"></param>
+        protected void Modificacion(Guid pGuid, string pPropiedad, List<string> pValorNuevo, List<string> pValorAntiguo)
+        {
+            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
+            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            for (int i = 0; i < pValorNuevo.Count; i++)
+            {
+                TriplesToModify triple = new TriplesToModify();
+                triple.Predicate = pPropiedad;
+                triple.NewValue = pValorNuevo[i];
+                triple.OldValue = pValorAntiguo[i];
+                listaTriplesModificacion.Add(triple);
+            }
+            dicModificacion.Add(pGuid, listaTriplesModificacion);
+            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
         }
     }
 }
