@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     mTitle = value;
                 }
             }
-        }       
+        }
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
         {
@@ -55,36 +55,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             }
         }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
+        private static readonly DisambiguationDataConfig configTitulo = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
-        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configAutores = new(DisambiguationDataConfigType.equalsItemList, 0.5f);
 
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configTitulo,
-                    value = title
-                },
-
-                new DisambiguationData()
-                {
-                    property = "autores",
-                    config = configAutores,
-                    values = autores
-                }
+                new DisambiguationData(configTitulo,"descripcion",title),
+                new DisambiguationData(configAutores,"autores",autores)
             };
             return data;
         }
@@ -123,17 +104,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos
+                    PublicacionesDocumentos publicacionesDocumentos = new()
                     {
                         ID = fila["item"].value,
-                        title = fila["itemTitle"].value
+                        title = fila["itemTitle"].value,
+                        autores = new HashSet<string>()
                     };
-
-                    publicacionesDocumentos.autores = new HashSet<string>();
                     if (fila.ContainsKey("autores"))
                     {
-                        string[] autores = fila["autores"].value.Split("|");
-                        foreach (string autor in autores)
+                        string[] filasAutores = fila["autores"].value.Split("|");
+                        foreach (string autor in filasAutores)
                         {
                             publicacionesDocumentos.autores.Add(autor);
                         }
@@ -212,7 +192,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     }
                 }
 
-                Dictionary<string, HashSet<string>> docAutores = new Dictionary<string, HashSet<string>>();
+                Dictionary<string, HashSet<string>> docAutores = new();
                 int offset = 0;
                 int limit = 10000;
                 while (true)
@@ -231,7 +211,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     {
                         string doc = fila["item"].value;
                         string autor = fila["autor"].value;
-                        HashSet<string> autores = new HashSet<string>();
                         if (!docAutores.ContainsKey(doc))
                         {
                             docAutores.Add(doc, new HashSet<string>());

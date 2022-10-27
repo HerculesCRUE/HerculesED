@@ -213,19 +213,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                         "060.010.020.430", keyValue.Value);
                 }
 
-                ////Cita Other
-                //List<Tuple<string, string>> citasother = UtilityExportar.GetCitasOther(Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNombre, Variables.ActividadCientificaTecnologica.trabajosCongresosOtrasCitasNumero, keyValue.Value, mResourceApi);
-
-                //foreach (Tuple<string, string> citaOther in citasother)
-                //{
-                //    List<Tuple<string, string, string>> dicOtras = new List<Tuple<string, string, string>>();
-                //    dicOtras.Add(new Tuple<string, string, string>("Double", "060.010.020.430", citaOther.Item2));
-                //    dicOtras.Add(new Tuple<string, string, string>("String", "060.010.020.440", "OTHERS"));
-                //    dicOtras.Add(new Tuple<string, string, string>("String", "060.010.020.450", citaOther.Item1));
-                //    UtilityExportar.AddCitas(itemBean, dicOtras,
-                //        "060.010.010.310", keyValue.Value);
-                //}
-
                 listado.Add(itemBean);
             }
 

@@ -14,50 +14,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         public string fecha { get; set; }
         public string entidadConcesion { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configEC = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configNombre = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEC = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configNombre,
-                    value = nombre
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadConcesion",
-                    config = configEC,
-                    value = entidadConcesion
-                }
+                new DisambiguationData(configNombre,"descripcion",nombre),
+                new DisambiguationData(configFecha,"fecha",fecha),
+                new DisambiguationData(configEC, "entidadConcesion",entidadConcesion)
             };
             return data;
         }
@@ -75,7 +42,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultados = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -92,7 +59,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PremiosInnovacionDocente premiosInnovacion = new PremiosInnovacionDocente
+                    PremiosInnovacionDocente premiosInnovacion = new ()
                     {
                         ID = fila["item"].value,
                         nombre = fila["itemTitle"].value,

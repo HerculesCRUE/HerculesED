@@ -120,19 +120,7 @@ where {{
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         public void EnvioPRC(ConfigService pConfig, string pIdRecurso, List<string> pIdProyecto)
         {
-            string pIdDocumento = "";
-            string selectProyecto = "select distinct ?documento";
-            string whereProyecto = $@"where{{
-    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
-}}";
-            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
-            if (query.results.bindings.Count != 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
-                {
-                    pIdDocumento = res["documento"].value;
-                }
-            }
+            string pIdDocumento = ObtenerIdDocumento(pIdRecurso);
             if (string.IsNullOrEmpty(pIdDocumento))
             {
                 return;
@@ -798,19 +786,7 @@ where {{
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         public void EnvioEliminacionPRC(ConfigService pConfig, string pIdRecurso)
         {
-            string pIdDocumento = "";
-            string selectProyecto = "select distinct ?documento";
-            string whereProyecto = $@"where{{
-                <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
-            }}";
-            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
-            if (query.results.bindings.Count != 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
-                {
-                    pIdDocumento = res["documento"].value;
-                }
-            }
+            string pIdDocumento = ObtenerIdDocumento(pIdRecurso);
             if (string.IsNullOrEmpty(pIdDocumento))
             {
                 return;
@@ -1392,6 +1368,21 @@ where {{
                 Modificacion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "pendiente", valorEnviado);
             }
             #endregion
+        }
+
+        private string ObtenerIdDocumento(string pIdRecurso)
+        {
+            string pIdDocumento = "";
+            string selectProyecto = "select distinct ?documento";
+            string whereProyecto = $@"where{{
+    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
+}}";
+            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
+            if (query.results.bindings.Count != 0)
+            {
+                pIdDocumento = query.results.bindings[0]["documento"].value;                
+            }
+            return pIdDocumento;
         }
 
         /// <summary>

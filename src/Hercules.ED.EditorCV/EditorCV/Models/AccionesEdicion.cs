@@ -394,70 +394,72 @@ namespace EditorCV.Models
                             // Comprobamos un ítem unicamente o todos los del listado.
                             if (pItemId != null)
                             {
-                                Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                similarsin[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
+                                Dictionary<string, bool> similarsinItem = new Dictionary<string, bool>();
+                                similarsinItem[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
                                 for (int j = 0; j < itemsTitleSectionList.Count; j++)
                                 {
-                                    double similitud = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
-                                    if (similitud > minSimilarity)
+                                    double similitudItemsTitleSectionList = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                    if (similitudItemsTitleSectionList > minSimilarity)
                                     {
-                                        similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                        similarsinItem[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
                                     }
                                 }
                                 //Eliminamos si hay alguno duplicado
                                 foreach (string duplicado in similars.SelectMany(x => x))
                                 {
-                                    if (similarsin.ContainsKey(duplicado))
+                                    if (similarsinItem.ContainsKey(duplicado))
                                     {
-                                        similarsin.Remove(duplicado);
+                                        similarsinItem.Remove(duplicado);
                                     }
                                 }
 
                                 //Ordenamos primero con los validados
-                                similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                similarsinItem = similarsinItem.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-                                if (similarsin.Count > 1)
+                                if (similarsinItem.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
-                                    similars.Add(new HashSet<string>(similarsin.Keys));
+                                    similars.Add(new HashSet<string>(similarsinItem.Keys));
                                 }
                             }
                             else
                             {
                                 for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
                                 {
-                                    Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                    similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
+                                    Dictionary<string, bool> similarsinListado = new Dictionary<string, bool>();
+                                    similarsinListado[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
 
                                     //Añadimos si la similaridad es superior a minSimilarity
                                     for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
                                     {
-                                        double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
-                                        if (similitud > minSimilarity)
+                                        double similitudItemsTitleValidatedSection = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                        if (similitudItemsTitleValidatedSection > minSimilarity)
                                         {
-                                            similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                            similarsinListado[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
                                         }
                                     }
 
                                     //Eliminamos si hay alguno duplicado
                                     foreach (string duplicado in similars.SelectMany(x => x))
                                     {
-                                        if (similarsin.ContainsKey(duplicado))
+                                        if (similarsinListado.ContainsKey(duplicado))
                                         {
-                                            similarsin.Remove(duplicado);
+                                            similarsinListado.Remove(duplicado);
                                         }
                                     }
 
                                     //Ordenamos primero con los validados
-                                    similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                    similarsinListado = similarsinListado.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-                                    if (similarsin.Count > 1)
+                                    if (similarsinListado.Count > 1)
                                     {
                                         //Si hay mas de uno y hay alguno no validado lo añadimos
-                                        similars.Add(new HashSet<string>(similarsin.Keys));
+                                        similars.Add(new HashSet<string>(similarsinListado.Keys));
                                     }
                                 }
                             }
+
+
 
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
                             foreach (HashSet<string> sim in similars.ToList())

@@ -253,10 +253,7 @@ namespace EditorCV.Models
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
-                }
+                return UtilidadesAPI.GetValorFilaSparqlObject(resultadoQuery.results.bindings[0], "crisIdentifier");
             }
 
             return string.Empty;
@@ -283,10 +280,7 @@ namespace EditorCV.Models
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return int.Parse(fila["crisIdentifier"].value.Split("|").Last());
-                }
+                return int.Parse(resultadoQuery.results.bindings[0]["crisIdentifier"].value.Split("|").Last());
             }
 
             return 0;

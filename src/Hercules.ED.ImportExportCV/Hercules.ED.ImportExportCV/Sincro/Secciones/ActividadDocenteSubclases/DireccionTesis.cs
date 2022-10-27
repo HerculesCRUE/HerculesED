@@ -14,50 +14,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         public string fecha { get; set; }
         public string entidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configER = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadRealizacion",
-                    config = configER,
-                    value = entidadRealizacion
-                }
+                new DisambiguationData(configDescripcion,"descripcion",descripcion),
+                new DisambiguationData(configFecha,"fecha",fecha),
+                new DisambiguationData(configER,"entidadRealizacion",entidadRealizacion)
             };
             return data;
         }
@@ -92,7 +59,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    DireccionTesis direccionTesis = new DireccionTesis
+                    DireccionTesis direccionTesis = new ()
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,

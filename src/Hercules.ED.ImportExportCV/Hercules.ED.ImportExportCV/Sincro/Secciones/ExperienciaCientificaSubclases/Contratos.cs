@@ -12,22 +12,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
     {
         public string nombre { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 1f
-        };
+        private static readonly DisambiguationDataConfig configNombre = new(DisambiguationDataConfigType.equalsTitle, 1f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "nombre",
-                    config = configNombre,
-                    value = nombre
-                }
+                new DisambiguationData(configNombre,"nombre",nombre)
             };
             return data;
         }
@@ -37,7 +28,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultados = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();

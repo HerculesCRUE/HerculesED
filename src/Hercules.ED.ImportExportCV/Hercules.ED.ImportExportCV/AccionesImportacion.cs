@@ -289,7 +289,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
         /// <param name="filtrador">Filtrador</param>
         /// <param name="seccionAgrupada">Seccion</param>
-        private void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        private static void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
         {
             List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
             if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
@@ -311,7 +311,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
         /// <param name="filtrador">Filtrador</param>
         /// <param name="seccionAgrupada">Seccion</param>
-        private void SobrescribirIndicadoresGenerales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        private static void SobrescribirIndicadoresGenerales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
         {
             List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
 
@@ -333,7 +333,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listadoTextoLibreBBDD">Listado de ítems en BBDD</param>
         /// <param name="filtrador">Filtrador</param>
         /// <param name="seccionAgrupada">Seccion</param>
-        private void SobrescribirTextoLibre(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoTextoLibreBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        private static void SobrescribirTextoLibre(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoTextoLibreBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
         {
             List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
 

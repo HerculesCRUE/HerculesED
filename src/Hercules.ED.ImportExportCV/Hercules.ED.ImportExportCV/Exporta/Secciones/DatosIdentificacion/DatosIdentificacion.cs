@@ -25,8 +25,6 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         /// <param name="listaId"></param>
         public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
-
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
             if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
@@ -34,7 +32,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
                 return;
             }
 
-            CvnItemBean itemBean = new CvnItemBean()
+            CvnItemBean itemBean = new ()
             {
                 Code = "000.010.000.000",
                 Items = new List<CVNObject>()

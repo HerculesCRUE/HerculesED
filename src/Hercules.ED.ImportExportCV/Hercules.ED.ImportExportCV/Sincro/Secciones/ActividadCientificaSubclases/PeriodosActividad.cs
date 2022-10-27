@@ -14,50 +14,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string fecha { get; set; }
         public string entidadAcreditante { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configEA = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEA = new DisambiguationDataConfig(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "numTramos",
-                    config = configDescripcion,
-                    value = numTramos
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadAcreditacion",
-                    config = configEA,
-                    value = entidadAcreditante
-                }
+                new DisambiguationData(configDescripcion,"numTramos",numTramos),
+                new DisambiguationData(configFecha,"fecha",fecha),
+                new DisambiguationData(configEA,"entidadAcreditacion",entidadAcreditante)
             };
 
             return data;

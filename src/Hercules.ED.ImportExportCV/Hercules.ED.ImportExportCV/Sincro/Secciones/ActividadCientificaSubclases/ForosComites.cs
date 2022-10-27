@@ -13,36 +13,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string descripcion { get; set; }
         public string categoriaProfesional { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configCatProf = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configCatProf = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "categoriaProfesional",
-                    config = configCatProf,
-                    value = categoriaProfesional
-                }
+                new DisambiguationData(configDescripcion,"descripcion",descripcion),
+                new DisambiguationData(configCatProf,"categoriaProfesional",categoriaProfesional)
             };
             return data;
         }
@@ -60,7 +39,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultados = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -77,7 +56,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ForosComites forosComites = new ForosComites
+                    ForosComites forosComites = new ()
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,

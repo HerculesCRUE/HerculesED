@@ -13,36 +13,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string descripcion { get; set; }
         public string EntAfi { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configEA = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configEA = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "EntAfi",
-                    config = configEA,
-                    value = EntAfi
-                }
+                new DisambiguationData(configDescripcion,"descripcion",descripcion),
+                new DisambiguationData(configEA,"EntAfi",EntAfi)
             };
             return data;
         }
