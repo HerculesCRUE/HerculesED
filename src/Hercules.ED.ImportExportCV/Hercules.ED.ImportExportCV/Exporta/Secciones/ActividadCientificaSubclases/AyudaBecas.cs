@@ -26,17 +26,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaAyudaBecas(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
-            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+
+            // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
-                if (listadoIdentificadores.Count == 0)
-                {
-                    return;
-                }
+                return;
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
