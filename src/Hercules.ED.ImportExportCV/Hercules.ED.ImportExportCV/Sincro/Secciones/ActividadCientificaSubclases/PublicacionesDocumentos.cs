@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     mTitle = value;
                 }
             }
-        }       
+        }
         private HashSet<string> mAutores { get; set; }
         public HashSet<string> autores
         {
@@ -55,36 +55,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             }
         }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
+        private static readonly DisambiguationDataConfig configTitulo = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
-        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configAutores = new(DisambiguationDataConfigType.equalsItemList, 0.5f);
 
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configTitulo,
-                    value = title
-                },
-
-                new DisambiguationData()
-                {
-                    property = "autores",
-                    config = configAutores,
-                    values = autores
-                }
+                new DisambiguationData(configTitulo,"descripcion",title),
+                new DisambiguationData(configAutores,"autores",autores)
             };
             return data;
         }

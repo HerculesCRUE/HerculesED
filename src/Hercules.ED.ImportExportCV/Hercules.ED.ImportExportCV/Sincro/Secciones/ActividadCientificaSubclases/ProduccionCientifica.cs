@@ -13,36 +13,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string fuenteH { get; set; }
         public string fuenteHOtros { get; set; }
 
-        private static readonly DisambiguationDataConfig configFuenteH = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFuenteHOtros = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configFuenteH = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFuenteHOtros = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "fuenteIndiceH",
-                    config = configFuenteH,
-                    value = fuenteH
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fuenteIndiceHOtros",
-                    config = configFuenteHOtros,
-                    value = fuenteHOtros
-                }
+                new DisambiguationData(configFuenteH,"fuenteIndiceH",fuenteH),
+                new DisambiguationData(configFuenteHOtros,"fuenteIndiceHOtros",fuenteHOtros)
             };
 
             return data;
