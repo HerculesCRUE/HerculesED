@@ -1535,11 +1535,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item2))
                 {
                     string nombreEntidad = rdfTypeItem[0];
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }
@@ -1548,11 +1548,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item3))
                 {
                     string nombreEntidad = rdfTypeItem[1];
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }
@@ -1623,7 +1623,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoDatos"></param>
         /// <returns></returns>
-        private Entity GetIndicadoresGenerales(List<CvnItemBean> listadoDatos)
+        private static Entity GetIndicadoresGenerales(List<CvnItemBean> listadoDatos)
         {
             try
             {
@@ -1751,7 +1751,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
+        private static string PublicacionesDocumentosComprobarDOI(CvnItemBean item)
         {
             string idDOIValue = "";
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
@@ -1773,7 +1773,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionesDocumentosCitasINRECS(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionesDocumentosCitasINRECS(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoCitas = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.010.010.310");
             foreach (CvnItemBeanCvnCodeGroup codeGroup in listadoCitas)
@@ -1795,7 +1795,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicTopics"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionesDocumentosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        private static void PublicacionesDocumentosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
         {
             if (dicTopics == null || dicTopics.Count == 0)
             {
@@ -1824,7 +1824,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicEtiquetas"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionesDocumentosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        private static void PublicacionesDocumentosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
         {
             if (dicEtiquetas == null || dicEtiquetas.Count == 0)
             {
@@ -1850,7 +1850,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionesDocumentosSoporte(CvnItemBean item, Entity entidadAux)
         {
             //Compruebo si existe alguna revista con ese nombre
             string nombreRevista = item.GetStringPorIDCampo("060.010.010.210");
@@ -1895,7 +1895,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosAutores(CvnItemBean item, Entity entidadAux, List<CvnItemBean> listadoSituacionProfesional)
+        private static void PublicacionesDocumentosAutores(CvnItemBean item, Entity entidadAux, List<CvnItemBean> listadoSituacionProfesional)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.010.040");
 
@@ -1938,7 +1938,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosTraducciones(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionesDocumentosTraducciones(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnTitleBean> listadoTraducciones = item.GetListaElementosPorIDCampo<CvnItemBeanCvnTitleBean>("060.010.010.350");
             foreach (CvnItemBeanCvnTitleBean traduccion in listadoTraducciones)
@@ -1956,7 +1956,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionesDocumentosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.400");
             string propIdHandle = Variables.ActividadCientificaTecnologica.pubDocumentosIDPubDigitalHandle;
@@ -1974,7 +1974,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PublicacionesDocumentosISBN(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionesDocumentosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.160");
             string propiedadISBN = Variables.ActividadCientificaTecnologica.pubDocumentosPubISBN;
@@ -2094,7 +2094,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
-        private string TrabajosCongresosComprobarDOI(CvnItemBean item)
+        private static string TrabajosCongresosComprobarDOI(CvnItemBean item)
         {
             string idDOIValue = "";
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
@@ -2116,7 +2116,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void TrabajosCongresosCitasINRECS(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosCitasINRECS(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoCitas = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.010.020.430");
             foreach (CvnItemBeanCvnCodeGroup codeGroup in listadoCitas)
@@ -2138,7 +2138,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicTopics"></param>
         /// <param name="entidadAux"></param>
-        private void TrabajosCongresosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        private static void TrabajosCongresosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
         {
             if (dicTopics == null || dicTopics.Count == 0)
             {
@@ -2168,7 +2168,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicEtiquetas"></param>
         /// <param name="entidadAux"></param>
-        private void TrabajosCongresosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        private static void TrabajosCongresosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
         {
             if (dicEtiquetas == null || dicEtiquetas.Count == 0)
             {
@@ -2194,7 +2194,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosAutores(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.020.040");
 
@@ -2237,7 +2237,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.400");
             string propIdHandle = Variables.ActividadCientificaTecnologica.trabajosCongresosIDPubDigitalHandle;
@@ -2255,7 +2255,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosISBN(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.320");
             string propiedadISBN = Variables.ActividadCientificaTecnologica.trabajosCongresosPubISBN;
@@ -2269,7 +2269,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosISSN(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosISSN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.020.320");
             string propiedadISSN = Variables.ActividadCientificaTecnologica.trabajosCongresosPubISSN;
@@ -2283,7 +2283,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosCongresosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosCongresosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.020.110"),
@@ -2412,7 +2412,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicTopics"></param>
         /// <param name="entidadAux"></param>
-        private void TrabajosJornadasSeminariosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosTopics(Dictionary<string, string> dicTopics, Entity entidadAux)
         {
             if (dicTopics == null || dicTopics.Count == 0)
             {
@@ -2442,7 +2442,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="dicEtiquetas"></param>
         /// <param name="entidadAux"></param>
-        private void TrabajosJornadasSeminariosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosEtiquetas(Dictionary<string, string> dicEtiquetas, Entity entidadAux)
         {
             if (dicEtiquetas == null || dicEtiquetas.Count == 0)
             {
@@ -2468,7 +2468,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosAutores(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.030.310");
             entidadAux.autores = new List<Persona>();
@@ -2512,7 +2512,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.400");
             string propIdHandle = Variables.ActividadCientificaTecnologica.trabajosJornSemIDPubDigitalHandle;
@@ -2530,7 +2530,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosISBN(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.290");
             string propiedadISBN = Variables.ActividadCientificaTecnologica.trabajosJornSemPubISBN;
@@ -2544,7 +2544,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosISSN(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosISSN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.030.290");
             string propiedadISSN = Variables.ActividadCientificaTecnologica.trabajosJornSemPubISSN;
@@ -2558,7 +2558,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void TrabajosJornadasSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void TrabajosJornadasSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.030.080"),
@@ -2663,7 +2663,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasActividadesDivulgacionEvento(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesDivulgacionEvento(CvnItemBean item, Entity entidadAux)
         {
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                 new Property(Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento, item.GetStringPorIDCampo("060.010.040.080")),
@@ -2685,7 +2685,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasActividadesDivulgacionAutores(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesDivulgacionAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.010.040.350");
 
@@ -2706,7 +2706,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasActividadesDivulgacionIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesDivulgacionIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.400");
             string propIdHandle = Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalHandle;
@@ -2724,7 +2724,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasActividadesDivulgacionISBN(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesDivulgacionISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.040.300");
             string propiedadISBN = Variables.ActividadCientificaTecnologica.otrasActDivulPubISBN;
@@ -2740,7 +2740,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasActividadesDivulgacionEntidad(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesDivulgacionEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.010.040.090"),
@@ -2825,7 +2825,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void ComitesCTAEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
+        private static void ComitesCTAEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Afiliación
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.010.060"),
@@ -2847,7 +2847,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void ComitesCTACodigosUnesco(CvnItemBean item, Entity entidadAux)
+        private static void ComitesCTACodigosUnesco(CvnItemBean item, Entity entidadAux)
         {
             //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.020.010.120");
@@ -2939,7 +2939,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OrganizacionIDIEntidadConvocante(CvnItemBean item, Entity entidadAux)
+        private static void OrganizacionIDIEntidadConvocante(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Convocante
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.030.070"),
@@ -3033,7 +3033,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void GestionIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void GestionIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.020.040.230");
 
@@ -3059,7 +3059,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void GestionIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void GestionIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Realizacion
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.040.090"),
@@ -3146,7 +3146,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void ForosComitesEntidadOrganizadoraORepresentada(CvnItemBean item, Entity entidadAux)
+        private static void ForosComitesEntidadOrganizadoraORepresentada(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad Organizadora
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.020.050.060"),
@@ -3247,7 +3247,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void EvalRevIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void EvalRevIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
 
             //Añado la referencia si existe
@@ -3340,7 +3340,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstanciasIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void EstanciasIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.010.050.240");
 
@@ -3366,7 +3366,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstanciasIDICodigosUnesco(CvnItemBean item, Entity entidadAux)
+        private static void EstanciasIDICodigosUnesco(CvnItemBean item, Entity entidadAux)
         {
             //Añado los códigos UNESCO de especialización primaria
             List<CvnItemBeanCvnString> listadoCodUnescoPrimaria = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.010.050.130");
@@ -3388,7 +3388,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void EstanciasIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void EstanciasIDIEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Compruebo que existe entidad de realizacion
             if (!string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.010.050.010")))
@@ -3502,7 +3502,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void AyudaBecasPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void AyudaBecasPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.030.010.050");
 
@@ -3528,7 +3528,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void AyudasBecasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void AyudasBecasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.180")))
@@ -3552,7 +3552,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void AyudasBecasEntidadConcede(CvnItemBean item, Entity entidadAux)
+        private static void AyudasBecasEntidadConcede(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.010.080")))
@@ -3641,7 +3641,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtrosModosColaboracionPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void OtrosModosColaboracionPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.020.020.160");
 
@@ -3667,7 +3667,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtrosModosColaboracionAutores(CvnItemBean item, Entity entidadAux)
+        private static void OtrosModosColaboracionAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("060.020.020.070");
 
@@ -3715,7 +3715,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// pertenecientes al listado <paramref name="listadoEntidadParticipante"/>.
         /// </summary>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrosModosColaboracionEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
+        private static void OtrosModosColaboracionEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.020.020.080");
 
@@ -3845,7 +3845,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void SociedadesAsociacionesPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void SociedadesAsociacionesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("060.030.020.090");
 
@@ -3871,7 +3871,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void SociedadesAsociacionesEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
+        private static void SociedadesAsociacionesEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad de Afiliacion no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.020.050")))
@@ -3963,7 +3963,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void ConsejosEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
+        private static void ConsejosEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.030.050")))
@@ -4054,7 +4054,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>        
-        private void RedesCooperacionEntidadSeleccion(CvnItemBean item, Entity entidadAux)
+        private static void RedesCooperacionEntidadSeleccion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.040.110")))
@@ -4080,7 +4080,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="listadoEntidadParticipante">listadoEntidadParticipante</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void RedesCooperacionEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
+        private static void RedesCooperacionEntidadesParticipantes(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("060.030.040.070");
 
@@ -4189,7 +4189,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PremiosMencionesEntidad(CvnItemBean item, Entity entidadAux)
+        private static void PremiosMencionesEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.050.050")))
@@ -4272,7 +4272,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void OtrasDistincionesEntidad(CvnItemBean item, Entity entidadAux)
+        private static void OtrasDistincionesEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.060.050")))
@@ -4355,7 +4355,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item">item</param>
         /// <param name="entidadAux">entidadAux</param>
-        private void PeriodosActividadInvestigadoraEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
+        private static void PeriodosActividadInvestigadoraEntidadAfiliacion(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.070.050")))
@@ -4437,7 +4437,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void AcreditacionesObtenidasEntidad(CvnItemBean item, Entity entidadAux)
+        private static void AcreditacionesObtenidasEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.090.060")))
@@ -4519,7 +4519,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtrosMeritosEntidad(CvnItemBean item, Entity entidadAux)
+        private static void OtrosMeritosEntidad(CvnItemBean item, Entity entidadAux)
         {
             //Si no esta Entidad no añado datos
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("060.030.100.020")))
