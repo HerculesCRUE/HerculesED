@@ -179,11 +179,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item2))
                 {
                     string nombreEntidad = rdfTypeItem.First();
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }
@@ -192,11 +192,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item3))
                 {
                     string nombreEntidad = rdfTypeItem[1];
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }
