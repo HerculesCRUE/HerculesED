@@ -87,11 +87,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 }}";
 
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
-                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
                 {
-                    return fila["o"].value;
+                    throw new KeyNotFoundException("No existe la entidad http://w3id.org/roh/personalData");
                 }
-                throw new Exception("No existe la entidad http://w3id.org/roh/personalData");
+                Dictionary<string, Data> fila = resultData.results.bindings.First();
+
+                return fila["o"].value;
+
             }
             catch (NullReferenceException e)
             {

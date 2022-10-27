@@ -13,10 +13,12 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ResearcherObjectLoad&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ResearcherObjectLoad)
 
 
 

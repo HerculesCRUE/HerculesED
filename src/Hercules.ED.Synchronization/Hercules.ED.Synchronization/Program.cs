@@ -1,12 +1,14 @@
 ﻿using Gnoss.ApiWrapper;
 using Hercules.ED.Synchronization.Config;
 using Hercules.ED.Synchronization.Models;
+using Newtonsoft.Json;
 
 namespace Hercules.ED.Synchronization
 {
     class Program
     {
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
 
         /// <summary>
         /// Main.
@@ -14,10 +16,12 @@ namespace Hercules.ED.Synchronization
         /// <param name="args">Argumentos.</param>
         static void Main(string[] args)
         {
-            Synchro synchro = new Synchro();
+            Synchro synchro = new ();
             synchro.mResourceApi = mResourceApi;
-            synchro.configuracion = new ConfigService();
-            FileLogger.FilePath = synchro.configuracion.GetLogPath();
+            synchro.mConfiguracion = new ConfigService();
+            synchro.mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
+
+            FileLogger.FilePath = synchro.mConfiguracion.GetLogPath();
             synchro.ProcessComplete();
         }
 
@@ -31,33 +35,44 @@ namespace Hercules.ED.Synchronization
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
             /// </summary>
-            /// <param name="messsage"></param>
-            public static void Log(string messsage)
+            /// <param name="pMesssage">Mensaje de error a mostrar.</param>
+            public static void Log(string pMesssage)
             {
+                // Si no existe el directorio, se crea.
                 if (!Directory.Exists(FilePath))
                 {
                     Directory.CreateDirectory(FilePath);
                 }
-                using var fileStream = new FileStream($"{FilePath}/log_{CreateTimeStamp()}.txt", FileMode.Append);
+
+                // Modo del fichero.
+                using var fileStream = new FileStream($"{FilePath}{Path.DirectorySeparatorChar}{CreateTimeStamp()}.log", FileMode.Append);
+
+                // Writer.
                 using var writter = new StreamWriter(fileStream);
-                writter.WriteLine(messsage);
+                writter.WriteLine(pMesssage);
             }
 
+            /// <summary>
+            /// Crear formato de año.
+            /// </summary>
+            /// <returns></returns>
             private static string CreateTimeStamp()
             {
                 DateTime time = DateTime.Now;
+
                 string month = time.Month.ToString();
                 if (month.Length == 1)
                 {
                     month = $"0{month}";
                 }
+
                 string day = time.Day.ToString();
                 if (day.Length == 1)
                 {
                     day = $"0{day}";
                 }
-                string timeStamp = $"{time.Year.ToString()}{month}{day}";
-                return timeStamp;
+
+                return $"{time.Year}-{month}-{day}";
             }
         }
     }

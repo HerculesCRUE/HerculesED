@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class IndicadoresGenerales : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/generalQualityIndicators", "http://w3id.org/roh/generalQualityIndicatorCV" };
-        string graph = "curriculumvitae";
+        private readonly string graph = "curriculumvitae";
 
         public IndicadoresGenerales(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -28,17 +28,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaIndicadoresGenerales(Entity entity, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
-            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+
+            // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item1)).ToList();
-                if (listadoIdentificadores.Count == 0)
-                {
-                    return;
-                }
+                return;
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -50,7 +47,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 
                 string propIndicadores = UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.indicadoresGeneralesCalidad);
                 string texto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores))) ?
-                    keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores)).Select(x => x.values).FirstOrDefault().FirstOrDefault().Split("@@@").Last()
+                    keyValue.Value.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propIndicadores)).Select(x => x.values).First().First().Split("@@@").Last()
                     : null;
 
                 UtilityExportar.AddCvnItemBeanCvnRichText(itemBean, texto, "060.010.060.010");

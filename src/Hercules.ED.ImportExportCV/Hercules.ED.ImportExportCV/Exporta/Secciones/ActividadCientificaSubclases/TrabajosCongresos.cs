@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosCongresos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/worksSubmittedConferences", "http://w3id.org/roh/relatedWorkSubmittedConferencesCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "document";
+        private readonly string graph = "document";
 
         public TrabajosCongresos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

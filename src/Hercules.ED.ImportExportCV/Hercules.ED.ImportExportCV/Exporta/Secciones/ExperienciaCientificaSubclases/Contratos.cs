@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class Contratos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
             "http://w3id.org/roh/nonCompetitiveProjects", "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "project";
+        private readonly string graph = "project";
         public Contratos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
@@ -177,7 +177,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
                    "050.020.020.120", keyValue.Value);
 
-                // TODO Palabras clave y Resultados relevantes palabras clave
 
                 listado.Add(itemBean);
             }

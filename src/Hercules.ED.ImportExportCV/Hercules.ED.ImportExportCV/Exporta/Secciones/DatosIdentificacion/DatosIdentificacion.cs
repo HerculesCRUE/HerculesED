@@ -10,7 +10,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
 {
     public class DatosIdentificacion : SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/personalData" };
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/personalData" };
 
         public DatosIdentificacion(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
@@ -26,17 +26,14 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
-            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+
+            // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
-                if (listadoIdentificadores.Count == 0)
-                {
-                    return;
-                }
+                return;
             }
+
             CvnItemBean itemBean = new CvnItemBean()
             {
                 Code = "000.010.000.000",
@@ -53,11 +50,11 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.dni), "000.010.000.100", entity);
 
             //Si no he insertado el DNI busco NIE
-            if (!itemBean.Items.Where(x => x.Code.Equals("000.010.000.100")).Any()) {
+            if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.100"))) {
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nie), "000.010.000.110", entity);
 
                 //Si no he insertado DNI o NIE busco el pasaporte
-                if (!itemBean.Items.Where(x => x.Code.Equals("000.010.000.110")).Any()) {
+                if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.110"))) {
                     UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.pasaporte), "000.010.000.120", entity);
                 }
             }

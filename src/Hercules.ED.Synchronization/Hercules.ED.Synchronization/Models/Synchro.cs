@@ -2,11 +2,6 @@
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.Synchronization.Config;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Hercules.ED.Synchronization.Program;
 
 namespace Hercules.ED.Synchronization.Models
@@ -14,7 +9,8 @@ namespace Hercules.ED.Synchronization.Models
     public class Synchro
     {
         public ResourceApi mResourceApi;
-        public ConfigService configuracion;
+        public ConfigService mConfiguracion;
+        public string mPrefijos;
 
         /// <summary>
         /// Obtiene los ORCID de las personas activas.
@@ -22,7 +18,7 @@ namespace Hercules.ED.Synchronization.Models
         /// <returns>Lista de identificadores.</returns>
         public Dictionary<string, string> GetPersons()
         {
-            Dictionary<string, string> dicOrcid = new Dictionary<string, string>();
+            Dictionary<string, string> dicOrcid = new();
             int limit = 10000;
             int offset = 0;
             bool salirBucle = false;
@@ -30,11 +26,11 @@ namespace Hercules.ED.Synchronization.Models
             do
             {
                 // Consulta sparql.
-                string select = "SELECT * WHERE { SELECT ?persona ?orcid ";
+                string select = $@"{mPrefijos} SELECT * WHERE {{ SELECT ?persona ?orcid ";
                 string where = $@"WHERE {{
-                                ?persona a <http://xmlns.com/foaf/0.1/Person>. 
-                                ?persona <http://w3id.org/roh/ORCID> ?orcid. 
-                                ?persona <http://w3id.org/roh/isActive> 'true'. 
+                                ?persona a foaf:Person. 
+                                ?persona roh:ORCID ?orcid. 
+                                ?persona roh:isActive 'true'. 
                                 }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset} ";
 
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
@@ -69,34 +65,25 @@ namespace Hercules.ED.Synchronization.Models
         /// <summary>
         /// Obtiene la fecha de la última actualización.
         /// </summary>
-        /// <param name="pOrcid">ORCID del usuario.</param>
-        /// <returns></returns>
+        /// <param name="pGnossId">GnossId del usuario.</param>
+        /// <returns>Fecha de la última actualización de fuentes externas del usuario.</returns>
         public string GetLastUpdatedDate(string pGnossId)
         {
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
-
             // Consulta sparql.
-            select.Append("SELECT ?fecha ");
-            where.Append("WHERE { ");
-            where.Append($@"FILTER(?s = <{pGnossId}>) ");
-            where.Append("OPTIONAL{?s roh:lastUpdatedDate ?fecha. } ");
-            where.Append("} ");
+            string select = $@"{mPrefijos} SELECT ?fecha ";
+            string where = $@"WHERE {{
+                                FILTER(?s = <{pGnossId}>)
+                                OPTIONAL{{?s roh:lastUpdatedDate ?fecha. }} }}";
 
-            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1)
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count == 1 && resultadoQuery.results.bindings.First().ContainsKey("fecha"))
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    if (fila.ContainsKey("fecha"))
-                    {
-                        string fechaGnoss = fila["fecha"].value;
-                        string anio = fechaGnoss.Substring(0, 4);
-                        string mes = fechaGnoss.Substring(4, 2);
-                        string dia = fechaGnoss.Substring(6, 2);
+                string fechaGnoss = resultadoQuery.results.bindings.First()["fecha"].value;
+                string anio = fechaGnoss.Substring(0, 4);
+                string mes = fechaGnoss.Substring(4, 2);
+                string dia = fechaGnoss.Substring(6, 2);
 
-                        return $@"{anio}-{mes}-{dia}";
-                    }
-                }
+                return $@"{anio}-{mes}-{dia}";
             }
 
             return "1900-01-01";
@@ -106,21 +93,19 @@ namespace Hercules.ED.Synchronization.Models
         /// Obtiene los IDs y Token del usuario para FigShare y GitHub.
         /// </summary>
         /// <param name="pOrcid">ORCID del usuario.</param>
-        /// <returns></returns>
+        /// <returns>Diccionario con el tipo de usuario/token y el valor.</returns>
         public Dictionary<string, string> GetUsersIDs(string pGnossId)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+            Dictionary<string, string> dicResultados = new();
 
             // Consulta sparql.
-            select.Append("SELECT ?usuarioFigshare ?tokenFigshare ?usuarioGitHub ?tokenGitHub ");
-            where.Append("WHERE { ");
-            where.Append($@"FILTER(?s = <{pGnossId}>) ");
-            where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioFigShare> ?usuarioFigshare. } ");
-            where.Append("OPTIONAL{?s <http://w3id.org/roh/tokenFigShare> ?tokenFigshare. } ");
-            where.Append("OPTIONAL{?s <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. } ");
-            where.Append("OPTIONAL{?s <http://w3id.org/roh/tokenGitHub> ?tokenGitHub. } ");
-            where.Append("} ");
+            string select = $@"{mPrefijos} SELECT ?usuarioFigshare ?tokenFigshare ?usuarioGitHub ?tokenGitHub ";
+            string where = $@"WHERE {{
+                                FILTER(?s = <{pGnossId}>)
+                                OPTIONAL{{?s roh:usuarioFigShare ?usuarioFigshare. }}
+                                OPTIONAL{{?s roh:tokenFigShare ?tokenFigshare. }}
+                                OPTIONAL{{?s roh:usuarioGitHub ?usuarioGitHub. }}
+                                OPTIONAL{{?s roh:tokenGitHub ?tokenGitHub. }} }}";
 
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -154,8 +139,8 @@ namespace Hercules.ED.Synchronization.Models
         /// </summary>
         public void ProcessComplete()
         {
-            Queue colaRabbit = new Queue(configuracion);
-            string expresionCron = configuracion.GetCronExternalSource();
+            // Inicializa la configuración.
+            Queue colaRabbit = new (mConfiguracion);
 
             new Thread(() =>
             {
@@ -163,34 +148,31 @@ namespace Hercules.ED.Synchronization.Models
                 {
                     try
                     {
-                        var expression = new CronExpression(expresionCron);
+                        // Obtiene la diferencia entre horas.
+                        CronExpression expression = new (mConfiguracion.cronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
+                        Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
-                        if (time.HasValue)
+                        // Obtención de los ORCID de las personas.
+                        Dictionary<string, string> listaOrcids = GetPersons();
+
+                        foreach (KeyValuePair<string, string> item in listaOrcids)
                         {
-                            Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
+                            // Obtención de la última fecha de modificación.
+                            string ultimaFechaMod = GetLastUpdatedDate(item.Key);
 
-                            // Obtención de los ORCID de las personas.
-                            Dictionary<string, string> listaOrcids = GetPersons();
+                            // Obtención de los datos necesarios de FigShare y GitHub.
+                            Dictionary<string, string> dicIDs = GetUsersIDs(item.Key);
 
-                            foreach (KeyValuePair<string, string> item in listaOrcids)
-                            {
-                                // Obtención de la última fecha de modificación.
-                                string ultimaFechaMod = GetLastUpdatedDate(item.Key);
-                                //string ultimaFechaMod = "1500-01-01";
-
-                                // Obtención de los datos necesarios de FigShare y GitHub.
-                                Dictionary<string, string> dicIDs = GetUsersIDs(item.Key);
-
-                                // Inserción a la cola de Rabbit.
-                                colaRabbit.InsertToQueueFuentesExternas(item.Value, colaRabbit, ultimaFechaMod, dicIDs, item.Key);
-                            }
+                            // Inserción a la cola de Rabbit.
+                            colaRabbit.InsertToQueueFuentesExternas(item.Value, colaRabbit, ultimaFechaMod, dicIDs, item.Key);
                         }
+
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log($@"Error - {ex}");
-                        Thread.Sleep(60000);
+                        FileLogger.Log($@"[ERROR] {ex.Message} {ex.StackTrace}");
+                        Thread.Sleep(60000); // 1min.
                     }
                 }
             }).Start();

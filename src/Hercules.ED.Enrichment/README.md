@@ -9,13 +9,6 @@
 |Cambios de la Versión| |
 
 
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Enrichment)
-
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Enrichment&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Enrichment)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Enrichment&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Enrichment)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Enrichment&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Enrichment)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Enrichment&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Enrichment)
-
 
 
 # Enrichment and Similarity

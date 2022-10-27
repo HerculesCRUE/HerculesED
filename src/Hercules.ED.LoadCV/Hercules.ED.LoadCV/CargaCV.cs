@@ -14,7 +14,7 @@ namespace Hercules.ED.LoadCV
 {
     public static class CargaCV
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
         /// Recorremos los ficheros.
@@ -42,15 +42,14 @@ namespace Hercules.ED.LoadCV
 
                         MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
 
-                        MemoryStream ms = new MemoryStream();
-                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
+                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
                         multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
                         HttpClient httpClient = new HttpClient();
                         HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
 
                         if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
-                        { 
+                        {
                             mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
                             continue;
                         }
@@ -64,6 +63,7 @@ namespace Hercules.ED.LoadCV
 
                         Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
                         string idPersona = dicPersonaORCID.First().Key;
+
                         //Si el investigador NO tiene ORCID lo inserto
                         if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
                         {
@@ -114,21 +114,21 @@ namespace Hercules.ED.LoadCV
                         {
                             continue;
                         }
-                        else
-                        {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
+                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
 
-                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-                            multipartFormData.Add(new StringContent(CVID), "pCVID");
+                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                        multipartFormData.Add(new StringContent(CVID), "pCVID");
 
-                            MemoryStream ms = new MemoryStream();
-                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + "/" + nombreArchivo);
-                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
+                        MemoryStream ms = new MemoryStream();
+                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
+                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
-                            HttpClient httpClient = new HttpClient();
-                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
-                        }
+                        HttpClient httpClient = new HttpClient();
+                        httpClient.Timeout = new TimeSpan(1, 15, 0);
+
+                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+                        mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
+
                     }
                     catch (Exception ex)
                     {
@@ -212,12 +212,21 @@ namespace Hercules.ED.LoadCV
                                 ?person a <http://xmlns.com/foaf/0.1/Person> .
                                 ?person <http://w3id.org/roh/crisIdentifier> '{crisIdentifier.Substring(0, crisIdentifier.Length - 1)}' .
                                 ?person <http://w3id.org/roh/isActive> 'true' .
-                                ?person <http://w3id.org/roh/ORCID> ?orcid .
+                                OPTIONAL{{ ?person <http://w3id.org/roh/ORCID> ?orcid }}
                             }}";
             SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "person", "curriculumvitae" });
             foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
             {
-                dicPersonaORCID.Add(fila["person"].value, fila["orcid"].value);
+                if (fila.ContainsKey("person") && fila.ContainsKey("orcid"))
+                {
+                    dicPersonaORCID.Add(fila["person"].value, fila["orcid"].value);
+                    return dicPersonaORCID;
+                }
+                if (fila.ContainsKey("person"))
+                {
+                    dicPersonaORCID.Add(fila["person"].value, "");
+                    return dicPersonaORCID;
+                }
             }
 
             return dicPersonaORCID;

@@ -17,9 +17,9 @@ namespace ImportadorWebCV.Exporta
 {
     public class ExportaDatos : SeccionBase
     {
-        private string cvID;
-        private cvnRootResultBean cvn;
-        private ResourceApi resourceApi;
+        private readonly string cvID;
+        private readonly cvnRootResultBean cvn;
+        private readonly ResourceApi resourceApi;
         protected Dictionary<string, List<Dictionary<string, Data>>> MultilangProp;
 
         public ExportaDatos(cvnRootResultBean cvn, string cvID, string lang) : base(cvn, cvID)
@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta
             this.cvID = cvID;
             this.cvn = cvn;
             resourceApi = mResourceApi;
-            Utils.UtilitySecciones.GetLenguajes(mResourceApi);
+            Utils.UtilitySecciones.IniciarLenguajes(mResourceApi);
             MultilangProp = GetMultilangProperties(cvID, lang);
         }
 
@@ -155,13 +155,13 @@ namespace ImportadorWebCV.Exporta
             OtrasActividadesDivulgacion otrasActividadesDivulgacion = new OtrasActividadesDivulgacion(cvn, cvID);
             otrasActividadesDivulgacion.ExportaOtrasActividadesDivulgacion(MultilangProp, listaId);
 
-            ComitesCTA comitesCTA = new ComitesCTA(cvn, cvID);
+            ComitesCta comitesCTA = new ComitesCta(cvn, cvID);
             comitesCTA.ExportaComitesCTA(MultilangProp, listaId);
 
             OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI(cvn, cvID);
             organizacionesIDI.ExportaOrganizacionesIDI(MultilangProp, listaId);
 
-            GestionIDI gestionIDI = new GestionIDI(cvn, cvID);
+            GestionIdi gestionIDI = new GestionIdi(cvn, cvID);
             gestionIDI.ExportaGestionIDI(MultilangProp, listaId);
 
             ForosComites forosComites = new ForosComites(cvn, cvID);
@@ -170,7 +170,7 @@ namespace ImportadorWebCV.Exporta
             EvalRevIDI evalRevIDI = new EvalRevIDI(cvn, cvID);
             evalRevIDI.ExportaEvalRevIDI(MultilangProp, listaId);
 
-            EstanciasIDI estanciasIDI = new EstanciasIDI(cvn, cvID);
+            EstanciasIdi estanciasIDI = new EstanciasIdi(cvn, cvID);
             estanciasIDI.ExportaEstanciasIDI(MultilangProp, listaId);
 
             AyudaBecas ayudaBecas = new AyudaBecas(cvn, cvID);

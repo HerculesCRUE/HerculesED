@@ -19,7 +19,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public abstract class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -27,13 +27,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         readonly ConfigService mConfiguracion;
 
 
-        public SeccionBase(cvnRootResultBean cvn, string cvID, ConfigService configuracion)
+        protected SeccionBase(cvnRootResultBean cvn, string cvID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
             mConfiguracion = configuracion;
         }
-        public SeccionBase(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion)
+        protected SeccionBase(cvnRootResultBean cvn, string cvID, string personID, ConfigService configuracion)
         {
             mCvn = cvn;
             mCvID = cvID;
@@ -49,7 +49,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns>Entidad completa</returns>
         public Entity GetLoadedEntity(string pId, string pGraph)
         {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new();
             try
             {
                 int numLimit = 10000;
@@ -75,13 +75,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                throw;
+                mResourceApi.Log.Error(ex.Message);
             }
+
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
             {
-                Entity entity = new Entity()
+                Entity entity = new()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -155,9 +156,9 @@ namespace ImportadorWebCV.Sincro.Secciones
         protected bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
         {
             bool update = true;
-            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
-            Dictionary<Guid, List<RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
-            Dictionary<Guid, List<TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
+            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new() { { pIdMainEntity, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<RemoveTriples>> triplesRemove = new() { { pIdMainEntity, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<TriplesToModify>> triplesModify = new() { { pIdMainEntity, new List<TriplesToModify>() } };
 
             foreach (Entity.Property property in pUpdatedEntity.properties)
             {
@@ -183,7 +184,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                     else
                     {
-                        HashSet<string> items = new HashSet<string>();
+                        HashSet<string> items = new();
                         foreach (string valor in propertyLoadedEntity.values)
                         {
                             items.Add(GetEntityOfValue(valor));
@@ -257,7 +258,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         }
                     }
                 }
-                else if (remove)
+                else if (pLoadedEntity != null)
                 {
                     List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
@@ -278,7 +279,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (string auxEntityRemove in pUpdatedEntity.auxEntityRemove)
                 {
-                    if (auxEntityRemove.StartsWith("http"))
+                    if (auxEntityRemove.StartsWith("http") && pLoadedEntity != null)
                     {
                         foreach (Entity.Property property in pLoadedEntity.properties)
                         {
@@ -292,7 +293,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     triplesRemove[pIdMainEntity].Add(new RemoveTriples()
                                     {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
+                                        Predicate = string.Concat(string.Join("|", pPropertyIDs), "|", property.prop.AsSpan(0, property.prop.IndexOf("@@@"))),
                                         Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
                                     });
                                     break;
@@ -304,7 +305,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             if (triplesRemove[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
+                update = mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
             }
             if (triplesInclude[pIdMainEntity].Count > 0)
             {
@@ -324,16 +325,16 @@ namespace ImportadorWebCV.Sincro.Secciones
             Dictionary<string, string> equivalencias, string propTitle, string graph, string rdfType, string rdfTypePrefix,
             List<string> propiedadesItem, string RdfTypeTab, [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD)
         {
-            HashSet<string> itemsNuevosOModificados = new HashSet<string>();
+            HashSet<string> itemsNuevosOModificados = new();
             for (int i = 0; i < listadoAux.Count; i++)
             {
                 Entity entityXML = listadoAux[i];
-                string idBBDD = "";
+                string idBBDD;
 
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0)
                 {
                     idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").First();
-                    if (idBBDD.Equals(""))
+                    if (string.IsNullOrEmpty(idBBDD))
                     {
                         idBBDD = listadoIdBBDD.ElementAt(i).Split("@@@").Last();
                     }
@@ -352,7 +353,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Fusionar
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("fu") && !string.IsNullOrEmpty(idBBDD))
                     {
-                        bool res = ModificarExistentes(idBBDD, graph, propTitle, entityXML);
+                        ModificarExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
                         i--;
@@ -360,7 +361,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     //Sobrescribir
                     else if (listadoIdBBDD.ElementAt(i).Split("@@@").Last().Equals("so") && !string.IsNullOrEmpty(idBBDD))
                     {
-                        bool res = SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
+                        SobrescribirExistentes(idBBDD, graph, propTitle, entityXML);
                         listadoAux.RemoveAt(i);
                         listadoIdBBDD.RemoveAt(i);
                         i--;
@@ -400,7 +401,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Insertamos en la cola del desnormalizador            
             if (itemsNuevosOModificados.Count > 0)
             {
-                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new(mConfiguracion);
                 if (rdfType == "http://vivoweb.org/ontology/core#Project")
                 {
                     rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.project, itemsNuevosOModificados));
@@ -435,7 +436,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 if (listadoBloqueados.Count != equivalencias.Count)
                 {
-                    throw new Exception("El listado de items bloqueados y el listado de equivalencias no concuerdan");
+                    throw new ArgumentException("El listado de items bloqueados y el listado de equivalencias no concuerdan");
                 }
 
                 if (petitionStatus != null)
@@ -444,9 +445,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                     petitionStatus.actualSubTotalWorks = equivalencias.Count;
                 }
 
-                if (propertiesCV != null && propertiesCV)
+                if (propertiesCV)
                 {
-                    List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                    List<SubseccionItem> listaAux = new();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
                         if (petitionStatus != null)
@@ -459,7 +460,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
                 else
                 {
-                    List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                    List<SubseccionItem> listaAux = new();
                     for (int i = 0; i < equivalencias.Count; i++)
                     {
                         if (petitionStatus != null)
@@ -497,11 +498,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             [Optional] string pPropertyCV, [Optional] string pRdfTypeCV, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
             //Diccionario para almacenar las notificaciones
-            ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
+            ConcurrentBag<Notification> notificaciones = new();
 
             //Listados para añadir las personas y documentos a desnormalizar
-            HashSet<string> personasDesnormalizar = new HashSet<string>();
-            HashSet<string> documentosDesnormalizar = new HashSet<string>();
+            HashSet<string> personasDesnormalizar = new();
+            HashSet<string> documentosDesnormalizar = new();
 
             //Obtengo los datos de la persona para comprobar que existe en los documentos que cargamos
             Dictionary<string, string> idPersonaNick = UtilitySecciones.ObtenerIdPersona(mResourceApi, mCvID);
@@ -516,9 +517,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //1º cargar todas las personas que no estén cargadas
-            List<ComplexOntologyResource> personasCargar = new List<ComplexOntologyResource>();
-            HashSet<string> personasAniadidas = new HashSet<string>();
-            Dictionary<string, string> identificadoresPersonasAniadidas = new Dictionary<string, string>();
+            List<ComplexOntologyResource> personasCargar = new();
+            HashSet<string> personasAniadidas = new();
+            Dictionary<string, string> identificadoresPersonasAniadidas = new();
             mResourceApi.ChangeOntoly("person");
             for (int i = 0; i < listadoAux.Count; i++)
             {
@@ -526,15 +527,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Persona persona in entityXML.autores)
                 {
                     string idTemporal = equivalencias.First(x => x.Value.Select(x => x.Split('|')[1]).Contains(persona.ID)).Key;
-                    if (Guid.TryParse(idTemporal, out Guid aux))
+                    if (Guid.TryParse(idTemporal, out Guid aux) && personasAniadidas.Add(idTemporal))
                     {
-                        if (personasAniadidas.Add(idTemporal))
-                        {
-                            Entity entidadPersona = new Entity();
-                            entidadPersona.rdfType = "http://xmlns.com/foaf/0.1/Person";
-                            entidadPersona.ontology = "person";
-                            entidadPersona.propTitle = "http://xmlns.com/foaf/0.1/name";
-                            entidadPersona.properties = new List<Entity.Property>()
+                        Entity entidadPersona = new();
+                        entidadPersona.rdfType = "http://xmlns.com/foaf/0.1/Person";
+                        entidadPersona.ontology = "person";
+                        entidadPersona.propTitle = "http://xmlns.com/foaf/0.1/name";
+                        entidadPersona.properties = new List<Entity.Property>()
                             {
                                 new Entity.Property()
                                 {
@@ -552,12 +551,12 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     values = new List<string>() { (persona.primerApellido?.Trim()+" "+ persona.segundoApellido?.Trim()).Trim() }
                                 }
                             };
-                            entidadPersona.id = mResourceApi.GraphsUrl + "items/Person_" + Guid.NewGuid().ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                            identificadoresPersonasAniadidas[idTemporal] = entidadPersona.id;
+                        entidadPersona.id = mResourceApi.GraphsUrl + "items/Person_" + Guid.NewGuid().ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                        identificadoresPersonasAniadidas[idTemporal] = entidadPersona.id;
 
-                            ComplexOntologyResource resource = ToGnossApiResource(entidadPersona);
-                            personasCargar.Add(resource);
-                        }
+                        ComplexOntologyResource resource = ToGnossApiResource(entidadPersona);
+                        personasCargar.Add(resource);
+
                     }
                 }
             }
@@ -572,15 +571,15 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 Entity entityXML = listadoAux[i];
 
-                Entity.Property propertyBFO_comment = new Entity.Property()
+                Entity.Property propertyBFO_comment = new()
                 {
                     prop = BFO_comment
                 };
-                Entity.Property propertyBFO_member = new Entity.Property()
+                Entity.Property propertyBFO_member = new()
                 {
                     prop = BFO_member
                 };
-                Entity.Property propertyBFO_nick = new Entity.Property()
+                Entity.Property propertyBFO_nick = new()
                 {
                     prop = BFO_nick
                 };
@@ -617,7 +616,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Compruebo las equivalencias entre los documentos
-            Dictionary<string, string> equivalenciasDocumentos = new Dictionary<string, string>();
+            Dictionary<string, string> equivalenciasDocumentos = new();
             for (int i = 0; i < listadoAux.Count; i++)
             {
                 Entity entityXML = listadoAux[i];
@@ -639,7 +638,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //Añado las personas que se usan en los documentos, si se añade o puede modificar el documento.
-            HashSet<string> personasUsadas = new HashSet<string>();
+            HashSet<string> personasUsadas = new();
             for (int i = 0; i < listadoAux.Count; i++)
             {
                 if (petitionStatus != null)
@@ -672,27 +671,26 @@ namespace ImportadorWebCV.Sincro.Secciones
                             {
                                 foreach (Persona autor in entityXML.autores)
                                 {
-                                    string idPersonaAux = idPersona;
                                     //No notifico a quien suben el documento
                                     if (equivalencias.ContainsKey(idPersona))
                                     {
-                                        idPersonaAux = equivalencias[idPersona].First();
+                                        string idPersonaAux = equivalencias[idPersona].First();
                                         if (autor.ID == idPersonaAux.Split("|").Last())
                                         {
                                             continue;
                                         }
                                     }
                                     //Compruebo que la persona propietaria de la notificación está en BBDD
-                                    if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                    if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains('_'))
                                     {
                                         continue;
                                     }
 
-                                    Notification notificacion = new Notification();
+                                    Notification notificacion = new();
                                     notificacion.IdRoh_trigger = idPersona;
                                     notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                     notificacion.Roh_entity = idBBDD;
-                                    notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                    notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                     notificacion.Dct_issued = DateTime.Now;
                                     notificacion.Roh_type = "create";
                                     notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -719,27 +717,26 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             foreach (Persona autor in entityXML.autores)
                             {
-                                string idPersonaAux = idPersona;
                                 //No notifico a quien suben el documento
                                 if (equivalencias.ContainsKey(idPersona))
                                 {
-                                    idPersonaAux = equivalencias[idPersona].First();
+                                    string idPersonaAux = equivalencias[idPersona].First();
                                     if (autor.ID == idPersonaAux.Split("|").Last())
                                     {
                                         continue;
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains('_'))
                                 {
                                     continue;
                                 }
 
-                                Notification notificacion = new Notification();
+                                Notification notificacion = new();
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -765,27 +762,26 @@ namespace ImportadorWebCV.Sincro.Secciones
                         {
                             foreach (Persona autor in entityXML.autores)
                             {
-                                string idPersonaAux = idPersona;
                                 //No notifico a quien suben el documento
                                 if (equivalencias.ContainsKey(idPersona))
                                 {
-                                    idPersonaAux = equivalencias[idPersona].First();
+                                    string idPersonaAux = equivalencias[idPersona].First();
                                     if (autor.ID == idPersonaAux.Split("|").Last())
                                     {
                                         continue;
                                     }
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains('_'))
                                 {
                                     continue;
                                 }
 
-                                Notification notificacion = new Notification();
+                                Notification notificacion = new();
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "edit";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -823,16 +819,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     continue;
                                 }
                                 //Compruebo que la persona propietaria de la notificación está en BBDD
-                                if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                                if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains('_'))
                                 {
                                     continue;
                                 }
 
-                                Notification notificacion = new Notification();
+                                Notification notificacion = new();
                                 notificacion.IdRoh_trigger = idPersona;
                                 notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                                 notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                                 notificacion.Dct_issued = DateTime.Now;
                                 notificacion.Roh_type = "create";
                                 notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -859,16 +855,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 continue;
                             }
                             //Compruebo que la persona propietaria de la notificación está en BBDD
-                            if (!equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key.Contains("_"))
+                            if (!equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key.Contains('_'))
                             {
                                 continue;
                             }
 
-                            Notification notificacion = new Notification();
+                            Notification notificacion = new();
                             notificacion.IdRoh_trigger = idPersona;
                             notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
                             notificacion.Roh_entity = idBBDD;
-                            notificacion.IdRoh_owner = equivalencias.Where(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).FirstOrDefault().Key;
+                            notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
                             notificacion.Dct_issued = DateTime.Now;
                             notificacion.Roh_type = "edit";
                             notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
@@ -902,7 +898,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             personasCargar.RemoveAll(x => !personasUsadas.Contains(x.GnossId));
 
             //Cargo las personas
-            ConcurrentBag<string> personasDesnormalizarAux = new ConcurrentBag<string>();
+            ConcurrentBag<string> personasDesnormalizarAux = new();
             Parallel.ForEach(personasCargar, new ParallelOptions { MaxDegreeOfParallelism = 5 }, personaCargar =>
             {
                 int numIntentos = 0;
@@ -925,12 +921,12 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Insertamos en la cola del desnormalizador            
             if (personasDesnormalizar.Count > 0)
             {
-                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new(mConfiguracion);
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, personasDesnormalizar));
             }
             if (documentosDesnormalizar.Count > 0)
             {
-                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(mConfiguracion);
+                RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new(mConfiguracion);
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.document, documentosDesnormalizar));
             }
 
@@ -981,8 +977,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         private void valoresPropertiesCV(Entity entityXML, List<string> propiedadesItem,
             string pPropertyCV, string pRdfTypeCV, string pIdEntidadBBDD, string RdfTypeTab)
         {
-            string rdfTypePrefix = "";
-            string entityCVID = "";
+            string rdfTypePrefix;
+            string entityCVID;
 
             //Si es nueva tendra valor sino traera una cadena vacia
 
@@ -1031,17 +1027,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                     entityCVID = idEntityCV;
                 }
 
-                List<string> propertyIDs = new List<string>(propiedadesItem);
+                List<string> propertyIDs = new(propiedadesItem);
                 propertyIDs.RemoveAt(propertyIDs.Count - 1);
                 propertyIDs.Add(pPropertyCV);
-                List<string> entityIDs = new List<string>()
+                List<string> entityIDs = new()
                     {
                         idTab,
                         idEntity,
                         entityCVID
                     };
 
-                Entity entityToLoad = new Entity();
+                Entity entityToLoad = new();
                 entityToLoad.id = entityCVID;
                 entityToLoad.ontology = "curriculumvitae";
                 entityToLoad.properties = entityXML.properties_cv;
@@ -1065,9 +1061,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Entidad a modificar
             Entity entityBBDD = GetLoadedEntity(equivalencias[idXML], graph);
             //Modificamos si no está bloqueada
-            //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/validationStatusPRC")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1094,9 +1090,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Entidad a modificar
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
-            //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/validationStatusPRC")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = MergeLoadedEntity(entityBBDD, entityXML);
@@ -1115,9 +1111,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Entidad a modificar
             Entity entityBBDD = GetLoadedEntity(entidadBBDD, graph);
             //Modificamos si no está bloqueada
-            //TODO meter propiedad de validación para documentos
-            if (entityBBDD != null && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier")).Any()
-                && !entityBBDD.properties.Where(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true")).Any())
+            if (entityBBDD != null && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/crisIdentifier"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/isValidated") && x.values.Contains("true"))
+                && !entityBBDD.properties.Any(x => x.prop.Equals("http://w3id.org/roh/validationStatusPRC")))
             {
                 entityBBDD.propTitle = propTitle;
                 bool hasChange = OverwriteLoadedEntity(entityBBDD, entityXML);
@@ -1141,22 +1137,23 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             if (entidadesBBDD == null || string.IsNullOrEmpty(pGrafo)) { return new Dictionary<string, bool>(); }
 
-            Dictionary<string, bool> resultados = new Dictionary<string, bool>();
-            resultados = entidadesBBDD.ToDictionary(x => x, x => false);
+            Dictionary<string, bool> resultados = entidadesBBDD.ToDictionary(x => x, x => false);
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(entidadesBBDD, Utility.splitListNum).ToList();
 
             foreach (List<string> lista in listaListas)
             {
-
-                //TODO meter propiedad de validación para documentos
                 string select = "select distinct ?s";
                 string where = $@"where {{
                                 ?s a ?o.
                                 {{?s <http://w3id.org/roh/crisIdentifier> ?cris}}
                                 UNION
                                 {{?s <http://w3id.org/roh/isValidated> ""true""}}
+                                UNION
+                                {{?s <http://w3id.org/roh/validationStatusPRC> ""pendiente""}}
+                                UNION
+                                {{?s <http://w3id.org/roh/validationStatusPRC> ""validado""}}
 
                                 FILTER(?s in (<{string.Join(">,<", lista)}>))
                              }}";
@@ -1209,23 +1206,23 @@ namespace ImportadorWebCV.Sincro.Secciones
                 rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
                 string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(pCvID) + "_" + Guid.NewGuid();
 
-                List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
+                List<TriplesToInclude> listaTriples = new();
                 string idEntityAux = idTab + "|" + idNewAux;
                 string valorEntityAux = pPropertyIDs[0] + "|" + pPropertyIDs[1];
 
                 //Privacidad, por defecto falso
                 string valorPrivacidad = idEntityAux + "|false";
                 string predicadoPrivacidad = valorEntityAux + "|http://w3id.org/roh/isPublic";
-                TriplesToInclude tr2 = new TriplesToInclude(valorPrivacidad, predicadoPrivacidad);
+                TriplesToInclude tr2 = new(valorPrivacidad, predicadoPrivacidad);
                 listaTriples.Add(tr2);
 
                 //Entidad
                 string valorEntidad = idEntityAux + "|" + result;
                 string predicadoEntidad = valorEntityAux + "|" + pPropertyIDs[2];
-                TriplesToInclude tr1 = new TriplesToInclude(valorEntidad, predicadoEntidad);
+                TriplesToInclude tr1 = new(valorEntidad, predicadoEntidad);
                 listaTriples.Add(tr1);
 
-                Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
+                Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new()
                 {
                     {
                         mResourceApi.GetShortGuid(pCvID), listaTriples
@@ -1299,7 +1296,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     change = true;
                     pLoadedEntity.properties.Add(property);
                 }
-                else if (remove)
+                else
                 {
                     List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop == property.prop || x.prop.StartsWith(property.prop + "|") || x.prop.StartsWith(property.prop + "@@@")).ToList();
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
@@ -1317,7 +1314,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     {
                         foreach (Entity.Property property in pLoadedEntity.properties)
                         {
-                            List<string> eliminar = new List<string>();
+                            List<string> eliminar = new();
                             foreach (string value in property.values)
                             {
                                 if (value.Contains(auxEntityRemove))
@@ -1342,7 +1339,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="pProp">Propiedad</param>
         /// <returns></returns>
-        private string GetPropUpdateEntityAux(string pProp)
+        private static string GetPropUpdateEntityAux(string pProp)
         {
             while (pProp.Contains("@@@"))
             {
@@ -1350,7 +1347,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 int indexEndRdfType = pProp.IndexOf("|", indexInitRdfType);
                 if (indexEndRdfType > indexInitRdfType)
                 {
-                    pProp = pProp.Substring(0, indexInitRdfType) + pProp.Substring(indexEndRdfType);
+                    pProp = string.Concat(pProp.AsSpan(0, indexInitRdfType), pProp.AsSpan(indexEndRdfType));
                 }
                 else
                 {
@@ -1365,7 +1362,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="pValue">Valor</param>
         /// <returns></returns>
-        private string GetValueUpdateEntityAux(string pValue)
+        private static string GetValueUpdateEntityAux(string pValue)
         {
             return pValue.Replace("@@@", "|");
         }
@@ -1376,7 +1373,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="pValue"></param>
         /// <returns></returns>
-        private string GetEntityOfValue(string pValue)
+        private static string GetEntityOfValue(string pValue)
         {
             string entityID = "";
             if (pValue.Contains("@@@"))
@@ -1388,9 +1385,17 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         public static Tuple<string, string, string> GetIdentificadoresItemPresentation(string pId, List<string> pPropiedades, List<string> rdfTypeItem)
         {
-            if (pPropiedades.Count != 3) { return null; }
+            if (pPropiedades.Count != 3)
+            {
+                return null;
+            }
+
             try
             {
+                string item1 = "";
+                string item2 = "";
+                string item3 = "";
+
                 string selectID = "select ?item1 ?item2 ?item3";
                 string whereID = $@"where{{
                                     <{pId}> <{pPropiedades[0]}> ?item1 .
@@ -1403,39 +1408,41 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 }}";
 
                 SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, "curriculumvitae");
-                foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+                if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
                 {
-                    string item1 = "";
-                    string item2 = "";
-                    string item3 = "";
-                    if (fila.ContainsKey("item1"))
-                    {
-                        item1 = fila["item1"].value;
-                    }
-                    if (fila.ContainsKey("item2"))
-                    {
-                        item2 = fila["item2"].value;
-                    }
-                    else
-                    {
-                        item2 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[0].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                    }
-                    if (fila.ContainsKey("item3"))
-                    {
-                        item3 = fila["item3"].value;
-                    }
-                    else
-                    {
-                        item3 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[1].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
-                    }
-                    return new Tuple<string, string, string>(item1, item2, item3);
+                    return null;
                 }
-                throw new Exception($"No existe la propiedad {pPropiedades[0]}");
+
+                Dictionary<string, Data> fila = resultData.results.bindings.First();
+                if (fila.ContainsKey("item1"))
+                {
+                    item1 = fila["item1"].value;
+                }
+
+                if (fila.ContainsKey("item2"))
+                {
+                    item2 = fila["item2"].value;
+                }
+                else
+                {
+                    item2 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[0].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                }
+
+                if (fila.ContainsKey("item3"))
+                {
+                    item3 = fila["item3"].value;
+                }
+                else
+                {
+                    item3 = mResourceApi.GraphsUrl + "items/" + rdfTypeItem[1].Split("/").Last() + "_" + mResourceApi.GetShortGuid(item1).ToString().ToLower() + "_" + Guid.NewGuid().ToString().ToLower();
+                }
+
+                return new Tuple<string, string, string>(item1, item2, item3);
             }
             catch (NullReferenceException e)
             {
                 Console.Error.WriteLine("Errores al cargar mResourceApi " + e.Message);
-                throw new NullReferenceException("Errores al cargar mResourceApi");
+                return null;
             }
         }
 
@@ -1448,14 +1455,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         protected ComplexOntologyResource ToGnossApiResource(Entity pEntity)
         {
             //Preparamos los datos de la entidad principal y las auxiliares
-            List<EntityRdf> entities = new List<EntityRdf>();
-            EntityRdf entidadPrincipal = new EntityRdf();
+            List<EntityRdf> entities = new();
+            EntityRdf entidadPrincipal = new();
             entities.Add(entidadPrincipal);
             entidadPrincipal.id = pEntity.id;
             entidadPrincipal.rdfType = pEntity.rdfType;
             entidadPrincipal.props = new Dictionary<string, List<string>>();
             entidadPrincipal.ents = new Dictionary<string, List<EntityRdf>>();
-            List<EntityRdf> listaEntidadesAuxiliares = new List<EntityRdf>();
             foreach (Entity.Property property in pEntity.properties.OrderBy(x => x.prop.Split(new string[] { "@@@" }, StringSplitOptions.RemoveEmptyEntries).Length))
             {
                 if (property.prop != "null" && property.prop != null && property.values.Count > 0)
@@ -1471,7 +1477,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         string[] valueArray = valueAux.Split(new string[] { "@@@" }, StringSplitOptions.None);
                         if (propArray.Length != valueArray.Length)
                         {
-                            throw new Exception("El tamaño de las propiedades no coincide con el de los valores");
+                            throw new ArgumentException("El tamaño de las propiedades no coincide con el de los valores");
                         }
                         if (propArray.Length == 1)
                         {
@@ -1532,7 +1538,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     }
                 }
             }
-            ComplexOntologyResource resource = new ComplexOntologyResource()
+            ComplexOntologyResource resource = new()
             {
                 Ontology = ProcesarEntidadPrincipal(entidadPrincipal)
             };
@@ -1564,14 +1570,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private Ontology ProcesarEntidadPrincipal(EntityRdf pEntidadPrincipal)
         {
-            List<string> prefList = new List<string>();
-            foreach (string key in UtilityCV.dicPrefix.Keys)
+            List<string> prefList = new();
+            foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
-                prefList.Add($"xmlns:{key}=\"{UtilityCV.dicPrefix[key]}\"");
+                prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");
             }
 
-            List<OntologyEntity> entList = new List<OntologyEntity>();
-            List<OntologyProperty> propList = new List<OntologyProperty>();
+            List<OntologyEntity> entList = new();
+            List<OntologyProperty> propList = new();
 
             foreach (string prop in pEntidadPrincipal.ents.Keys)
             {
@@ -1597,8 +1603,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             else
             {
                 string[] idSplit = pEntidadPrincipal.id.Split('_');
-                Guid idRecurso = new Guid(idSplit[idSplit.Length - 2]);
-                Guid idArticulo = new Guid(idSplit[idSplit.Length - 1]);
+                Guid idRecurso = new(idSplit[idSplit.Length - 2]);
+                Guid idArticulo = new(idSplit[idSplit.Length - 1]);
                 ontology = new Ontology(mResourceApi.GraphsUrl, mResourceApi.OntologyUrl, pEntidadPrincipal.rdfType, pEntidadPrincipal.rdfType, prefList, propList, entList, idRecurso, idArticulo);
             }
 
@@ -1613,14 +1619,14 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private OntologyEntity ProcesarEntidadAuxiliar(string pProperty, EntityRdf pEntidadAuxiliar)
         {
-            List<string> prefList = new List<string>();
-            foreach (string key in UtilityCV.dicPrefix.Keys)
+            List<string> prefList = new ();
+            foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
-                prefList.Add($"xmlns:{key}=\"{UtilityCV.dicPrefix[key]}\"");
+                prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");
             }
 
-            List<OntologyEntity> entList = new List<OntologyEntity>();
-            List<OntologyProperty> propList = new List<OntologyProperty>();
+            List<OntologyEntity> entList = new();
+            List<OntologyProperty> propList = new();
 
             foreach (string prop in pEntidadAuxiliar.ents.Keys)
             {
@@ -1638,7 +1644,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     propList.Add(new StringOntologyProperty(prop, value));
                 }
             }
-            OntologyEntity ontologyEntity = new OntologyEntity(pEntidadAuxiliar.rdfType, pEntidadAuxiliar.rdfType, UtilityCV.AniadirPrefijo(pProperty.Split('|').Last()), propList, entList);
+            OntologyEntity ontologyEntity = new(pEntidadAuxiliar.rdfType, pEntidadAuxiliar.rdfType, UtilityCV.AniadirPrefijo(pProperty.Split('|').Last()), propList, entList);
             return ontologyEntity;
         }
     }

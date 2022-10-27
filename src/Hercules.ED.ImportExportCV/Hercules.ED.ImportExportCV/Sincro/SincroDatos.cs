@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro
             return cvn;
         }
 
-        private List<string> listadoSecciones = new List<string>()
+        private readonly List<string> listadoIdentificadorSecciones = new List<string>()
         {
             //Datos identificacion
             "000.010.000.000",
@@ -93,7 +93,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-
+                    throw new FileLoadException();
                 }
             }
             else
@@ -101,11 +101,7 @@ namespace ImportadorWebCV.Sincro
                 try
                 {
                     XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                    CVFileAsXML = (FormFile)CVFile;
-                    if (CVFileAsXML == null)
-                    {
-                        throw new FileLoadException();
-                    }
+                    CVFileAsXML = (FormFile)CVFile;                    
 
                     using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
                     {
@@ -116,7 +112,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-
+                    throw new FileLoadException();
                 }
             }
         }
@@ -151,7 +147,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-
+                    throw new FileLoadException();
                 }
             }
             else
@@ -167,7 +163,7 @@ namespace ImportadorWebCV.Sincro
                 }
                 catch (Exception)
                 {
-
+                    throw new FileLoadException();
                 }
             }
         }
@@ -290,7 +286,7 @@ namespace ImportadorWebCV.Sincro
             List<CvnItemBean> listCvnRootBean = cvn.cvnRootBean.ToList();
             foreach (CvnItemBean itemBean in new List<CvnItemBean>(listCvnRootBean))
             {
-                if (!listadoSecciones.Contains(itemBean.Code))
+                if (!listadoIdentificadorSecciones.Contains(itemBean.Code))
                 {
                     listCvnRootBean.Remove(itemBean);
                 }
@@ -383,10 +379,10 @@ namespace ImportadorWebCV.Sincro
             ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
 
             List<Subseccion> listadoSecciones = new List<Subseccion>();
-            listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones, "050.020.010.000"), preimportar, listadoIdBBDD, petitionStatus)));//TODO palabras clave
-            listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(UtilitySecciones.CheckSecciones(secciones, "050.020.020.000"), preimportar, listadoIdBBDD, petitionStatus)));//TODO palabras clave
+            listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones, "050.020.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
+            listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(UtilitySecciones.CheckSecciones(secciones, "050.020.020.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("050.030.010.000", experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(UtilitySecciones.CheckSecciones(secciones, "050.030.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
-            listadoSecciones.Add(new Subseccion("050.010.000.000", experienciaCientificaTecnologica.SincroGrupoIDI(UtilitySecciones.CheckSecciones(secciones, "050.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));//TODO - tesauro palabras clave->areas tematicas
+            listadoSecciones.Add(new Subseccion("050.010.000.000", experienciaCientificaTecnologica.SincroGrupoIDI(UtilitySecciones.CheckSecciones(secciones, "050.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("050.020.030.000", experienciaCientificaTecnologica.SincroObrasArtisticas(UtilitySecciones.CheckSecciones(secciones, "050.020.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("050.030.020.000", experienciaCientificaTecnologica.SincroResultadosTecnologicos(UtilitySecciones.CheckSecciones(secciones, "050.030.020.000"), preimportar, listadoIdBBDD, petitionStatus)));
 
@@ -476,13 +472,13 @@ namespace ImportadorWebCV.Sincro
                     }
                     catch (Exception)
                     {
-                        continue;
+                        //
                     }
                 }
             }
             catch (Exception)
             {
-
+                //
             }
         }
 
@@ -499,7 +495,6 @@ namespace ImportadorWebCV.Sincro
             List<CvnItemBean> listadoA = sincro.getCVN().cvnRootBean.ToList();
             listadoA = listadoA.Where(x => x.Code.Equals("000.010.000.000")).ToList();
 
-            CvnItemBeanCvnString crisID = new CvnItemBeanCvnString();
             string ORCID = listadoA.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID();
 
             if (string.IsNullOrEmpty(ORCID))

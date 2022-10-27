@@ -9,12 +9,12 @@ using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class EstanciasIDI : SeccionBase
+    public class EstanciasIdi : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/stays", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "stay";
-        public EstanciasIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
+        private readonly string graph = "stay";
+        public EstanciasIdi(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
 
@@ -26,17 +26,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaEstanciasIDI(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
-            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+
+            // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
-                if (listadoIdentificadores.Count == 0)
-                {
-                    return;
-                }
+                return;
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -103,9 +100,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.050.150", keyValue.Value);
 
                 // Palabras clave
-                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIPalabrasClave), 
+                UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.estanciasIDIPalabrasClave),
                     "060.010.050.240", keyValue.Value);
-                
+
                 listado.Add(itemBean);
             }
 

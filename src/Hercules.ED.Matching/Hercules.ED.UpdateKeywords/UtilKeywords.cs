@@ -24,7 +24,7 @@ namespace Hercules.ED.UpdateKeywords
     public class UtilKeywords
     {
         private ResourceApi mResourceApi;
-        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/prefijos.json";
+        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
         private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         readonly ConfigService _Configuracion;
         private const int MAX_NUM_HILOS = 6;

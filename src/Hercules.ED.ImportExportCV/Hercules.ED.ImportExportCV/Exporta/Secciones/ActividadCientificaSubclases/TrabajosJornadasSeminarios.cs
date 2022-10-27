@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosJornadasSeminarios:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/worksSubmittedSeminars", "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", 
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "document";
+        private readonly string graph = "document";
         public TrabajosJornadasSeminarios(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
@@ -38,6 +38,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -153,7 +154,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.030.340", keyValue.Value);
                 listado.Add(itemBean);
 
-                //TODO citas, cuando se use la 1.4.3, con la 1.4.0 no funciona
             }
 
             //Añado en el cvnRootResultBean los items que forman parte del listado

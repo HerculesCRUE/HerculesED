@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class ProyectosIDI:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
             "http://w3id.org/roh/competitiveProjects", "http://w3id.org/roh/relatedCompetitiveProjectCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "project";
+        private readonly string graph = "project";
         public ProyectosIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }
@@ -34,11 +34,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
             {
                 listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0) 
-                { 
-                    return; 
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -122,13 +123,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.020.010.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDICiudadEntidadRealizacion),
                     "050.020.010.090", keyValue.Value);
-
-                //// Resultados relevantes palabras clave TODO
-                //UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave),
-                //    "050.020.010.350", keyValue.Value);
-                //// Palabras clave TODO
-                //UtilityExportar.AddCvnItemBeanCvnKeyword(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave), 
-                //    "050.020.010.020", keyValue.Value);
 
                 // Financiacion
                 string cuantiaSubproyecto = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.proyectosIDICuantiaSubproyecto))) ?

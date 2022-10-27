@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class PublicacionesDocumentos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "document";
+        private readonly string graph = "document";
 
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -30,6 +30,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         public void ExportaPublicacionesDocumentos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
+
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
@@ -41,7 +42,6 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
-
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
@@ -111,10 +111,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.100", keyValue.Value);
 
                 //Compruebo si hay algun tipo de soporte
-                if (itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).Any())
+                if (itemBean.Items.Any(x => x.Code.Equals("060.010.010.070")))
                 {
                     //Compruebo si el soporte es una revista
-                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).First();
+                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.First(x => x.Code.Equals("060.010.010.070"));
                     if (itemBeanCvnString.Value.Equals("057"))
                     {
                         UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),

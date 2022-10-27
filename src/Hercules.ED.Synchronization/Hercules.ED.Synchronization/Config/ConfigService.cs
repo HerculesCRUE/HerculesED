@@ -1,10 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.Synchronization.Config
 {
@@ -28,7 +23,7 @@ namespace Hercules.ED.Synchronization.Config
         /// </summary>
         public ConfigService()
         {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/appsettings/appsettings.json").Build();
+            configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}appsettings{Path.DirectorySeparatorChar}appsettings.json").Build();
         }
 
         /// <summary>
@@ -39,8 +34,9 @@ namespace Hercules.ED.Synchronization.Config
         {
             if (string.IsNullOrEmpty(logPath))
             {
-                string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string connectionString;
+
                 if (environmentVariables.Contains("LogPath"))
                 {
                     connectionString = environmentVariables["LogPath"] as string;
@@ -64,8 +60,9 @@ namespace Hercules.ED.Synchronization.Config
         {
             if (string.IsNullOrEmpty(cronExternalSource))
             {
-                string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string connectionString;
+
                 if (environmentVariables.Contains("cronExternalSource"))
                 {
                     connectionString = environmentVariables["cronExternalSource"] as string;
@@ -90,16 +87,20 @@ namespace Hercules.ED.Synchronization.Config
             if (string.IsNullOrEmpty(rabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string rabbitConnectionString = string.Empty;
+                string connectionString;
+
                 if (environmentVariables.Contains("RabbitMQ"))
                 {
-                    rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
+                    connectionString = environmentVariables["RabbitMQ"] as string;
                 }
                 else
                 {
-                    rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
+                    connectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
+
+                rabbitConnectionString = connectionString;
             }
+
             return rabbitConnectionString;
         }
 
@@ -112,7 +113,8 @@ namespace Hercules.ED.Synchronization.Config
             if (string.IsNullOrEmpty(FuentesExternasQueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = "";
+                string queue;
+
                 if (environmentVariables.Contains("FuentesExternasQueueRabbit"))
                 {
                     queue = environmentVariables["FuentesExternasQueueRabbit"] as string;
@@ -121,8 +123,10 @@ namespace Hercules.ED.Synchronization.Config
                 {
                     queue = configuracion["FuentesExternasQueueRabbit"];
                 }
+
                 FuentesExternasQueueRabbit = queue;
             }
+
             return FuentesExternasQueueRabbit;
         }
     }

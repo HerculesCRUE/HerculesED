@@ -12,7 +12,7 @@ namespace Hercules.ED.UpdateKeywords
 {
     public class Program
     {
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
         private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
         private static CommunityApi mCommunityApi = new CommunityApi(RUTA_OAUTH);
         private static ConfigService configService = new ConfigService();
@@ -286,9 +286,13 @@ namespace Hercules.ED.UpdateKeywords
             /// <param name="messsage"></param>
             public static void Log(string messsage)
             {
-                using var fileStream = new FileStream(configService.GetLogPath(), FileMode.Append);
-                using var writter = new StreamWriter(fileStream);
-                writter.WriteLine(messsage);
+                string fecha = DateTime.Now.ToString().Split(" ")[0].Replace("/", "-");
+                string ruta = $@"{configService.GetLogPath()}{fecha}.log";
+                if (!File.Exists(ruta))
+                {
+                    using (FileStream fs = File.Create(ruta)) { }
+                }
+                File.AppendAllText(ruta, messsage);
             }
         }
     }

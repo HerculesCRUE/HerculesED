@@ -68,7 +68,7 @@ namespace Hercules.ED.ImportExportCV.Middlewares
             {
                 Directory.CreateDirectory(pathDirectory);
             }
-            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}/log_{pTimestamp}.txt").CreateLogger();
+            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}{Path.DirectorySeparatorChar}log_{pTimestamp}.txt").CreateLogger();
         }
 
         private string CreateTimeStamp()
