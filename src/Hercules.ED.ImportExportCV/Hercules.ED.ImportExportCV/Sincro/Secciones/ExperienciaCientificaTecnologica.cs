@@ -33,7 +33,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -94,7 +94,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -155,7 +155,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -216,7 +216,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -278,7 +278,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -339,7 +339,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -464,58 +464,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ProyectosIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.010.020");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave pertenecientes a los resultados relevantes.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ProyectosIDIResultadosRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.010.350");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
         }
 
         /// <summary>
@@ -753,58 +701,6 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ContratosPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.020.020");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.contratosPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave pertenecientes a los resultados relevantes.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ContratosResultadosRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.020.310");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.contratosResultadosRelevantesPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosResultadosRelevantesPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
         /// pertenecientes a la Financiación del proyecto (cuantía del subproyecto,
         /// porcentaje en subvencion, porcentaje en crédito y porcentaje mixto).
         /// </summary>
@@ -984,7 +880,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     Entity entidadAux = new Entity();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.010.020")))
-                    {                        
+                    {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.propIIDescripcion, item.GetStringPorIDCampo("050.030.010.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus, item.GetStringPorIDCampo("050.030.010.020")),
@@ -1256,7 +1152,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             return listado;
         }
-                
+
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,

@@ -28,7 +28,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
@@ -92,7 +92,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     listadoIdBBDD.RemoveAll(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"));
                 }
-                return null;
+                return new List<SubseccionItem>();
             }
         }
 
@@ -103,7 +103,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Entity entity = new Entity();
                 entity.properties = new List<Property>();
                 List<(string, string)> resumen = GetResumen(listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnRichText>("070.010.000.010"));
-                if (resumen == null) { return entity; }
+                if (!resumen.Any()) 
+                {
+                    return entity;
+                }
 
                 if (resumen.Count == 3)
                 {
@@ -129,7 +132,10 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private List<(string, string)> GetResumen(CvnItemBeanCvnRichText item)
         {
-            if (item == null) { return null; }
+            if (item == null) 
+            { 
+                return new List<(string, string)>();
+            }
 
             string b1 = "B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida";
             string b2 = "B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida";

@@ -15,7 +15,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new ($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -39,7 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// <returns>Entidad completa</returns>
         public Entity GetLoadedEntity(string pId, string pGraph)
         {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
             try
             {
                 int numLimit = 10000;
@@ -69,13 +69,13 @@ namespace ImportadorWebCV.Exporta.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                throw;
+                //
             }
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
             {
-                Entity entity = new Entity()
+                Entity entity = new ()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -91,9 +91,9 @@ namespace ImportadorWebCV.Exporta.Secciones
         public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string, string>> listadoId, string pGraph,
             Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null, List<string> listadoFrom = null)
         {
-            Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
-            Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, Entity> listaEntidades = new ();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
+            Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new ();
 
             //Si no envio un listado devuelvo un diccionario vacio
             if (listadoId == null || !listadoId.Any())
@@ -141,9 +141,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                throw;
+                //
             }
 
             try
@@ -181,9 +181,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                throw;
+                //
             }
 
 
@@ -193,7 +193,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                 {
                     continue;
                 }
-                Entity entity = new Entity()
+                Entity entity = new ()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -214,8 +214,8 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         public Dictionary<string, Entity> GetListLoadedEntity(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
-            Dictionary<string, Entity> listaEntidades = new Dictionary<string, Entity>();
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, Entity> listaEntidades = new ();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
 
             //Si no envio un listado devuelvo un diccionario vacio
             if (listadoId == null || !listadoId.Any())
@@ -263,7 +263,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             }
             foreach (string pId in listadoId.Select(x => x.Item1))
             {
-                Entity entity = new Entity()
+                Entity entity = new ()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -279,7 +279,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         protected Dictionary<string, List<Dictionary<string, Data>>> GetMultilangProperties(string pCVID, string pIdioma)
         {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
 
             string select = $@"select distinct ?entity ?multilangProperties ?prop ?lang ?value";
             string where = $@"where{{

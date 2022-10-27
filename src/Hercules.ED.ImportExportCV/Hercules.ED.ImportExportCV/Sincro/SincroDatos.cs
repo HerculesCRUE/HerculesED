@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro
             return cvn;
         }
 
-        private readonly List<string> listadoIdentificadorSecciones = new List<string>()
+        private readonly List<string> listadoIdentificadorSecciones = new ()
         {
             //Datos identificacion
             "000.010.000.000",
@@ -83,8 +83,8 @@ namespace ImportadorWebCV.Sincro
                         throw new FileLoadException();
                     }
 
-                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                    using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                    XmlSerializer ser = new (typeof(cvnRootResultBean));
+                    using (StreamReader reader = new (CVFileAsXML.OpenReadStream()))
                     {
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
@@ -100,10 +100,10 @@ namespace ImportadorWebCV.Sincro
             {
                 try
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    XmlSerializer ser = new (typeof(cvnRootResultBean));
                     CVFileAsXML = (FormFile)CVFile;                    
 
-                    using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                    using (StreamReader reader = new (CVFile.OpenReadStream()))
                     {
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
@@ -139,8 +139,8 @@ namespace ImportadorWebCV.Sincro
                 {
                     CVFileAsXML = GenerarRootBean(mConfiguracion, CVFile);
 
-                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-                    using (StreamReader reader = new StreamReader(CVFileAsXML.OpenReadStream()))
+                    XmlSerializer ser = new (typeof(cvnRootResultBean));
+                    using (StreamReader reader = new (CVFileAsXML.OpenReadStream()))
                     {
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
@@ -154,9 +154,9 @@ namespace ImportadorWebCV.Sincro
             {
                 try
                 {
-                    XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
+                    XmlSerializer ser = new (typeof(cvnRootResultBean));
                     CVFileAsXML = (FormFile)CVFile;
-                    using (StreamReader reader = new StreamReader(CVFile.OpenReadStream()))
+                    using (StreamReader reader = new (CVFile.OpenReadStream()))
                     {
                         cvn = (cvnRootResultBean)ser.Deserialize(reader);
                     }
@@ -177,8 +177,8 @@ namespace ImportadorWebCV.Sincro
         public SincroDatos(ConfigService Configuracion, string cvID, string data)
         {
             mConfiguracion = Configuracion;
-            XmlSerializer ser = new XmlSerializer(typeof(cvnRootResultBean));
-            using (StringReader reader = new StringReader(data))
+            XmlSerializer ser = new (typeof(cvnRootResultBean));
+            using (StringReader reader = new (data))
             {
                 cvn = (cvnRootResultBean)ser.Deserialize(reader);
             }
@@ -203,7 +203,7 @@ namespace ImportadorWebCV.Sincro
             {
                 try
                 {
-                    Import.Cvn2RootBeanClient cvnRootBeanClient = new Import.Cvn2RootBeanClient();
+                    Import.Cvn2RootBeanClient cvnRootBeanClient = new ();
 
                     //Aumento el tiempo de espera a 2 hora como máximo
                     cvnRootBeanClient.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
@@ -211,12 +211,12 @@ namespace ImportadorWebCV.Sincro
                     var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
                     Import.cvnRootResultBean cvnRootResultBean = x.Result.@return;
 
-                    XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
-                    MemoryStream memoryStream = new MemoryStream();
+                    XmlSerializer xmlSerializer = new (cvnRootResultBean.GetType());
+                    MemoryStream memoryStream = new ();
 
                     xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
 
-                    FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                    FormFile file = new (memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
                     {
                         Headers = new HeaderDictionary(),
                         ContentType = "application/xml"
@@ -232,17 +232,17 @@ namespace ImportadorWebCV.Sincro
             {
                 try
                 {
-                    Import140.Cvn2RootBeanClient cvnRootBeanClient = new Import140.Cvn2RootBeanClient();
+                    Import140.Cvn2RootBeanClient cvnRootBeanClient = new ();
                     cvnRootBeanClient.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
                     var x = cvnRootBeanClient.cvnPdf2CvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), bytes);
                     Import140.cvnRootResultBean cvnRootResultBean = x.Result.@return;
 
-                    XmlSerializer xmlSerializer = new XmlSerializer(cvnRootResultBean.GetType());
-                    MemoryStream memoryStream = new MemoryStream();
+                    XmlSerializer xmlSerializer = new (cvnRootResultBean.GetType());
+                    MemoryStream memoryStream = new ();
 
                     xmlSerializer.Serialize(memoryStream, cvnRootResultBean);
 
-                    FormFile file = new FormFile(memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
+                    FormFile file = new (memoryStream, 0, memoryStream.Length, null, Path.GetFileName(pInput.FileName))
                     {
                         Headers = new HeaderDictionary(),
                         ContentType = "application/xml"
@@ -264,7 +264,7 @@ namespace ImportadorWebCV.Sincro
         public byte[] GuardarXMLFiltrado()
         {
             string xml = "";
-            XmlSerializer serializer = new XmlSerializer(typeof(cvnRootResultBean));
+            XmlSerializer serializer = new (typeof(cvnRootResultBean));
             using (var sww = new StringWriter())
             {
                 using (XmlWriter writer = XmlWriter.Create(sww))
@@ -301,9 +301,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosIdentificacion([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            DatosIdentificacion datosIdentificacion = new DatosIdentificacion(cvn, cvID, mConfiguracion);
+            DatosIdentificacion datosIdentificacion = new (cvn, cvID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("000.000.000.000", datosIdentificacion.SincroDatosIdentificacion(UtilitySecciones.CheckSecciones(secciones, "000.000.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
 
             return listadoSecciones;
@@ -316,9 +316,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroDatosSituacionProfesional([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            SituacionProfesional situacionProfesional = new SituacionProfesional(cvn, cvID, personID, mConfiguracion);
+            SituacionProfesional situacionProfesional = new (cvn, cvID, personID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("010.010.000.000", situacionProfesional.SincroSituacionProfesionalActual(UtilitySecciones.CheckSecciones(secciones, "010.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("010.020.000.000", situacionProfesional.SincroCargosActividades(UtilitySecciones.CheckSecciones(secciones, "010.020.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
 
@@ -332,9 +332,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroFormacionAcademica([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            FormacionAcademica formacionAcademica = new FormacionAcademica(cvn, cvID, personID, mConfiguracion);
+            FormacionAcademica formacionAcademica = new (cvn, cvID, personID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("020.010.010.000", formacionAcademica.SincroEstudiosCiclos(UtilitySecciones.CheckSecciones(secciones, "020.010.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("020.010.020.000", formacionAcademica.SincroDoctorados(UtilitySecciones.CheckSecciones(secciones, "020.010.020.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("020.010.030.000", formacionAcademica.SincroOtraFormacionPosgrado(UtilitySecciones.CheckSecciones(secciones, "020.010.030.000"), preimportar, listadoIdBBDD, petitionStatus)));
@@ -352,9 +352,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadDocente([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            ActividadDocente actividadDocente = new ActividadDocente(cvn, cvID, personID, mConfiguracion);
+            ActividadDocente actividadDocente = new (cvn, cvID, personID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("030.040.000.000", actividadDocente.SincroDireccionTesis(UtilitySecciones.CheckSecciones(secciones, "030.040.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("030.010.000.000", actividadDocente.SincroFormacionAcademica(UtilitySecciones.CheckSecciones(secciones, "030.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("030.050.000.000", actividadDocente.SincroTutoriasAcademicas(UtilitySecciones.CheckSecciones(secciones, "030.050.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
@@ -376,9 +376,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroExperienciaCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new ExperienciaCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
+            ExperienciaCientificaTecnologica experienciaCientificaTecnologica = new (cvn, cvID, personID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("050.020.010.000", experienciaCientificaTecnologica.SincroProyectosIDI(UtilitySecciones.CheckSecciones(secciones, "050.020.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("050.020.020.000", experienciaCientificaTecnologica.SincroContratos(UtilitySecciones.CheckSecciones(secciones, "050.020.020.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("050.030.010.000", experienciaCientificaTecnologica.SincroPropiedadIndustrialIntelectual(UtilitySecciones.CheckSecciones(secciones, "050.030.010.000"), preimportar, listadoIdBBDD, petitionStatus)));
@@ -396,9 +396,9 @@ namespace ImportadorWebCV.Sincro
         /// </summary>
         public List<Subseccion> SincroActividadCientificaTecnologica([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus, [Optional] List<string> listaDOI)
         {
-            ActividadCientificaTecnologica actividadCientificaTecnologica = new ActividadCientificaTecnologica(cvn, cvID, personID, mConfiguracion);
+            ActividadCientificaTecnologica actividadCientificaTecnologica = new (cvn, cvID, personID, mConfiguracion);
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("060.010.000.000", actividadCientificaTecnologica.SincroProduccionCientifica(UtilitySecciones.CheckSecciones(secciones, "060.010.000.000"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.060.010", actividadCientificaTecnologica.SincroIndicadoresGenerales(UtilitySecciones.CheckSecciones(secciones, "060.010.060.010"), preimportar, listadoIdBBDD, petitionStatus)));
             listadoSecciones.Add(new Subseccion("060.010.010.000", actividadCientificaTecnologica.SincroPublicacionesDocumentos(mConfiguracion, UtilitySecciones.CheckSecciones(secciones, "060.010.010.000"), preimportar, listadoIdBBDD, petitionStatus, listaDOI: listaDOI)));
@@ -434,7 +434,7 @@ namespace ImportadorWebCV.Sincro
         /// <returns></returns>
         public List<Subseccion> SincroTextoLibre([Optional] List<string> secciones, [Optional] bool preimportar, [Optional] List<string> listadoIdBBDD, [Optional] PetitionStatus petitionStatus)
         {
-            TextoLibre textoLibre = new TextoLibre(cvn, cvID, mConfiguracion);
+            TextoLibre textoLibre = new (cvn, cvID, mConfiguracion);
 
             if (petitionStatus != null)
             {
@@ -443,7 +443,7 @@ namespace ImportadorWebCV.Sincro
                 petitionStatus.actualWorkSubtitle = "IMPORTACION_TEXTO_LIBRE";
             }
 
-            List<Subseccion> listadoSecciones = new List<Subseccion>();
+            List<Subseccion> listadoSecciones = new ();
             listadoSecciones.Add(new Subseccion("070.010.000.000", textoLibre.SincroTextoLibre(UtilitySecciones.CheckSecciones(secciones, "070.010.000.000"), preimportar, listadoIdBBDD)));
 
             return listadoSecciones;
@@ -490,7 +490,7 @@ namespace ImportadorWebCV.Sincro
         /// <returns>Cadena vacía si se produce algún error, el ORCID si se inserta el triple</returns>
         public string ObtenerORCID(SincroDatos sincro, string crisArchivo)
         {
-            Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID sincroORCID = new Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID(sincro.getCVN(), cvID, mConfiguracion);
+            Hercules.ED.ImportExportCV.Sincro.Secciones.SincroORCID sincroORCID = new(sincro.getCVN(), cvID, mConfiguracion);
 
             List<CvnItemBean> listadoA = sincro.getCVN().cvnRootBean.ToList();
             listadoA = listadoA.Where(x => x.Code.Equals("000.010.000.000")).ToList();
