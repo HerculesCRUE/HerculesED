@@ -13,9 +13,11 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.ScopusConnect)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 
 

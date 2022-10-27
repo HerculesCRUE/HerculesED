@@ -13,9 +13,11 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.WoSConnect)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 
 
