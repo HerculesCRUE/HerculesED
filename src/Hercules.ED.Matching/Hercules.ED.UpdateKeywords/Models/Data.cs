@@ -8,78 +8,78 @@ namespace Hercules.ED.UpdateKeywords.Models
 {
     public class Data
     {
-        public Result snomedTerm { get; set; }
-        public List<ResultRelations> relations { get; set; }
+        public Result SnomedTerm { get; set; }
+        public List<ResultRelations> Relations { get; set; }
     }
 
     public class CrosswalkObj
     {
-        public int pageSize { get; set; }
-        public int pageNumber { get; set; }
-        public int pageCount { get; set; }
-        public List<Result> result { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+        public int PageCount { get; set; }
+        public List<Result> Result { get; set; }
     }
 
     public class SubsetMembership
     {
-        public string memberUri { get; set; }
-        public string name { get; set; }
-        public string uri { get; set; }
+        public string MemberUri { get; set; }
+        public string Name { get; set; }
+        public string Uri { get; set; }
     }
 
     public class ContentViewMembership
     {
-        public string memberUri { get; set; }
-        public string name { get; set; }
-        public string uri { get; set; }
+        public string MemberUri { get; set; }
+        public string Name { get; set; }
+        public string Uri { get; set; }
     }
 
     public class Result
     {
-        public string classType { get; set; }
-        public string ui { get; set; }
-        public bool suppressible { get; set; }
-        public bool obsolete { get; set; }
-        public string rootSource { get; set; }
-        public int atomCount { get; set; }
-        public int cVMemberCount { get; set; }
-        public string attributes { get; set; }
-        public string atoms { get; set; }
-        public string descendants { get; set; }
-        public string ancestors { get; set; }
-        public string parents { get; set; }
-        public string children { get; set; }
-        public string relations { get; set; }
-        public string definitions { get; set; }
-        public string concepts { get; set; }
-        public string defaultPreferredAtom { get; set; }
-        public List<SubsetMembership> subsetMemberships { get; set; }
-        public List<ContentViewMembership> contentViewMemberships { get; set; }
-        public string name { get; set; }
+        public string ClassType { get; set; }
+        public string Ui { get; set; }
+        public bool Suppressible { get; set; }
+        public bool Obsolete { get; set; }
+        public string RootSource { get; set; }
+        public int AtomCount { get; set; }
+        public int CVMemberCount { get; set; }
+        public string Attributes { get; set; }
+        public string Atoms { get; set; }
+        public string Descendants { get; set; }
+        public string Ancestors { get; set; }
+        public string Parents { get; set; }
+        public string Children { get; set; }
+        public string Relations { get; set; }
+        public string Definitions { get; set; }
+        public string Concepts { get; set; }
+        public string DefaultPreferredAtom { get; set; }
+        public List<SubsetMembership> SubsetMemberships { get; set; }
+        public List<ContentViewMembership> ContentViewMemberships { get; set; }
+        public string Name { get; set; }
     }
 
     public class RelationsObj
     {
-        public int pageSize { get; set; }
-        public int pageNumber { get; set; }
-        public int pageCount { get; set; }
-        public List<ResultRelations> result { get; set; }
+        public int PageSize { get; set; }
+        public int PageNumber { get; set; }
+        public int PageCount { get; set; }
+        public List<ResultRelations> Result { get; set; }
     }
 
     public class ResultRelations
     {
-        public string classType { get; set; }
-        public string ui { get; set; }
-        public bool suppressible { get; set; }
-        public string sourceUi { get; set; }
-        public bool obsolete { get; set; }
-        public bool sourceOriginated { get; set; }
-        public string rootSource { get; set; }
-        public string relationLabel { get; set; }
-        public string additionalRelationLabel { get; set; }
-        public string groupId { get; set; }
-        public int attributeCount { get; set; }
-        public string relatedId { get; set; }
-        public string relatedIdName { get; set; }
+        public string ClassType { get; set; }
+        public string Ui { get; set; }
+        public bool Suppressible { get; set; }
+        public string SourceUi { get; set; }
+        public bool Obsolete { get; set; }
+        public bool SourceOriginated { get; set; }
+        public string RootSource { get; set; }
+        public string RelationLabel { get; set; }
+        public string AdditionalRelationLabel { get; set; }
+        public string GroupId { get; set; }
+        public int AttributeCount { get; set; }
+        public string RelatedId { get; set; }
+        public string RelatedIdName { get; set; }
     }
 }

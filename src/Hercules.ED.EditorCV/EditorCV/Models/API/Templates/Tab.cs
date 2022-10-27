@@ -145,7 +145,7 @@ namespace EditorCV.Models.API.Templates
             propertyDataListItems.childs.RemoveAll(x => x.property == "http://w3id.org/roh/isPublic");
             
             //Nos quedamos sólo con el relatedBy
-            propertyDataListItems.childs.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
+            propertyDataListItems.childs.First(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
             return propertyDataListItems;
         }
 

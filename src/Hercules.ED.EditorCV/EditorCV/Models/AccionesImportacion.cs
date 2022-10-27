@@ -405,7 +405,6 @@ namespace EditorCV.Models
                         tabSectionItem.idBBDD = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
                             .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
                             .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x => x.idBBDD).FirstOrDefault();
-                        itemEditSection.title.Select(x => x.Value).ToList();
 
                         tabSectionItem.properties.Add(tsip);
 

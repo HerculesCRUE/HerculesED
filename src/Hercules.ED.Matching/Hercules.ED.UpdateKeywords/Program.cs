@@ -12,14 +12,13 @@ namespace Hercules.ED.UpdateKeywords
 {
     public class Program
     {
-        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
-        private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
-        private static CommunityApi mCommunityApi = new CommunityApi(RUTA_OAUTH);
-        private static ConfigService configService = new ConfigService();
+        private readonly static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private readonly static ResourceApi mResourceApi = new(RUTA_OAUTH);
+        private readonly static ConfigService configService = new();
 
-        static void Main(string[] args)
+        static void Main()
         {
-            UtilKeywords utilKeywords = new UtilKeywords(mResourceApi, mCommunityApi, configService);
+            UtilKeywords utilKeywords = new(mResourceApi, configService);
 
             while (true)
             {
@@ -34,7 +33,7 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     try
                     {
-                        FileLogger.Log($@"{DateTime.Now} ---------- Procesando publicación {contadorPub}/{listaIds.Count}");
+                        FileLogger.Log($@"[INFO] {DateTime.Now} ---------- Procesando publicación {contadorPub}/{listaIds.Count}");
                         Dictionary<string, string> dicEtiquetas = utilKeywords.GetKeywords(id);
 
                         foreach (KeyValuePair<string, string> etiquetaTag in dicEtiquetas)
@@ -42,18 +41,18 @@ namespace Hercules.ED.UpdateKeywords
                             string idEtiquetaAux = etiquetaTag.Key;
 
                             // 1.- Probamos con el término en "Exact Match".
-                            List<string> listaAux = new List<string>() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
-                                                      
+                            List<string> listaAux = new() { etiquetaTag.Value.Replace(")", "").Replace("(", "") };
 
-                            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+                            Dictionary<string, string> dicResultados = new();
 
+                            // Si la palabra no contiene caracteres especiales, se pregunta a MESH.
                             if (!utilKeywords.ComprobarCaracteres(etiquetaTag.Value))
                             {
                                 dicResultados = utilKeywords.SelectDataMesh(listaAux.ToArray(), true);
                             }
 
                             // 2.- Si no se ha encontrado resultado y el término contiene más de una palabra...
-                            if (dicResultados.Count() == 0 && etiquetaTag.Value.Contains(" "))
+                            if (!dicResultados.Any() && etiquetaTag.Value.Contains(' '))
                             {
                                 // 2.1.- Buscamos por el término en "All fragments".
                                 string[] partes = etiquetaTag.Value.Split(" ");
@@ -66,12 +65,14 @@ namespace Hercules.ED.UpdateKeywords
                                 }
 
                                 // 2.2.- Buscamos por combinación de palabras en "All fragments" en el caso que tenga más de dos.
-                                if (dicResultados.Count() != 1 && partes.Count() >= 2)
+                                if (dicResultados.Count != 1 && partes.Count() >= 2)
                                 {
                                     for (int i = 0; i < partes.Length; i++)
                                     {
                                         string parte1 = partes[i];
-                                        if (utilKeywords.preposicionesEng.Contains(parte1) || utilKeywords.preposicionesEsp.Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
+
+                                        // Comprobación de preposiciones y carácteres especiales.
+                                        if (utilKeywords.GetPreposicionesEng().Contains(parte1) || utilKeywords.GetPreposicionesEsp().Contains(parte1) || utilKeywords.ComprobarCaracteres(parte1))
                                         {
                                             continue;
                                         }
@@ -79,23 +80,25 @@ namespace Hercules.ED.UpdateKeywords
                                         for (int x = i + 1; x < partes.Length; x++)
                                         {
                                             string parte2 = partes[x];
-                                            if (utilKeywords.preposicionesEng.Contains(parte2) || utilKeywords.preposicionesEsp.Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
+
+                                            // Comprobación de preposiciones y carácteres especiales.
+                                            if (utilKeywords.GetPreposicionesEng().Contains(parte2) || utilKeywords.GetPreposicionesEsp().Contains(parte2) || utilKeywords.ComprobarCaracteres(parte2))
                                             {
                                                 continue;
                                             }
 
-                                            List<string> lista = new List<string>() { parte1, parte2 };
+                                            List<string> lista = new() { parte1, parte2 };
                                             string[] arrayParte = lista.ToArray();
 
                                             dicResultados = ConsultarDatos(utilKeywords, arrayParte);
 
-                                            if (dicResultados.Count() == 1)
+                                            if (dicResultados.Count == 1)
                                             {
                                                 break;
                                             }
                                         }
 
-                                        if (dicResultados.Count() == 1)
+                                        if (dicResultados.Count == 1)
                                         {
                                             break;
                                         }
@@ -104,22 +107,22 @@ namespace Hercules.ED.UpdateKeywords
                             }
 
                             // Obtencón de información de SNOMED.
-                            List<Data> listaSnomed = new List<Data>();
-                            Dictionary<string, List<Dictionary<string, string>>> dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
+                            List<Data> listaSnomed = new();
+                            Dictionary<string, List<Dictionary<string, string>>> dicIds = new();
                             foreach (KeyValuePair<string, string> item in dicResultados)
                             {
                                 utilKeywords.InsertDataSnomed(item.Key, listaSnomed);
 
                                 // Borra los términos obsoletos.
-                                listaSnomed.RemoveAll(x => x.snomedTerm.obsolete == true);
+                                listaSnomed.RemoveAll(x => x.SnomedTerm.Obsolete);
 
                                 // Relación IDs.
-                                dicIds = new Dictionary<string, List<Dictionary<string, string>>>();
+                                dicIds = new();
                                 dicIds.Add(item.Key, new List<Dictionary<string, string>>());
                                 foreach (Data itemSnomed in listaSnomed)
                                 {
-                                    Dictionary<string, string> dicAux = new Dictionary<string, string>();
-                                    dicAux.Add(itemSnomed.snomedTerm.ui, string.Empty);
+                                    Dictionary<string, string> dicAux = new();
+                                    dicAux.Add(itemSnomed.SnomedTerm.Ui, string.Empty);
                                     dicIds[item.Key].Add(dicAux);
                                 }
                             }
@@ -137,7 +140,7 @@ namespace Hercules.ED.UpdateKeywords
                             }
 
                             // Obtención de información de MESH.
-                            List<DataConcept> listaMesh = new List<DataConcept>();
+                            List<DataConcept> listaMesh = new();
                             foreach (KeyValuePair<string, string> itemAux in dicResultados)
                             {
                                 utilKeywords.InsertDataMesh(itemAux.Key, itemAux.Value, listaMesh);
@@ -147,16 +150,16 @@ namespace Hercules.ED.UpdateKeywords
                             foreach (DataConcept tag in listaMesh)
                             {
                                 string idRecursoMesh = utilKeywords.CargarDataConceptCompleto(tag, dicIds);
-                                utilKeywords.ModificarKeyword(id, "http://w3id.org/roh/keyWordConcept", idEtiquetaAux, idRecursoMesh);
+                                utilKeywords.ModificarKeyword(id, idEtiquetaAux, idRecursoMesh);
                             }
                         }
 
                         // Borrar triple de obtención de etiquetas.
-                        utilKeywords.ModificarGetKeywordDocument(id);                        
+                        utilKeywords.ModificarGetKeywordDocument(id);
                     }
                     catch (Exception error)
                     {
-                        FileLogger.Log($@"{DateTime.Now} ---------- {error}");
+                        FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message} {error.StackTrace}");
                     }
 
                     contadorPub++;
@@ -167,12 +170,17 @@ namespace Hercules.ED.UpdateKeywords
             }
         }
 
+        /// <summary>
+        /// Busca en MESH todos los sinónimos y términos relacionados con las palabras.
+        /// </summary>
+        /// <param name="pUtilKeywords">Objeto utils.</param>
+        /// <param name="pPartes">Parte de la palabra.</param>
+        /// <returns>Dicionario como clave MESH y valor el sinónimo.</returns>
         public static Dictionary<string, string> ConsultarDatos(UtilKeywords pUtilKeywords, string[] pPartes)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            Dictionary<string, string> dicResultados;
 
-            // Buscar en el label y concept label
-
+            // Buscar en el label y concept label.
             string consulta = $@"
                         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
                         SELECT ?item ?label FROM <http://mesh.gnoss.com/edma>
@@ -287,12 +295,12 @@ namespace Hercules.ED.UpdateKeywords
             public static void Log(string messsage)
             {
                 string fecha = DateTime.Now.ToString().Split(" ")[0].Replace("/", "-");
-                string ruta = $@"{configService.GetLogPath()}{fecha}.log";
+                string ruta = $@"{configService.GetLogPath()}{Path.DirectorySeparatorChar}Matching_{fecha}.log";
                 if (!File.Exists(ruta))
                 {
                     using (FileStream fs = File.Create(ruta)) { }
                 }
-                File.AppendAllText(ruta, messsage);
+                File.AppendAllText(ruta, messsage + Environment.NewLine);
             }
         }
     }

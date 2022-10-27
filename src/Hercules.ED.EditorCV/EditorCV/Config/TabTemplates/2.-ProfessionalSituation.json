@@ -1002,6 +1002,12 @@
                         "placeholder": {
                           "es": "Introduce el correo electrónico"
                         },
+                        "validation": {
+                          "regex": "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+                          "error": {
+                            "es": "El correo introducido no es correcto"
+                          }
+                        },
                         "width": 2
                       }
                     ]
@@ -2003,6 +2009,12 @@
                         },
                         "placeholder": {
                           "es": "Introduce el correo electrónico"
+                        },
+                        "validation": {
+                          "regex": "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+                          "error": {
+                            "es": "El correo introducido no es correcto"
+                          }
                         },
                         "width": 2
                       }

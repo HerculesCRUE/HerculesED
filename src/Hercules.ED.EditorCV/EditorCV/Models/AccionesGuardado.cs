@@ -18,6 +18,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -260,10 +261,19 @@ namespace EditorCV.Models
         {
             string accion = "";
             string personCV = UtilityCV.GetPersonFromCV(pCvID);
+            API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
+
+            //Comprobamos campos con expresiones regulares            
+            JsonResult error = ComprobarErrores(template, pEntity, pSectionID, pRdfTypeTab,pLang);
+            if (error != null)
+            {
+                return error;
+            }
+
+
+
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
-                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
-
                 //Modificamos
                 Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
                 bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
@@ -281,7 +291,6 @@ namespace EditorCV.Models
             else
             {
                 //Item de CV
-                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
                 API.Templates.TabSection templateSection = template.sections.First(x => x.property == pSectionID);
 
                 ItemEdit itemEditConfig = null;
@@ -719,6 +728,43 @@ namespace EditorCV.Models
             }
         }
 
+        private JsonResult ComprobarErrores(API.Templates.Tab pTemplate, Entity pEntity, string pSectionID, string pRdfTypeTab, string pLang)
+        {
+            ItemEdit itemEdit = null;
+            List<ItemEditSectionRowProperty> validar = new();
+            
+            if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
+            {
+                itemEdit = pTemplate.personalDataSections;
+            }
+            else
+            {
+                API.Templates.TabSection templateSection = pTemplate.sections.First(x => x.property == pSectionID);
+                itemEdit = templateSection.presentation.listItemsPresentation.listItemEdit;
+            }
+            itemEdit.sections.ForEach(section => section.rows.ForEach(x => validar.AddRange(x.properties.FindAll(x => x.validation != null))));
+            
+            foreach(ItemEditSectionRowProperty item in validar)
+            {
+                Regex rx = new(item.validation.regex);
+                Entity.Property p = pEntity.properties.First(x =>x.prop == item.property);
+                if (p.values != null)
+                {
+                    foreach (string value in p.values)
+                    {
+                        
+                        if (!string.IsNullOrEmpty(value) && !rx.IsMatch(value))
+                        {
+                            return new JsonResult() { ok = false, error = item.validation.error[pLang] };
+                        }
+
+                    };
+                }
+
+            };
+            return null;
+        }
+
         /// <summary>
         /// Modificamos un recurso y lanzamos una notificación a las personas que se vean afectadas por las modificaciones.
         /// </summary>
@@ -982,7 +1028,7 @@ namespace EditorCV.Models
 
                 string propiedad = "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
                 //Generamos notificaciones de edición
-                List<string> personasEdicion = entity.properties.FirstOrDefault(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
+                List<string> personasEdicion = entity.properties.First(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
                     .Where(x => !notificaciones.Select(x => x.IdRoh_owner).Contains(x) && x != personaCV && !string.IsNullOrEmpty(x)).ToList();
                 foreach (string persona in personasEdicion)
                 {
@@ -1156,7 +1202,7 @@ namespace EditorCV.Models
                                     }}
                                     FILTER(?personID=<{pIdPerson}>)
                                 }}";
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "department" });
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
             {
                 Person persona = new Person();
@@ -1305,16 +1351,18 @@ namespace EditorCV.Models
                 properties.Add(pProperty);
             }
             List<string> rdftypes = new List<string>();
-            bool continuar = true;
-            while (continuar)
+
+            while (true)
             {
-                continuar = false;
                 SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s a ?rdftype. ?s ?p <" + pEntity + ">. }", "curriculumvitae");
+                if(resultData.results.bindings.Count==0 || !resultData.results.bindings.Any(x=> x["p"].value != "http://gnoss/hasEntidad"))
+                {
+                    break;
+                }
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     if (fila["p"].value != "http://gnoss/hasEntidad")
                     {
-                        continuar = true;
                         properties.Add(fila["p"].value);
                         entities.Add(fila["s"].value);
                         pEntity = fila["s"].value;
@@ -1399,19 +1447,22 @@ namespace EditorCV.Models
                 {
                     if (auxEntityRemove.StartsWith("http"))
                     {
-                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        if (pLoadedEntity != null && pLoadedEntity.properties != null)
                         {
-                            List<string> eliminar = new List<string>();
-                            foreach (string value in property.values)
+                            foreach (Entity.Property property in pLoadedEntity.properties)
                             {
-                                if (value.Contains(auxEntityRemove))
+                                List<string> eliminar = new List<string>();
+                                foreach (string value in property.values)
                                 {
-                                    eliminar.Add(value);
+                                    if (value.Contains(auxEntityRemove))
+                                    {
+                                        eliminar.Add(value);
+                                    }
                                 }
-                            }
-                            if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
-                            {
-                                change = true;
+                                if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
+                                {
+                                    change = true;
+                                }
                             }
                         }
                     }
