@@ -13,50 +13,17 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
         public string categoria { get; set; }
         public string fechaIni { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configCategoria = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFechaIni = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configNombre = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configCategoria = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaIni = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new ()
             {
-                new DisambiguationData()
-                {
-                    property = "nombre",
-                    config = configNombre,
-                    value = nombre
-                },
-
-                new DisambiguationData()
-                {
-                    property = "categoria",
-                    config = configCategoria,
-                    value = categoria
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fechaIni",
-                    config = configFechaIni,
-                    value = fechaIni
-                }
+                new DisambiguationData(configNombre,"nombre",nombre),
+                new DisambiguationData(configCategoria,"categoria",categoria),
+                new DisambiguationData(configFechaIni,"fechaIni",fechaIni)
             };
 
             return data;
