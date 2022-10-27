@@ -6,15 +6,11 @@ Contiene los servicios web y back que proporcionan la funcionalidad propia del p
 
 El listado de componentes es:
 
-- [Hercules.ED.Desnormalizador](./Hercules.ED.Desnormalizador). Proceso encargado de generar datos desnormalizados para su consulta, búsqueda o representación.
-- [Hercules.CommonsEDMA.DisambiguationEngine](./Hercules.CommonsEDMA.DisambiguationEngine). Servicio encargado de la deduplicación de datos (investigadores, publicaciones, ROs, etc.
 - [Hercules.ED.EditorCV](./Hercules.ED.EditorCV). Configuración del Editor de CV.
 - [Hercules.ED.Enrichment](./Hercules.ED.Enrichment). Servicios y pipeline del enriquecimiento de descriptores y el servicio de similitud de ROs.
 - [Hercules.ED.ExternalSources](./Hercules.ED.ExternalSources). Servicios de conexión con fuentes externas de información, para publicaciones y otros ROs
 - [Hercules.ED.ImportExportCV](./Hercules.ED.ImportExportCV). Servicio encargado de la importación y exportación de curriculums vitae (CV) en formato CVN de FECYT.
-- [Hercules.ED.LoadCVs](./Hercules.ED.LoadCVs). Servicio que carga el CV.
+- [Hercules.ED.LoadCV](./Hercules.ED.LoadCV). Servicio que carga el CV.
 - [Hercules.ED.Matching](./Hercules.ED.Matching). Servicio encargado de hacer el matching (enlazado) de los descriptores específicos de las publicaciones.
-- [Hercules.ED.OAI_PMH](./Hercules.ED.OAI_PMH). Servicio OAI-PMH para recolección de datos desde los sistemas de la universidad, Hércules SGI y otros.
 - [Hercules.ED.ResearcherObjectLoad](./Hercules.ED.ResearcherObjectLoad). Servicio encargado del almacenamiento de datos pertenecientes a fuentes externas.
 - [Hercules.ED.Synchronization](./Hercules.ED.Synchronization). Servicio de sincronizacion para la última actualización de datos.
-- [Hercules.ED.Taxonomy](./Hercules.ED.Taxonomy). Taxonomía y mapeos para la clasificación de resultados y actividades de investigación

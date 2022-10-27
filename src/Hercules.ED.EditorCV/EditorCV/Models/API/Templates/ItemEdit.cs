@@ -380,8 +380,25 @@ namespace EditorCV.Models.API.Templates
         /// Indica si la propiedad es única (no puede estar repetida en otro ítem)
         /// </summary>
         public bool unique;
-    }
 
+        /// <summary>
+        /// Objecto que almacena toda la informacion necesaria para la validacion
+        /// </summary>
+        public ItemEditSectionRowValidation validation;
+    }
+    public class ItemEditSectionRowValidation
+    {
+        /// <summary>
+        /// Representa el patron que tendra que cumplir el valor
+        /// </summary>
+        public string regex;
+        /// <summary>
+        /// Dicionario de idiomas con el mensaje de error correspondiente a no pasar la validacion.
+        /// </summary>
+        public Dictionary<string, string> error;
+
+
+    }
     public class ItemEditSectionRowPropertyDependency
     {
         /// <summary>
