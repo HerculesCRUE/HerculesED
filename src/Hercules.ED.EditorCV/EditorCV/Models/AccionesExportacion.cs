@@ -619,7 +619,11 @@ namespace EditorCV.Models
                 }
                 else if (remove)
                 {
-                    List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                    List<Entity.Property> propertiesLoadedEntityRemove = new List<Entity.Property>();
+                    if (pLoadedEntity != null && pLoadedEntity.properties != null)
+                    {
+                        propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                    }
                     foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                     {
                         foreach (string valor in propertyToRemove.values)
@@ -640,22 +644,25 @@ namespace EditorCV.Models
                 {
                     if (auxEntityRemove.StartsWith("http"))
                     {
-                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        if (pLoadedEntity != null && pLoadedEntity.properties != null)
                         {
-                            foreach (string valor in property.values)
+                            foreach (Entity.Property property in pLoadedEntity.properties)
                             {
-                                if (valor.Contains(auxEntityRemove))
+                                foreach (string valor in property.values)
                                 {
-                                    //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
-                                    triplesRemove[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
-                                    //Eliminamos la entidad auxiliar
-                                    triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                    if (valor.Contains(auxEntityRemove))
                                     {
+                                        //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
+                                        triplesRemove[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
+                                        //Eliminamos la entidad auxiliar
+                                        triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                        {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
-                                        Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
-                                    });
-                                    break;
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
+                                            Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
+                                        });
+                                        break;
+                                    }
                                 }
                             }
                         }
