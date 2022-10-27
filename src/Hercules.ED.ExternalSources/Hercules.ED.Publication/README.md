@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](../../../Docs/media/CabeceraDocumentosMD.png)
 
 | Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
@@ -15,6 +15,7 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Publication&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Publication)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Publication&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Publication)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Publication&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Publication)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Publication&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.Publication)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Publication&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Publication)
+
 

@@ -12,7 +12,7 @@ namespace Hercules.ED.UpdateKeywords
 {
     public class Program
     {
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
         private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
         private static CommunityApi mCommunityApi = new CommunityApi(RUTA_OAUTH);
         private static ConfigService configService = new ConfigService();

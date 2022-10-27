@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](../../../Docs/media/CabeceraDocumentosMD.png)
 
 | Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
@@ -7,7 +7,7 @@
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión| Versión inicial |
 
 ## Sobre Hercules.ED.FigShare
 
@@ -15,6 +15,6 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.FigShare)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
 
