@@ -242,10 +242,10 @@ namespace Hercules.ED.ImportExportCV
 
 
             //Duplicar
-            Duplicar(duplicadosResultBean, listadoDuplicar, listadoDuplicarBBDD, petitionStatus);
+            Duplicar(duplicadosResultBean, listadoDuplicar, listadoDuplicarBBDD, listaDOI, petitionStatus);
 
             //Fusionar
-            Fusionar(fusionResultBean, listadoFusionar, listadoFusionarBBDD, petitionStatus);
+            Fusionar(fusionResultBean, listadoFusionar, listadoFusionarBBDD, listaDOI, petitionStatus);
 
             //Sobrescribir
             Sobrescribir(sobrescribirResultBean, listadoSobrescribir, listadoSobrescribirBBDD, listadoTextoLibreBBDD, listaDOI, petitionStatus);
@@ -360,7 +360,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listadoDuplicar">Listado de items a duplicar</param>
         /// <param name="listadoDuplicarBBDD">Listado de ítems en BBDD</param>
         /// <param name="petitionStatus">PetitionStatus</param>
-        private void Duplicar(cvnRootResultBean duplicadosResultBean, List<CvnItemBean> listadoDuplicar, List<string> listadoDuplicarBBDD, PetitionStatus petitionStatus)
+        private void Duplicar(cvnRootResultBean duplicadosResultBean, List<CvnItemBean> listadoDuplicar, List<string> listadoDuplicarBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
         {
             base.cvn = duplicadosResultBean;
 
@@ -383,7 +383,7 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listadoFusionar">Listado de items a fusionar</param>
         /// <param name="listadoFusionarBBDD">Listado de ítems en BBDD</param>
         /// <param name="petitionStatus">PetitionStatus</param>
-        private void Fusionar(cvnRootResultBean fusionResultBean, List<CvnItemBean> listadoFusionar, List<string> listadoFusionarBBDD, PetitionStatus petitionStatus)
+        private void Fusionar(cvnRootResultBean fusionResultBean, List<CvnItemBean> listadoFusionar, List<string> listadoFusionarBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
         {
             base.cvn = fusionResultBean;
 

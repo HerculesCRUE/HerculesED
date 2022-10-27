@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](../../../Docs/media/CabeceraDocumentosMD.png)
 
 | Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
@@ -7,7 +7,7 @@
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión|Versión inicial |
 
 ## Sobre Hercules.ED.WoSConnect
 
@@ -15,6 +15,7 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.WoSConnect)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
+
 
