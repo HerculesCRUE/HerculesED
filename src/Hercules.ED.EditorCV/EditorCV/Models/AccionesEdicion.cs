@@ -19,6 +19,7 @@ using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using EditorCV.Models.Similarity;
+using System.IO;
 
 namespace EditorCV.Models
 {
@@ -30,8 +31,8 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
 
