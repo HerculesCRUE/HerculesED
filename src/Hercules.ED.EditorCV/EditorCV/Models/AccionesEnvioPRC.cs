@@ -1504,9 +1504,8 @@ where {{
         /// Obtención del token.
         /// </summary>
         /// <returns></returns>
-        private string GetTokenCSP(ConfigService pConfig)
+        public static string GetTokenCSP(ConfigService pConfig)
         {
-            // TODO: Sacar a archivo de configuración.
             Uri url = new Uri(pConfig.GetUrlToken());
             var content = new FormUrlEncodedContent(new[]
             {
@@ -1529,7 +1528,7 @@ where {{
         /// <param name="pMethod"></param>
         /// <param name="pBody"></param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
+        protected static async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
