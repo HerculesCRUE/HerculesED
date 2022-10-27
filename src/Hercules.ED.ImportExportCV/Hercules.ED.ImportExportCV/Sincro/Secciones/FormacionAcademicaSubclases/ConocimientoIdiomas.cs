@@ -12,22 +12,13 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
     {
         public string idioma { get; set; }
 
-        private static readonly DisambiguationDataConfig configIdioma = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
+        private static readonly DisambiguationDataConfig configIdioma = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "idioma",
-                    config = configIdioma,
-                    value = idioma
-                }
+                new DisambiguationData(configIdioma,"idioma", idioma)
             };
 
             return data;
