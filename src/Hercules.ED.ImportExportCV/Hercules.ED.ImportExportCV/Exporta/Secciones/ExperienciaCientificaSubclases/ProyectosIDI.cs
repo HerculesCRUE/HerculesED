@@ -28,17 +28,14 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         public void ExportaProyectosIDI(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new List<CvnItemBean>();
-            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
-            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
-            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+
+            // Selecciono los identificadores de las entidades de la seccion
+            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0) 
-                { 
-                    return; 
-                }
+                return;
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
