@@ -23,19 +23,19 @@ namespace Hercules.ED.UpdateKeywords
 {
     public class UtilKeywords
     {
-        private ResourceApi mResourceApi;
-        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
+        private readonly ResourceApi mResourceApi;
+        private readonly static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
+        private readonly static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         readonly ConfigService _Configuracion;
         private const int MAX_NUM_HILOS = 6;
         private const int MAX_NUM_INTENTOS = 10;
 
-        // Lista Preposiciones
-        public List<string> preposicionesEng = new List<string>() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with", "a", "an", "some", "the", "it", "its", "after", "although", "and", "as", "as long as", "as soon as", "as well as", "because", "befpre", "both", "but", "either", "even if", "even though", "however", "if", "in case", "in order to", "moreover", "neither", "nor", "nevertheless", "now that", "or", "once", "since", "so", "so that", "then", "therefore", "though", "unless", "until", "when", "whereas", "whether", "yet" };
-        public List<string> preposicionesEsp = new List<string>() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via", "y", "el", "la", "los", "las", "un", "una", "unos", "unas", "lo" };
-        public List<string> caracteres = new List<string>() { "\\", "|", "\"", "·", "$", "%", "&", "/", "=", "?", "¿", "º", "!", "@", "#", "~", "€", "¬", "¡", "[", "]", "{", "}", "^", "*", "¨", ";", ":", "_", "`", "+", "´", ",", "<", ">", ".", "(", ")", "'" };
+        // Lista de palabras y carácteres.
+        private readonly List<string> preposicionesEng = new() { "above", "across", "along", "around", "against", "at", "behind", "beside", "below", "beneath", "between", "by", "close to", "in", "in front of", "inside", "near", "on", "opposite", "outside", "over", "under", "underneath", "upon", "about", "after", "around", "before", "beyond", "by", "during", "for", "past", "since", "throughout", "until", "across", "along", "around", "away from", "down", "from", "into", "off", "onto", "out of", "over", "past", "to", "towards", "under", "up", "in", "at", "on", "ago", "circa", "per", "about", "at", "from", "for", "in", "of", "to", "with", "a", "an", "some", "the", "it", "its", "after", "although", "and", "as", "as long as", "as soon as", "as well as", "because", "befpre", "both", "but", "either", "even if", "even though", "however", "if", "in case", "in order to", "moreover", "neither", "nor", "nevertheless", "now that", "or", "once", "since", "so", "so that", "then", "therefore", "though", "unless", "until", "when", "whereas", "whether", "yet" };
+        private readonly List<string> preposicionesEsp = new() { "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "durante", "en", "entre", "hacia", "hasta", "mediante", "para", "por", "según", "sin", "so", "sobre", "tras", "versus", "via", "y", "el", "la", "los", "las", "un", "una", "unos", "unas", "lo" };
+        private readonly List<string> caracteres = new() { "\\", "|", "\"", "·", "$", "%", "&", "/", "=", "?", "¿", "º", "!", "@", "#", "~", "€", "¬", "¡", "[", "]", "{", "}", "^", "*", "¨", ";", ":", "_", "`", "+", "´", ",", "<", ">", ".", "(", ")", "'" };
 
-        public UtilKeywords(ResourceApi pResourceApi, CommunityApi pCommunityApi, ConfigService pConfig)
+        public UtilKeywords(ResourceApi pResourceApi, ConfigService pConfig)
         {
             this.mResourceApi = pResourceApi;
             this._Configuracion = pConfig;
@@ -48,35 +48,32 @@ namespace Hercules.ED.UpdateKeywords
         public List<string> GetDocument()
         {
             mResourceApi.ChangeOntoly("document");
-            List<string> listaDocumentos = new List<string>();
-            SparqlObject resultadoQuery = null;
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+            List<string> listaDocumentos = new();
+            SparqlObject resultadoQuery;
 
             // Consulta sparql.
-            select.Append(mPrefijos);
-            select.Append($@"SELECT DISTINCT ?s ");
-            where.Append("WHERE { ");
-            where.Append("?s a bibo:Document. ");
-            where.Append("?s roh:getKeyWords 'true'. ");
-            where.Append("?s roh:hasKnowledgeArea ?area. ");
-            where.Append($@"?area roh:categoryNode <{mResourceApi.GraphsUrl}items/researcharea_3.0.0.0>. "); // Health Sciences
-            where.Append("?s bibo:authorList ?listaAutores. ");
-            where.Append("?listaAutores rdf:member ?persona. ");
-            where.Append("?persona roh:useMatching 'true'. ");
-            where.Append("} ");
-
+            string select = $@"{mPrefijos} SELECT DISTINCT ?s ";
+            string where = $@"WHERE {{
+                            ?s a bibo:Document.
+                            ?s roh:getKeyWords 'true'. 
+                            ?s roh:hasKnowledgeArea ?area. 
+                            ?area roh:categoryNode <{mResourceApi.GraphsUrl}items/researcharea_3.0.0.0>. 
+                            ?s bibo:authorList ?listaAutores. 
+                            ?listaAutores rdf:member ?persona. 
+                            ?persona roh:useMatching 'true'. 
+                        }}";
 
             while (true)
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select.ToString(), where.ToString(), new() { "document" ,"person"});
+                    resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document", "person" });
                     break;
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                 }
             }
@@ -95,33 +92,36 @@ namespace Hercules.ED.UpdateKeywords
             return listaDocumentos;
         }
 
+        /// <summary>
+        /// Obtiene las palabras clave.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso.</param>
+        /// <returns>Diccionario resultante.</returns>
         public Dictionary<string, string> GetKeywords(string pIdRecurso)
         {
             mResourceApi.ChangeOntoly("document");
-            Dictionary<string, string> dicEtiquetas = new Dictionary<string, string>();
-            SparqlObject resultadoQuery = null;
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+            Dictionary<string, string> dicEtiquetas = new();
+            SparqlObject resultadoQuery;
 
             // Consulta sparql.
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?freeTextKeyword ?etiqueta ");
-            where.Append("WHERE { ");
-            where.Append($@"<{pIdRecurso}> vivo:freeTextKeyword ?freeTextKeyword. ");
-            where.Append("?freeTextKeyword roh:title ?etiqueta. ");
-            where.Append("MINUS { ?freeTextKeyword roh:keyWordConcept ?keywordConcept. }");
-            where.Append("} ");
+            string select = $@"{mPrefijos} SELECT DISTINCT ?freeTextKeyword ?etiqueta ";
+            string where = $@"WHERE {{ 
+                                <{pIdRecurso}> vivo:freeTextKeyword ?freeTextKeyword.
+                                ?freeTextKeyword roh:title ?etiqueta. 
+                                MINUS {{ ?freeTextKeyword roh:keyWordConcept ?keywordConcept. }}
+                            }}";
 
             while (true)
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "document");
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
                     break;
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                 }
             }
@@ -160,28 +160,26 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Objeto con datos recuperados.</returns>
         public string GetUriTag(string pUrl)
         {
-            SparqlObject resultadoQuery = null;
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+            SparqlObject resultadoQuery;
 
             // Consulta sparql.
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?s ");
-            where.Append("WHERE { ");
-            where.Append("?s a roh:KeyWordConcept. ");
-            where.Append($@"?s roh:url '{pUrl}'. ");
-            where.Append("} ");
+            string select = $@"{mPrefijos} SELECT DISTINCT ?s ";
+            string where = $@"WHERE {{
+                                ?s a roh:KeyWordConcept. 
+                                ?s roh:url '{pUrl}'. 
+                            ";
 
             while (true)
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "keywordconcept");
+                    resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "keywordconcept");
                     break;
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                 }
             }
@@ -196,71 +194,77 @@ namespace Hercules.ED.UpdateKeywords
             }
         }
 
+        /// <summary>
+        /// Carga de datos.
+        /// </summary>
+        /// <param name="pData">Datos de SNOMED.</param>
+        /// <param name="pDicIdsSnomed">IDs de SNOMED.</param>
+        /// <returns>ID del recurso.</returns>
         public string CargarDataConceptCompleto(DataConcept pData, Dictionary<string, List<Dictionary<string, string>>> pDicIdsSnomed = null)
         {
             mResourceApi.ChangeOntoly("keywordconcept");
 
             // 1º - Por cada DataConcept relacionado ejecutamos CargarDataConceptParcial.
-            ConcurrentBag<string> listBroaders = new ConcurrentBag<string>();
-            if (pData.broader != null)
+            ConcurrentBag<string> listBroaders = new();
+            if (pData.Broader != null)
             {
-                Parallel.ForEach(pData.broader.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idBroader =>
+                Parallel.ForEach(pData.Broader.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idBroader =>
                 {
-                    listBroaders.Add(CargarDataConceptParcial(idBroader, pData.broader[idBroader], pData.type));
+                    listBroaders.Add(CargarDataConceptParcial(idBroader, pData.Broader[idBroader], pData.Type));
                 });
             }
 
-            ConcurrentBag<string> listQualifiers = new ConcurrentBag<string>();
-            if (pData.qualifiers != null)
+            ConcurrentBag<string> listQualifiers = new();
+            if (pData.Qualifiers != null)
             {
-                Parallel.ForEach(pData.qualifiers.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idQualifiers =>
+                Parallel.ForEach(pData.Qualifiers.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idQualifiers =>
                 {
-                    listQualifiers.Add(CargarDataConceptParcial(idQualifiers, pData.qualifiers[idQualifiers], pData.type));
+                    listQualifiers.Add(CargarDataConceptParcial(idQualifiers, pData.Qualifiers[idQualifiers], pData.Type));
                 });
             }
 
-            ConcurrentBag<string> listRelatedTo = new ConcurrentBag<string>();
-            if (pData.relatedTo != null)
+            ConcurrentBag<string> listRelatedTo = new();
+            if (pData.RelatedTo != null)
             {
-                Parallel.ForEach(pData.relatedTo.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idRelatedTo =>
+                Parallel.ForEach(pData.RelatedTo.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idRelatedTo =>
                 {
-                    listRelatedTo.Add(CargarDataConceptParcial(idRelatedTo, pData.relatedTo[idRelatedTo], pData.type));
+                    listRelatedTo.Add(CargarDataConceptParcial(idRelatedTo, pData.RelatedTo[idRelatedTo], pData.Type));
                 });
             }
 
-            ConcurrentBag<string> listCloseMatch = new ConcurrentBag<string>();
-            if (pData.closeMatch != null)
+            ConcurrentBag<string> listCloseMatch = new();
+            if (pData.CloseMatch != null)
             {
-                Parallel.ForEach(pData.closeMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idCloseMatch =>
+                Parallel.ForEach(pData.CloseMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idCloseMatch =>
                 {
-                    listCloseMatch.Add(CargarDataConceptParcial(idCloseMatch, pData.closeMatch[idCloseMatch], pData.type));
+                    listCloseMatch.Add(CargarDataConceptParcial(idCloseMatch, pData.CloseMatch[idCloseMatch], pData.Type));
                 });
             }
 
-            ConcurrentBag<string> listExactMatch = new ConcurrentBag<string>();
-            if (pData.exactMatch != null)
+            ConcurrentBag<string> listExactMatch = new();
+            if (pData.ExactMatch != null)
             {
-                Parallel.ForEach(pData.exactMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idExactMatch =>
+                Parallel.ForEach(pData.ExactMatch.Keys, new ParallelOptions { MaxDegreeOfParallelism = MAX_NUM_HILOS }, idExactMatch =>
                 {
-                    listExactMatch.Add(CargarDataConceptParcial(idExactMatch, pData.exactMatch[idExactMatch], pData.type));
+                    listExactMatch.Add(CargarDataConceptParcial(idExactMatch, pData.ExactMatch[idExactMatch], pData.Type));
                 });
             }
 
             // 2º - Una vez terminado, creamos/modificamos el DataConcept actual.
-            KeywordconceptOntology.KeyWordConcept keyWordConcept = new KeywordconceptOntology.KeyWordConcept();
-            keyWordConcept.Roh_title = pData.title;
-            keyWordConcept.Roh_url = pData.url;
+            KeywordconceptOntology.KeyWordConcept keyWordConcept = new();
+            keyWordConcept.Roh_title = pData.Title;
+            keyWordConcept.Roh_url = pData.Url;
             keyWordConcept.IdsRoh_broaders = listBroaders.Distinct().ToList();
             keyWordConcept.IdsRoh_qualifiers = listQualifiers.Distinct().ToList();
             keyWordConcept.IdsRoh_relatedTo = listRelatedTo.Distinct().ToList();
             keyWordConcept.IdsSkos_closeMatch = listCloseMatch.Distinct().ToList();
             keyWordConcept.IdsSkos_exactMatch = listExactMatch.Distinct().ToList();
-            keyWordConcept.Roh_type = pData.type;
+            keyWordConcept.Roh_type = pData.Type;
 
             // Si es una KeyWordConcept de Mesh...
-            if (keyWordConcept.Roh_url.Contains("/"))
+            if (keyWordConcept.Roh_url.Contains('/'))
             {
-                List<string> listaIdsSnomedCargados = new List<string>();
+                List<string> listaIdsSnomedCargados = new();
                 string idMesh = keyWordConcept.Roh_url.Substring(keyWordConcept.Roh_url.LastIndexOf("/") + 1);
 
                 if (pDicIdsSnomed.ContainsKey(idMesh))
@@ -288,7 +292,7 @@ namespace Hercules.ED.UpdateKeywords
             }
 
             // Carga/Modificación.
-            string id = GetUriTag(pData.url);
+            string id = GetUriTag(pData.Url);
             if (string.IsNullOrEmpty(id))
             {
                 ComplexOntologyResource resource = keyWordConcept.ToGnossApiResource(mResourceApi, null);
@@ -304,7 +308,7 @@ namespace Hercules.ED.UpdateKeywords
 
                     mResourceApi.LoadComplexSemanticResource(resource, false, true);
 
-                    if(!resource.Uploaded)
+                    if (!resource.Uploaded)
                     {
                         Thread.Sleep(numIntentos * 1000);
                     }
@@ -347,6 +351,13 @@ namespace Hercules.ED.UpdateKeywords
             return id;
         }
 
+        /// <summary>
+        /// Carga los datos de concept de forma parcial.
+        /// </summary>
+        /// <param name="pIdUrl">URL.</param>
+        /// <param name="pNombre">Nombre.</param>
+        /// <param name="pTipo">Tipo.</param>
+        /// <returns>ID del recurso.</returns>
         public string CargarDataConceptParcial(string pIdUrl, string pNombre, string pTipo)
         {
             // 1º - Si existe devuelve el ID.
@@ -356,7 +367,7 @@ namespace Hercules.ED.UpdateKeywords
             if (string.IsNullOrEmpty(id))
             {
                 // Creación del objeto a cargar.
-                KeywordconceptOntology.KeyWordConcept keyWordConcept = new KeywordconceptOntology.KeyWordConcept();
+                KeywordconceptOntology.KeyWordConcept keyWordConcept = new();
                 keyWordConcept.Roh_title = pNombre;
                 keyWordConcept.Roh_url = pIdUrl;
                 keyWordConcept.Roh_type = pTipo;
@@ -385,13 +396,19 @@ namespace Hercules.ED.UpdateKeywords
             return id;
         }
 
-        public void ModificarKeyword(string idDocumento, string pPredicado, string pIdRecurso, string pKeyword)
+        /// <summary>
+        /// Modifica la entidad Auxiliar de KeyWord.
+        /// </summary>
+        /// <param name="idDocumento">ID del documento.</param>
+        /// <param name="pIdRecurso">ID del recurso a modificar.</param>
+        /// <param name="pKeyword">Palabra a cambiar.</param>
+        public void ModificarKeyword(string idDocumento, string pIdRecurso, string pKeyword)
         {
             Guid guid = mResourceApi.GetShortGuid(idDocumento);
-            Dictionary<Guid, List<TriplesToInclude>> dicInclude = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInclude = new List<TriplesToInclude>();
+            Dictionary<Guid, List<TriplesToInclude>> dicInclude = new();
+            List<TriplesToInclude> listaTriplesInclude = new();
 
-            TriplesToInclude triple = new TriplesToInclude();
+            TriplesToInclude triple = new();
             triple.Predicate = $@"http://vivoweb.org/ontology/core#freeTextKeyword|http://w3id.org/roh/keyWordConcept";
             triple.NewValue = pIdRecurso + "|" + pKeyword;
             listaTriplesInclude.Add(triple);
@@ -400,13 +417,17 @@ namespace Hercules.ED.UpdateKeywords
             mResourceApi.InsertPropertiesLoadedResources(dicInclude);
         }
 
+        /// <summary>
+        /// Modifica un documento.
+        /// </summary>
+        /// <param name="idDocumento">ID del documento.</param>
         public void ModificarGetKeywordDocument(string idDocumento)
         {
             Guid guid = mResourceApi.GetShortGuid(idDocumento);
-            Dictionary<Guid, List<TriplesToModify>> dicInclude = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+            Dictionary<Guid, List<TriplesToModify>> dicInclude = new();
+            List<TriplesToModify> listaTriplesModificacion = new();
 
-            TriplesToModify triple = new TriplesToModify();
+            TriplesToModify triple = new();
             triple.Predicate = $@"http://w3id.org/roh/getKeyWords";
             triple.NewValue = "false";
             triple.OldValue = "true";
@@ -416,13 +437,17 @@ namespace Hercules.ED.UpdateKeywords
             mResourceApi.ModifyPropertiesLoadedResources(dicInclude);
         }
 
+        /// <summary>
+        /// Borra un triple.
+        /// </summary>
+        /// <param name="pIdRecurso">ID del recurso a borrar el triple.</param>
         public void BorrarGetKeywordProperty(string pIdRecurso)
         {
             Guid guid = mResourceApi.GetShortGuid(pIdRecurso);
-            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
-            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new();
+            List<RemoveTriples> listaTriplesBorrado = new();
 
-            RemoveTriples triple = new RemoveTriples();
+            RemoveTriples triple = new();
             triple.Predicate = $@"http://w3id.org/roh/getKeyWords";
             triple.Value = "true";
             listaTriplesBorrado.Add(triple);
@@ -431,83 +456,87 @@ namespace Hercules.ED.UpdateKeywords
             mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
         }
 
+        /// <summary>
+        /// Obtención de los dataconcepts de SNOMED.
+        /// </summary>
+        /// <param name="pListaData">Lista de datos.</param>
+        /// <returns>Devuelve la lista con los datos con objetos.</returns>
         public List<DataConcept> GetDataConcepts(List<Data> pListaData)
         {
-            List<DataConcept> listaDataConcepts = new List<DataConcept>();
+            List<DataConcept> listaDataConcepts = new();
 
             foreach (Data data in pListaData)
             {
-                DataConcept dataConceptMain = new DataConcept();
-                dataConceptMain.title = data.snomedTerm.name;
-                dataConceptMain.url = data.snomedTerm.ui;
-                dataConceptMain.type = "snomed";
+                DataConcept dataConceptMain = new();
+                dataConceptMain.Title = data.SnomedTerm.Name;
+                dataConceptMain.Url = data.SnomedTerm.Ui;
+                dataConceptMain.Type = "snomed";
 
-                foreach (ResultRelations itemRelacion in data.relations)
+                foreach (ResultRelations itemRelacion in data.Relations)
                 {
-                    switch (itemRelacion.relationLabel)
+                    switch (itemRelacion.RelationLabel)
                     {
                         case "AQ":
-                            if (dataConceptMain.qualifiers == null)
+                            if (dataConceptMain.Qualifiers == null)
                             {
-                                dataConceptMain.qualifiers = new Dictionary<string, string>();
+                                dataConceptMain.Qualifiers = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.qualifiers.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.Qualifiers.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.qualifiers.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.Qualifiers.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                         case "RL":
-                            if (dataConceptMain.closeMatch == null)
+                            if (dataConceptMain.CloseMatch == null)
                             {
-                                dataConceptMain.closeMatch = new Dictionary<string, string>();
+                                dataConceptMain.CloseMatch = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.closeMatch.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.CloseMatch.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.closeMatch.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.CloseMatch.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                         case "SY":
-                            if (dataConceptMain.exactMatch == null)
+                            if (dataConceptMain.ExactMatch == null)
                             {
-                                dataConceptMain.exactMatch = new Dictionary<string, string>();
+                                dataConceptMain.ExactMatch = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.exactMatch.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.ExactMatch.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.exactMatch.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.ExactMatch.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                         case "RO":
-                            if (dataConceptMain.relatedTo == null)
+                            if (dataConceptMain.RelatedTo == null)
                             {
-                                dataConceptMain.relatedTo = new Dictionary<string, string>();
+                                dataConceptMain.RelatedTo = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.relatedTo.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.RelatedTo.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.relatedTo.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.RelatedTo.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                         case "RU":
-                            if (dataConceptMain.relatedTo == null)
+                            if (dataConceptMain.RelatedTo == null)
                             {
-                                dataConceptMain.relatedTo = new Dictionary<string, string>();
+                                dataConceptMain.RelatedTo = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.relatedTo.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.RelatedTo.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.relatedTo.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.RelatedTo.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                         case "CHD":
-                            if (dataConceptMain.broader == null)
+                            if (dataConceptMain.Broader == null)
                             {
-                                dataConceptMain.broader = new Dictionary<string, string>();
+                                dataConceptMain.Broader = new Dictionary<string, string>();
                             }
-                            if (!dataConceptMain.broader.ContainsKey(itemRelacion.ui))
+                            if (!dataConceptMain.Broader.ContainsKey(itemRelacion.Ui))
                             {
-                                dataConceptMain.broader.Add(itemRelacion.ui, itemRelacion.relatedIdName);
+                                dataConceptMain.Broader.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
                             }
                             break;
                     }
-
                 }
 
                 listaDataConcepts.Add(dataConceptMain);
@@ -526,12 +555,12 @@ namespace Hercules.ED.UpdateKeywords
         /// <summary>
         /// Obtiene el ID y Valor de la consulta a Mesh.
         /// </summary>
-        /// <param name="pTopicalDescriptor">Tópico a consultar.</param>
+        /// <param name="listaTopicalDescriptors">Tópico a consultar.</param>
         /// <param name="pTipoFiltro">True: Exact Match // False: All Fragments</param>
         /// <returns>Diccionario resultante.</returns>
         public Dictionary<string, string> SelectDataMesh(string[] listaTopicalDescriptors, bool pTipoFiltro)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            Dictionary<string, string> dicResultados = new();
 
             // Endpoint.
             string urlConsulta = _Configuracion.GetSparqlEndpoint();
@@ -621,19 +650,12 @@ namespace Hercules.ED.UpdateKeywords
                     {ContruirFiltro("o", listaTopicalDescriptors, pTipoFiltro)}
                   }}}}ORDER BY ?a";
 
-            // Tipo de salida.
-            string format = "JSON";
-
             // Petición.
-            WebClient webClient = new WebClient();
-            string downloadString = string.Empty;
-
-            // TODO
-            SparqlObject resultadoQuery = null;
+            WebClient webClient = new();
             webClient.Encoding = Encoding.UTF8;
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
 
-            NameValueCollection parametros = new NameValueCollection();
+            NameValueCollection parametros = new();
             parametros.Add("query", consulta);
             parametros.Add("format", "application/sparql-results+json");
 
@@ -659,7 +681,9 @@ namespace Hercules.ED.UpdateKeywords
                 return dicResultados;
             }
 
-            string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
+            // Obtención de datos.
+            SparqlObject resultadoQuery = null;
+            string jsonRespuesta = Encoding.UTF8.GetString(responseArray);
             if (!string.IsNullOrEmpty(jsonRespuesta))
             {
                 resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuesta);
@@ -683,42 +707,46 @@ namespace Hercules.ED.UpdateKeywords
                         label = fila["b"].value;
                     }
 
-                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label))
+                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label) && !dicResultados.ContainsKey(id))
                     {
-                        if (!dicResultados.ContainsKey(id))
-                        {
-                            dicResultados.Add(id, label);
-                        }
+                        dicResultados.Add(id, label);
                     }
                 }
             }
+
             webClient.Dispose();
             return dicResultados;
         }
 
+        /// <summary>
+        /// Obtiene los datos de MESH.
+        /// </summary>
+        /// <param name="pConsulta">Consulta SPARQL.</param>
+        /// <returns>Diccionario resultante.</returns>
         public Dictionary<string, string> SelectDataMeshAllFragments(string pConsulta)
         {
-            Dictionary<string, string> dicResultados = new Dictionary<string, string>();
+            Dictionary<string, string> dicResultados = new();
 
             // Endpoint.
             string urlConsulta = _Configuracion.GetSparqlEndpoint();
 
             // Petición.
-            WebClient webClient = new WebClient();
+            WebClient webClient = new();
 
             SparqlObject resultadoQuery = null;
             webClient.Encoding = Encoding.UTF8;
             webClient.Headers.Add(HttpRequestHeader.ContentType, "application/x-www-form-urlencoded");
 
-            NameValueCollection parametros = new NameValueCollection();
+            NameValueCollection parametros = new();
             parametros.Add("query", pConsulta);
             parametros.Add("format", "application/sparql-results+json");
 
             byte[] responseArray = null;
             int numIntentos = 0;
 
+            // Reintenta la petición un número de veces por si falla.
             Exception exception = null;
-            while (responseArray == null && numIntentos < 3)
+            while (responseArray == null && numIntentos < MAX_NUM_INTENTOS)
             {
                 numIntentos++;
                 try
@@ -736,7 +764,8 @@ namespace Hercules.ED.UpdateKeywords
                 return dicResultados;
             }
 
-            string jsonRespuesta = System.Text.Encoding.UTF8.GetString(responseArray);
+            // Obtención de los datos del resultado.
+            string jsonRespuesta = Encoding.UTF8.GetString(responseArray);
             if (!string.IsNullOrEmpty(jsonRespuesta))
             {
                 resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuesta);
@@ -760,17 +789,15 @@ namespace Hercules.ED.UpdateKeywords
                         label = fila["label"].value;
                     }
 
-                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label))
+                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label) && !dicResultados.ContainsKey(id))
                     {
-                        if (!dicResultados.ContainsKey(id))
-                        {
-                            dicResultados.Add(id, label);
-                        }
+                        dicResultados.Add(id, label);
                     }
                 }
             }
+
             webClient.Dispose();
-            if (dicResultados.Count() != 1)
+            if (dicResultados.Count != 1)
             {
                 return new Dictionary<string, string>();
             }
@@ -780,9 +807,16 @@ namespace Hercules.ED.UpdateKeywords
             }
         }
 
+        /// <summary>
+        /// Contruye los filtros.
+        /// </summary>
+        /// <param name="pVariable">Variable anterior.</param>
+        /// <param name="pPalabras">Palabra a filtrar.</param>
+        /// <param name="pTipoFiltro">Tipo de filtro.</param>
+        /// <returns></returns>
         public string ContruirFiltro(string pVariable, string[] pPalabras, bool pTipoFiltro)
         {
-            string filtro = string.Empty;
+            StringBuilder filtro = new();
 
             if (pTipoFiltro)
             {
@@ -790,12 +824,12 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    if (GetPreposicionesEng().Contains(palabraAux) || GetPreposicionesEsp().Contains(palabraAux) || ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }
 
-                    filtro += $@"FILTER(REGEX(?{pVariable},'^{palabraAux}$','i')) ";
+                    filtro.Append($@"FILTER(REGEX(?{pVariable},'^{palabraAux}$','i')) ");
                 }
             }
             else
@@ -804,12 +838,12 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     string palabraAux = palabra.ToLower().Replace("\'", "\\\'");
 
-                    if (preposicionesEng.Contains(palabraAux) || preposicionesEsp.Contains(palabraAux) || ComprobarCaracteres(palabraAux))
+                    if (GetPreposicionesEng().Contains(palabraAux) || GetPreposicionesEsp().Contains(palabraAux) || ComprobarCaracteres(palabraAux))
                     {
                         continue;
                     }
 
-                    filtro += $@"{{
+                    filtro.Append($@"{{
                         FILTER(REGEX(?{pVariable}, ' {palabraAux} ', 'i'))
                       }} UNION {{
                         FILTER(REGEX(?{pVariable}, '^{palabraAux}$', 'i'))
@@ -817,11 +851,11 @@ namespace Hercules.ED.UpdateKeywords
                         FILTER(REGEX(?{pVariable}, '^{palabraAux} ', 'i'))
                       }} UNION {{
                         FILTER(REGEX(?{pVariable}, ' {palabraAux}$', 'i'))
-                    }} ";
+                    }} ");
                 }
             }
 
-            return filtro;
+            return filtro.ToString();
         }
 
         /// <summary>
@@ -843,15 +877,18 @@ namespace Hercules.ED.UpdateKeywords
             // Obtención de la información de las relaciones.
             foreach (Data item in pListaData)
             {
-                item.relations = GetRelaciones(item.snomedTerm.ui, tgt);
+                item.Relations = GetRelaciones(item.SnomedTerm.Ui, tgt);
             }
         }
 
+        /// <summary>
+        /// Inserta los datos en BBDD.
+        /// </summary>
+        /// <param name="pIdMesh">ID de MESH.</param>
+        /// <param name="pNombre">Título.</param>
+        /// <param name="pListaData">Lista de información.</param>
         public void InsertDataMesh(string pIdMesh, string pNombre, List<DataConcept> pListaData)
         {
-            // Endpoint.
-            string urlConsulta = "https://id.nlm.nih.gov/mesh/sparql";
-
             // Consulta.
             string consulta = $@"
                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -887,7 +924,7 @@ namespace Hercules.ED.UpdateKeywords
             string format = "JSON";
 
             // Petición.
-            WebClient webClient = new WebClient();
+            WebClient webClient = new();
             string downloadString = string.Empty;
 
             int contadorDownload = 0;
@@ -896,7 +933,7 @@ namespace Hercules.ED.UpdateKeywords
                 contadorDownload++;
                 try
                 {
-                    downloadString = webClient.DownloadString($@"{urlConsulta}?query={HttpUtility.UrlEncode(consulta)}&format={format}");
+                    downloadString = webClient.DownloadString($@"https://id.nlm.nih.gov/mesh/sparql?query={HttpUtility.UrlEncode(consulta)}&format={format}");
                     if (contadorDownload == MAX_NUM_INTENTOS)
                     {
                         return;
@@ -904,8 +941,8 @@ namespace Hercules.ED.UpdateKeywords
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                     if (contadorDownload == MAX_NUM_INTENTOS)
                     {
@@ -916,11 +953,11 @@ namespace Hercules.ED.UpdateKeywords
 
             SparqlObject resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(downloadString);
 
-            // Objeto a devolver
-            DataConcept data = new DataConcept();
-            data.title = pNombre;
-            data.url = $@"http://id.nlm.nih.gov/mesh/{pIdMesh}";
-            data.type = "mesh";
+            // Objeto a devolver.
+            DataConcept data = new();
+            data.Title = pNombre;
+            data.Url = $@"http://id.nlm.nih.gov/mesh/{pIdMesh}";
+            data.Type = "mesh";
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
             {
@@ -928,37 +965,37 @@ namespace Hercules.ED.UpdateKeywords
                 {
                     if (fila.ContainsKey("qualifiers") && !string.IsNullOrEmpty(fila["qualifiers"].value) && fila.ContainsKey("labelQualifiers") && !string.IsNullOrEmpty(fila["labelQualifiers"].value))
                     {
-                        if (data.qualifiers == null)
+                        if (data.Qualifiers == null)
                         {
-                            data.qualifiers = new Dictionary<string, string>();
+                            data.Qualifiers = new Dictionary<string, string>();
                         }
-                        if (!data.qualifiers.ContainsKey(fila["qualifiers"].value))
+                        if (!data.Qualifiers.ContainsKey(fila["qualifiers"].value))
                         {
-                            data.qualifiers.Add(fila["qualifiers"].value, fila["labelQualifiers"].value);
+                            data.Qualifiers.Add(fila["qualifiers"].value, fila["labelQualifiers"].value);
                         }
                     }
 
                     if (fila.ContainsKey("broader") && !string.IsNullOrEmpty(fila["broader"].value) && fila.ContainsKey("labelBroader") && !string.IsNullOrEmpty(fila["labelBroader"].value))
                     {
-                        if (data.broader == null)
+                        if (data.Broader == null)
                         {
-                            data.broader = new Dictionary<string, string>();
+                            data.Broader = new Dictionary<string, string>();
                         }
-                        if (!data.broader.ContainsKey(fila["broader"].value))
+                        if (!data.Broader.ContainsKey(fila["broader"].value))
                         {
-                            data.broader.Add(fila["broader"].value, fila["labelBroader"].value);
+                            data.Broader.Add(fila["broader"].value, fila["labelBroader"].value);
                         }
                     }
 
                     if (fila.ContainsKey("relatedTo") && !string.IsNullOrEmpty(fila["relatedTo"].value) && fila.ContainsKey("labelRelatedTo") && !string.IsNullOrEmpty(fila["labelRelatedTo"].value))
                     {
-                        if (data.relatedTo == null)
+                        if (data.RelatedTo == null)
                         {
-                            data.relatedTo = new Dictionary<string, string>();
+                            data.RelatedTo = new Dictionary<string, string>();
                         }
-                        if (!data.relatedTo.ContainsKey(fila["relatedTo"].value))
+                        if (!data.RelatedTo.ContainsKey(fila["relatedTo"].value))
                         {
-                            data.relatedTo.Add(fila["relatedTo"].value, fila["labelRelatedTo"].value);
+                            data.RelatedTo.Add(fila["relatedTo"].value, fila["labelRelatedTo"].value);
                         }
                     }
                 }
@@ -967,6 +1004,14 @@ namespace Hercules.ED.UpdateKeywords
             pListaData.Add(data);
         }
 
+        /// <summary>
+        /// Llamada.
+        /// </summary>
+        /// <param name="pUrl">URL.</param>
+        /// <param name="pMethod">Tipo de envío.</param>
+        /// <param name="pHeader">Cabecera.</param>
+        /// <param name="pBody">Cuerpo.</param>
+        /// <returns></returns>
         protected async Task<string> httpCall(string pUrl, string pMethod, Dictionary<string, string> pHeader = null, FormUrlEncodedContent pBody = null)
         {
             HttpResponseMessage response;
@@ -1010,13 +1055,13 @@ namespace Hercules.ED.UpdateKeywords
         public string GetTGT()
         {
             // Petición.
-            string result = string.Empty;
+            string result;
             string data = string.Empty;
 
             while (true)
             {
-                Uri url = new Uri(_Configuracion.GetUrlTGT());
-                FormUrlEncodedContent body = new FormUrlEncodedContent(new[]
+                Uri url = new(_Configuracion.GetUrlTGT());
+                FormUrlEncodedContent body = new(new[]
                 {
                 new KeyValuePair<string, string>("apikey", _Configuracion.GetApiKey())
                 });
@@ -1024,14 +1069,14 @@ namespace Hercules.ED.UpdateKeywords
                 try
                 {
                     result = httpCall(url.ToString(), "POST", pBody: body).Result;
-                    HtmlDocument doc = new HtmlDocument();
+                    HtmlDocument doc = new();
                     doc.LoadHtml(result);
                     data = doc.DocumentNode.SelectSingleNode("//form").GetAttributeValue("action", "");
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                 }
 
@@ -1053,14 +1098,14 @@ namespace Hercules.ED.UpdateKeywords
         public string GetTicket(string pTGT)
         {
             // Petición.
-            Uri url = new Uri($@"{_Configuracion.GetUrlTicket()}/{pTGT}");
-            FormUrlEncodedContent body = new FormUrlEncodedContent(new[]
+            Uri url = new($@"{_Configuracion.GetUrlTicket()}/{pTGT}");
+            FormUrlEncodedContent body = new(new[]
             {
                 new KeyValuePair<string, string>("service", "http://umlsks.nlm.nih.gov")
             });
 
             // Ticket.
-            string result = string.Empty;
+            string result;
             while (true)
             {
                 try
@@ -1070,8 +1115,8 @@ namespace Hercules.ED.UpdateKeywords
                 }
                 catch (Exception error)
                 {
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                    FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                    FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                     Thread.Sleep(1000);
                     string tgt = GetTGT();
                     url = new Uri($@"{_Configuracion.GetUrlTicket()}/{tgt}");
@@ -1087,19 +1132,19 @@ namespace Hercules.ED.UpdateKeywords
         /// <param name="pMeshId">ID MESH.</param>
         /// <param name="pST">Service Ticket.</param>
         /// <returns>ID SNOMED.</returns>
-        public void GetSnomedId(string pMeshId, string pST, List<Data> pLista, int contador = 0)
+        public void GetSnomedId(string pMeshId, string pST, List<Data> pLista)
         {
             // Petición.
-            Uri url = new Uri($@"{_Configuracion.GetUrlSNOMED()}/{pMeshId}?targetSource=SNOMEDCT_US&ticket={pST}");
-            string result = string.Empty;
+            Uri url = new($@"{_Configuracion.GetUrlSNOMED()}/{pMeshId}?targetSource=SNOMEDCT_US&ticket={pST}");
+            string result;
             try
             {
                 result = httpCall(url.ToString(), "GET").Result;
             }
             catch (Exception error)
             {
-                FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                 return;
             }
 
@@ -1108,21 +1153,21 @@ namespace Hercules.ED.UpdateKeywords
             {
                 CrosswalkObj data = JsonConvert.DeserializeObject<CrosswalkObj>(result);
 
-                if (data.result == null)
+                if (data.Result == null)
                 {
                     return;
                 }
 
                 // ID SNOMED.                
                 string msgNoActivo = "Concept inactivation indicator reference set";
-                foreach (Result item in data.result)
+                foreach (Result item in data.Result)
                 {
                     bool activo = true;
-                    if (item.subsetMemberships != null && item.subsetMemberships.Any())
+                    if (item.SubsetMemberships != null && item.SubsetMemberships.Any())
                     {
-                        foreach (SubsetMembership itemMembership in item.subsetMemberships)
+                        foreach (SubsetMembership itemMembership in item.SubsetMemberships)
                         {
-                            if (!string.IsNullOrEmpty(itemMembership.name) && itemMembership.name == msgNoActivo)
+                            if (!string.IsNullOrEmpty(itemMembership.Name) && itemMembership.Name == msgNoActivo)
                             {
                                 activo = false;
                                 break;
@@ -1131,8 +1176,8 @@ namespace Hercules.ED.UpdateKeywords
 
                         if (activo)
                         {
-                            Data dataActivo = new Data();
-                            dataActivo.snomedTerm = item;
+                            Data dataActivo = new();
+                            dataActivo.SnomedTerm = item;
                             pLista.Add(dataActivo);
                         }
                     }
@@ -1140,8 +1185,8 @@ namespace Hercules.ED.UpdateKeywords
             }
             catch (Exception error)
             {
-                FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                 return;
             }
         }
@@ -1154,7 +1199,7 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Lista de relaciones del termino buscado.</returns>
         public List<ResultRelations> GetRelaciones(string pSnomedId, string pTGT)
         {
-            List<ResultRelations> listaResultados = new List<ResultRelations>();
+            List<ResultRelations> listaResultados = new();
 
             // Paginacion.
             int numPagina = 1;
@@ -1167,8 +1212,8 @@ namespace Hercules.ED.UpdateKeywords
                 string serviceTicket = GetTicket(pTGT);
 
                 // Petición.
-                Uri url = new Uri($@"{_Configuracion.GetUrlRelaciones()}/{pSnomedId}/relations?pageNumber={numPagina}&ticket={serviceTicket}");
-                string result = String.Empty;
+                Uri url = new($@"{_Configuracion.GetUrlRelaciones()}/{pSnomedId}/relations?pageNumber={numPagina}&ticket={serviceTicket}");
+                string result = string.Empty;
 
                 int contador = 0;
                 while (contador <= 10)
@@ -1180,8 +1225,8 @@ namespace Hercules.ED.UpdateKeywords
                     }
                     catch (Exception error)
                     {
-                        FileLogger.Log($@"{DateTime.Now} ---------- {error.Message}");
-                        FileLogger.Log($@"{DateTime.Now} ---------- {error.StackTrace}");
+                        FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.Message}");
+                        FileLogger.Log($@"[ERROR] {DateTime.Now} ---------- {error.StackTrace}");
                         Thread.Sleep(1000);
                         contador++;
                     }
@@ -1189,14 +1234,14 @@ namespace Hercules.ED.UpdateKeywords
 
                 // Obtención del dato del JSON de respuesta.
                 RelationsObj data = JsonConvert.DeserializeObject<RelationsObj>(result);
-                if (data.result != null && data.result.Any())
+                if (data.Result != null && data.Result.Any())
                 {
-                    listaResultados.AddRange(data.result);
+                    listaResultados.AddRange(data.Result);
                 }
 
                 // Obtención de número de paginas total y actual.
                 numPagina++;
-                numPaginasTotal = data.pageCount;
+                numPaginasTotal = data.PageCount;
             }
 
             //Dictionary<string, List<string>> dicAux = new Dictionary<string, List<string>>();
@@ -1218,6 +1263,11 @@ namespace Hercules.ED.UpdateKeywords
             return listaResultados;
         }
 
+        /// <summary>
+        /// Comprueba si la palabrá está en la lista de carácteres.
+        /// </summary>
+        /// <param name="pPalabra">Palabra a comprobar.</param>
+        /// <returns>True --> Existe // False --> No existe</returns>
         public bool ComprobarCaracteres(string pPalabra)
         {
             foreach (string caracter in caracteres)
@@ -1229,6 +1279,33 @@ namespace Hercules.ED.UpdateKeywords
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Devuelve la lista de preposiciones en inglés.
+        /// </summary>
+        /// <returns>Lista de preposiciones en inglés.</returns>
+        public List<string> GetPreposicionesEng()
+        {
+            return preposicionesEng;
+        }
+
+        /// <summary>
+        /// Devuelve la lista de preposiciones en castellano.
+        /// </summary>
+        /// <returns>Lista de preposiciones en castellano.</returns>
+        public List<string> GetPreposicionesEsp()
+        {
+            return preposicionesEsp;
+        }
+
+        /// <summary>
+        /// Devuelve la lista de carácteres especiales.
+        /// </summary>
+        /// <returns>Lista de carácteres especiales.</returns>
+        public List<string> GetCaracteres()
+        {
+            return caracteres;
         }
     }
 }

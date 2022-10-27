@@ -14,19 +14,19 @@ namespace Hercules.ED.UpdateKeywords
         public static IConfigurationRoot configuracion;
 
         // Endpoint
-        private string endpoint { get; set; }
+        private string Endpoint { get; set; }
 
         // Ruta Logs
-        private string logPath { get; set; }
+        private string LogPath { get; set; }
 
         // ApiKey
-        private string apiKey { get; set; }
+        private string ApiKey { get; set; }
 
         // URLs
-        private string urlTgt { get; set; }
-        private string urlTicket { get; set; }
-        private string urlSnomed { get; set; }
-        private string urlRelaciones { get; set; }
+        private string UrlTgt { get; set; }
+        private string UrlTicket { get; set; }
+        private string UrlSnomed { get; set; }
+        private string UrlRelaciones { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -42,9 +42,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Ruta.</returns>
         public string GetLogPath()
         {
-            if (string.IsNullOrEmpty(logPath))
+            if (string.IsNullOrEmpty(LogPath))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("LogPath"))
                 {
@@ -55,10 +55,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["LogPath"];
                 }
 
-                logPath = connectionString;
+                LogPath = connectionString;
             }
 
-            return logPath;
+            return LogPath;
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Apikey.</returns>
         public string GetApiKey()
         {
-            if (string.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(ApiKey))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("ApiKey"))
                 {
@@ -80,10 +80,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["ApiKey"];
                 }
 
-                apiKey = connectionString;
+                ApiKey = connectionString;
             }
 
-            return apiKey;
+            return ApiKey;
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>URL.</returns>
         public string GetUrlTGT()
         {
-            if (string.IsNullOrEmpty(urlTgt))
+            if (string.IsNullOrEmpty(UrlTgt))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlTGT"))
                 {
@@ -105,10 +105,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["UrlTGT"];
                 }
 
-                urlTgt = connectionString;
+                UrlTgt = connectionString;
             }
 
-            return urlTgt;
+            return UrlTgt;
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>URL.</returns>
         public string GetUrlTicket()
         {
-            if (string.IsNullOrEmpty(urlTicket))
+            if (string.IsNullOrEmpty(UrlTicket))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlTicket"))
                 {
@@ -130,10 +130,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["UrlTicket"];
                 }
 
-                urlTicket = connectionString;
+                UrlTicket = connectionString;
             }
 
-            return urlTicket;
+            return UrlTicket;
         }
 
         /// <summary>
@@ -142,9 +142,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Url.</returns>
         public string GetUrlSNOMED()
         {
-            if (string.IsNullOrEmpty(urlSnomed))
+            if (string.IsNullOrEmpty(UrlSnomed))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlSNOMED"))
                 {
@@ -155,10 +155,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["UrlSNOMED"];
                 }
 
-                urlSnomed = connectionString;
+                UrlSnomed = connectionString;
             }
 
-            return urlSnomed;
+            return UrlSnomed;
         }
 
         /// <summary>
@@ -167,9 +167,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>URL.</returns>
         public string GetUrlRelaciones()
         {
-            if (string.IsNullOrEmpty(urlRelaciones))
+            if (string.IsNullOrEmpty(UrlRelaciones))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlRelaciones"))
                 {
@@ -180,10 +180,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["UrlRelaciones"];
                 }
 
-                urlRelaciones = connectionString;
+                UrlRelaciones = connectionString;
             }
 
-            return urlRelaciones;
+            return UrlRelaciones;
         }
 
         /// <summary>
@@ -192,9 +192,9 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>URL.</returns>
         public string GetSparqlEndpoint()
         {
-            if (string.IsNullOrEmpty(endpoint))
+            if (string.IsNullOrEmpty(Endpoint))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("SparqlEndpoint"))
                 {
@@ -205,10 +205,10 @@ namespace Hercules.ED.UpdateKeywords
                     connectionString = configuracion["SparqlEndpoint"];
                 }
 
-                endpoint = connectionString;
+                Endpoint = connectionString;
             }
 
-            return endpoint;
+            return Endpoint;
         }
     }
 }
