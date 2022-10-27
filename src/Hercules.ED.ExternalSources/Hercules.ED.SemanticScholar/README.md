@@ -13,7 +13,9 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.SemanticScholar)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)

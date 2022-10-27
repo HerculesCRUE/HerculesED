@@ -12,10 +12,12 @@
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.LoadCV&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.LoadCV)
 
 
 
