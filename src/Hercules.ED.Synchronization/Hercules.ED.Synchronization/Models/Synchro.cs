@@ -112,26 +112,28 @@ namespace Hercules.ED.Synchronization.Models
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    if (fila.ContainsKey("usuarioFigshare") && !string.IsNullOrEmpty(fila["usuarioFigshare"].value))
-                    {
-                        dicResultados.Add("usuarioFigshare", fila["usuarioFigshare"].value);
-                    }
-                    if (fila.ContainsKey("tokenFigshare") && !string.IsNullOrEmpty(fila["tokenFigshare"].value))
-                    {
-                        dicResultados.Add("tokenFigshare", fila["tokenFigshare"].value);
-                    }
-                    if (fila.ContainsKey("usuarioGitHub") && !string.IsNullOrEmpty(fila["usuarioGitHub"].value))
-                    {
-                        dicResultados.Add("usuarioGitHub", fila["usuarioGitHub"].value);
-                    }
-                    if (fila.ContainsKey("tokenGitHub") && !string.IsNullOrEmpty(fila["tokenGitHub"].value))
-                    {
-                        dicResultados.Add("tokenGitHub", fila["tokenGitHub"].value);
-                    }
+                    InsercionDiccionario(dicResultados, fila, "usuarioFigshare");
+                    InsercionDiccionario(dicResultados, fila, "tokenFigshare");
+                    InsercionDiccionario(dicResultados, fila, "usuarioGitHub");
+                    InsercionDiccionario(dicResultados, fila, "tokenGitHub");
                 }
             }
 
             return dicResultados;
+        }
+
+        /// <summary>
+        /// Permite insertar al diccionario los usuarios y tokens obtenidos en BBDD.
+        /// </summary>
+        /// <param name="pDic">Diccionario a insertar.</param>
+        /// <param name="pFila">Fila de BBDD.</param>
+        /// <param name="pPropiedad">Nombre de la propiedad.</param>
+        private void InsercionDiccionario(Dictionary<string, string> pDic, Dictionary<string, SparqlObject.Data> pFila, string pPropiedad)
+        {
+            if (pFila.ContainsKey(pPropiedad) && !string.IsNullOrEmpty(pFila[pPropiedad].value))
+            {
+                pDic.Add(pPropiedad, pFila[pPropiedad].value);
+            }
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace Hercules.ED.Synchronization.Models
         public void ProcessComplete()
         {
             // Inicializa la configuración.
-            Queue colaRabbit = new (mConfiguracion);
+            Queue colaRabbit = new(mConfiguracion);
 
             new Thread(() =>
             {
@@ -149,7 +151,7 @@ namespace Hercules.ED.Synchronization.Models
                     try
                     {
                         // Obtiene la diferencia entre horas.
-                        CronExpression expression = new (mConfiguracion.cronExternalSource);
+                        CronExpression expression = new(mConfiguracion.cronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
                         Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
 
