@@ -257,9 +257,9 @@ namespace ImportadorWebCV.Exporta.Secciones
                     }
                 }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                throw;
+                //
             }
             foreach (string pId in listadoId.Select(x => x.Item1))
             {
@@ -386,7 +386,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                             }
                             property.values.Add(wObjAcumuladoAux);
                         }
-                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 &&
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Length > 2 &&
                             Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res))
                         {
                             //No inserto nada
@@ -495,7 +495,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                             }
                             property.values.Add(wObjAcumuladoAux);
                         }
-                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Count() > 2 &&
+                        else if (pObjAcumuladoAux.Split("@@@").Last().Split("_").Length > 2 &&
                             Guid.TryParse(pObjAcumuladoAux.Split("@@@").Last().Split("_")[1], out Guid res))
                         {
                             //No inserto nada
