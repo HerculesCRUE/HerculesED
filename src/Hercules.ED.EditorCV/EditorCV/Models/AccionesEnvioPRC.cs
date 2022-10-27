@@ -131,120 +131,7 @@ where {{
 
             SparqlObject resultadoQuery = null;
 
-            ProduccionCientifica PRC = new ProduccionCientifica();
-
-            // Identificador.
-            PRC.idRef = pIdDocumento.Split('/').LastOrDefault();
-            //PRC.idRef = mResourceApi.GetShortGuid(pIdDocumento).ToString();
-            //PRC.idRef = pIdDocumento.Substring(pIdDocumento.LastIndexOf("/") + 1);
-            PRC.estado = "PENDIENTE";
-            PRC.campos = new List<CampoProduccionCientifica>();
-
-            #region --- Estado de validación
-            // Comprobar si está el triple del estado.
-            string valorEnviado = string.Empty;
-
-            string selectEstadoValidacion = mPrefijos;
-            selectEstadoValidacion += "SELECT DISTINCT ?enviado ";
-            string whereEstadoValidacion = $@"WHERE {{
-                                                ?s a bibo:Document . 
-                                                OPTIONAL{{?s roh:validationStatusPRC ?enviado . }} 
-                                                FILTER(?s = <{pIdDocumento}>) 
-                                            }} ";
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectEstadoValidacion, whereEstadoValidacion, "document");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
-                }
-            }
-            #endregion
-
-            #region --- Tipo del Documento.
-            string selectTipoDoc = "";
-            string whereTipoDoc = "";
-
-            // Consulta sparql (Tipo del documento).
-            selectTipoDoc = mPrefijos;
-            selectTipoDoc += "SELECT DISTINCT ?tipoDocumento ";
-            whereTipoDoc = $@"WHERE {{ 
-                                ?s a bibo:Document . 
-                                ?s roh:scientificActivityDocument ?tipoDocumento . 
-                                FILTER(?s = <{pIdDocumento}>) 
-                            }} ";
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectTipoDoc, whereTipoDoc, "document");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    string tipo = UtilidadesAPI.GetValorFilaSparqlObject(fila, "tipoDocumento");
-
-                    switch (tipo)
-                    {
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD1":
-                            PRC.epigrafeCVN = "060.010.010.000";
-                            break;
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD2":
-                            PRC.epigrafeCVN = "060.010.020.000";
-                            break;
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD3":
-                            PRC.epigrafeCVN = "060.010.030.000";
-                            break;
-                    }
-                }
-            }
-            #endregion
-
-            #region --- Autores.
-            // Consulta sparql (Obtención de datos de la persona).
-            string selectAutores = "";
-            string whereAutores = "";
-
-            selectAutores = mPrefijos;
-            selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
-            whereAutores = $@"WHERE {{
-                                ?s a bibo:Document . 
-                                OPTIONAL{{
-                                    ?s bibo:authorList ?listaAutores . 
-                                    ?listaAutores rdf:member ?persona .
-                                    ?listaAutores rdf:comment ?orden .
-                                    ?persona foaf:firstName ?nombre .
-                                    ?persona foaf:lastName ?apellidos .
-                                    OPTIONAL{{?persona roh:crisIdentifier ?crisIdentifier . }} 
-                                    OPTIONAL{{?persona roh:ORCID ?orcid . }} 
-                                    OPTIONAL{{?persona foaf:nick ?firma . }} 
-                                }} 
-                                FILTER(?s = <{pIdDocumento}>) 
-                            }} ORDER BY ?orden ";
-
-            resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new List<string>{ "document" ,"person"});
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    if (PRC.autores == null)
-                    {
-                        PRC.autores = new List<Autor>();
-                    }
-
-                    Autor autor = new Autor();
-                    autor.personaRef = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
-                    autor.firma = UtilidadesAPI.GetValorFilaSparqlObject(fila, "firma");
-                    autor.nombre = UtilidadesAPI.GetValorFilaSparqlObject(fila, "nombre");
-                    autor.apellidos = UtilidadesAPI.GetValorFilaSparqlObject(fila, "apellidos");
-                    autor.orden = int.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "orden"));
-                    autor.orcidId = UtilidadesAPI.GetValorFilaSparqlObject(fila, "orcid");
-                    autor.ip = false; // No tenemos IP en los documentos.
-                    PRC.autores.Add(autor);
-                }
-            }
-            #endregion
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false);
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
@@ -797,118 +684,7 @@ where {{
 
             SparqlObject resultadoQuery = null;
 
-            ProduccionCientifica PRC = new ProduccionCientifica();
-
-            // Identificador.
-            PRC.idRef = "Eliminar_" + pIdDocumento.Split('/').LastOrDefault();
-            PRC.estado = "PENDIENTE";
-            PRC.campos = new List<CampoProduccionCientifica>();
-
-            #region --- Estado de validación
-            // Comprobar si está el triple del estado.
-            string valorEnviado = string.Empty;
-
-            string selectEstadoValidacion = mPrefijos;
-            selectEstadoValidacion += "SELECT DISTINCT ?enviado ";
-            string whereEstadoValidacion = $@"WHERE {{
-                                                ?s a bibo:Document . 
-                                                OPTIONAL{{?s roh:validationDeleteStatusPRC ?enviado . }} 
-                                                FILTER(?s = <{pIdDocumento}>) 
-                                            }} ";
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectEstadoValidacion, whereEstadoValidacion, "document");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
-                }
-            }
-            #endregion
-
-            #region --- Tipo del Documento.
-            string selectTipoDoc = "";
-            string whereTipoDoc = "";
-
-            // Consulta sparql (Tipo del documento).
-            selectTipoDoc = mPrefijos;
-            selectTipoDoc += "SELECT DISTINCT ?tipoDocumento ";
-            whereTipoDoc = $@"WHERE {{ 
-                                ?s a bibo:Document . 
-                                ?s roh:scientificActivityDocument ?tipoDocumento . 
-                                FILTER(?s = <{pIdDocumento}>) 
-                            }} ";
-
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectTipoDoc, whereTipoDoc, "document");
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    string tipo = UtilidadesAPI.GetValorFilaSparqlObject(fila, "tipoDocumento");
-
-                    switch (tipo)
-                    {
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD1":
-                            PRC.epigrafeCVN = "060.010.010.000";
-                            break;
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD2":
-                            PRC.epigrafeCVN = "060.010.020.000";
-                            break;
-                        case "http://gnoss.com/items/scientificactivitydocument_SAD3":
-                            PRC.epigrafeCVN = "060.010.030.000";
-                            break;
-                    }
-                }
-            }
-            #endregion
-
-            #region --- Autores.
-            // Consulta sparql (Obtención de datos de la persona).
-            string selectAutores = "";
-            string whereAutores = "";
-
-            selectAutores = mPrefijos;
-            selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
-            whereAutores = $@"WHERE {{
-                                ?s a bibo:Document . 
-                                OPTIONAL{{
-                                    ?s bibo:authorList ?listaAutores . 
-                                    ?listaAutores rdf:member ?persona .
-                                    ?listaAutores rdf:comment ?orden .
-                                    ?persona foaf:firstName ?nombre .
-                                    ?persona foaf:lastName ?apellidos .
-                                    OPTIONAL{{?persona roh:crisIdentifier ?crisIdentifier . }} 
-                                    OPTIONAL{{?persona roh:ORCID ?orcid . }} 
-                                    OPTIONAL{{?persona foaf:nick ?firma . }} 
-                                }} 
-                                FILTER(?s = <{pIdDocumento}>) 
-                            }} ORDER BY ?orden ";
-
-            resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores,new List<string> { "document", "person" });
-
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    if (PRC.autores == null)
-                    {
-                        PRC.autores = new List<Autor>();
-                    }
-
-                    Autor autor = new Autor();
-                    autor.personaRef = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
-                    autor.firma = UtilidadesAPI.GetValorFilaSparqlObject(fila, "firma");
-                    autor.nombre = UtilidadesAPI.GetValorFilaSparqlObject(fila, "nombre");
-                    autor.apellidos = UtilidadesAPI.GetValorFilaSparqlObject(fila, "apellidos");
-                    autor.orden = int.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "orden"));
-                    autor.orcidId = UtilidadesAPI.GetValorFilaSparqlObject(fila, "orcid");
-                    autor.ip = false; // No tenemos IP en los documentos.
-                    PRC.autores.Add(autor);
-                }
-            }
-            #endregion
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true);
 
             #region --- Obtención de Revistas
             if (PRC.epigrafeCVN == "060.010.010.000")
@@ -1363,6 +1139,126 @@ where {{
             #endregion
         }
 
+        private ProduccionCientifica CrearPRC(string pIdDocumento,bool pEliminar)
+        {
+            ProduccionCientifica PRC = new ProduccionCientifica();
+            string propStatus = "";
+            // Identificador.
+            if (pEliminar)
+            {
+                PRC.idRef = "Eliminar_" + pIdDocumento.Split('/').LastOrDefault();
+                propStatus = "roh:validationDeleteStatusPRC";
+            }
+            else
+            {
+                PRC.idRef = pIdDocumento.Split('/').LastOrDefault();
+                propStatus = "roh:validationStatusPRC";
+            }
+            PRC.estado = "PENDIENTE";
+            PRC.campos = new List<CampoProduccionCientifica>();
+
+            #region --- Estado de validación
+            // Comprobar si está el triple del estado.
+            string valorEnviado = string.Empty;
+
+            string selectEstadoValidacion = mPrefijos;
+            selectEstadoValidacion += "SELECT DISTINCT ?enviado ";
+            string whereEstadoValidacion = $@"WHERE {{
+                                                ?s a bibo:Document . 
+                                                OPTIONAL{{?s {propStatus} ?enviado . }} 
+                                                FILTER(?s = <{pIdDocumento}>) 
+                                            }} ";
+
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(selectEstadoValidacion, whereEstadoValidacion, "document");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    valorEnviado = UtilidadesAPI.GetValorFilaSparqlObject(fila, "enviado");
+                }
+            }
+            #endregion
+
+            #region --- Tipo del Documento.
+
+            // Consulta sparql (Tipo del documento).
+            string selectTipoDoc = mPrefijos;
+            selectTipoDoc += "SELECT DISTINCT ?tipoDocumento ";
+            string whereTipoDoc = $@"WHERE {{ 
+                                ?s a bibo:Document . 
+                                ?s roh:scientificActivityDocument ?tipoDocumento . 
+                                FILTER(?s = <{pIdDocumento}>) 
+                            }} ";
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(selectTipoDoc, whereTipoDoc, "document");
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    string tipo = UtilidadesAPI.GetValorFilaSparqlObject(fila, "tipoDocumento");
+
+                    switch (tipo)
+                    {
+                        case "http://gnoss.com/items/scientificactivitydocument_SAD1":
+                            PRC.epigrafeCVN = "060.010.010.000";
+                            break;
+                        case "http://gnoss.com/items/scientificactivitydocument_SAD2":
+                            PRC.epigrafeCVN = "060.010.020.000";
+                            break;
+                        case "http://gnoss.com/items/scientificactivitydocument_SAD3":
+                            PRC.epigrafeCVN = "060.010.030.000";
+                            break;
+                    }
+                }
+            }
+            #endregion
+
+            #region --- Autores.
+            // Consulta sparql (Obtención de datos de la persona).
+            string selectAutores = mPrefijos;
+            selectAutores += "SELECT DISTINCT ?crisIdentifier ?orcid ?orden ?nombre ?apellidos ?firma ";
+            string whereAutores = $@"WHERE {{
+                                ?s a bibo:Document . 
+                                OPTIONAL{{
+                                    ?s bibo:authorList ?listaAutores . 
+                                    ?listaAutores rdf:member ?persona .
+                                    ?listaAutores rdf:comment ?orden .
+                                    ?persona foaf:firstName ?nombre .
+                                    ?persona foaf:lastName ?apellidos .
+                                    OPTIONAL{{?persona roh:crisIdentifier ?crisIdentifier . }} 
+                                    OPTIONAL{{?persona roh:ORCID ?orcid . }} 
+                                    OPTIONAL{{?persona foaf:nick ?firma . }} 
+                                }} 
+                                FILTER(?s = <{pIdDocumento}>) 
+                            }} ORDER BY ?orden ";
+
+            resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new List<string> { "document", "person" });
+
+            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+            {
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                {
+                    if (PRC.autores == null)
+                    {
+                        PRC.autores = new List<Autor>();
+                    }
+
+                    Autor autor = new Autor();
+                    autor.personaRef = UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
+                    autor.firma = UtilidadesAPI.GetValorFilaSparqlObject(fila, "firma");
+                    autor.nombre = UtilidadesAPI.GetValorFilaSparqlObject(fila, "nombre");
+                    autor.apellidos = UtilidadesAPI.GetValorFilaSparqlObject(fila, "apellidos");
+                    autor.orden = int.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "orden"));
+                    autor.orcidId = UtilidadesAPI.GetValorFilaSparqlObject(fila, "orcid");
+                    autor.ip = false; // No tenemos IP en los documentos.
+                    PRC.autores.Add(autor);
+                }
+            }
+            #endregion
+            return PRC;
+        }
         private string ObtenerIdDocumento(string pIdRecurso)
         {
             string pIdDocumento = "";
