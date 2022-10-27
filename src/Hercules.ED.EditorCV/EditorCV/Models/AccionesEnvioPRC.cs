@@ -120,19 +120,7 @@ where {{
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         public void EnvioPRC(ConfigService pConfig, string pIdRecurso, List<string> pIdProyecto)
         {
-            string pIdDocumento = "";
-            string selectProyecto = "select distinct ?documento";
-            string whereProyecto = $@"where{{
-    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
-}}";
-            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
-            if (query.results.bindings.Count != 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
-                {
-                    pIdDocumento = res["documento"].value;
-                }
-            }
+            string pIdDocumento = ObtenerIdDocumento(pIdRecurso);
             if (string.IsNullOrEmpty(pIdDocumento))
             {
                 return;
@@ -798,19 +786,7 @@ where {{
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
         public void EnvioEliminacionPRC(ConfigService pConfig, string pIdRecurso)
         {
-            string pIdDocumento = "";
-            string selectProyecto = "select distinct ?documento";
-            string whereProyecto = $@"where{{
-                <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
-            }}";
-            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
-            if (query.results.bindings.Count != 0)
-            {
-                foreach (Dictionary<string, SparqlObject.Data> res in query.results.bindings)
-                {
-                    pIdDocumento = res["documento"].value;
-                }
-            }
+            string pIdDocumento = ObtenerIdDocumento(pIdRecurso);
             if (string.IsNullOrEmpty(pIdDocumento))
             {
                 return;
@@ -1394,6 +1370,21 @@ where {{
             #endregion
         }
 
+        private string ObtenerIdDocumento(string pIdRecurso)
+        {
+            string pIdDocumento = "";
+            string selectProyecto = "select distinct ?documento";
+            string whereProyecto = $@"where{{
+    <{pIdRecurso}> <http://vivoweb.org/ontology/core#relatedBy> ?documento .
+}}";
+            SparqlObject query = mResourceApi.VirtuosoQuery(selectProyecto, whereProyecto, "curriculumvitae");
+            if (query.results.bindings.Count != 0)
+            {
+                pIdDocumento = query.results.bindings[0]["documento"].value;                
+            }
+            return pIdDocumento;
+        }
+
         /// <summary>
         /// Inserta un triple.
         /// </summary>
@@ -1402,14 +1393,7 @@ where {{
         /// <param name="pValorNuevo"></param>
         private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
         {
-            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
-            TriplesToInclude triple = new TriplesToInclude();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            listaTriplesInsercion.Add(triple);
-            dicInsercion.Add(pGuid, listaTriplesInsercion);
-            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+            Insercion(pGuid, pPropiedad, new List<string> { pValorNuevo });
         }
 
         /// <summary>
@@ -1442,15 +1426,7 @@ where {{
         /// <param name="pValorAntiguo"></param>
         private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
         {
-            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            triple.OldValue = pValorAntiguo;
-            listaTriplesModificacion.Add(triple);
-            dicModificacion.Add(pGuid, listaTriplesModificacion);
-            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+            Modificacion(pGuid, pPropiedad, new List<string> { pValorNuevo }, new List<string> { pValorAntiguo });
         }
 
         /// <summary>
@@ -1528,9 +1504,8 @@ where {{
         /// Obtención del token.
         /// </summary>
         /// <returns></returns>
-        private string GetTokenCSP(ConfigService pConfig)
+        public static string GetTokenCSP(ConfigService pConfig)
         {
-            // TODO: Sacar a archivo de configuración.
             Uri url = new Uri(pConfig.GetUrlToken());
             var content = new FormUrlEncodedContent(new[]
             {
@@ -1553,7 +1528,7 @@ where {{
         /// <param name="pMethod"></param>
         /// <param name="pBody"></param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
+        protected static async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
