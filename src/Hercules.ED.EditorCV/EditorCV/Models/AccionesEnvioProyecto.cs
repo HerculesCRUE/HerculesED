@@ -59,7 +59,7 @@ namespace EditorCV.Models
             try
             {
                 RestClient client = new(pConfig.GetUrlEnvioProyecto());
-                client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                client.AddDefaultHeader("Authorization", "Bearer " + AccionesEnvioPRC.GetTokenCSP(pConfig));
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(proyecto);
                 IRestResponse response = client.Execute(request);
@@ -297,27 +297,6 @@ namespace EditorCV.Models
             string mes = pFechaSparql.Substring(4, 2);
             string anyo = pFechaSparql.Substring(0, 4);
             return $@"{anyo}-{mes}-{dia}T00:00:00Z";
-        }
-
-        /// <summary>
-        /// Obtención del token.
-        /// </summary>
-        /// <returns></returns>
-        private string GetTokenCSP(ConfigService pConfig)
-        {
-            Uri url = new Uri(pConfig.GetUrlToken());
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbCsp()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbCsp()),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
-
-            string result = httpCall(url.ToString(), "POST", content).Result;
-            var json = JObject.Parse(result);
-
-            return json["access_token"].ToString();
         }
 
         /// <summary>
