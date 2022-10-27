@@ -649,24 +649,24 @@ namespace EditorCV.Models
                     Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
                     if (propiedadesMultiidiomaNoCV != null)
                     {
-                        foreach (Entity.Property prop in propiedadesMultiidiomaNoCV)
+                        foreach (Entity.Property propMultiidiomaNoCV in propiedadesMultiidiomaNoCV)
                         {
-                            if (prop.valuesmultilang != null)
+                            if (propMultiidiomaNoCV.valuesmultilang != null)
                             {
-                                foreach (string idioma in prop.valuesmultilang.Keys)
+                                foreach (string idioma in propMultiidiomaNoCV.valuesmultilang.Keys)
                                 {
-                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
+                                    if (!string.IsNullOrEmpty(propMultiidiomaNoCV.valuesmultilang[idioma]))
                                     {
-                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        if (!propiedadesNuevas.ContainsKey(propMultiidiomaNoCV.prop))
                                         {
-                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                            propiedadesNuevas.Add(propMultiidiomaNoCV.prop, new List<MultilangProperty>());
                                         }
                                         MultilangProperty multilangProperty = new MultilangProperty()
                                         {
                                             lang = idioma,
-                                            value = prop.valuesmultilang[idioma]
+                                            value = propMultiidiomaNoCV.valuesmultilang[idioma]
                                         };
-                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                        propiedadesNuevas[propMultiidiomaNoCV.prop].Add(multilangProperty);
                                     }
                                 }
                             }
@@ -785,90 +785,7 @@ namespace EditorCV.Models
 
                 ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
 
-                //Añadimos un nuevo item
-                while (true)
-                {
-                    int limit = 500;
-                    string select = @$"select distinct ?cv ?cvSection ?person ";
-                    string where = @$"where{{
-                                    {filter}
-                                    {{
-                                        #DESEABLES
-                                        select distinct ?person ?cv ?cvSection ?document
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>. 
-                                            ?document a <{entity.rdfType}>.
-                                            ?cv a <http://w3id.org/roh/CV>.
-                                            ?cv <http://w3id.org/roh/cvOf> ?person.
-                                            ?cv <{template.property}> ?cvSection.
-                                            ?document <http://purl.org/ontology/bibo/authorList> ?autor.
-                                            ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                        }}
-                                    }}
-                                    MINUS
-                                    {{
-                                        #ACTUALES
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>. 
-                                        ?document a <{entity.rdfType}>.
-                                        ?cv a <http://w3id.org/roh/CV>.
-                                        ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <{template.property}> ?cvSection.
-                                        ?cvSection ?p ?item.
-                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                    }}
-                                }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
-
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
-                    {
-                        //Obtenemos la auxiliar en la que cargar la entidad                        
-                        string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
-                        rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-                        string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(fila["cv"].value) + "_" + Guid.NewGuid();
-
-                        List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-                        string idEntityAux = fila["cvSection"].value + "|" + idNewAux;
-
-                        //Privacidad, por defecto falso                    
-                        string predicadoPrivacidad = template.property + "|" + templateSection.property + "|" + UtilityCV.PropertyIspublic;
-                        TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
-                        listaTriples.Add(tr2);
-
-                        //Entidad
-                        string predicadoEntidad = template.property + "|" + templateSection.property + "|" + templateSection.presentation.listItemsPresentation.property;
-                        TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + entity.id, predicadoEntidad);
-                        listaTriples.Add(tr1);
-
-                        Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
-                            {
-                                {
-                                    mResourceApi.GetShortGuid(fila["cv"].value), listaTriples
-                                }
-                            };
-                        Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-
-                        foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
-                        {
-                            Notification notificacion = new Notification();
-                            notificacion.IdRoh_trigger = personaCV;
-                            notificacion.Roh_tabPropertyCV = template.property;
-                            notificacion.Roh_entity = entity.id;
-                            notificacion.IdRoh_owner = fila["person"].value;
-                            notificacion.Dct_issued = DateTime.UtcNow;
-                            notificacion.Roh_type = accion;
-                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
-
-                            notificaciones.Add(notificacion);
-                        }
-                    });
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-
-                //Modificamos un item
+                //Añadimos o modificamos un item
                 while (true)
                 {
                     int limit = 500;
@@ -954,9 +871,9 @@ namespace EditorCV.Models
                 //Eliminamos un item
                 while (true)
                 {
-                    int limit = 500;
-                    string select = @$"select distinct ?cv ?cvSection ?item ?person ";
-                    string where = @$"where{{
+                    int limitEliminar = 500;
+                    string selectEliminar = @$"select distinct ?cv ?cvSection ?item ?person ";
+                    string whereEliminar = @$"where{{
                                     {filter} 
                                     {{
                                         #ACTUALES
@@ -983,10 +900,10 @@ namespace EditorCV.Models
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                         }}                                        
                                     }}
-                                }} order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
+                                }} order by desc(?cv) limit {limitEliminar}";
+                    SparqlObject resultadoEliminar = mResourceApi.VirtuosoQueryMultipleGraph(selectEliminar, whereEliminar, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
+                    Parallel.ForEach(resultadoEliminar.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
                     {
                         Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
 
@@ -1019,7 +936,7 @@ namespace EditorCV.Models
                             notificaciones.Add(notificacion);
                         }
                     });
-                    if (resultado.results.bindings.Count != limit)
+                    if (resultadoEliminar.results.bindings.Count != limitEliminar)
                     {
                         break;
                     }
