@@ -71,7 +71,7 @@ namespace Hercules.ED.ImportExportCV.Middlewares
             Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}{Path.DirectorySeparatorChar}log_{pTimestamp}.txt").CreateLogger();
         }
 
-        private string CreateTimeStamp()
+        private static string CreateTimeStamp()
         {
             DateTime time = DateTime.Now;
             string month = time.Month.ToString();
