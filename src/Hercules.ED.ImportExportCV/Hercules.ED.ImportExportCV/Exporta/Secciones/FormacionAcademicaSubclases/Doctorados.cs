@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
     public class Doctorados : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications",
             "http://w3id.org/roh/doctorates", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "academicdegree";
 
@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// <param name="listaId"></param>
         public void ExportaDoctorados( Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);

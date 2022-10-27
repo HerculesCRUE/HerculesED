@@ -10,7 +10,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
 {
     public class DatosIdentificacion : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/personalData" };
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/personalData" };
 
         public DatosIdentificacion(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {

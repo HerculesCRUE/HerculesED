@@ -10,7 +10,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 {
     public class TextoLibre : SeccionBase
     {
-        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary",
+        readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/freeTextSummary",
             "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
 
         public TextoLibre(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
@@ -25,8 +25,8 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// <param name="listaId"></param>
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
-            List<string> opciones = new List<string>();
+            List<CvnItemBean> listado = new ();
+            List<string> opciones = new ();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);

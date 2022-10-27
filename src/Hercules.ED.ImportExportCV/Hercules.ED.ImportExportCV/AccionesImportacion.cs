@@ -17,7 +17,7 @@ namespace Hercules.ED.ImportExportCV
 {
     public class AccionesImportacion : SincroDatos
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         readonly ConfigService mConfiguracion;
 
         public AccionesImportacion(ConfigService Configuracion, string cvID, string fileData) : base(Configuracion, cvID, fileData)
@@ -25,7 +25,7 @@ namespace Hercules.ED.ImportExportCV
             this.mConfiguracion = Configuracion;
         }
 
-        private readonly List<string> listadoSecciones = new List<string>()
+        private readonly List<string> listadoSecciones = new ()
         {
             //Datos identificacion
             "000.010.000.000", "000.020.000.000",
@@ -233,12 +233,12 @@ namespace Hercules.ED.ImportExportCV
             }
 
             //Listado de Identificadores DOI
-            List<string> listaDOI = new List<string>();
+            List<string> listaDOI = new ();
 
             //Asigno los cvnRoot dependiendo de cada tipo de acción.
-            cvnRootResultBean duplicadosResultBean = new cvnRootResultBean() { cvnRootBean = listadoDuplicar.ToArray() };
-            cvnRootResultBean fusionResultBean = new cvnRootResultBean() { cvnRootBean = listadoFusionar.ToArray() };
-            cvnRootResultBean sobrescribirResultBean = new cvnRootResultBean() { cvnRootBean = listadoSobrescribir.ToArray() };
+            cvnRootResultBean duplicadosResultBean = new () { cvnRootBean = listadoDuplicar.ToArray() };
+            cvnRootResultBean fusionResultBean = new () { cvnRootBean = listadoFusionar.ToArray() };
+            cvnRootResultBean sobrescribirResultBean = new () { cvnRootBean = listadoSobrescribir.ToArray() };
 
 
             //Duplicar

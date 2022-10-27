@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         /// <param name="version"></param>
         public void ExportaIdentificacionCurriculum(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, string version)
         {
-            CvnItemBean itemBean = new CvnItemBean()
+            CvnItemBean itemBean = new ()
             {
                 Code = "000.020.000.000",
                 Items = new List<CVNObject>()

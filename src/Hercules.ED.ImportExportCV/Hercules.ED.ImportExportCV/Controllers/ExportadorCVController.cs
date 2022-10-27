@@ -47,7 +47,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 throw new FormatException("El lenguaje de exportación es incorrecto");
             }
 
-            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
+            ExportaDatos exporta = new (_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
             if (entity == null)
@@ -67,7 +67,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             {
                 if (versionExportacion.Equals("1_4_0"))
                 {
-                    Export140.GenerarPDFWSClient client = new Export140.GenerarPDFWSClient();
+                    Export140.GenerarPDFWSClient client = new ();
 
                     //Aumento el tiempo de espera a 2 hora como maximo
                     client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
@@ -87,7 +87,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else if (versionExportacion.Equals("1_4_3"))
                 {
-                    Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
+                    Export.GenerarPDFWSClient client = new ();
 
                     //Aumento el tiempo de espera a 2 hora como maximo
                     client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
@@ -134,7 +134,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 throw new FormatException("El lenguaje de exportación es incorrecto");
             }
 
-            ExportaDatos exporta = new ExportaDatos(_cvn, pCVID, lang);
+            ExportaDatos exporta = new (_cvn, pCVID, lang);
             Entity entity = exporta.GetLoadedEntity(pCVID, "curriculumvitae");
 
             if (entity == null)
@@ -158,7 +158,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             {
                 if (versionExportacion.Equals("1_4_0"))
                 {
-                    Export140.GenerarPDFWSClient client = new Export140.GenerarPDFWSClient();
+                    Export140.GenerarPDFWSClient client = new ();
 
                     //Aumento el tiempo de espera a 2 hora como máximo
                     client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
@@ -180,7 +180,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else if (versionExportacion.Equals("1_4_3"))
                 {
-                    Export.GenerarPDFWSClient client = new Export.GenerarPDFWSClient();
+                    Export.GenerarPDFWSClient client = new ();
 
                     //Aumento el tiempo de espera a 2 hora como máximo
                     client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);

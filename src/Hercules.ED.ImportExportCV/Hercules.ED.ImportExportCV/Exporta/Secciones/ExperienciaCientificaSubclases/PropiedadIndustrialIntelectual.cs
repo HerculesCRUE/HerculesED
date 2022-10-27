@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {    
     public class PropiedadIndustrialIntelectual:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", 
             "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "patent";
         public PropiedadIndustrialIntelectual(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaPropiedadII(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -37,7 +37,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean();
+                CvnItemBean itemBean = new ();
                 itemBean.Code = "050.030.010.000";
                 if (itemBean.Items == null)
                 {
@@ -114,7 +114,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "050.030.010.090", keyValue.Value);
 
                 // Pais explotacion
-                List<Tuple<string, string, string>> dicPais = new List<Tuple<string, string, string>>();
+                List<Tuple<string, string, string>> dicPais = new ();
                 dicPais.Add(new Tuple<string, string, string>("String", "050.030.010.220",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.propIIPaisExplotacion)));
                 dicPais.Add(new Tuple<string, string, string>("String", "050.030.010.230",

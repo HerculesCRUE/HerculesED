@@ -19,7 +19,7 @@ namespace Utils
         /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad
         /// de las claves algún valor de los valores
         /// </summary>
-        private static Dictionary<string, List<string>> PropertyNotEditable = new Dictionary<string, List<string>>()
+        private static Dictionary<string, List<string>> PropertyNotEditable = new ()
         {
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
             { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
@@ -102,9 +102,9 @@ namespace Utils
         public static bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity, ResourceApi mResourceApi)
         {
             bool update = true;
-            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
-            Dictionary<Guid, List<RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
-            Dictionary<Guid, List<TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
+            Dictionary<Guid, List<TriplesToInclude>> triplesInclude = new () { { pIdMainEntity, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<RemoveTriples>> triplesRemove = new () { { pIdMainEntity, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<TriplesToModify>> triplesModify = new () { { pIdMainEntity, new List<TriplesToModify>() } };
 
             foreach (Entity.Property property in pUpdatedEntity.properties)
             {
@@ -130,7 +130,7 @@ namespace Utils
                     }
                     else
                     {
-                        HashSet<string> items = new HashSet<string>();
+                        HashSet<string> items = new ();
                         foreach (string valor in propertyLoadedEntity.values)
                         {
                             items.Add(GetEntityOfValue(valor));

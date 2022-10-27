@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OtrosModosColaboracion:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "collaboration";
         public OtrosModosColaboracion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaOtrosModosColaboracion(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -63,7 +63,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.020.020.150", keyValue.Value);
 
                 // Autores
-                Dictionary<string, string> listadoPropiedadesAutor = new Dictionary<string, string>();
+                Dictionary<string, string> listadoPropiedadesAutor = new ();
                 listadoPropiedadesAutor.Add("Orden", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabOrdenInvestigador));
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabFirmaInvestigador));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabNombreInvestigador));
@@ -72,7 +72,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean,listadoPropiedadesAutor, "060.020.020.070", keyValue.Value);
 
                 // Entidades Participantes
-                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                List<Tuple<string, string, string>> dicCodigos = new ();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "060.020.020.080",
                     UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantesNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "060.020.020.170",
