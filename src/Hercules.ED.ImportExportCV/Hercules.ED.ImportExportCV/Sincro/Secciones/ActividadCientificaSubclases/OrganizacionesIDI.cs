@@ -15,64 +15,19 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         public string tipoActividad { get; set; }
         public string entidadConvocante { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configTipoActividad = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configEC = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configTipoActividad = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEC = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "tipoActividad",
-                    config = configTipoActividad,
-                    value = tipoActividad
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadConvocante",
-                    config = configEC,
-                    value = entidadConvocante
-                }
+                new DisambiguationData(configDescripcion, "descripcion",descripcion),
+                new DisambiguationData(configFecha,"fecha",fecha),
+                new DisambiguationData(configTipoActividad,"tipoActividad",tipoActividad),
+                new DisambiguationData(configEC,"entidadConvocante",entidadConvocante)
             };
             return data;
         }
