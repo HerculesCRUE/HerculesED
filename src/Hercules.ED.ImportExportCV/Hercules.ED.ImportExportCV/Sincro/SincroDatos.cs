@@ -20,8 +20,8 @@ namespace ImportadorWebCV.Sincro
     {
         readonly ConfigService mConfiguracion;
         protected cvnRootResultBean cvn;
-        private string cvID;
-        private string personID;
+        private readonly string cvID;
+        private readonly string personID;
         public FormFile CVFileAsXML;
 
         public int GetNumItems()
@@ -256,7 +256,7 @@ namespace ImportadorWebCV.Sincro
             }
             else
             {
-                throw new Exception("La versión de exportación no es correcta");
+                throw new ArgumentException("La versión de exportación no es correcta");
             }
 
         }
@@ -502,7 +502,7 @@ namespace ImportadorWebCV.Sincro
                 return "";
             }
 
-            if (ORCID.Contains("/"))
+            if (ORCID.Contains('/'))
             {
                 return ORCID.Substring(ORCID.LastIndexOf("/") + 1);
             }
