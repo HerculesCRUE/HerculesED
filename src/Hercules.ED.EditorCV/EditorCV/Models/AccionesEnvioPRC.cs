@@ -1325,55 +1325,5 @@ where {{
             dicPropiedadesCongresos.Add("handle", "");
             dicPropiedadesCongresos.Add("pmid", "");
         }
-
-
-        /// <summary>
-        /// Llamada para la obtención del token.
-        /// </summary>
-        /// <param name="pUrl"></param>
-        /// <param name="pMethod"></param>
-        /// <param name="pBody"></param>
-        /// <returns></returns>
-        protected async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-            {
-                using (var request = new HttpRequestMessage(new HttpMethod(pMethod), pUrl))
-                {
-                    request.Content = pBody;
-
-                    int intentos = 3;
-                    while (true)
-                    {
-                        try
-                        {
-                            response = await httpClient.SendAsync(request);
-                            break;
-                        }
-                        catch
-                        {
-                            intentos--;
-                            if (intentos == 0)
-                            {
-                                throw;
-                            }
-                            else
-                            {
-                                Thread.Sleep(1000);
-                            }
-                        }
-                    }
-                }
-            }
-            if (response.Content != null)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
     }
 }
