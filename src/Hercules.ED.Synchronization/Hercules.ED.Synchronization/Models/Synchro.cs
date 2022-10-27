@@ -128,7 +128,7 @@ namespace Hercules.ED.Synchronization.Models
         /// <param name="pDic">Diccionario a insertar.</param>
         /// <param name="pFila">Fila de BBDD.</param>
         /// <param name="pPropiedad">Nombre de la propiedad.</param>
-        private void InsercionDiccionario(Dictionary<string, string> pDic, Dictionary<string, SparqlObject.Data> pFila, string pPropiedad)
+        private static void InsercionDiccionario(Dictionary<string, string> pDic, Dictionary<string, SparqlObject.Data> pFila, string pPropiedad)
         {
             if (pFila.ContainsKey(pPropiedad) && !string.IsNullOrEmpty(pFila[pPropiedad].value))
             {
@@ -151,9 +151,9 @@ namespace Hercules.ED.Synchronization.Models
                     try
                     {
                         // Obtiene la diferencia entre horas.
-                        CronExpression expression = new(mConfiguracion.cronExternalSource);
+                        CronExpression expression = new(mConfiguracion.CronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
-                        Thread.Sleep((time.Value.UtcDateTime - DateTimeOffset.UtcNow));
+                        Thread.Sleep(time.Value.UtcDateTime - DateTimeOffset.UtcNow);
 
                         // Obtención de los ORCID de las personas.
                         Dictionary<string, string> listaOrcids = GetPersons();
@@ -173,7 +173,7 @@ namespace Hercules.ED.Synchronization.Models
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log($@"[ERROR] {ex.Message} {ex.StackTrace}");
+                        FileLogger.Log(mConfiguracion.GetLogPath(), $@"[ERROR] {ex.Message} {ex.StackTrace}");
                         Thread.Sleep(60000); // 1min.
                     }
                 }
