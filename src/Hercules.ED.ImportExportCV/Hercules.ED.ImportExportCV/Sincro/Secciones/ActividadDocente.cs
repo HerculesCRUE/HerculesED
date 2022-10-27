@@ -36,7 +36,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedAcademicTrainings", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -98,7 +98,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/thesisSupervisions", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -159,7 +159,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -220,7 +220,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedCoursesSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -281,7 +281,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingPublications", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -342,7 +342,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingProjects", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -403,7 +403,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingCongress", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -464,7 +464,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -525,7 +525,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -586,7 +586,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
@@ -711,7 +711,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DireccionTesisAlumno(CvnItemBean item, Entity entidadAux)
+        private static void DireccionTesisAlumno(CvnItemBean item, Entity entidadAux)
         {
             CvnItemBeanCvnAuthorBean alumno = item.GetElementoPorIDCampo<CvnItemBeanCvnAuthorBean>("030.040.000.120");
 
@@ -733,7 +733,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DireccionTesisCodirectores(CvnItemBean item, Entity entidadAux)
+        private static void DireccionTesisCodirectores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoCodirectores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("030.040.000.180");
 
@@ -753,7 +753,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DireccionTesisEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void DireccionTesisEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.040.000.080"),
@@ -775,7 +775,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DireccionTesisPalabarasClave(CvnItemBean item, Entity entidadAux)
+        private static void DireccionTesisPalabarasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("030.040.000.130");
 
@@ -889,7 +889,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void FormacionAcademicaTitulacionUniversitaria(CvnItemBean item, Entity entidadAux)
+        private static void FormacionAcademicaTitulacionUniversitaria(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existiese.
             string valorTitulacionUniversitaria = !string.IsNullOrEmpty(item.GetIdentificationTitleBeanPorIDCampo("030.010.000.020")) ?
@@ -907,7 +907,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void FormacionAcademicaEntidadEvaluacion(CvnItemBean item, Entity entidadAux)
+        private static void FormacionAcademicaEntidadEvaluacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.010.000.300"),
@@ -929,7 +929,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void FormacionAcademicaEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
+        private static void FormacionAcademicaEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.010.000.350"),
@@ -951,7 +951,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void FormacionAcademicaEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void FormacionAcademicaEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.010.000.080"),
@@ -1029,7 +1029,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void TutoriasAcademicasNombrePrograma(CvnItemBean item, Entity entidadAux)
+        private static void TutoriasAcademicasNombrePrograma(CvnItemBean item, Entity entidadAux)
         {
             if (item.GetStringPorIDCampo("030.050.000.010").Equals("OTHERS"))
             {
@@ -1052,7 +1052,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void TutoriasAcademicasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
+        private static void TutoriasAcademicasEntidadRealizacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.050.000.070"),
@@ -1139,7 +1139,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CursosSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void CursosSeminariosIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.060.000.210");
             string propIdHandle = Variables.ActividadDocente.cursosSeminariosIDPubDigitalHandle;
@@ -1157,7 +1157,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CursosSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void CursosSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.060.000.080"),
@@ -1179,7 +1179,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CursosSeminariosISBN(CvnItemBean item, Entity entidadAux)
+        private static void CursosSeminariosISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.060.000.190");
             string propiedadISBN = Variables.ActividadDocente.cursosSeminariosISBN;
@@ -1193,7 +1193,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void CursosSeminariosISSN(CvnItemBean item, Entity entidadAux)
+        private static void CursosSeminariosISSN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.060.000.190");
             string propiedadISSN = Variables.ActividadDocente.cursosSeminariosISSN;
@@ -1280,7 +1280,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionDocentesAutores(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionDocentesAutores(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoAutores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("030.070.000.030");
 
@@ -1300,7 +1300,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionDocentesIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionDocentesIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.230");
             string propIdHandle = Variables.ActividadDocente.publicacionDocenteIDPubDigitalHandle;
@@ -1318,7 +1318,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionDocentesISBN(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionDocentesISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.170");
             string propiedadISBN = Variables.ActividadDocente.publicacionDocenteISBNPublicacion;
@@ -1332,7 +1332,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PublicacionDocentesISSN(CvnItemBean item, Entity entidadAux)
+        private static void PublicacionDocentesISSN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.070.000.170");
             string propiedadISSN = Variables.ActividadDocente.publicacionDocenteISSNPublicacion;
@@ -1417,7 +1417,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionProyectosInnovacionDocenteInvestigadorPrincipal(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionProyectosInnovacionDocenteInvestigadorPrincipal(CvnItemBean item, Entity entidadAux)
         {
             CvnItemBeanCvnAuthorBean ip = item.GetElementoPorIDCampo<CvnItemBeanCvnAuthorBean>("030.080.000.220");
             if (ip == null) { return; }
@@ -1436,7 +1436,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionProyectosInnovacionDocenteEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionProyectosInnovacionDocenteEntidadFinanciadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.080.000.090"),
@@ -1458,7 +1458,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionProyectosInnovacionDocenteEntidadParticipante(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionProyectosInnovacionDocenteEntidadParticipante(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnCodeGroup> listadoEntidadParticipante = item.GetListaElementosPorIDCampo<CvnItemBeanCvnCodeGroup>("030.080.000.150");
 
@@ -1590,7 +1590,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionCongresosFormacionDocenteIDPublicacion(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionCongresosFormacionDocenteIDPublicacion(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoIDs = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.090.000.370");
             string propIdHandle = Variables.ActividadDocente.participaCongresosIDPubDigitalHandle;
@@ -1608,7 +1608,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionCongresosFormacionDocenteISBN(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionCongresosFormacionDocenteISBN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISBN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.090.000.180");
             string propiedadISBN = Variables.ActividadDocente.participaCongresosISBNPublicacion;
@@ -1622,7 +1622,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionCongresosFormacionDocenteISSN(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionCongresosFormacionDocenteISSN(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnExternalPKBean> listadoISSN = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("030.090.000.180");
             string propiedadISSN = Variables.ActividadDocente.participaCongresosISSNPublicacion;
@@ -1636,7 +1636,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void ParticipacionCongresosFormacionDocenteEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void ParticipacionCongresosFormacionDocenteEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.090.000.080"),
@@ -1713,7 +1713,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void PremiosInnovacionDocenteEntidadConcesionaria(CvnItemBean item, Entity entidadAux)
+        private static void PremiosInnovacionDocenteEntidadConcesionaria(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("060.030.080.050"),
@@ -1790,7 +1790,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtrasActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("030.100.000.020");
 
@@ -1816,7 +1816,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtrasActividadesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void OtrasActividadesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.100.000.070"),
@@ -1892,7 +1892,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void AportacionesRelevantesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        private static void AportacionesRelevantesEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("030.110.000.070"),
@@ -1914,7 +1914,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void AportacionesRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
+        private static void AportacionesRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("030.110.000.020");
 

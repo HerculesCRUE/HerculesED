@@ -45,7 +45,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     break;
                 }
 
-                CvnItemBean itemBean = new CvnItemBean();
+                CvnItemBean itemBean = new ();
                 itemBean.Code = "060.010.000.000";
                 if (itemBean.Items == null)
                 {

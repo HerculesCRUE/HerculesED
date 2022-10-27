@@ -18,15 +18,8 @@ using System.Threading.Tasks;
 
 namespace EditorCV.Models
 {
-    public class AccionesEnvioPRC
+    public class AccionesEnvioPRC: AccionesEnvio
     {
-        #region --- Constantes   
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
-        private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
-        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models/Utils/prefijos.json";
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
-        #endregion
-
         private static Dictionary<string, string> dicPropiedadesPublicaciones = new Dictionary<string, string>();
         private static Dictionary<string, string> dicPropiedadesCongresos = new Dictionary<string, string>();
 
@@ -734,7 +727,7 @@ where {{
                 if (valorEnviado == "rechazado")
                 {
                     RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
-                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.PUT);
                     request.AddJsonBody(PRC);
                     string jsonString = JsonConvert.SerializeObject(PRC);
@@ -743,7 +736,7 @@ where {{
                 else
                 {
                     RestClient client = new(pConfig.GetUrlProduccionCientifica());
-                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.POST);
                     request.AddJsonBody(PRC);
                     string jsonString = JsonConvert.SerializeObject(PRC);
@@ -1326,7 +1319,7 @@ where {{
                 if (valorEnviado == "rechazado")
                 {
                     RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
-                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.PUT);
                     request.AddJsonBody(PRC);
                     string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
@@ -1335,7 +1328,7 @@ where {{
                 else
                 {
                     RestClient client = new(pConfig.GetUrlProduccionCientifica());
-                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
+                    client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.POST);
                     request.AddJsonBody(PRC);
                     string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
@@ -1385,87 +1378,7 @@ where {{
             return pIdDocumento;
         }
 
-        /// <summary>
-        /// Inserta un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
-        {
-            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
-            TriplesToInclude triple = new TriplesToInclude();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            listaTriplesInsercion.Add(triple);
-            dicInsercion.Add(pGuid, listaTriplesInsercion);
-            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
-        }
-
-        /// <summary>
-        /// Inserta un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        private void Insercion(Guid pGuid, string pPropiedad, List<string> pValorNuevo)
-        {
-            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
-            foreach (string item in pValorNuevo)
-            {
-                TriplesToInclude triple = new TriplesToInclude();
-                triple.Predicate = pPropiedad;
-                triple.NewValue = item;
-                listaTriplesInsercion.Add(triple);
-            }
-            dicInsercion.Add(pGuid, listaTriplesInsercion);
-            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
-        }
-
-        /// <summary>
-        /// Modifica un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        /// <param name="pValorAntiguo"></param>
-        private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
-        {
-            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            triple.OldValue = pValorAntiguo;
-            listaTriplesModificacion.Add(triple);
-            dicModificacion.Add(pGuid, listaTriplesModificacion);
-            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
-        }
-
-        /// <summary>
-        /// Modifica un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        /// <param name="pValorAntiguo"></param>
-        private void Modificacion(Guid pGuid, string pPropiedad, List<string> pValorNuevo, List<string> pValorAntiguo)
-        {
-            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            for (int i = 0; i < pValorNuevo.Count; i++)
-            {
-                TriplesToModify triple = new TriplesToModify();
-                triple.Predicate = pPropiedad;
-                triple.NewValue = pValorNuevo[i];
-                triple.OldValue = pValorAntiguo[i];
-                listaTriplesModificacion.Add(triple);
-            }
-            dicModificacion.Add(pGuid, listaTriplesModificacion);
-            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
-        }
+        
 
         /// <summary>
         /// Mapea el código CVN con la propiedad usada en SPARQL de PUBLICACIONES.
@@ -1515,27 +1428,6 @@ where {{
             dicPropiedadesCongresos.Add("pmid", "");
         }
 
-        /// <summary>
-        /// Obtención del token.
-        /// </summary>
-        /// <returns></returns>
-        private string GetTokenCSP(ConfigService pConfig)
-        {
-            // TODO: Sacar a archivo de configuración.
-            Uri url = new Uri(pConfig.GetUrlToken());
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbCsp()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbCsp()),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
-
-            string result = httpCall(url.ToString(), "POST", content).Result;
-            var json = JObject.Parse(result);
-
-            return json["access_token"].ToString();
-        }
 
         /// <summary>
         /// Llamada para la obtención del token.

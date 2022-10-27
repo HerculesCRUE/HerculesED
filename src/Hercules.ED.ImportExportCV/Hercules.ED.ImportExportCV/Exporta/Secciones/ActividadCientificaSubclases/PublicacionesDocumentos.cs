@@ -45,7 +45,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean();
+                CvnItemBean itemBean = new ();
                 itemBean.Code = "060.010.010.000";
                 if (itemBean.Items == null)
                 {
