@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class ForosComites:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/forums", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "activity";
         public ForosComites(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaForosComites(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);

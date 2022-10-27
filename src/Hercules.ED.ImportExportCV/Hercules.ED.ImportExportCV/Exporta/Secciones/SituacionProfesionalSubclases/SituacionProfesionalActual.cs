@@ -12,7 +12,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class SituacionProfesionalActual : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/professionalSituation",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/professionalSituation",
                 "http://w3id.org/roh/currentProfessionalSituation", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "position";
 
@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         /// <param name="listaId"></param>
         public void ExportaSituacionProfesional(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean();
+                CvnItemBean itemBean = new ();
                 itemBean.Code = "010.010.000.000";
                 if (itemBean.Items == null)
                 {

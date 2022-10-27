@@ -39,15 +39,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedAcademicTrainings", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedAcademicTrainings", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "impartedacademictraining";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/ImpartedAcademicTraining";
             string rdfTypePrefix = "RelatedImpartedAcademicTrainings";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -101,15 +101,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/thesisSupervisions", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/thesisSupervisions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "thesissupervision";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/ThesisSupervision";
             string rdfTypePrefix = "RelatedThesisSupervisions";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -162,15 +162,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/academicTutorials", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "tutorship";
             string propTitle = "http://w3id.org/roh/tutorshipProgramType";
             string rdfType = "http://w3id.org/roh/Tutorship";
             string rdfTypePrefix = "RelatedAcademicTutorials";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -223,15 +223,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedCoursesSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/impartedCoursesSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "impartedcoursesseminars";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/ImpartedCoursesSeminars";
             string rdfTypePrefix = "RelatedImpartedCoursesSeminars";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -284,15 +284,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingPublications", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingPublications", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "teachingpublication";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/TeachingPublication";
             string rdfTypePrefix = "RelatedTeachingPublications";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -345,15 +345,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "teachingproject";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/TeachingProject";
             string rdfTypePrefix = "RelatedTeachingProjects";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -406,15 +406,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingCongress", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingCongress", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "teachingcongress";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/TeachingCongress";
             string rdfTypePrefix = "RelatedTeachingCongress";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -467,15 +467,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "accreditation";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/Accreditation";
             string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -528,15 +528,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/otherActivities", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedOtherActivities";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -589,15 +589,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "activity";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedMostRelevantContributions";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -646,7 +646,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetDireccionTesis(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoDireccionTesis = listadoDatos.Where(x => x.Code.Equals("030.040.000.000")).ToList();
             if (listadoDireccionTesis.Count > 0)
@@ -666,7 +666,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.040.000.030")))
                     {
@@ -800,7 +800,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetFormacionAcademica(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoFormacionAcademica = listadoDatos.Where(x => x.Code.Equals("030.010.000.000")).ToList();
             if (listadoFormacionAcademica.Count > 0)
@@ -820,8 +820,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetNameTitleBeanPorIDCampo("030.010.000.020")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -972,7 +972,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetTutoriasAcademicas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoTutoriasAcademicas = listadoDatos.Where(x => x.Code.Equals("030.050.000.000")).ToList();
             if (listadoTutoriasAcademicas.Count > 0)
@@ -992,8 +992,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
-                    entidadAux.properties = new List<Property>();
+                    Entity entidadAux = new ();
+                    entidadAux.properties = new ();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.050.000.010")))
                     {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -1073,7 +1073,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetCursosSeminarios(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoCursosSeminarios = listadoDatos.Where(x => x.Code.Equals("030.060.000.000")).ToList();
             if (listadoCursosSeminarios.Count > 0)
@@ -1093,7 +1093,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.060.000.030")))
                     {
@@ -1206,7 +1206,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetPublicacionDocentes(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoPublicacionDocentes = listadoDatos.Where(x => x.Code.Equals("030.070.000.000")).ToList();
             if (listadoPublicacionDocentes.Count > 0)
@@ -1226,7 +1226,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.070.000.010")))
                     {
@@ -1345,7 +1345,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetParticipacionProyectosInnovacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoParticipacionProyectosInnovacionDocente = listadoDatos.Where(x => x.Code.Equals("030.080.000.000")).ToList();
             if (listadoParticipacionProyectosInnovacionDocente.Count > 0)
@@ -1365,7 +1365,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.080.000.010")))
                     {
@@ -1505,7 +1505,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetParticipacionCongresosFormacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoParticipacionCongresosFormacionDocente = listadoDatos.Where(x => x.Code.Equals("030.090.000.000")).ToList();
             if (listadoParticipacionCongresosFormacionDocente.Count > 0)
@@ -1525,7 +1525,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.090.000.030")))
                     {
@@ -1657,7 +1657,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetPremiosInovacionDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoPremiosInovacionDocente = listadoDatos.Where(x => x.Code.Equals("060.030.080.000")).ToList();
             if (listadoPremiosInovacionDocente.Count > 0)
@@ -1677,7 +1677,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("060.030.080.010")))
                     {
@@ -1734,7 +1734,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetOtrasActividades(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoOtrasActividades = listadoDatos.Where(x => x.Code.Equals("030.100.000.000")).ToList();
             if (listadoOtrasActividades.Count > 0)
@@ -1754,7 +1754,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.100.000.010")))
                     {
@@ -1837,7 +1837,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         private List<Entity> GetAportacionesRelevantes(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoAportacionesRelevantes = listadoDatos.Where(x => x.Code.Equals("030.110.000.000")).ToList();
             if (listadoAportacionesRelevantes.Count > 0)
@@ -1857,7 +1857,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("030.110.000.010")))
                     {

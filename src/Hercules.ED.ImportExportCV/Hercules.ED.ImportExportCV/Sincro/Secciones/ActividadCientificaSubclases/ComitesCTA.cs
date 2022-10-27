@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class ComitesCTA : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string entidadAfiliacion { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadAfiliacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEA = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionComi = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaComi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEnAfComi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configEA,"entidadAfiliacion",entidadAfiliacion)
+                new DisambiguationData(configDescripcionComi,"descripcion",Descripcion),
+                new DisambiguationData(configFechaComi,"fecha",Fecha),
+                new DisambiguationData(configEnAfComi,"entidadAfiliacion",EntidadAfiliacion)
             };
             return data;
         }
@@ -63,9 +63,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     ComitesCTA comitesCTA = new ComitesCTA
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadAfiliacion = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadAfiliacion = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), comitesCTA);

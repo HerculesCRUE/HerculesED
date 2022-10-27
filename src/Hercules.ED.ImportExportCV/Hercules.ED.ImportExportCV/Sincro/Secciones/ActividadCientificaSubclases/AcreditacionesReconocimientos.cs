@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class AcreditacionesReconocimientos : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string nombreEntAcreditante { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string NombreEntAcreditante { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEA = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionAcRe = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaAcRe = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEAAcRe = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configEA,"entidadAcreditante",nombreEntAcreditante)
+                new DisambiguationData(configDescripcionAcRe,"descripcion",Descripcion),
+                new DisambiguationData(configFechaAcRe,"fecha",Fecha),
+                new DisambiguationData(configEAAcRe,"entidadAcreditante",NombreEntAcreditante)
             };
             return data;
         }
@@ -63,9 +63,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     AcreditacionesReconocimientos acreditacionesReconocimientos = new AcreditacionesReconocimientos
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        nombreEntAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        NombreEntAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), acreditacionesReconocimientos);

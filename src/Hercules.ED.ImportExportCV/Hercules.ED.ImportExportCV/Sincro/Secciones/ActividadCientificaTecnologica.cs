@@ -614,9 +614,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ComitesCTA comitesCTA = new ();
-                    comitesCTA.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTATitulo)?.values.FirstOrDefault();
-                    comitesCTA.entidadAfiliacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre)?.values.FirstOrDefault();
-                    comitesCTA.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTAFechaInicio)?.values.FirstOrDefault();
+                    comitesCTA.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTATitulo)?.values.FirstOrDefault();
+                    comitesCTA.EntidadAfiliacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTAEntidadAfiliacionNombre)?.values.FirstOrDefault();
+                    comitesCTA.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.comitesCTAFechaInicio)?.values.FirstOrDefault();
                     comitesCTA.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(comitesCTA.ID, comitesCTA);
                 }
@@ -970,9 +970,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     AyudaBecas ayudaBecas = new ();
-                    ayudaBecas.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasNombre)?.values.FirstOrDefault();
-                    ayudaBecas.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasFechaConcesion)?.values.FirstOrDefault();
-                    ayudaBecas.entidadConcesionaria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcedeNombre)?.values.FirstOrDefault();
+                    ayudaBecas.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasNombre)?.values.FirstOrDefault();
+                    ayudaBecas.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasFechaConcesion)?.values.FirstOrDefault();
+                    ayudaBecas.EntidadConcesionaria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.ayudasBecasEntidadConcedeNombre)?.values.FirstOrDefault();
                     ayudaBecas.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(ayudaBecas.ID, ayudaBecas);
                 }
@@ -1437,9 +1437,9 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     AcreditacionesReconocimientos acreditacionesReconocimientos = new ();
-                    acreditacionesReconocimientos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesDescripcion)?.values.FirstOrDefault();
-                    acreditacionesReconocimientos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion)?.values.FirstOrDefault();
-                    acreditacionesReconocimientos.nombreEntAcreditante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre)?.values.FirstOrDefault();
+                    acreditacionesReconocimientos.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesDescripcion)?.values.FirstOrDefault();
+                    acreditacionesReconocimientos.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesFechaObtencion)?.values.FirstOrDefault();
+                    acreditacionesReconocimientos.NombreEntAcreditante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.acreditacionesEntidadNombre)?.values.FirstOrDefault();
                     acreditacionesReconocimientos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(acreditacionesReconocimientos.ID, acreditacionesReconocimientos);
                 }

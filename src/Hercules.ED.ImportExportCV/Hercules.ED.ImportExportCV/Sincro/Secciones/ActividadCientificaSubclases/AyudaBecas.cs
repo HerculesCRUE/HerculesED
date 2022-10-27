@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class AyudaBecas : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string entidadConcesionaria { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadConcesionaria { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEC = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionAyBe = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaAyBe = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configECAyBe = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configEC,"entidadConcesionaria",entidadConcesionaria)
+                new DisambiguationData(configDescripcionAyBe,"descripcion",Descripcion),
+                new DisambiguationData(configFechaAyBe,"fecha",Fecha),
+                new DisambiguationData(configECAyBe,"entidadConcesionaria",EntidadConcesionaria)
             };
             return data;
         }
@@ -63,9 +63,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     AyudaBecas ayudaBecas = new AyudaBecas
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadConcesionaria = fila.ContainsKey("itemEC") ? fila["itemEC"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadConcesionaria = fila.ContainsKey("itemEC") ? fila["itemEC"].value : ""
                     };
 
                     resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), ayudaBecas);

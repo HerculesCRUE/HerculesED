@@ -6,25 +6,17 @@ namespace Hercules.ED.Synchronization.Config
     public class ConfigService
     {
         // Archivo de configuración.
-        public static IConfigurationRoot configuracion;
+        public static readonly IConfigurationRoot configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}appsettings{Path.DirectorySeparatorChar}appsettings.json").Build();
 
         // LogPath.
-        public string logPath { get; set; }
+        public string LogPath { get; set; }
 
         // Cron Expression.
-        public string cronExternalSource { get; set; }
+        public string CronExternalSource { get; set; }
 
         // RabbitMQ.
-        public string rabbitConnectionString { get; set; }
+        public string RabbitConnectionString { get; set; }
         public string FuentesExternasQueueRabbit { get; set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public ConfigService()
-        {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}appsettings{Path.DirectorySeparatorChar}appsettings.json").Build();
-        }
 
         /// <summary>
         /// Obtiene la ruta de generación de logs.
@@ -32,7 +24,7 @@ namespace Hercules.ED.Synchronization.Config
         /// <returns>Ruta de logs.</returns>
         public string GetLogPath()
         {
-            if (string.IsNullOrEmpty(logPath))
+            if (string.IsNullOrEmpty(LogPath))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string connectionString;
@@ -46,10 +38,10 @@ namespace Hercules.ED.Synchronization.Config
                     connectionString = configuracion["LogPath"];
                 }
 
-                logPath = connectionString;
+                LogPath = connectionString;
             }
 
-            return logPath;
+            return LogPath;
         }
 
         /// <summary>
@@ -58,7 +50,7 @@ namespace Hercules.ED.Synchronization.Config
         /// <returns>Expresión cron.</returns>
         public string GetCronExternalSource()
         {
-            if (string.IsNullOrEmpty(cronExternalSource))
+            if (string.IsNullOrEmpty(CronExternalSource))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string connectionString;
@@ -72,10 +64,10 @@ namespace Hercules.ED.Synchronization.Config
                     connectionString = configuracion["cronExternalSource"];
                 }
 
-                cronExternalSource = connectionString;
+                CronExternalSource = connectionString;
             }
 
-            return cronExternalSource;
+            return CronExternalSource;
         }
 
         /// <summary>
@@ -84,7 +76,7 @@ namespace Hercules.ED.Synchronization.Config
         /// <returns>Cadena de conexión de Rabbit.</returns>
         public string GetRabbitConnectionString()
         {
-            if (string.IsNullOrEmpty(rabbitConnectionString))
+            if (string.IsNullOrEmpty(RabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string connectionString;
@@ -98,10 +90,10 @@ namespace Hercules.ED.Synchronization.Config
                     connectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
 
-                rabbitConnectionString = connectionString;
+                RabbitConnectionString = connectionString;
             }
 
-            return rabbitConnectionString;
+            return RabbitConnectionString;
         }
 
         /// <summary>

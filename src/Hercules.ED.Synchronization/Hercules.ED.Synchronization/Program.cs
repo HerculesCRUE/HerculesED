@@ -7,21 +7,19 @@ namespace Hercules.ED.Synchronization
 {
     class Program
     {
-        private static ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
-        private static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
+        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}prefijos.json";
 
         /// <summary>
         /// Main.
         /// </summary>
         /// <param name="args">Argumentos.</param>
-        static void Main(string[] args)
+        static void Main()
         {
-            Synchro synchro = new ();
-            synchro.mResourceApi = mResourceApi;
+            Synchro synchro = new();
             synchro.mConfiguracion = new ConfigService();
+            synchro.mResourceApi = mResourceApi;
             synchro.mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
-
-            FileLogger.FilePath = synchro.mConfiguracion.GetLogPath();
             synchro.ProcessComplete();
         }
 
@@ -30,22 +28,21 @@ namespace Hercules.ED.Synchronization
         /// </summary>
         public static class FileLogger
         {
-            public static string FilePath;
-
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
             /// </summary>
+            /// <param name="pPath">Ruta.</param>
             /// <param name="pMesssage">Mensaje de error a mostrar.</param>
-            public static void Log(string pMesssage)
+            public static void Log(string pPath, string pMesssage)
             {
                 // Si no existe el directorio, se crea.
-                if (!Directory.Exists(FilePath))
+                if (!Directory.Exists(pPath))
                 {
-                    Directory.CreateDirectory(FilePath);
+                    Directory.CreateDirectory(pPath);
                 }
 
                 // Modo del fichero.
-                using var fileStream = new FileStream($"{FilePath}{Path.DirectorySeparatorChar}Synchronization_{CreateTimeStamp()}.log", FileMode.Append);
+                using var fileStream = new FileStream($"{pPath}{Path.DirectorySeparatorChar}Synchronization_{CreateTimeStamp()}.log", FileMode.Append);
 
                 // Writer.
                 using var writter = new StreamWriter(fileStream);
