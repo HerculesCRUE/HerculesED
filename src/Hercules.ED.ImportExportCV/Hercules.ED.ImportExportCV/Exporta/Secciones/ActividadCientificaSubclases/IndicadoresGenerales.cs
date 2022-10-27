@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class IndicadoresGenerales : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/generalQualityIndicators", "http://w3id.org/roh/generalQualityIndicatorCV" };
-        string graph = "curriculumvitae";
+        private readonly string graph = "curriculumvitae";
 
         public IndicadoresGenerales(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

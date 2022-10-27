@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     class TextoLibre : SeccionBase
     {
-        private List<CvnItemBean> listadoDatos = new List<CvnItemBean>();
+        private readonly List<CvnItemBean> listadoDatos;
 
         public TextoLibre(cvnRootResultBean cvn, string cvID, ConfigService configuracion) : base(cvn, cvID, configuracion)
         {

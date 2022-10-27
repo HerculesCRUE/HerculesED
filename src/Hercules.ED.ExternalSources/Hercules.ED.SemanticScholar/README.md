@@ -1,4 +1,4 @@
-![](../../Docs/media/CabeceraDocumentosMD.png)
+![](../../../Docs/media/CabeceraDocumentosMD.png)
 
 | Fecha         | 21/10/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
@@ -7,7 +7,7 @@
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión|Versión inicial |
 
 ## Sobre Hercules.ED.SemanticScholar
 
@@ -15,6 +15,5 @@
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=ncloc)](https://sonarcloud.io/dashboard?id=Hercules.ED.SemanticScholar)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
-

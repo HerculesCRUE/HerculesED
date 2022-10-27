@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
     public class ConocimientoIdiomas : SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications",
             "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
-        private string graph = "languagecertificate";
+        private readonly string graph = "languagecertificate";
 
         public ConocimientoIdiomas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

@@ -495,7 +495,6 @@ namespace ImportadorWebCV.Sincro
             List<CvnItemBean> listadoA = sincro.getCVN().cvnRootBean.ToList();
             listadoA = listadoA.Where(x => x.Code.Equals("000.010.000.000")).ToList();
 
-            CvnItemBeanCvnString crisID = new CvnItemBeanCvnString();
             string ORCID = listadoA.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("000.010.000.260").GetORCID();
 
             if (string.IsNullOrEmpty(ORCID))

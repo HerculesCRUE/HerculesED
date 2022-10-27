@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {    
     public class PropiedadIndustrialIntelectual:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
             "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "patent";
+        private readonly string graph = "patent";
         public PropiedadIndustrialIntelectual(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

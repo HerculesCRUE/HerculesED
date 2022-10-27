@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class ForosComites:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/forums", "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "activity";
+        private readonly string graph = "activity";
         public ForosComites(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

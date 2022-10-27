@@ -148,6 +148,24 @@ namespace Utils
         }
 
         /// <summary>
+        /// Comprueba el formato de correo, si es erroneo lo elimina del listado
+        /// </summary>
+        /// <param name="listadoCorreos">Listado de correos</param>
+        public static void ComprobarCorreos(List<string> listadoCorreos)
+        {
+            if (listadoCorreos != null && listadoCorreos.Count > 0)
+            {
+                foreach (string correo in listadoCorreos)
+                {
+                    if (!UtilitySecciones.IsEmailValid(correo))
+                    {
+                        listadoCorreos.Remove(correo);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Devuelve las entidades con propiedad/es <paramref name="propiedadesItem"/> del CV con valor <paramref name="pCVID"/>.
         /// </summary>
         /// <param name="pResourceApi">ResourceApi</param>

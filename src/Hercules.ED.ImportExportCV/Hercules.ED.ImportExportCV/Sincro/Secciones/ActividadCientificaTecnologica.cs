@@ -2071,7 +2071,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         entidadAux.properties_cv.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosTipoParticipacion, item.GetTipoParticipacionDocumentoPorIDCampo("060.010.020.050")),
-                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoInscripcionEventoPorIDCampo("060.010.020.060")),
+                            new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencion, item.GetTipoIntervencionPorIDCampo("060.010.020.060")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosIntervencionOtros, item.GetStringPorIDCampo("060.010.020.070")),
                             new Property(Variables.ActividadCientificaTecnologica.trabajosCongresosAutorCorrespondencia, item.GetStringBooleanPorIDCampo("060.010.020.390"))
                         ));

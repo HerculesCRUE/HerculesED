@@ -57,8 +57,8 @@ namespace Hercules.ED.ImportExportCV
         /// <param name="listaOpciones"></param>
         public void ImportacionTriples(string pCVID, string filePreimport, List<string> listaId, List<string> listaOpciones, PetitionStatus petitionStatus)
         {
-            Dictionary<string, Dictionary<string, string>> dicOpciones = new Dictionary<string, Dictionary<string, string>>();
-            List<Tuple<string, string>> filtrador = new List<Tuple<string, string>>();
+            Dictionary<string, Dictionary<string, string>> dicOpciones = new();
+            List<Tuple<string, string>> filtrador = new();
             foreach (string str in listaId)
             {
                 if (string.IsNullOrEmpty(str))
@@ -69,14 +69,14 @@ namespace Hercules.ED.ImportExportCV
             }
             Preimport preimport;
 
-            XmlSerializer serializer = new XmlSerializer(typeof(Preimport));
+            XmlSerializer serializer = new(typeof(Preimport));
             using (TextReader reader = new StringReader(filePreimport))
             {
                 preimport = (Preimport)serializer.Deserialize(reader);
             }
 
             //Fichero preimport
-            List<SubseccionItem> listadoSubsetionItems = new List<SubseccionItem>();
+            List<SubseccionItem> listadoSubsetionItems = new();
             foreach (Subseccion subseccion in preimport.secciones)
             {
                 foreach (SubseccionItem subseccionItem in subseccion.subsecciones)
@@ -99,7 +99,7 @@ namespace Hercules.ED.ImportExportCV
                     guidOpcion = opcion.Split("|||").First().Split("_").First();
                     idOpcion = opcion.Split("|||").First().Split("_").Last();
                     valueOpcion = opcion.Split("|||").Last();
-                    Dictionary<string, string> keyValues = new Dictionary<string, string>();
+                    Dictionary<string, string> keyValues = new();
                     keyValues.Add(idOpcion, valueOpcion);
                     if (dicOpciones.ContainsKey(guidOpcion))
                     {
@@ -137,39 +137,27 @@ namespace Hercules.ED.ImportExportCV
             }
 
             //En el caso de que la seccion de Texto libre no esté en listadoSubsectionItems tambien la elimino.
-            if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))))
+            if (!listadoSubsetionItems.Any(x => x.propiedades.Any(x => x.prop.Contains("http://w3id.org/roh/summary"))) && listadoItemsAgrupados.Last().Key.Equals("070.010.000.000"))
             {
-                if (listadoItemsAgrupados.Last().Key.Equals("070.010.000.000"))
-                {
-                    listadoItemsAgrupados.RemoveAt(listadoItemsAgrupados.Count - 1);
-                }
+                listadoItemsAgrupados.RemoveAt(listadoItemsAgrupados.Count - 1);
             }
 
             string opcionSeleccionada = "";
 
-            List<CvnItemBean> listadoDuplicar = new List<CvnItemBean>();
-            List<CvnItemBean> listadoFusionar = new List<CvnItemBean>();
-            List<CvnItemBean> listadoSobrescribir = new List<CvnItemBean>();
-            List<string> listadoDuplicarBBDD = new List<string>();
-            List<string> listadoFusionarBBDD = new List<string>();
-            List<string> listadoSobrescribirBBDD = new List<string>();
-            List<string> listadoTextoLibreBBDD = new List<string>();
+            List<CvnItemBean> listadoDuplicar = new();
+            List<CvnItemBean> listadoFusionar = new();
+            List<CvnItemBean> listadoSobrescribir = new();
+            List<string> listadoDuplicarBBDD = new();
+            List<string> listadoFusionarBBDD = new();
+            List<string> listadoSobrescribirBBDD = new();
+            List<string> listadoTextoLibreBBDD = new();
 
             foreach (IGrouping<string, CvnItemBean> seccionAgrupada in listadoItemsAgrupados)
             {
                 //Seccion datos personales
                 if (seccionAgrupada.Key.Equals("000.010.000.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
-                    {
-                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                    }
-                    if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
-                    {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
-                    }
+                    SobrescribirDatosPersonales(preimport, listadoSobrescribir, listadoSobrescribirBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -178,16 +166,7 @@ namespace Hercules.ED.ImportExportCV
                 //Seccion Indicadores generales
                 if (seccionAgrupada.Key.Equals("060.010.060.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
-                    {
-                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                    }
-                    if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
-                    {
-                        listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
-                    }
+                    SobrescribirIndicadoresGenerales(preimport, listadoSobrescribir, listadoSobrescribirBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -196,22 +175,7 @@ namespace Hercules.ED.ImportExportCV
                 //Seccion texto libre
                 if (seccionAgrupada.Key.Equals("070.010.000.000"))
                 {
-                    List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
-
-                    //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
-                    // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
-                    for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
-                    {
-                        if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid) && filtrador.Select(x => x.Item2).Contains(contadorTexto.ToString()))
-                        {
-                            //Si no existe el CvnItemBean de la sección "070.010.000.000" lo añado, en otro caso sigo.
-                            if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
-                            {
-                                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
-                            }
-                            listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@" + contadorTexto);
-                        }
-                    }
+                    SobrescribirTextoLibre(preimport, listadoSobrescribir, listadoTextoLibreBBDD, filtrador, seccionAgrupada);
 
                     //Actualizo el estado de los recursos tratados
                     petitionStatus.actualWork++;
@@ -278,46 +242,13 @@ namespace Hercules.ED.ImportExportCV
 
 
             //Duplicar
-            base.cvn = duplicadosResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
-            petitionStatus.actualWorkSubtitle = "";
-            petitionStatus.totalWorks = listadoDuplicar.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            Duplicar(duplicadosResultBean, listadoDuplicar, listadoDuplicarBBDD, listaDOI, petitionStatus);
 
             //Fusionar
-            base.cvn = fusionResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
-            petitionStatus.totalWorks = listadoFusionar.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            Fusionar(fusionResultBean, listadoFusionar, listadoFusionarBBDD, listaDOI, petitionStatus);
 
             //Sobrescribir
-            base.cvn = sobrescribirResultBean;
-
-            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
-            petitionStatus.totalWorks = listadoSobrescribir.Count;
-            petitionStatus.actualWork = 0;
-
-            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
-            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
-            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
+            Sobrescribir(sobrescribirResultBean, listadoSobrescribir, listadoSobrescribirBBDD, listadoTextoLibreBBDD, listaDOI, petitionStatus);
 
             //Despues de duplicar, fusionar y sobrescribir los ítems, llamo al servicio de FE para buscar aquellos ítems duplicados con DOI.
             string personId = Utils.Utility.PersonaCV(pCVID);
@@ -335,7 +266,6 @@ namespace Hercules.ED.ImportExportCV
                 catch (Exception ex)
                 {
                     mResourceApi.Log.Error(ex.Message);
-                    continue;
                 }
             }
 
@@ -350,6 +280,153 @@ namespace Hercules.ED.ImportExportCV
             }
 
         }
+
+        /// <summary>
+        /// Añade la seccion de datos personales para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirDatosPersonales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("000.000.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+            if (!listadoSobrescribir.Exists(x => x.Code.Equals("000.010.000.000")))
+            {
+                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+            }
+            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
+            {
+                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
+            }
+
+        }
+
+        /// <summary>
+        /// Añade la seccion de indicadores personales para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirIndicadoresGenerales(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("060.010.060.010")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+
+            if (!listadoSobrescribir.Exists(x => x.Code.Equals("060.010.060.000")))
+            {
+                listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+            }
+            if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid))
+            {
+                listadoSobrescribirBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@so");
+            }
+        }
+
+        /// <summary>
+        /// Añade la seccion de texto libre para sobrescribirla
+        /// </summary>
+        /// <param name="preimport">Preimport</param>
+        /// <param name="listadoSobrescribir">Listado de items a </param>
+        /// <param name="listadoTextoLibreBBDD">Listado de ítems en BBDD</param>
+        /// <param name="filtrador">Filtrador</param>
+        /// <param name="seccionAgrupada">Seccion</param>
+        private void SobrescribirTextoLibre(Preimport preimport, List<CvnItemBean> listadoSobrescribir, List<string> listadoTextoLibreBBDD, List<Tuple<string, string>> filtrador, IGrouping<string, CvnItemBean> seccionAgrupada)
+        {
+            List<SubseccionItem> listaIndicadoresAux = preimport.secciones.Where(x => x.id.Equals("070.010.000.000")).Select(x => x.subsecciones).FirstOrDefault().ToList();
+
+            //Recorro resumenLibre(0), resumenTFG(1) y resumenTFM(2) para comprobar si alguno de ellos está marcado,
+            // e indicando cual de ellos para posteriormente cargar ese dato unicamente.
+            for (int contadorTexto = 0; contadorTexto < 3; contadorTexto++)
+            {
+                if (filtrador.Select(x => x.Item1).Contains(listaIndicadoresAux.First().guid) && filtrador.Select(x => x.Item2).Contains(contadorTexto.ToString()))
+                {
+                    //Si no existe el CvnItemBean de la sección "070.010.000.000" lo añado, en otro caso sigo.
+                    if (!listadoSobrescribir.Exists(x => x.Code.Equals("070.010.000.000")))
+                    {
+                        listadoSobrescribir.Add(seccionAgrupada.Select(x => x).First());
+                    }
+                    listadoTextoLibreBBDD.Add(listaIndicadoresAux.First().idBBDD + "@@@" + contadorTexto);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Duplicar
+        /// </summary>
+        /// <param name="duplicadosResultBean">cvnRootResultBean con los datos a duplicar</param>
+        /// <param name="listadoDuplicar">Listado de items a duplicar</param>
+        /// <param name="listadoDuplicarBBDD">Listado de ítems en BBDD</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
+        private void Duplicar(cvnRootResultBean duplicadosResultBean, List<CvnItemBean> listadoDuplicar, List<string> listadoDuplicarBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
+        {
+            base.cvn = duplicadosResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_DUPLICAR";
+            petitionStatus.actualWorkSubtitle = "";
+            petitionStatus.totalWorks = listadoDuplicar.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoDuplicarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+        }
+
+        /// <summary>
+        /// Fusionar
+        /// </summary>
+        /// <param name="fusionResultBean">cvnRootResultBean con los datos a fusionar</param>
+        /// <param name="listadoFusionar">Listado de items a fusionar</param>
+        /// <param name="listadoFusionarBBDD">Listado de ítems en BBDD</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
+        private void Fusionar(cvnRootResultBean fusionResultBean, List<CvnItemBean> listadoFusionar, List<string> listadoFusionarBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
+        {
+            base.cvn = fusionResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_FUSIONAR";
+            petitionStatus.totalWorks = listadoFusionar.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoFusionarBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+
+        }
+
+        /// <summary>
+        /// Sobrescribir
+        /// </summary>
+        /// <param name="sobrescribirResultBean">cvnRootResultBean con los datos a duplicar</param>
+        /// <param name="listadoSobrescribir">Listado de items a sobrescribir</param>
+        /// <param name="listadoSobrescribirBBDD">Listado de ítems en BBDD</param>
+        /// <param name="listadoTextoLibreBBDD">Listado de ítems en BBDD</param>
+        /// <param name="listaDOI">Listado de DOI</param>
+        /// <param name="petitionStatus">PetitionStatus</param>
+        private void Sobrescribir(cvnRootResultBean sobrescribirResultBean, List<CvnItemBean> listadoSobrescribir, List<string> listadoSobrescribirBBDD, List<string> listadoTextoLibreBBDD, List<string> listaDOI, PetitionStatus petitionStatus)
+        {
+            base.cvn = sobrescribirResultBean;
+
+            petitionStatus.actualWorkTitle = "ESTADO_POSTIMPORTAR_SOBRESCRIBIR";
+            petitionStatus.totalWorks = listadoSobrescribir.Count;
+            petitionStatus.actualWork = 0;
+
+            base.SincroDatosIdentificacion(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroDatosSituacionProfesional(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroFormacionAcademica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadDocente(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroExperienciaCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus);
+            base.SincroActividadCientificaTecnologica(preimportar: false, listadoIdBBDD: listadoSobrescribirBBDD, petitionStatus: petitionStatus, listaDOI: listaDOI);
+            base.SincroTextoLibre(preimportar: false, listadoIdBBDD: listadoTextoLibreBBDD);
+
+        }
+
+
     }
 }
 

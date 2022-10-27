@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class ProyectosIDI:SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", 
             "http://w3id.org/roh/competitiveProjects", "http://w3id.org/roh/relatedCompetitiveProjectCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "project";
+        private readonly string graph = "project";
         public ProyectosIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

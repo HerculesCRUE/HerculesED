@@ -11,9 +11,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class AportacionesRelevantes:SeccionBase
     {
-        private List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", 
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience", 
             "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
-        private string graph = "activity";
+        private readonly string graph = "activity";
 
         public AportacionesRelevantes(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {

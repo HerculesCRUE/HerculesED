@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class GrupoIDI:SeccionBase
     {
-        readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
             "http://w3id.org/roh/groups","http://w3id.org/roh/relatedGroupCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        readonly string graph = "group";
+        private readonly string graph = "group";
         public GrupoIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
         }

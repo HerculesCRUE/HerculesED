@@ -11,10 +11,10 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class PublicacionesDocumentos : SeccionBase
     {
-        List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
+        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity",
             "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
-        string graph = "document";
+        private readonly string graph = "document";
 
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -114,7 +114,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 if (itemBean.Items.Any(x => x.Code.Equals("060.010.010.070")))
                 {
                     //Compruebo si el soporte es una revista
-                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.Where(x => x.Code.Equals("060.010.010.070")).First();
+                    CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.First(x => x.Code.Equals("060.010.010.070"));
                     if (itemBeanCvnString.Value.Equals("057"))
                     {
                         UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
