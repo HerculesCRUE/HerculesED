@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class PremiosInnovacionDocente:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience",
             "http://w3id.org/roh/teachingInnovationAwardsReceived", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "accreditation";
 
@@ -26,7 +26,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaPremiosInnovacionDocente(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -38,7 +38,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean()
+                CvnItemBean itemBean = new ()
                 {
                     Code = "060.030.080.000",
                     Items = new List<CVNObject>()

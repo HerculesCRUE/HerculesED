@@ -1083,7 +1083,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetConocimientoIdiomas(List<CvnItemBean> listadoDatos, [Optional] bool preimportar, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoConocimientoIdiomas = listadoDatos.Where(x => x.Code.Equals("020.060.000.000")).ToList();
             if (listadoConocimientoIdiomas.Count > 0)

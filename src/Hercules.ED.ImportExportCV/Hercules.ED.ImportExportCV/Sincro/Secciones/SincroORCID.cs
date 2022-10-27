@@ -22,7 +22,7 @@ namespace Hercules.ED.ImportExportCV.Sincro.Secciones
         /// <param name="orcid">ORCID</param>
         public bool SincroDatosPersonaORCID(string idPersona, string orcid)
         {
-            List<TriplesToInclude> triplesToIncludes = new List<TriplesToInclude>();
+            List<TriplesToInclude> triplesToIncludes = new ();
             Guid idMainEntity = mResourceApi.GetShortGuid(idPersona);
             triplesToIncludes.Add(new TriplesToInclude(orcid, ImportadorWebCV.Variables.DatosIdentificacion.ORCID));
 

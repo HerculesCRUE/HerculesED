@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class ParticipacionProyectosInnovacionDocente : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/teachingExperience",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience",
             "http://w3id.org/roh/teachingProjects", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "teachingproject";
         public ParticipacionProyectosInnovacionDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,7 +25,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaParticipacionProyectos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -102,7 +102,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.080.000.120", keyValue.Value);
 
                 //Entidad participante 
-                List<Tuple<string, string, string>> dicCodigos = new List<Tuple<string, string, string>>();
+                List<Tuple<string, string, string>> dicCodigos = new();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "030.080.000.150",
                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170", 

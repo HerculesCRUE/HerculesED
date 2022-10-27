@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class ProduccionCientifica:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/scientificProduction", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "scientificproduction";
         public ProduccionCientifica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         {
             int contador = 0;
 
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
