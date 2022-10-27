@@ -18,14 +18,8 @@ using EditorCV.Models.Utils;
 
 namespace EditorCV.Models
 {
-    public class AccionesEnvioProyecto
+    public class AccionesEnvioProyecto: AccionesEnvio
     {
-        #region --- Constantes   
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
-        private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
-        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models/Utils/prefijos.json";
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
-        #endregion
 
 
         /// <summary>
@@ -59,7 +53,7 @@ namespace EditorCV.Models
             try
             {
                 RestClient client = new(pConfig.GetUrlEnvioProyecto());
-                client.AddDefaultHeader("Authorization", "Bearer " + AccionesEnvioPRC.GetTokenCSP(pConfig));
+                client.AddDefaultHeader("Authorization", "Bearer " + GetTokenCSP(pConfig));
                 var request = new RestRequest(Method.POST);
                 request.AddJsonBody(proyecto);
                 IRestResponse response = client.Execute(request);
@@ -297,27 +291,6 @@ namespace EditorCV.Models
             string mes = pFechaSparql.Substring(4, 2);
             string anyo = pFechaSparql.Substring(0, 4);
             return $@"{anyo}-{mes}-{dia}T00:00:00Z";
-        }
-
-        /// <summary>
-        /// Obtención del token.
-        /// </summary>
-        /// <returns></returns>
-        private string GetTokenPRC(ConfigService pConfig)
-        {
-            Uri url = new Uri(pConfig.GetUrlToken());
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbPrc()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbPrc()),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
-
-            string result = httpCall(url.ToString(), "POST", content).Result;
-            var json = JObject.Parse(result);
-
-            return json["access_token"].ToString();
         }
 
         /// <summary>
