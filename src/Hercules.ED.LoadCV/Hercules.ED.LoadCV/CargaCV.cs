@@ -49,7 +49,7 @@ namespace Hercules.ED.LoadCV
                         HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
 
                         if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
-                        { 
+                        {
                             mResourceApi.Log.Error(responseMessage.Content.ReadAsStringAsync().Result);
                             continue;
                         }
@@ -63,7 +63,7 @@ namespace Hercules.ED.LoadCV
 
                         Dictionary<string, string> dicPersonaORCID = InvestigadorConORCID(nombreArchivo.Split(".").First());
                         string idPersona = dicPersonaORCID.First().Key;
-                        
+
                         //Si el investigador NO tiene ORCID lo inserto
                         if (string.IsNullOrEmpty(dicPersonaORCID[idPersona]))
                         {
@@ -114,21 +114,21 @@ namespace Hercules.ED.LoadCV
                         {
                             continue;
                         }
-                        else
-                        {
-                            string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
+                        string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
 
-                            MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
-                            multipartFormData.Add(new StringContent(CVID), "pCVID");
+                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                        multipartFormData.Add(new StringContent(CVID), "pCVID");
 
-                            MemoryStream ms = new MemoryStream();
-                            byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
-                            multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
+                        MemoryStream ms = new MemoryStream();
+                        byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
+                        multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
-                            HttpClient httpClient = new HttpClient();
-                            HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                            mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
-                        }
+                        HttpClient httpClient = new HttpClient();
+                        httpClient.Timeout = new TimeSpan(1, 15, 0);
+
+                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
+                        mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
+
                     }
                     catch (Exception ex)
                     {

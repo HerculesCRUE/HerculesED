@@ -38,6 +38,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {

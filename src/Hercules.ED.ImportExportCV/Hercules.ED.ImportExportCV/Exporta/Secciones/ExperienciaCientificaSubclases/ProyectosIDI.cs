@@ -34,11 +34,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
             {
                 listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0) 
-                { 
-                    return; 
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
                 }
             }
+
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {

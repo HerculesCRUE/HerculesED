@@ -148,6 +148,29 @@ namespace Utils
         }
 
         /// <summary>
+        /// Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+        /// identificador esté en el listado. Si tras comprobarlo el listado es vacio devuelvo falso.
+        /// </summary>
+        /// <param name="mResourceApi"></param>
+        /// <param name="propiedadesItem"></param>
+        /// <param name="mCvID"></param>
+        /// <param name="listadoIdentificadores"></param>
+        /// <param name="listaId"></param>
+        /// <returns></returns>
+        public static bool Iniciar(ResourceApi mResourceApi, List<string> propiedadesItem, string mCvID, List<Tuple<string, string>> listadoIdentificadores, List<string> listaId)
+        {
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            {
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item2)).ToList();
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Comprueba el formato de correo, si es erroneo lo elimina del listado
         /// </summary>
         /// <param name="listadoCorreos">Listado de correos</param>
@@ -1749,11 +1772,11 @@ namespace Utils
             if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
                 string IdNombre = entity.properties.First(x => x.prop.Equals(propertyIdentification)).values.First().Split("_").Last();
-                if (!UtilitySecciones.Lenguajes.Any(x => x.Item2.Equals(IdNombre)))
+                if (!UtilitySecciones.GetLenguajes().Any(x => x.Item2.Equals(IdNombre)))
                 {
                     return;
                 }
-                string nombre = UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
+                string nombre = UtilitySecciones.GetLenguajes().Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
 
                 CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
                 titleBean.Code = code;
