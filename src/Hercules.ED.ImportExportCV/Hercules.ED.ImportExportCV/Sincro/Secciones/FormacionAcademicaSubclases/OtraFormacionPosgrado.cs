@@ -14,9 +14,9 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         public string entidadTitulacion { get; set; }
         public string fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configET = new DisambiguationDataConfig(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcion = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFecha = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configET = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
@@ -60,7 +60,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    OtraFormacionPosgrado otraFormacion = new OtraFormacionPosgrado
+                    OtraFormacionPosgrado otraFormacion = new ()
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,

@@ -780,7 +780,6 @@ namespace Utils
                     #region Buscamos en nombres
                     {
                         List<string> unions = new List<string>();
-                        List<string> unionsOut = new List<string>();
                         foreach (string wordOut in wordsTexto)
                         {
                             List<string> words = new List<string>();

@@ -177,7 +177,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     {
                         string doc = fila["item"].value;
                         string autor = fila["autor"].value;
-                        HashSet<string> autores = new HashSet<string>();
                         if (!docAutores.ContainsKey(doc))
                         {
                             docAutores.Add(doc, new HashSet<string>());

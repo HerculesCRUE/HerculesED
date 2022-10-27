@@ -86,7 +86,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
             HashSet<string> listaNombres = new HashSet<string>();
-            ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new ConcurrentDictionary<string, List<Persona>>();
+            ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new();
 
             //Selecciono el nombre completo o la firma.
             foreach (Entity item in listadoAux)
@@ -174,7 +174,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     {
                         string doc = fila["item"].value;
                         string autor = fila["autor"].value;
-                        HashSet<string> autores = new HashSet<string>();
                         if (!docAutores.ContainsKey(doc))
                         {
                             docAutores.Add(doc, new HashSet<string>());

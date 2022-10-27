@@ -449,8 +449,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAportacionSolicitante, item.GetStringPorIDCampo("050.020.010.420"))
                         ));
                         ProyectosIDIEntidadRealizacion(item, entidadAux);
-                        //ProyectosIDIResultadosRelevantesPalabrasClave(item, entidadAux);
-                        //ProyectosIDIPalabrasClave(item, entidadAux);
                         ProyectosIDIFinanciacion(item, entidadAux);
                         ProyectosIDIEntidadesParticipantes(item, entidadAux);
                         ProyectosIDIAutores(item, entidadAux);
@@ -740,8 +738,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ContratosEntidadesParticipantes(item, entidadAux);
                         ContratosAutores(item, entidadAux);
                         ContratosEntidadFinanciadora(item, entidadAux);
-                        //ContratosResultadosRelevantesPalabrasClave(item, entidadAux);
-                        //ContratosPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1248,7 +1244,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         GrupoIDIAutor(item, entidadAux);
                         GrupoIDIEntidadAfiliacion(item, entidadAux);
-                        //GrupoIDIPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1261,32 +1256,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
             return listado;
         }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void GrupoIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.010.000.210");
-
-            //string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave;
-
-            //foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            //{
-            //    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-            //    List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-            //    foreach (string palabra in listadoPalabras)
-            //    {
-            //        Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave);
-            //        UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-            //            UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-            //    }
-            //}
-        }
+                
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
@@ -1675,8 +1645,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"))) { continue; }
 
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                string valorED = entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210");
 
                 //Añado la referencia si existe Entidad
                 UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"),

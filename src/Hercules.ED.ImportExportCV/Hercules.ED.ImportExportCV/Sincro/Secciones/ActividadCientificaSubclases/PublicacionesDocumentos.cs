@@ -104,13 +104,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PublicacionesDocumentos publicacionesDocumentos = new ()
+                    PublicacionesDocumentos publicacionesDocumentos = new()
                     {
                         ID = fila["item"].value,
-                        title = fila["itemTitle"].value
+                        title = fila["itemTitle"].value,
+                        autores = new HashSet<string>()
                     };
-
-                    publicacionesDocumentos.autores = new HashSet<string>();
                     if (fila.ContainsKey("autores"))
                     {
                         string[] filasAutores = fila["autores"].value.Split("|");

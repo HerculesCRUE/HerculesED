@@ -59,7 +59,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    DireccionTesis direccionTesis = new DireccionTesis
+                    DireccionTesis direccionTesis = new ()
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,

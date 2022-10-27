@@ -37,7 +37,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultados = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -52,7 +52,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas
+                    ConocimientoIdiomas conocimientoIdiomas = new ()
                     {
                         ID = fila["item"].value,
                         idioma = fila["itemTitle"].value

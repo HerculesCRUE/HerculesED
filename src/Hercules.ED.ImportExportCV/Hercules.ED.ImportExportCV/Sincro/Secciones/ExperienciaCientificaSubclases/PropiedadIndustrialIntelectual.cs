@@ -51,7 +51,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PropiedadIndustrialIntelectual propII = new PropiedadIndustrialIntelectual
+                    PropiedadIndustrialIntelectual propII = new ()
                     {
                         ID = fila["item"].value,
                         descripcion = fila["itemTitle"].value,
