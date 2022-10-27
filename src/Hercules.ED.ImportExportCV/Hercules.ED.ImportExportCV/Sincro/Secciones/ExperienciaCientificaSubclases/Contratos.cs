@@ -12,22 +12,13 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
     {
         public string nombre { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 1f
-        };
+        private static readonly DisambiguationDataConfig configNombre = new(DisambiguationDataConfigType.equalsTitle, 1f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "nombre",
-                    config = configNombre,
-                    value = nombre
-                }
+                new DisambiguationData(configNombre,"nombre",nombre)
             };
             return data;
         }
