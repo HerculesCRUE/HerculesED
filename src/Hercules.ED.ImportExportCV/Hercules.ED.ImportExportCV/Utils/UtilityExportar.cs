@@ -1772,11 +1772,11 @@ namespace Utils
             if (Comprobar(entity.properties.Where(x => x.prop.Equals(propertyIdentification))))
             {
                 string IdNombre = entity.properties.First(x => x.prop.Equals(propertyIdentification)).values.First().Split("_").Last();
-                if (!UtilitySecciones.Lenguajes.Any(x => x.Item2.Equals(IdNombre)))
+                if (!UtilitySecciones.GetLenguajes().Any(x => x.Item2.Equals(IdNombre)))
                 {
                     return;
                 }
-                string nombre = UtilitySecciones.Lenguajes.Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
+                string nombre = UtilitySecciones.GetLenguajes().Where(x => x.Item2.Equals(IdNombre)).Select(x => x.Item1).FirstOrDefault();
 
                 CvnItemBeanCvnTitleBean titleBean = new CvnItemBeanCvnTitleBean();
                 titleBean.Code = code;

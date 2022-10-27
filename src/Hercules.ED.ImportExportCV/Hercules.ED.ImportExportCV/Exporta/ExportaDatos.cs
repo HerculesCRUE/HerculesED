@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta
             this.cvID = cvID;
             this.cvn = cvn;
             resourceApi = mResourceApi;
-            Utils.UtilitySecciones.GetLenguajes(mResourceApi);
+            Utils.UtilitySecciones.IniciarLenguajes(mResourceApi);
             MultilangProp = GetMultilangProperties(cvID, lang);
         }
 
