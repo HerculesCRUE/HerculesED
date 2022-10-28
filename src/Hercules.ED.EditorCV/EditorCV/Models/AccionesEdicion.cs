@@ -201,13 +201,12 @@ namespace EditorCV.Models
                 if (searchText != "")
                 {
                     filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
-                    //filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
                 string select = "SELECT DISTINCT ?s ?o ";
                 string auxProperties = "";
-                if (pPropertiesAux != null && pPropertiesAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                if (pPropertiesAux != null && pPropertiesAux.Count > 0 && !string.IsNullOrEmpty(pPrint))
                 {
-                    for (int i = 0; i < pPropertiesAux.Count(); i++)
+                    for (int i = 0; i < pPropertiesAux.Count; i++)
                     {
                         select += " ?o" + (i + 1);
                         auxProperties += $"OPTIONAL{{ ?s <{pPropertiesAux[i]}> ?o{i + 1}.}}";
@@ -1266,7 +1265,7 @@ namespace EditorCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
         {
             string graph = "curriculumvitae";
 
