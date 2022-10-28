@@ -129,26 +129,21 @@ where {{
                 RellenarDiccionarioCongresos();
             }
 
-            SparqlObject resultadoQuery = null;
-
             string valorEnviado = "";
             ProduccionCientifica PRC = CrearPRC(pIdDocumento, false, out valorEnviado);
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
             List<string> idProyectoAux = new List<string>();
-            string selectProyectoAsociado = "";
-            string whereProyectoAsociado = "";
-
-            selectProyectoAsociado = mPrefijos;
+            string selectProyectoAsociado = mPrefijos;
             selectProyectoAsociado += "SELECT DISTINCT ?proyecto ";
-            whereProyectoAsociado = $@"WHERE {{ 
+            string whereProyectoAsociado = $@"WHERE {{ 
                                             ?s a bibo:Document . 
                                             OPTIONAL{{?s roh:projectAux ?proyecto . }}
                                             FILTER(?s = <{pIdDocumento}>) 
                                         }} ";
 
-            resultadoQuery = mResourceApi.VirtuosoQuery(selectProyectoAsociado, whereProyectoAsociado, "document");
+            SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(selectProyectoAsociado, whereProyectoAsociado, "document");
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
@@ -207,401 +202,7 @@ where {{
             }
             #endregion
 
-            #region --- Obtención de Revistas
-            if (PRC.epigrafeCVN == "060.010.010.000")
-            {
-                PRC.indicesImpacto = new List<IndiceImpacto>();
-                Dictionary<string, string> dicDataRevista = new Dictionary<string, string>();
-                string selectIndicesImpacto = "";
-                string whereIndicesImpacto = "";
-                selectIndicesImpacto = mPrefijos;
-                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
-                whereIndicesImpacto = $@"WHERE {{
-                                           ?s a bibo:Document.
-                                           OPTIONAL{{
-                                                ?s vivo:hasPublicationVenue ?revista . 
-                                                OPTIONAL{{?revista bibo:editor ?editor . }} 
-                                                OPTIONAL{{?revista bibo:issn ?issn . }}
-                                                OPTIONAL{{
-                                                    ?revista roh:format ?formatoAux .
-                                                    ?formatoAux dc:identifier ?formato .
-                                               }} 
-                                            }}
-                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}                                           
-                                           FILTER(?s = <{pIdDocumento}>)
-                                       }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document", "maindocument", "documentformat" });
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        dicDataRevista.Add("titulo", UtilidadesAPI.GetValorFilaSparqlObject(fila, "titulo"));
-                        dicDataRevista.Add("editor", UtilidadesAPI.GetValorFilaSparqlObject(fila, "editor"));
-                        dicDataRevista.Add("formato", UtilidadesAPI.GetValorFilaSparqlObject(fila, "formato"));
-                        dicDataRevista.Add("issn", UtilidadesAPI.GetValorFilaSparqlObject(fila, "issn"));
-                    }
-                }
-
-                string selectFuenteImpacto = "";
-                string whereFuenteImpacto = "";
-                selectFuenteImpacto = mPrefijos;
-                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
-                whereFuenteImpacto = $@"WHERE {{ 
-                                            ?s a bibo:Document . 
-                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
-                                                OPTIONAL{{
-                                                    ?revista roh:impactIndex ?indicesImpacto . 
-                                                    OPTIONAL{{
-                                                        ?indicesImpacto roh:impactSource ?impactSource .
-                                                        ?impactSource dc:identifier ?fuenteImpacto . 
-                                                    }} 
-                                                    ?indicesImpacto roh:year ?anio . 
-                                                    ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
-                                                    OPTIONAL{{
-                                                        ?indicesImpacto  roh:impactCategory ?categoria . 
-                                                        ?categoria roh:quartile ?cuartil . 
-                                                        OPTIONAL{{
-                                                            ?categoria roh:publicationPosition ?posicionPublicacion .
-                                                            ?categoria roh:journalNumberInCat ?numeroRevistas .
-                                                        }}
-                                                    }}
-                                                }}
-                                            }}
-                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
-                                            
-                                            FILTER(?s = <{pIdDocumento}>) 
-                                        }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document", "maindocument", "documentformat", "referencesource" });
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        IndiceImpacto indiceImpacto = new IndiceImpacto();
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto")))
-                        {
-                            indiceImpacto.fuenteImpacto = UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto");
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto")))
-                        {
-                            indiceImpacto.indice = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto"));
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio")))
-                        {
-                            indiceImpacto.anio = UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio");
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion")))
-                        {
-                            indiceImpacto.posicionPublicacion = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion"));
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas")))
-                        {
-                            indiceImpacto.numeroRevistas = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas"));
-                        }
-
-                        bool revista25 = false;
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) && Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) == 1)
-                        {
-                            revista25 = true;
-                        }
-                        indiceImpacto.revista25 = revista25;
-
-                        if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
-                        {
-                            PRC.indicesImpacto.Add(indiceImpacto);
-                        }
-                    }
-                }
-
-                // Nombre de la revista 
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["titulo"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.210";
-                    campoAux.valores = new List<string>() { dicDataRevista["titulo"] };
-                    PRC.campos.Add(campoAux);
-                }
-
-                // Editorial
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["editor"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.100";
-                    campoAux.valores = new List<string>() { dicDataRevista["editor"] };
-                    PRC.campos.Add(campoAux);
-                }
-
-                // ISSN
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["issn"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.160";
-                    campoAux.valores = new List<string>() { dicDataRevista["issn"] };
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
-
-            #region --- Obtención de datos de PUBLICACIONES.       
-            if (PRC.epigrafeCVN == "060.010.010.000")
-            {
-                // Diccionario de IDS.
-                Dictionary<string, string> dicIds = new Dictionary<string, string>();
-                dicIds.Add("040", "");
-                dicIds.Add("120", "");
-                dicIds.Add("130", "");
-
-                // Consulta sparql (Obtención de datos del proyecto).
-                string selectObtencionProyecto = "";
-                string whereObtencionProyecto = "";
-
-                selectObtencionProyecto = mPrefijos;
-                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess";
-                whereObtencionProyecto = $@"WHERE {{
-                                                ?s a bibo:Document . 
-                                                ?s roh:title ?title .
-                                                OPTIONAL{{?s dct:issued ?issued . }} 
-                                                OPTIONAL{{
-                                                    ?s dc:type ?typeAux . 
-                                                    ?typeAux dc:identifier ?type . 
-                                                }} 
-                                                OPTIONAL{{
-                                                    ?s roh:supportType ?support .
-                                                    ?support dc:identifier ?supportType . 
-                                                }}
-                                                OPTIONAL{{?s bibo:volume ?volume . }} 
-                                                OPTIONAL{{?s bibo:issue ?issue . }}
-                                                BIND(CONCAT(?volume, ""-"", ?issue) AS ?numVol) . 
-                                                OPTIONAL{{?s bibo:pageStart ?pageStart . }}
-                                                OPTIONAL{{?s bibo:pageEnd ?pageEnd . }} 
-                                                BIND(CONCAT(?pageStart, ""-"", ?pageEnd) AS ?paginas) .
-                                                OPTIONAL{{?s bibo:doi ?doi . }}
-                                                OPTIONAL{{?s bibo:handle ?handle . }} 
-                                                OPTIONAL{{?s bibo:pmid ?pmid . }}
-                                                OPTIONAL{{?s roh:openAccess ?openAccess . }}
-                                                FILTER(?s = <{pIdDocumento}>) 
-                                            }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto, new List<string> { "document", "documentformat", "publicationtype" });
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        foreach (string item in fila.Keys)
-                        {
-                            if (dicPropiedadesPublicaciones.ContainsKey(item))
-                            {
-                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
-                                campo.codigoCVN = dicPropiedadesPublicaciones[item];
-
-                                if (item == "issued")
-                                {
-                                    string dia = fila[item].value.Substring(6, 2);
-                                    string mes = fila[item].value.Substring(4, 2);
-                                    string anyo = fila[item].value.Substring(0, 4);
-                                    string fecha = $@"{anyo}-{mes}-{dia}";
-                                    campo.valores = new List<string>() { fecha };
-                                }
-                                else if (item == "openAccess")
-                                {
-                                    if (fila[item].value == "true")
-                                    {
-                                        campo.valores = new List<string>() { "true" };
-                                    }
-                                    else
-                                    {
-                                        campo.valores = new List<string>() { "false" };
-                                    }
-                                }
-                                else if (item == "doi" || item == "handle" || item == "pmid")
-                                {
-                                    switch (item)
-                                    {
-                                        case "doi":
-                                            dicIds["040"] = fila[item].value;
-                                            break;
-                                        case "handle":
-                                            dicIds["120"] = fila[item].value;
-                                            break;
-                                        case "pmid":
-                                            dicIds["130"] = fila[item].value;
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    if (fila[item].value != "-")
-                                    {
-                                        campo.valores = new List<string>() { fila[item].value };
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
-                                {
-                                    PRC.campos.Add(campo);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
-                foreach (KeyValuePair<string, string> item in dicIds)
-                {
-                    if (!string.IsNullOrEmpty(item.Value))
-                    {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
-                    }
-                }
-                if (listaValores != null && listaValores.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
-                    PRC.campos.Add(campoAux);
-                }
-                if (listaIds != null && listaIds.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
-
-            #region --- Obtención de datos de CONGRESOS.
-            if (PRC.epigrafeCVN == "060.010.020.000")
-            {
-                // Diccionario de IDS.
-                Dictionary<string, string> dicIds = new Dictionary<string, string>();
-                dicIds.Add("040", "");
-                dicIds.Add("120", "");
-                dicIds.Add("130", "");
-
-                // Consulta sparql (Obtención de datos del proyecto).
-                string selectDatosCongresos = "";
-                string whereDatosCongresos = "";
-
-                selectDatosCongresos = mPrefijos;
-                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType";
-                whereDatosCongresos = $@"WHERE {{
-                                            ?s a bibo:Document . 
-                                            ?s roh:title ?title . 
-                                            OPTIONAL{{
-                                                ?s dc:type ?pubTypeAux . 
-                                                ?pubTypeAux dc:identifier ?type .
-                                            }}
-                                            OPTIONAL{{
-                                                ?s roh:supportType ?supType .
-                                                ?supType dc:identifier ?supportType .
-                                            }}
-                                            OPTIONAL{{?s roh:presentedAtStart ?fechaCelebracion . }}
-                                            OPTIONAL{{?s roh:presentedAtEnd ?fechaFinalizacion . }} 
-                                            OPTIONAL{{
-                                                ?s roh:presentedAtType ?tipoEventoAux . 
-                                                ?tipoEventoAux dc:identifier ?tipoEvento .
-                                            }} 
-                                            OPTIONAL{{
-                                                ?s roh:presentedAtGeographicFocus ?geographicFocusAux .
-                                                ?geographicFocusAux dc:identifier ?geographicFocus . 
-                                            }}
-                                            OPTIONAL{{?s bibo:presentedAt ?presentedAt . }} 
-                                            OPTIONAL{{?s roh:hasPublicationVenueText ?publicationVenueText . }}
-                                            OPTIONAL{{?s bibo:doi ?doi . }} 
-                                            OPTIONAL{{?s bibo:handle ?handle . }} 
-                                            OPTIONAL{{?s bibo:pmid ?pmid . }} 
-                                            OPTIONAL{{?s roh:isbn ?isbn . }} 
-                                            OPTIONAL{{?s bibo:issn ?issn . }} 
-                                            OPTIONAL{{
-                                                ?s roh:participationType ?participationTypeAux .
-                                                ?participationTypeAux dc:identifier ?participationType .
-                                            }}
-                                            FILTER(?s = <{pIdDocumento}>) 
-                                        }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document", "documentformat", "publicationtype" });
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        foreach (string item in fila.Keys)
-                        {
-                            if (dicPropiedadesCongresos.ContainsKey(item))
-                            {
-                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
-                                campo.codigoCVN = dicPropiedadesCongresos[item];
-
-                                if (item == "fechaCelebracion" || item == "fechaFinalizacion")
-                                {
-                                    string dia = fila[item].value.Substring(6, 2);
-                                    string mes = fila[item].value.Substring(4, 2);
-                                    string anyo = fila[item].value.Substring(0, 4);
-                                    string fecha = $@"{anyo}-{mes}-{dia}";
-                                    campo.valores = new List<string>() { fecha };
-                                }
-                                else if (item == "doi" || item == "handle" || item == "pmid")
-                                {
-                                    switch (item)
-                                    {
-                                        case "doi":
-                                            dicIds["040"] = fila[item].value;
-                                            break;
-                                        case "handle":
-                                            dicIds["120"] = fila[item].value;
-                                            break;
-                                        case "pmid":
-                                            dicIds["130"] = fila[item].value;
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    if (fila[item].value != "-")
-                                    {
-                                        campo.valores = new List<string>() { fila[item].value };
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
-                                {
-                                    PRC.campos.Add(campo);
-                                }
-                            }
-                        }
-                    }
-                }
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
-                foreach (KeyValuePair<string, string> item in dicIds)
-                {
-                    if (!string.IsNullOrEmpty(item.Value))
-                    {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
-                    }
-                }
-                if (listaValores != null && listaValores.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
-                    PRC.campos.Add(campoAux);
-                }
-                if (listaIds != null && listaIds.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
+            ObtencionRevistasPubicacionesCongresos(PRC, pIdDocumento, false);
 
             #region --- Envío a SGI.
             try
@@ -684,413 +285,10 @@ where {{
                 RellenarDiccionarioCongresos();
             }
 
-            SparqlObject resultadoQuery = null;
-
             string valorEnviado = "";
             ProduccionCientifica PRC = CrearPRC(pIdDocumento, true, out valorEnviado);
 
-            #region --- Obtención de Revistas
-            if (PRC.epigrafeCVN == "060.010.010.000")
-            {
-                PRC.indicesImpacto = new List<IndiceImpacto>();
-                Dictionary<string, string> dicDataRevista = new Dictionary<string, string>();
-                string selectIndicesImpacto = "";
-                string whereIndicesImpacto = "";
-                selectIndicesImpacto = mPrefijos;
-                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
-                whereIndicesImpacto = $@"WHERE {{
-                                           ?s a bibo:Document.
-                                           OPTIONAL{{
-                                                ?s vivo:hasPublicationVenue ?revista . 
-                                                OPTIONAL{{?revista bibo:editor ?editor . }} 
-                                                OPTIONAL{{?revista bibo:issn ?issn . }}
-                                                OPTIONAL{{
-                                                    ?revista roh:format ?formatoAux .
-                                                    ?formatoAux dc:identifier ?formato .
-                                               }} 
-                                            }}
-                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}                                           
-                                           FILTER(?s = <{pIdDocumento}>)
-                                       }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document", "maindocument", "documentformat" });
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        dicDataRevista.Add("titulo", UtilidadesAPI.GetValorFilaSparqlObject(fila, "titulo"));
-                        dicDataRevista.Add("editor", UtilidadesAPI.GetValorFilaSparqlObject(fila, "editor"));
-                        dicDataRevista.Add("formato", UtilidadesAPI.GetValorFilaSparqlObject(fila, "formato"));
-                        dicDataRevista.Add("issn", UtilidadesAPI.GetValorFilaSparqlObject(fila, "issn"));
-                    }
-                }
-
-                string selectFuenteImpacto = "";
-                string whereFuenteImpacto = "";
-                selectFuenteImpacto = mPrefijos;
-                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
-                whereFuenteImpacto = $@"WHERE {{ 
-                                            ?s a bibo:Document . 
-                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
-                                                OPTIONAL{{
-                                                    ?revista roh:impactIndex ?indicesImpacto . 
-                                                    OPTIONAL{{
-                                                        ?indicesImpacto roh:impactSource ?impactSource .
-                                                        ?impactSource dc:identifier ?fuenteImpacto . 
-                                                    }} 
-                                                    ?indicesImpacto roh:year ?anio . 
-                                                    ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
-                                                    OPTIONAL{{
-                                                        ?indicesImpacto  roh:impactCategory ?categoria . 
-                                                        ?categoria roh:quartile ?cuartil . 
-                                                        OPTIONAL{{
-                                                            ?categoria roh:publicationPosition ?posicionPublicacion .
-                                                            ?categoria roh:journalNumberInCat ?numeroRevistas .
-                                                        }}
-                                                    }}
-                                                }}
-                                            }}
-                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
-                                            
-                                            FILTER(?s = <{pIdDocumento}>) 
-                                        }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document", "maindocument", "documentformat", "referencesource" });
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        IndiceImpacto indiceImpacto = new IndiceImpacto();
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto")))
-                        {
-                            indiceImpacto.fuenteImpacto = UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto");
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto")))
-                        {
-                            indiceImpacto.indice = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto"));
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio")))
-                        {
-                            indiceImpacto.anio = UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio");
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion")))
-                        {
-                            indiceImpacto.posicionPublicacion = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion"));
-                        }
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas")))
-                        {
-                            indiceImpacto.numeroRevistas = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas"));
-                        }
-
-                        bool revista25 = false;
-                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) && Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) == 1)
-                        {
-                            revista25 = true;
-                        }
-                        indiceImpacto.revista25 = revista25;
-
-                        if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
-                        {
-                            PRC.indicesImpacto.Add(indiceImpacto);
-                        }
-                    }
-                }
-
-                // Nombre de la revista 
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["titulo"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.210";
-                    campoAux.valores = new List<string>() { dicDataRevista["titulo"] };
-                    PRC.campos.Add(campoAux);
-                }
-
-                // Editorial
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["editor"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.100";
-                    campoAux.valores = new List<string>() { dicDataRevista["editor"] };
-                    PRC.campos.Add(campoAux);
-                }
-
-                // ISSN
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["issn"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.160";
-                    campoAux.valores = new List<string>() { dicDataRevista["issn"] };
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
-
-            #region --- Obtención de datos de PUBLICACIONES.       
-            if (PRC.epigrafeCVN == "060.010.010.000")
-            {
-                // Diccionario de IDS.
-                Dictionary<string, string> dicIds = new Dictionary<string, string>();
-                dicIds.Add("040", "");
-                dicIds.Add("120", "");
-                dicIds.Add("130", "");
-
-                // Consulta sparql (Obtención de datos del proyecto).
-                string selectObtencionProyecto = "";
-                string whereObtencionProyecto = "";
-
-                selectObtencionProyecto = mPrefijos;
-                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess";
-                whereObtencionProyecto = $@"WHERE {{
-                                                ?s a bibo:Document . 
-                                                ?s roh:title ?title .
-                                                OPTIONAL{{?s dct:issued ?issued . }} 
-                                                OPTIONAL{{
-                                                    ?s dc:type ?typeAux . 
-                                                    ?typeAux dc:identifier ?type . 
-                                                }} 
-                                                OPTIONAL{{
-                                                    ?s roh:supportType ?support .
-                                                    ?support dc:identifier ?supportType . 
-                                                }}
-                                                OPTIONAL{{?s bibo:volume ?volume . }} 
-                                                OPTIONAL{{?s bibo:issue ?issue . }}
-                                                BIND(CONCAT(?volume, ""-"", ?issue) AS ?numVol) . 
-                                                OPTIONAL{{?s bibo:pageStart ?pageStart . }}
-                                                OPTIONAL{{?s bibo:pageEnd ?pageEnd . }} 
-                                                BIND(CONCAT(?pageStart, ""-"", ?pageEnd) AS ?paginas) .
-                                                OPTIONAL{{?s bibo:doi ?doi . }}
-                                                OPTIONAL{{?s bibo:handle ?handle . }} 
-                                                OPTIONAL{{?s bibo:pmid ?pmid . }}
-                                                OPTIONAL{{?s roh:openAccess ?openAccess . }}
-                                                FILTER(?s = <{pIdDocumento}>) 
-                                            }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto, new List<string> { "document", "documentformat", "publicationtype" });
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        foreach (string item in fila.Keys)
-                        {
-                            if (dicPropiedadesPublicaciones.ContainsKey(item))
-                            {
-                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
-                                campo.codigoCVN = dicPropiedadesPublicaciones[item];
-
-                                if (item == "issued")
-                                {
-                                    string dia = fila[item].value.Substring(6, 2);
-                                    string mes = fila[item].value.Substring(4, 2);
-                                    string anyo = fila[item].value.Substring(0, 4);
-                                    string fecha = $@"{anyo}-{mes}-{dia}";
-                                    campo.valores = new List<string>() { fecha };
-                                }
-                                else if (item == "openAccess")
-                                {
-                                    if (fila[item].value == "true")
-                                    {
-                                        campo.valores = new List<string>() { "true" };
-                                    }
-                                    else
-                                    {
-                                        campo.valores = new List<string>() { "false" };
-                                    }
-                                }
-                                else if (item == "doi" || item == "handle" || item == "pmid")
-                                {
-                                    switch (item)
-                                    {
-                                        case "doi":
-                                            dicIds["040"] = fila[item].value;
-                                            break;
-                                        case "handle":
-                                            dicIds["120"] = fila[item].value;
-                                            break;
-                                        case "pmid":
-                                            dicIds["130"] = fila[item].value;
-                                            break;
-                                    }
-                                }
-                                else if (item == "title")
-                                {
-                                    if (fila[item].value != "-")
-                                    {
-                                        campo.valores = new List<string>() { "[Petición de borrado] " + fila[item].value };
-                                    }
-                                }
-                                else
-                                {
-                                    if (fila[item].value != "-")
-                                    {
-                                        campo.valores = new List<string>() { fila[item].value };
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
-                                {
-                                    PRC.campos.Add(campo);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
-                foreach (KeyValuePair<string, string> item in dicIds)
-                {
-                    if (!string.IsNullOrEmpty(item.Value))
-                    {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
-                    }
-                }
-                if (listaValores != null && listaValores.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
-                    PRC.campos.Add(campoAux);
-                }
-                if (listaIds != null && listaIds.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
-
-            #region --- Obtención de datos de CONGRESOS.
-            if (PRC.epigrafeCVN == "060.010.020.000")
-            {
-                // Diccionario de IDS.
-                Dictionary<string, string> dicIds = new Dictionary<string, string>();
-                dicIds.Add("040", "");
-                dicIds.Add("120", "");
-                dicIds.Add("130", "");
-
-                // Consulta sparql (Obtención de datos del proyecto).
-                string selectDatosCongresos = "";
-                string whereDatosCongresos = "";
-
-                selectDatosCongresos = mPrefijos;
-                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType";
-                whereDatosCongresos = $@"WHERE {{
-                                            ?s a bibo:Document . 
-                                            ?s roh:title ?title . 
-                                            OPTIONAL{{
-                                                ?s dc:type ?pubTypeAux . 
-                                                ?pubTypeAux dc:identifier ?type .
-                                            }}
-                                            OPTIONAL{{
-                                                ?s roh:supportType ?supType .
-                                                ?supType dc:identifier ?supportType .
-                                            }}
-                                            OPTIONAL{{?s roh:presentedAtStart ?fechaCelebracion . }}
-                                            OPTIONAL{{?s roh:presentedAtEnd ?fechaFinalizacion . }} 
-                                            OPTIONAL{{
-                                                ?s roh:presentedAtType ?tipoEventoAux . 
-                                                ?tipoEventoAux dc:identifier ?tipoEvento .
-                                            }} 
-                                            OPTIONAL{{
-                                                ?s roh:presentedAtGeographicFocus ?geographicFocusAux .
-                                                ?geographicFocusAux dc:identifier ?geographicFocus . 
-                                            }}
-                                            OPTIONAL{{?s bibo:presentedAt ?presentedAt . }} 
-                                            OPTIONAL{{?s roh:hasPublicationVenueText ?publicationVenueText . }}
-                                            OPTIONAL{{?s bibo:doi ?doi . }} 
-                                            OPTIONAL{{?s bibo:handle ?handle . }} 
-                                            OPTIONAL{{?s bibo:pmid ?pmid . }} 
-                                            OPTIONAL{{?s roh:isbn ?isbn . }} 
-                                            OPTIONAL{{?s bibo:issn ?issn . }} 
-                                            OPTIONAL{{
-                                                ?s roh:participationType ?participationTypeAux .
-                                                ?participationTypeAux dc:identifier ?participationType .
-                                            }}
-                                            FILTER(?s = <{pIdDocumento}>) 
-                                        }} ";
-
-                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document", "documentformat", "publicationtype" });
-
-                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
-                {
-                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                    {
-                        foreach (string item in fila.Keys)
-                        {
-                            if (dicPropiedadesCongresos.ContainsKey(item))
-                            {
-                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
-                                campo.codigoCVN = dicPropiedadesCongresos[item];
-
-                                if (item == "fechaCelebracion" || item == "fechaFinalizacion")
-                                {
-                                    string dia = fila[item].value.Substring(6, 2);
-                                    string mes = fila[item].value.Substring(4, 2);
-                                    string anyo = fila[item].value.Substring(0, 4);
-                                    string fecha = $@"{anyo}-{mes}-{dia}";
-                                    campo.valores = new List<string>() { fecha };
-                                }
-                                else if (item == "doi" || item == "handle" || item == "pmid")
-                                {
-                                    switch (item)
-                                    {
-                                        case "doi":
-                                            dicIds["040"] = fila[item].value;
-                                            break;
-                                        case "handle":
-                                            dicIds["120"] = fila[item].value;
-                                            break;
-                                        case "pmid":
-                                            dicIds["130"] = fila[item].value;
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    if (fila[item].value != "-")
-                                    {
-                                        campo.valores = new List<string>() { fila[item].value };
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
-                                {
-                                    PRC.campos.Add(campo);
-                                }
-                            }
-                        }
-                    }
-                }
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
-                foreach (KeyValuePair<string, string> item in dicIds)
-                {
-                    if (!string.IsNullOrEmpty(item.Value))
-                    {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
-                    }
-                }
-                if (listaValores != null && listaValores.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
-                    PRC.campos.Add(campoAux);
-                }
-                if (listaIds != null && listaIds.Any())
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
-                    PRC.campos.Add(campoAux);
-                }
-            }
-            #endregion
+            ObtencionRevistasPubicacionesCongresos(PRC, pIdDocumento, true);
 
             #region --- Envío a SGI.
             try
@@ -1269,6 +467,403 @@ where {{
             #endregion
             return PRC;
         }
+
+        private void ObtencionRevistasPubicacionesCongresos(ProduccionCientifica PRC, string pIdDocumento, bool pEliminacion)
+        {
+            #region --- Obtención de Revistas
+            if (PRC.epigrafeCVN == "060.010.010.000")
+            {
+                PRC.indicesImpacto = new List<IndiceImpacto>();
+                Dictionary<string, string> dicDataRevista = new Dictionary<string, string>();
+                string selectIndicesImpacto = mPrefijos;
+                selectIndicesImpacto += $@"SELECT DISTINCT ?titulo ?editor ?issn ?formato";
+                string whereIndicesImpacto = $@"WHERE {{
+                                           ?s a bibo:Document.
+                                           OPTIONAL{{
+                                                ?s vivo:hasPublicationVenue ?revista . 
+                                                OPTIONAL{{?revista bibo:editor ?editor . }} 
+                                                OPTIONAL{{?revista bibo:issn ?issn . }}
+                                                OPTIONAL{{
+                                                    ?revista roh:format ?formatoAux .
+                                                    ?formatoAux dc:identifier ?formato .
+                                               }} 
+                                            }}
+                                           OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }}                                           
+                                           FILTER(?s = <{pIdDocumento}>)
+                                       }} ";
+
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectIndicesImpacto, whereIndicesImpacto, new List<string> { "document", "maindocument", "documentformat" });
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        dicDataRevista.Add("titulo", UtilidadesAPI.GetValorFilaSparqlObject(fila, "titulo"));
+                        dicDataRevista.Add("editor", UtilidadesAPI.GetValorFilaSparqlObject(fila, "editor"));
+                        dicDataRevista.Add("formato", UtilidadesAPI.GetValorFilaSparqlObject(fila, "formato"));
+                        dicDataRevista.Add("issn", UtilidadesAPI.GetValorFilaSparqlObject(fila, "issn"));
+                    }
+                }
+
+                string selectFuenteImpacto = mPrefijos;
+                selectFuenteImpacto += $@"SELECT DISTINCT ?fuenteImpacto ?anio ?indiceImpacto ?cuartil ?posicionPublicacion ?numeroRevistas";
+                string whereFuenteImpacto = $@"WHERE {{ 
+                                            ?s a bibo:Document . 
+                                            OPTIONAL{{?s vivo:hasPublicationVenue ?revista .
+                                                OPTIONAL{{
+                                                    ?revista roh:impactIndex ?indicesImpacto . 
+                                                    OPTIONAL{{
+                                                        ?indicesImpacto roh:impactSource ?impactSource .
+                                                        ?impactSource dc:identifier ?fuenteImpacto . 
+                                                    }} 
+                                                    ?indicesImpacto roh:year ?anio . 
+                                                    ?indicesImpacto roh:impactIndexInYear ?indiceImpacto .
+                                                    OPTIONAL{{
+                                                        ?indicesImpacto  roh:impactCategory ?categoria . 
+                                                        ?categoria roh:quartile ?cuartil . 
+                                                        OPTIONAL{{
+                                                            ?categoria roh:publicationPosition ?posicionPublicacion .
+                                                            ?categoria roh:journalNumberInCat ?numeroRevistas .
+                                                        }}
+                                                    }}
+                                                }}
+                                            }}
+                                            OPTIONAL{{?s roh:hasPublicationVenueJournalText ?titulo . }} 
+                                            
+                                            FILTER(?s = <{pIdDocumento}>) 
+                                        }} ";
+
+                resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectFuenteImpacto, whereFuenteImpacto, new List<string> { "document", "maindocument", "documentformat", "referencesource" });
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        IndiceImpacto indiceImpacto = new IndiceImpacto();
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto")))
+                        {
+                            indiceImpacto.fuenteImpacto = UtilidadesAPI.GetValorFilaSparqlObject(fila, "fuenteImpacto");
+                        }
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto")))
+                        {
+                            indiceImpacto.indice = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "indiceImpacto"));
+                        }
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio")))
+                        {
+                            indiceImpacto.anio = UtilidadesAPI.GetValorFilaSparqlObject(fila, "anio");
+                        }
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion")))
+                        {
+                            indiceImpacto.posicionPublicacion = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "posicionPublicacion"));
+                        }
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas")))
+                        {
+                            indiceImpacto.numeroRevistas = float.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "numeroRevistas"));
+                        }
+
+                        bool revista25 = false;
+                        if (!string.IsNullOrEmpty(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) && Int32.Parse(UtilidadesAPI.GetValorFilaSparqlObject(fila, "cuartil")) == 1)
+                        {
+                            revista25 = true;
+                        }
+                        indiceImpacto.revista25 = revista25;
+
+                        if (!string.IsNullOrEmpty(indiceImpacto.fuenteImpacto))
+                        {
+                            PRC.indicesImpacto.Add(indiceImpacto);
+                        }
+                    }
+                }
+
+                // Nombre de la revista 
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["titulo"]))
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.210";
+                    campoAux.valores = new List<string>() { dicDataRevista["titulo"] };
+                    PRC.campos.Add(campoAux);
+                }
+
+                // Editorial
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["editor"]))
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.100";
+                    campoAux.valores = new List<string>() { dicDataRevista["editor"] };
+                    PRC.campos.Add(campoAux);
+                }
+
+                // ISSN
+                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["issn"]))
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.160";
+                    campoAux.valores = new List<string>() { dicDataRevista["issn"] };
+                    PRC.campos.Add(campoAux);
+                }
+            }
+            #endregion
+
+            #region --- Obtención de datos de PUBLICACIONES.       
+            if (PRC.epigrafeCVN == "060.010.010.000")
+            {
+                // Diccionario de IDS.
+                Dictionary<string, string> dicIds = new Dictionary<string, string>();
+                dicIds.Add("040", "");
+                dicIds.Add("120", "");
+                dicIds.Add("130", "");
+
+                // Consulta sparql (Obtención de datos del proyecto).
+                string selectObtencionProyecto = mPrefijos;
+                selectObtencionProyecto += $@"SELECT DISTINCT ?title ?issued ?type ?supportType ?numVol ?paginas ?doi ?handle ?pmid ?openAccess";
+                string whereObtencionProyecto = $@"WHERE {{
+                                                ?s a bibo:Document . 
+                                                ?s roh:title ?title .
+                                                OPTIONAL{{?s dct:issued ?issued . }} 
+                                                OPTIONAL{{
+                                                    ?s dc:type ?typeAux . 
+                                                    ?typeAux dc:identifier ?type . 
+                                                }} 
+                                                OPTIONAL{{
+                                                    ?s roh:supportType ?support .
+                                                    ?support dc:identifier ?supportType . 
+                                                }}
+                                                OPTIONAL{{?s bibo:volume ?volume . }} 
+                                                OPTIONAL{{?s bibo:issue ?issue . }}
+                                                BIND(CONCAT(?volume, ""-"", ?issue) AS ?numVol) . 
+                                                OPTIONAL{{?s bibo:pageStart ?pageStart . }}
+                                                OPTIONAL{{?s bibo:pageEnd ?pageEnd . }} 
+                                                BIND(CONCAT(?pageStart, ""-"", ?pageEnd) AS ?paginas) .
+                                                OPTIONAL{{?s bibo:doi ?doi . }}
+                                                OPTIONAL{{?s bibo:handle ?handle . }} 
+                                                OPTIONAL{{?s bibo:pmid ?pmid . }}
+                                                OPTIONAL{{?s roh:openAccess ?openAccess . }}
+                                                FILTER(?s = <{pIdDocumento}>) 
+                                            }} ";
+
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectObtencionProyecto, whereObtencionProyecto, new List<string> { "document", "documentformat", "publicationtype" });
+
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        foreach (string item in fila.Keys)
+                        {
+                            if (dicPropiedadesPublicaciones.ContainsKey(item))
+                            {
+                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
+                                campo.codigoCVN = dicPropiedadesPublicaciones[item];
+
+                                if (item == "issued")
+                                {
+                                    string dia = fila[item].value.Substring(6, 2);
+                                    string mes = fila[item].value.Substring(4, 2);
+                                    string anyo = fila[item].value.Substring(0, 4);
+                                    string fecha = $@"{anyo}-{mes}-{dia}";
+                                    campo.valores = new List<string>() { fecha };
+                                }
+                                else if (item == "openAccess")
+                                {
+                                    if (fila[item].value == "true")
+                                    {
+                                        campo.valores = new List<string>() { "true" };
+                                    }
+                                    else
+                                    {
+                                        campo.valores = new List<string>() { "false" };
+                                    }
+                                }
+                                else if (item == "doi" || item == "handle" || item == "pmid")
+                                {
+                                    switch (item)
+                                    {
+                                        case "doi":
+                                            dicIds["040"] = fila[item].value;
+                                            break;
+                                        case "handle":
+                                            dicIds["120"] = fila[item].value;
+                                            break;
+                                        case "pmid":
+                                            dicIds["130"] = fila[item].value;
+                                            break;
+                                    }
+                                }
+                                else if (item == "title" && pEliminacion)
+                                {
+                                    if (fila[item].value != "-")
+                                    {
+                                        campo.valores = new List<string>() { "[Petición de borrado] " + fila[item].value };
+                                    }
+                                }
+                                else
+                                {
+                                    if (fila[item].value != "-")
+                                    {
+                                        campo.valores = new List<string>() { fila[item].value };
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                List<string> listaIds = new List<string>();
+                List<string> listaValores = new List<string>();
+                foreach (KeyValuePair<string, string> item in dicIds)
+                {
+                    if (!string.IsNullOrEmpty(item.Value))
+                    {
+                        listaIds.Add(item.Key);
+                        listaValores.Add(item.Value);
+                    }
+                }
+                if (listaValores != null && listaValores.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.400";
+                    campoAux.valores = listaValores;
+                    PRC.campos.Add(campoAux);
+                }
+                if (listaIds != null && listaIds.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.410";
+                    campoAux.valores = listaIds;
+                    PRC.campos.Add(campoAux);
+                }
+            }
+            #endregion
+
+            #region --- Obtención de datos de CONGRESOS.
+            if (PRC.epigrafeCVN == "060.010.020.000")
+            {
+                // Diccionario de IDS.
+                Dictionary<string, string> dicIds = new Dictionary<string, string>();
+                dicIds.Add("040", "");
+                dicIds.Add("120", "");
+                dicIds.Add("130", "");
+
+                // Consulta sparql (Obtención de datos del proyecto).
+                string selectDatosCongresos = mPrefijos;
+                selectDatosCongresos += $@"SELECT DISTINCT ?title ?type ?supportType ?fechaCelebracion ?fechaFinalizacion ?tipoEvento ?geographicFocus ?presentedAt ?publicationVenueText ?doi ?handle ?pmid ?isbn ?issn ?participationType";
+                string whereDatosCongresos = $@"WHERE {{
+                                            ?s a bibo:Document . 
+                                            ?s roh:title ?title . 
+                                            OPTIONAL{{
+                                                ?s dc:type ?pubTypeAux . 
+                                                ?pubTypeAux dc:identifier ?type .
+                                            }}
+                                            OPTIONAL{{
+                                                ?s roh:supportType ?supType .
+                                                ?supType dc:identifier ?supportType .
+                                            }}
+                                            OPTIONAL{{?s roh:presentedAtStart ?fechaCelebracion . }}
+                                            OPTIONAL{{?s roh:presentedAtEnd ?fechaFinalizacion . }} 
+                                            OPTIONAL{{
+                                                ?s roh:presentedAtType ?tipoEventoAux . 
+                                                ?tipoEventoAux dc:identifier ?tipoEvento .
+                                            }} 
+                                            OPTIONAL{{
+                                                ?s roh:presentedAtGeographicFocus ?geographicFocusAux .
+                                                ?geographicFocusAux dc:identifier ?geographicFocus . 
+                                            }}
+                                            OPTIONAL{{?s bibo:presentedAt ?presentedAt . }} 
+                                            OPTIONAL{{?s roh:hasPublicationVenueText ?publicationVenueText . }}
+                                            OPTIONAL{{?s bibo:doi ?doi . }} 
+                                            OPTIONAL{{?s bibo:handle ?handle . }} 
+                                            OPTIONAL{{?s bibo:pmid ?pmid . }} 
+                                            OPTIONAL{{?s roh:isbn ?isbn . }} 
+                                            OPTIONAL{{?s bibo:issn ?issn . }} 
+                                            OPTIONAL{{
+                                                ?s roh:participationType ?participationTypeAux .
+                                                ?participationTypeAux dc:identifier ?participationType .
+                                            }}
+                                            FILTER(?s = <{pIdDocumento}>) 
+                                        }} ";
+
+                SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(selectDatosCongresos, whereDatosCongresos, new List<string> { "document", "documentformat", "publicationtype" });
+
+                if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                {
+                    foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                    {
+                        foreach (string item in fila.Keys)
+                        {
+                            if (dicPropiedadesCongresos.ContainsKey(item))
+                            {
+                                CampoProduccionCientifica campo = new CampoProduccionCientifica();
+                                campo.codigoCVN = dicPropiedadesCongresos[item];
+
+                                if (item == "fechaCelebracion" || item == "fechaFinalizacion")
+                                {
+                                    string dia = fila[item].value.Substring(6, 2);
+                                    string mes = fila[item].value.Substring(4, 2);
+                                    string anyo = fila[item].value.Substring(0, 4);
+                                    string fecha = $@"{anyo}-{mes}-{dia}";
+                                    campo.valores = new List<string>() { fecha };
+                                }
+                                else if (item == "doi" || item == "handle" || item == "pmid")
+                                {
+                                    switch (item)
+                                    {
+                                        case "doi":
+                                            dicIds["040"] = fila[item].value;
+                                            break;
+                                        case "handle":
+                                            dicIds["120"] = fila[item].value;
+                                            break;
+                                        case "pmid":
+                                            dicIds["130"] = fila[item].value;
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (fila[item].value != "-")
+                                    {
+                                        campo.valores = new List<string>() { fila[item].value };
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(campo.codigoCVN) && campo.valores != null && campo.valores.Any())
+                                {
+                                    PRC.campos.Add(campo);
+                                }
+                            }
+                        }
+                    }
+                }
+                List<string> listaIds = new List<string>();
+                List<string> listaValores = new List<string>();
+                foreach (KeyValuePair<string, string> item in dicIds)
+                {
+                    if (!string.IsNullOrEmpty(item.Value))
+                    {
+                        listaIds.Add(item.Key);
+                        listaValores.Add(item.Value);
+                    }
+                }
+                if (listaValores != null && listaValores.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.400";
+                    campoAux.valores = listaValores;
+                    PRC.campos.Add(campoAux);
+                }
+                if (listaIds != null && listaIds.Any())
+                {
+                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                    campoAux.codigoCVN = "060.010.010.410";
+                    campoAux.valores = listaIds;
+                    PRC.campos.Add(campoAux);
+                }
+            }
+            #endregion
+        }
+
         private string ObtenerIdDocumento(string pIdRecurso)
         {
             string pIdDocumento = "";
