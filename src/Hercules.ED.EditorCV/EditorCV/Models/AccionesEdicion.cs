@@ -1088,16 +1088,15 @@ namespace EditorCV.Models
                         if (score == 1)
                         {
                             StringBuilder sbUnion = new StringBuilder();
-                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                            sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                            sbUnion.AppendLine("?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
                             unions.Add(sbUnion.ToString());
                         }
                         else
                         {
                             StringBuilder sbUnion = new StringBuilder();
-                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                            sbUnion.AppendLine($@"              {FilterWordComplete(word, "name")} BIND({score} as ?num)");
-                            //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                            sbUnion.AppendLine("?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"{FilterWordComplete(word, "name")} BIND({score} as ?num)");
                             unions.Add(sbUnion.ToString());
                         }
                     }
@@ -1193,7 +1192,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
@@ -1287,36 +1286,30 @@ namespace EditorCV.Models
                 }
             }
 
-            //OpenAccess
+            //OpenAccess           
+            PropertyData propertyItemOpenAccess = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+            if (propertyItemOpenAccess != null)
             {
-                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
-                if (propertyItem != null)
-                {
-                    propertyItem.childs.Add(
-                        //OpenAccess
-                        new Utils.PropertyData()
-                        {
-                            property = UtilityCV.PropertyOpenAccess,
-                            childs = new List<Utils.PropertyData>()
-                        }
-                    );
-                }
+                propertyItemOpenAccess.childs.Add(
+                    new PropertyData()
+                    {
+                        property = UtilityCV.PropertyOpenAccess,
+                        childs = new List<PropertyData>()
+                    }
+                );
             }
 
             //ProjectAuthorization
+            PropertyData propertyItemProjectAuthorization = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+            if (propertyItemProjectAuthorization != null)
             {
-                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
-                if (propertyItem != null)
-                {
-                    propertyItem.childs.Add(
-                        //ProjectAuthorization
-                        new Utils.PropertyData()
-                        {
-                            property = "http://w3id.org/roh/projectAuthorization",
-                            childs = new List<Utils.PropertyData>()
-                        }
-                    );
-                }
+                propertyItemProjectAuthorization.childs.Add(
+                    new PropertyData()
+                    {
+                        property = "http://w3id.org/roh/projectAuthorization",
+                        childs = new List<Utils.PropertyData>()
+                    }
+                );
             }
 
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
