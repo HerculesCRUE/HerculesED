@@ -32,7 +32,7 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad utilizada para explicar la obligatori
         /// </summary>
-        public propAuthor propAuthor { get; set; }
+        public PropAuthor propAuthor { get; set; }
         /// <summary>
         /// rdf:type de la entidad
         /// </summary>
@@ -84,7 +84,7 @@ namespace EditorCV.Models.API.Templates
     /// <summary>
     /// Propiedad para indicar la obligatoriedad de añadirse a sí mismo
     /// </summary>
-    public class propAuthor
+    public class PropAuthor
     {
         /// <summary>
         /// Propiedad

@@ -35,7 +35,7 @@ namespace EditorCV.Models.API.Templates
 
         public Utils.PropertyData GenerarPropertyData(string pGraph)
         {
-            Utils.PropertyData property = new Utils.PropertyData()
+            Utils.PropertyData propertyData = new Utils.PropertyData()
             {
                 property = this.property,
                 order = order,
@@ -48,11 +48,11 @@ namespace EditorCV.Models.API.Templates
                 {
                     graphAux = pGraph;
                 }
-                property.graph = graphAux;
-                Utils.UtilityCV.GenerarPropertyData(this, ref property, graphAux);
-                Utils.UtilityCV.CleanPropertyData(ref property);
+                propertyData.graph = graphAux;
+                Utils.UtilityCV.GenerarPropertyData(this, ref propertyData, graphAux);
+                Utils.UtilityCV.CleanPropertyData(ref propertyData);
             }
-            return property;
+            return propertyData;
         }
 
         public string GetRoute()
