@@ -37,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDAcRe(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosAcRe = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -68,11 +68,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                         NombreEntAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), acreditacionesReconocimientos);
+                    resultadosAcRe.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), acreditacionesReconocimientos);
                 }
             }
 
-            return resultados;
+            return resultadosAcRe;
         }
     }
 }

@@ -10,18 +10,18 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class RedesCooperacion : DisambiguableEntity
     {
-        public string descripcion { get; set; }
+        public string Descripcion { get; set; }
         public string IdRed { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configIdRed = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionRedCoop = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configIdRedRedCoop = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configIdRed,"idRed",IdRed)
+                new DisambiguationData(configDescripcionRedCoop,"descripcion",Descripcion),
+                new DisambiguationData(configIdRedRedCoop,"idRed",IdRed)
             };
             return data;
         }
@@ -34,12 +34,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDRedCoop(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosRedCoop = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -59,15 +59,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     RedesCooperacion redesCooperacion = new RedesCooperacion
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
+                        Descripcion = fila["itemTitle"].value,
                         IdRed = fila.ContainsKey("itemID") ? fila["itemID"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), redesCooperacion);
+                    resultadosRedCoop.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), redesCooperacion);
                 }
             }
 
-            return resultados;
+            return resultadosRedCoop;
         }
     }
 }

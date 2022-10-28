@@ -66,14 +66,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ProduccionCientifica produccionCientifica = new ();
-                    produccionCientifica.fuenteH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH)?.values.FirstOrDefault();
-                    produccionCientifica.fuenteHOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros)?.values.FirstOrDefault();
+                    produccionCientifica.FuenteH = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH)?.values.FirstOrDefault();
+                    produccionCientifica.FuenteHOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros)?.values.FirstOrDefault();
                     produccionCientifica.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(produccionCientifica.ID, produccionCientifica);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ProduccionCientifica.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ProduccionCientifica.GetBBDDProCie(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -185,8 +185,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 PublicacionesDocumentos publicacionesDocumentos = new ();
-                publicacionesDocumentos.title = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo)?.values.FirstOrDefault();
-                publicacionesDocumentos.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
+                publicacionesDocumentos.Title = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.pubDocumentosPubTitulo)?.values.FirstOrDefault();
+                publicacionesDocumentos.Autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 publicacionesDocumentos.ID = entityXML.id;
                 entidadesXML.Add(publicacionesDocumentos.ID, publicacionesDocumentos);
             }
@@ -225,7 +225,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = PublicacionesDocumentos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
+            Dictionary<string, DisambiguableEntity> entidadesBBDD = PublicacionesDocumentos.GetBBDDPubDoc(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
             List<string> idValuesBBDD = entidadesBBDD.Values.Select(x => x.ID).ToList();
 
             //3º Comparamos las equivalentes
@@ -306,8 +306,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 TrabajosCongresos trabajosCongresos = new ();
-                trabajosCongresos.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
-                trabajosCongresos.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
+                trabajosCongresos.Titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosCongresosTitulo)?.values.FirstOrDefault();
+                trabajosCongresos.Autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 trabajosCongresos.ID = entityXML.id;
                 entidadesXML.Add(trabajosCongresos.ID, trabajosCongresos);
             }
@@ -346,7 +346,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             }
 
             //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = TrabajosCongresos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
+            Dictionary<string, DisambiguableEntity> entidadesBBDD = TrabajosCongresos.GetBBDDTraCon(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
             List<string> idValuesBBDD = entidadesBBDD.Values.Select(x => x.ID).ToList();
 
             //3º Comparamos las equivalentes
@@ -428,8 +428,8 @@ namespace ImportadorWebCV.Sincro.Secciones
             foreach (Entity entityXML in listadoAux)
             {
                 TrabajosJornadasSeminarios trabajosJornadas = new ();
-                trabajosJornadas.titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo)?.values.FirstOrDefault();
-                trabajosJornadas.autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
+                trabajosJornadas.Titulo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.trabajosJornSemTituloTrabajo)?.values.FirstOrDefault();
+                trabajosJornadas.Autores = new HashSet<string>(entityXML.autores.Select(x => x.ID));
                 trabajosJornadas.ID = entityXML.id;
                 entidadesXML.Add(trabajosJornadas.ID, trabajosJornadas);
             }
@@ -469,7 +469,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
 
             //2º Obtenemos las entidades de la BBDD
-            Dictionary<string, DisambiguableEntity> entidadesBBDD = TrabajosJornadasSeminarios.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
+            Dictionary<string, DisambiguableEntity> entidadesBBDD = TrabajosJornadasSeminarios.GetBBDDTraJorSem(mResourceApi, mCvID, graph, propiedadesItem, listadoAux);
             List<string> idValuesBBDD = entidadesBBDD.Values.Select(x => x.ID).ToList();
 
             //3º Comparamos las equivalentes
@@ -555,15 +555,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OtrasActividadesDivulgacion otrasActividadesDivulgacion = new ();
-                    otrasActividadesDivulgacion.tituloTrabajo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulTitulo)?.values.FirstOrDefault();
-                    otrasActividadesDivulgacion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulPubFecha)?.values.FirstOrDefault();
-                    otrasActividadesDivulgacion.nombreEvento = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento)?.values.FirstOrDefault();
+                    otrasActividadesDivulgacion.TituloTrabajo = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulTitulo)?.values.FirstOrDefault();
+                    otrasActividadesDivulgacion.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulPubFecha)?.values.FirstOrDefault();
+                    otrasActividadesDivulgacion.NombreEvento = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasActDivulNombreEvento)?.values.FirstOrDefault();
                     otrasActividadesDivulgacion.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(otrasActividadesDivulgacion.ID, otrasActividadesDivulgacion);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasActividadesDivulgacion.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasActividadesDivulgacion.GetBBDDOtAcDiv(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -622,7 +622,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ComitesCTA.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ComitesCTA.GetBBDDComi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -673,16 +673,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OrganizacionesIDI organizacionesIDI = new ();
-                    organizacionesIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDITituloActividad)?.values.FirstOrDefault();
-                    organizacionesIDI.tipoActividad = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDITipoActividad)?.values.FirstOrDefault();
-                    organizacionesIDI.entidadConvocante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocanteNombre)?.values.FirstOrDefault();
-                    organizacionesIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDIFechaInicio)?.values.FirstOrDefault();
+                    organizacionesIDI.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDITituloActividad)?.values.FirstOrDefault();
+                    organizacionesIDI.TipoActividad = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDITipoActividad)?.values.FirstOrDefault();
+                    organizacionesIDI.EntidadConvocante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDIEntidadConvocanteNombre)?.values.FirstOrDefault();
+                    organizacionesIDI.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.orgIDIFechaInicio)?.values.FirstOrDefault();
                     organizacionesIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(organizacionesIDI.ID, organizacionesIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OrganizacionesIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OrganizacionesIDI.GetBBDDOrgIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -733,16 +733,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     GestionIDI gestionIDI = new ();
-                    gestionIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDINombreActividad)?.values.FirstOrDefault();
-                    gestionIDI.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacionNombre)?.values.FirstOrDefault();
-                    gestionIDI.funciones = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIFunciones)?.values.FirstOrDefault();
-                    gestionIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIEntornoFechaInicio)?.values.FirstOrDefault();
+                    gestionIDI.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDINombreActividad)?.values.FirstOrDefault();
+                    gestionIDI.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIEntornoEntidadRealizacionNombre)?.values.FirstOrDefault();
+                    gestionIDI.Funciones = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIFunciones)?.values.FirstOrDefault();
+                    gestionIDI.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.gestionIDIEntornoFechaInicio)?.values.FirstOrDefault();
                     gestionIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(gestionIDI.ID, gestionIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = GestionIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = GestionIDI.GetBBDDGestIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -793,14 +793,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ForosComites forosComites = new ();
-                    forosComites.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesNombre)?.values.FirstOrDefault();
-                    forosComites.categoriaProfesional = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional)?.values.FirstOrDefault();
+                    forosComites.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesNombre)?.values.FirstOrDefault();
+                    forosComites.CategoriaProfesional = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.forosComitesCategoriaProfesional)?.values.FirstOrDefault();
                     forosComites.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(forosComites.ID, forosComites);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ForosComites.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ForosComites.GetBBDDForCom(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -851,16 +851,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     EvalRevIDI evalRevIDI = new ();
-                    evalRevIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFunciones)?.values.FirstOrDefault();
-                    evalRevIDI.nombreActividad = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDINombre)?.values.FirstOrDefault();
-                    evalRevIDI.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre)?.values.FirstOrDefault();
-                    evalRevIDI.fechaInicio = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio)?.values.FirstOrDefault();
+                    evalRevIDI.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFunciones)?.values.FirstOrDefault();
+                    evalRevIDI.NombreActividad = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDINombre)?.values.FirstOrDefault();
+                    evalRevIDI.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIEntidadNombre)?.values.FirstOrDefault();
+                    evalRevIDI.FechaInicio = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.evalRevIDIFechaInicio)?.values.FirstOrDefault();
                     evalRevIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(evalRevIDI.ID, evalRevIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = EvalRevIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = EvalRevIDI.GetBBDDEvalRev(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -911,15 +911,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     EstanciasIDI estanciasIDI = new ();
-                    estanciasIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDITareasContrastables)?.values.FirstOrDefault();
-                    estanciasIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDIFechaInicioEntidadRealizacion)?.values.FirstOrDefault();
-                    estanciasIDI.entidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre)?.values.FirstOrDefault();
+                    estanciasIDI.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDITareasContrastables)?.values.FirstOrDefault();
+                    estanciasIDI.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDIFechaInicioEntidadRealizacion)?.values.FirstOrDefault();
+                    estanciasIDI.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.estanciasIDIEntidadRealizacionNombre)?.values.FirstOrDefault();
                     estanciasIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(estanciasIDI.ID, estanciasIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = EstanciasIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = EstanciasIDI.GetBBDDEstIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -978,7 +978,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = AyudaBecas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = AyudaBecas.GetBBDDAyBe(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1029,14 +1029,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OtrosModosColaboracion otrosModosColaboracion = new ();
-                    otrosModosColaboracion.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabDescripcionColaboracion)?.values.FirstOrDefault();
-                    otrosModosColaboracion.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabFechaInicio)?.values.FirstOrDefault();
+                    otrosModosColaboracion.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabDescripcionColaboracion)?.values.FirstOrDefault();
+                    otrosModosColaboracion.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasColabFechaInicio)?.values.FirstOrDefault();
                     otrosModosColaboracion.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(otrosModosColaboracion.ID, otrosModosColaboracion);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrosModosColaboracion.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrosModosColaboracion.GetBBDDOtMoCo(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1087,15 +1087,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     SociedadesAsociaciones sociedadesAsociaciones = new ();
-                    sociedadesAsociaciones.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesNombre)?.values.FirstOrDefault();
-                    sociedadesAsociaciones.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesFechaInicio)?.values.FirstOrDefault();
-                    sociedadesAsociaciones.entidadAfiliacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacionNombre)?.values.FirstOrDefault();
+                    sociedadesAsociaciones.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesNombre)?.values.FirstOrDefault();
+                    sociedadesAsociaciones.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesFechaInicio)?.values.FirstOrDefault();
+                    sociedadesAsociaciones.EntidadAfiliacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.sociedadesEntidadAfiliacionNombre)?.values.FirstOrDefault();
                     sociedadesAsociaciones.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(sociedadesAsociaciones.ID, sociedadesAsociaciones);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = SociedadesAsociaciones.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = SociedadesAsociaciones.GetBBDDSocAso(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1146,14 +1146,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     Consejos consejos = new ();
-                    consejos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosNombre)?.values.FirstOrDefault();
+                    consejos.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosNombre)?.values.FirstOrDefault();
                     consejos.EntAfi = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.consejosEntidadAfiliacionNombre)?.values.FirstOrDefault();
                     consejos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(consejos.ID, consejos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = Consejos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = Consejos.GetBBDDCons(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1204,14 +1204,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     RedesCooperacion redesCooperacion = new ();
-                    redesCooperacion.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopNombre)?.values.FirstOrDefault();
+                    redesCooperacion.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopNombre)?.values.FirstOrDefault();
                     redesCooperacion.IdRed = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.redesCoopIdentificacion)?.values.FirstOrDefault();
                     redesCooperacion.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(redesCooperacion.ID, redesCooperacion);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = RedesCooperacion.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = RedesCooperacion.GetBBDDRedCoop(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1262,14 +1262,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     PremiosMenciones premiosMenciones = new ();
-                    premiosMenciones.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.premiosMencionesDescripcion)?.values.FirstOrDefault();
-                    premiosMenciones.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.premiosMencionesFechaConcesion)?.values.FirstOrDefault();
+                    premiosMenciones.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.premiosMencionesDescripcion)?.values.FirstOrDefault();
+                    premiosMenciones.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.premiosMencionesFechaConcesion)?.values.FirstOrDefault();
                     premiosMenciones.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(premiosMenciones.ID, premiosMenciones);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = PremiosMenciones.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = PremiosMenciones.GetBBDDPreMen(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1320,14 +1320,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OtrasDistinciones otrasDistinciones = new ();
-                    otrasDistinciones.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasDistincionesDescripcion)?.values.FirstOrDefault();
-                    otrasDistinciones.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasDistincionesFechaConcesion)?.values.FirstOrDefault();
+                    otrasDistinciones.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasDistincionesDescripcion)?.values.FirstOrDefault();
+                    otrasDistinciones.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrasDistincionesFechaConcesion)?.values.FirstOrDefault();
                     otrasDistinciones.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(otrasDistinciones.ID, otrasDistinciones);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasDistinciones.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrasDistinciones.GetBBDDOtrDis(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1378,15 +1378,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     PeriodosActividad periodosActividad = new ();
-                    periodosActividad.numTramos = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraNumeroTramos)?.values.FirstOrDefault();
-                    periodosActividad.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion)?.values.FirstOrDefault();
-                    periodosActividad.entidadAcreditante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre)?.values.FirstOrDefault();
+                    periodosActividad.NumTramos = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraNumeroTramos)?.values.FirstOrDefault();
+                    periodosActividad.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraFechaObtencion)?.values.FirstOrDefault();
+                    periodosActividad.EntidadAcreditante = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.actividadInvestigadoraEntidadNombre)?.values.FirstOrDefault();
                     periodosActividad.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(periodosActividad.ID, periodosActividad);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = PeriodosActividad.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = PeriodosActividad.GetBBDDPerAct(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1445,7 +1445,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = AcreditacionesReconocimientos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = AcreditacionesReconocimientos.GetBBDDAcRe(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -1496,14 +1496,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OtrosMeritos otrosMeritos = new ();
-                    otrosMeritos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrosMeritosTextoLibre)?.values.FirstOrDefault();
-                    otrosMeritos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrosMeritosFechaConcesion)?.values.FirstOrDefault();
+                    otrosMeritos.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrosMeritosTextoLibre)?.values.FirstOrDefault();
+                    otrosMeritos.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadCientificaTecnologica.otrosMeritosFechaConcesion)?.values.FirstOrDefault();
                     otrosMeritos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(otrosMeritos.ID, otrosMeritos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrosMeritos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtrosMeritos.GetBBDDOtrMer(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes

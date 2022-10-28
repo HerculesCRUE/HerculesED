@@ -9,21 +9,21 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
 {
     class CursosMejoraDocente : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string entidadOrganizadora { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadOrganizadora { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEO = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionCurMejDoc = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaCurMejDoc = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntOrgCurMejDoc = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configEO,"entidadOrganizadora",entidadOrganizadora)
+                new DisambiguationData(configDescripcionCurMejDoc,"descripcion",Descripcion),
+                new DisambiguationData(configFechaCurMejDoc,"fecha",Fecha),
+                new DisambiguationData(configEntOrgCurMejDoc,"entidadOrganizadora",EntidadOrganizadora)
             };
             return data;
         }
@@ -36,12 +36,12 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDCurMejDoc(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosCurMejDoc = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -61,16 +61,16 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                     CursosMejoraDocente cursosMejoraDocente = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cursosMejoraDocente);
+                    resultadosCurMejDoc.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cursosMejoraDocente);
                 }
             }
 
-            return resultados;
+            return resultadosCurMejDoc;
         }
     }
 }

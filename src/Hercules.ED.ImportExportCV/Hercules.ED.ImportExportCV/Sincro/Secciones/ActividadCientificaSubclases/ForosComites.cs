@@ -10,18 +10,18 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class ForosComites : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string categoriaProfesional { get; set; }
+        public string Descripcion { get; set; }
+        public string CategoriaProfesional { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configCatProf = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionForCom = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configCatProfForCom = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configCatProf,"categoriaProfesional",categoriaProfesional)
+                new DisambiguationData(configDescripcionForCom,"descripcion",Descripcion),
+                new DisambiguationData(configCatProfForCom,"categoriaProfesional",CategoriaProfesional)
             };
             return data;
         }
@@ -34,12 +34,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDForCom(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosForCom = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -59,15 +59,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     ForosComites forosComites = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        categoriaProfesional = fila.ContainsKey("itemCat") ? fila["itemCat"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        CategoriaProfesional = fila.ContainsKey("itemCat") ? fila["itemCat"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), forosComites);
+                    resultadosForCom.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), forosComites);
                 }
             }
 
-            return resultados;
+            return resultadosForCom;
         }
     }
 }

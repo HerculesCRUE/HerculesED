@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class TutoriasAcademicas : DisambiguableEntity
     {
-        public string nombre { get; set; }
-        public string nombreOtros { get; set; }
-        public string entidadRealizacion { get; set; }
+        public string Nombre { get; set; }
+        public string NombreOtros { get; set; }
+        public string EntidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configNombreOtros = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configER = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configNombreTutAca = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configNombreOtrosTutAca = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntReaTutAca = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configNombre, "nombre", nombre),
-                new DisambiguationData(configNombreOtros, "nombreOtros", nombreOtros),
-                new DisambiguationData(configER, "entidadRealizacion", entidadRealizacion)
+                new DisambiguationData(configNombreTutAca, "nombre", Nombre),
+                new DisambiguationData(configNombreOtrosTutAca, "nombreOtros", NombreOtros),
+                new DisambiguationData(configEntReaTutAca, "entidadRealizacion", EntidadRealizacion)
             };
             return data;
         }
@@ -37,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDTutAca(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosTutAca = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -62,16 +62,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     TutoriasAcademicas tutoriasAcademicas = new TutoriasAcademicas
                     {
                         ID = fila["item"].value,
-                        nombre = fila["itemTitle"].value,
-                        nombreOtros = fila.ContainsKey("itemOther") ? fila["itemOther"].value : "",
-                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
+                        Nombre = fila["itemTitle"].value,
+                        NombreOtros = fila.ContainsKey("itemOther") ? fila["itemOther"].value : "",
+                        EntidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), tutoriasAcademicas);
+                    resultadosTutAca.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), tutoriasAcademicas);
                 }
             }
 
-            return resultados;
+            return resultadosTutAca;
         }
     }
 }

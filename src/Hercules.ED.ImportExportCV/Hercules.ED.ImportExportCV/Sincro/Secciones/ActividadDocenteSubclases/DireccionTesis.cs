@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class DireccionTesis : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string entidadRealizacion { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configER = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionDirTes = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaDirTes = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntReaDirTes = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configER,"entidadRealizacion",entidadRealizacion)
+                new DisambiguationData(configDescripcionDirTes,"descripcion",Descripcion),
+                new DisambiguationData(configFechaDirTes,"fecha",Fecha),
+                new DisambiguationData(configEntReaDirTes,"entidadRealizacion",EntidadRealizacion)
             };
             return data;
         }
@@ -37,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDDirTes(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosDirTes = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -62,16 +62,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     DireccionTesis direccionTesis = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), direccionTesis);
+                    resultadosDirTes.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), direccionTesis);
                 }
             }
 
-            return resultados;
+            return resultadosDirTes;
         }
     }
 }

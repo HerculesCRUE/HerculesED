@@ -59,14 +59,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     SituacionProfesionalActual situacionProfesional = new();
-                    situacionProfesional.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre)?.values.FirstOrDefault();
-                    situacionProfesional.categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCategoriaProfesional)?.values.FirstOrDefault();
+                    situacionProfesional.Nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalEntidadEmpleadoraNombre)?.values.FirstOrDefault();
+                    situacionProfesional.Categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.situacionProfesionalCategoriaProfesional)?.values.FirstOrDefault();
                     situacionProfesional.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(situacionProfesional.ID, situacionProfesional);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = SituacionProfesionalActual.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = SituacionProfesionalActual.GetBBDDSitProf(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -118,15 +118,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     CargosActividades cargosActividades = new();
-                    cargosActividades.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre)?.values.FirstOrDefault();
-                    cargosActividades.categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCategoriaProfesional)?.values.FirstOrDefault();
-                    cargosActividades.fechaIni = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFechaInicio)?.values.FirstOrDefault();
+                    cargosActividades.Nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesEntidadEmpleadoraNombre)?.values.FirstOrDefault();
+                    cargosActividades.Categoria = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesCategoriaProfesional)?.values.FirstOrDefault();
+                    cargosActividades.FechaIni = entityXML.properties.FirstOrDefault(x => x.prop == Variables.SituacionProfesional.cargosActividadesFechaInicio)?.values.FirstOrDefault();
                     cargosActividades.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(cargosActividades.ID, cargosActividades);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = CargosActividades.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = CargosActividades.GetBBDDCarAct(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
