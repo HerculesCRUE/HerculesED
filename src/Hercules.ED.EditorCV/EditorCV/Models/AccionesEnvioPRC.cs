@@ -573,31 +573,23 @@ where {{
                     }
                 }
 
+                Dictionary<string, string> propsRevista = new Dictionary<string, string>();
                 // Nombre de la revista 
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["titulo"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.210";
-                    campoAux.valores = new List<string>() { dicDataRevista["titulo"] };
-                    PRC.campos.Add(campoAux);
-                }
-
+                propsRevista.Add("060.010.010.210","titulo");
                 // Editorial
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["editor"]))
-                {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.100";
-                    campoAux.valores = new List<string>() { dicDataRevista["editor"] };
-                    PRC.campos.Add(campoAux);
-                }
-
+                propsRevista.Add("060.010.010.100", "editor");
                 // ISSN
-                if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista["issn"]))
+                propsRevista.Add("060.010.010.160", "issn");
+
+                foreach(string fecytCoce in propsRevista.Keys)
                 {
-                    CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
-                    campoAux.codigoCVN = "060.010.010.160";
-                    campoAux.valores = new List<string>() { dicDataRevista["issn"] };
-                    PRC.campos.Add(campoAux);
+                    if (dicDataRevista != null && dicDataRevista.Any() && !string.IsNullOrEmpty(dicDataRevista[propsRevista[fecytCoce]]))
+                    {
+                        CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
+                        campoAux.codigoCVN = fecytCoce;
+                        campoAux.valores = new List<string>() { dicDataRevista[propsRevista[fecytCoce]] };
+                        PRC.campos.Add(campoAux);
+                    }
                 }
             }
             #endregion
