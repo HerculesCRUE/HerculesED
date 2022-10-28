@@ -38,14 +38,10 @@ Este controlador contiene un único método, y es el encargado de obtener los re
 
 
 ### Modelos
-Los modelos se corresponden a los modelos de datos devueltos por GitHub:
-
-#### DataGitHub
-Modelo principal de los datos de GitHub
-#### ObjEnriquecimiento
-Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
-#### Repositories
-Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
+Los modelos se corresponden a los modelos de datos devueltos por GitHub, tenemos los siguientes
+- DataGitHub: Modelo principal de los datos de GitHub
+- ObjEnriquecimiento: Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
+- Repositories: Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
 
 ## Petición para el enriquecimiento de datos
 Se realizará una petición GET desde la propia API ha GitHub para obtener los datos enriquecidos.
