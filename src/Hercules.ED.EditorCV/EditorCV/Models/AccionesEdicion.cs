@@ -73,7 +73,7 @@ namespace EditorCV.Models
             string searchText = pSearch.Trim();
 
             //Subdivido las propiedades, en caso de venir varias, y las concateno para la consulta.
-            string pPropertyAux = "";
+            StringBuilder stringBuilderPropertyAux = new StringBuilder();
             string[] pPropertySplit = pProperty.Split("|");
             int contador = 0;
             bool inicio = true;
@@ -81,15 +81,17 @@ namespace EditorCV.Models
             {
                 if (inicio)
                 {
-                    pPropertyAux = pProp + "> ?o" + contador + " . ";
+                    stringBuilderPropertyAux = new StringBuilder();
+                    stringBuilderPropertyAux.Append(pProp + "> ?o" + contador + " . ");
                     inicio = !inicio;
                     continue;
                 }
-                pPropertyAux += " ?o" + contador + " <" + pProp + "> ?o";
+                stringBuilderPropertyAux.Append(" ?o" + contador + " <" + pProp + "> ?o");
                 contador++;
-                pPropertyAux += contador + " . ";
+                stringBuilderPropertyAux.Append(contador + " . ");
             }
-            pPropertyAux = pPropertyAux.Substring(0, pPropertyAux.Length - 8);
+            string propertyAux = stringBuilderPropertyAux.ToString();
+            propertyAux = propertyAux.Substring(0, propertyAux.Length - 8);
 
             if (pCache)
             {
@@ -108,7 +110,7 @@ namespace EditorCV.Models
                         Dictionary<string, string> dicValores = new Dictionary<string, string>();
                         string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
                         string where = $@"WHERE {{
-                                                            ?s a <{pRdfType}>.  ?s <{pPropertyAux}> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                            ?s a <{pRdfType}>.  ?s <{propertyAux}> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
                                                         }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -215,7 +217,7 @@ namespace EditorCV.Models
                 }
                 string where = @$"WHERE {{
                                     ?s a <{pRdfType}> .
-                                    ?s <{pPropertyAux}> ?o .
+                                    ?s <{propertyAux}> ?o .
                                     {auxProperties}
                                     FILTER( {filter} ) 
                                     FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
@@ -249,7 +251,7 @@ namespace EditorCV.Models
                         string s = fila["s"].value;
                         StringBuilder stringBuilderO = new StringBuilder();
                         stringBuilderO.Append(fila["o"].value);
-                        if (pPropertiesAux != null && pPropertyAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                        if (pPropertiesAux != null && propertyAux.Length > 0 && !string.IsNullOrEmpty(pPrint))
                         {
                             stringBuilderO = new StringBuilder();
                             string[] printSplit = pPrint.Split('|');
@@ -2988,7 +2990,7 @@ namespace EditorCV.Models
                 EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
                 listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
 
-                foreach (string word in categoriasObtenidas.topics.Select(x=>x.word))
+                foreach (string word in categoriasObtenidas.topics.Select(x => x.word))
                 {
                     List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
 
