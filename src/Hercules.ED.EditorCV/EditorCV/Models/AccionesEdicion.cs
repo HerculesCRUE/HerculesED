@@ -791,11 +791,11 @@ namespace EditorCV.Models
                     listCombosConfig.Add(comboConfig);
                 }
             }
-            foreach (ItemEditSectionRowProperty rowProperty in pProperties)
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x=>x.auxEntityData))
             {
-                if (rowProperty.auxEntityData != null && rowProperty.auxEntityData.rows != null)
+                if (auxEntityData != null && auxEntityData.rows != null)
                 {
-                    foreach (ItemEditSectionRow row in rowProperty.auxEntityData.rows)
+                    foreach (ItemEditSectionRow row in auxEntityData.rows)
                     {
                         List<ItemEditSectionRowPropertyCombo> aux = GetEditCombos(row.properties);
                         foreach (ItemEditSectionRowPropertyCombo comboConfig in aux)
@@ -841,11 +841,11 @@ namespace EditorCV.Models
                 listThesaurusConfig.Add(thesaurusConfig);
             }
 
-            foreach (ItemEditSectionRowProperty rowProperty in pProperties)
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x=>x.auxEntityData))
             {
-                if (rowProperty.auxEntityData != null && rowProperty.auxEntityData.rows != null)
+                if (auxEntityData != null && auxEntityData.rows != null)
                 {
-                    foreach (ItemEditSectionRow row in rowProperty.auxEntityData.rows)
+                    foreach (ItemEditSectionRow row in auxEntityData.rows)
                     {
                         listThesaurusConfig.UnionWith(GetEditThesaurus(row.properties));
                     }
@@ -868,7 +868,7 @@ namespace EditorCV.Models
             return pItemsLoad;
         }
 
-        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
+        public static Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
         {
             Disambiguation.mResourceApi = mResourceApi;
             Dictionary<string, List<Person>> listaPersonas = new Dictionary<string, List<Person>>();
@@ -965,7 +965,7 @@ namespace EditorCV.Models
             return listaPersonas;
         }
 
-        public Dictionary<string, int> ObtenerColaboradoresPublicaciones(string pPersonID)
+        public static Dictionary<string, int> ObtenerColaboradoresPublicaciones(string pPersonID)
         {
             Dictionary<string, int> colaboradoresPublicaciones = new Dictionary<string, int>();
             int limit = 10000;
@@ -995,7 +995,7 @@ namespace EditorCV.Models
             return colaboradoresPublicaciones;
         }
 
-        public Dictionary<string, int> ObtenerColaboradoresProyectos(string pPersonID)
+        public static Dictionary<string, int> ObtenerColaboradoresProyectos(string pPersonID)
         {
             Dictionary<string, int> colaboradoresProyectos = new Dictionary<string, int>();
             int limit = 10000;
@@ -1026,7 +1026,7 @@ namespace EditorCV.Models
             return colaboradoresProyectos;
         }
 
-        public HashSet<string> ObtenerColaboradoresDepartamento(string pPersonID)
+        public static HashSet<string> ObtenerColaboradoresDepartamento(string pPersonID)
         {
             HashSet<string> colaboradoresDepartamento = new HashSet<string>();
             int limit = 10000;
@@ -1053,7 +1053,7 @@ namespace EditorCV.Models
             return colaboradoresDepartamento;
         }
 
-        public List<Person> ObtenerPersonasFirma(string firma)
+        public static List<Person> ObtenerPersonasFirma(string firma)
         {
             List<Person> listaPersonas = new List<Person>();
 
@@ -1160,7 +1160,7 @@ namespace EditorCV.Models
             return listaPersonas;
         }
 
-        public string FilterWordComplete(string pWord, string pVar)
+        public static string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
             listaReemplazos["a"] = "aáàä";
@@ -3030,7 +3030,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pIdTesauro">Categoría a consultar.</param>
         /// <returns>Categoría padre.</returns>
-        private string ObtenerIdTesauro(string pIdTesauro)
+        private static string ObtenerIdTesauro(string pIdTesauro)
         {
             string idTesauro = pIdTesauro.Split(new[] { "researcharea_" }, StringSplitOptions.None)[1];
             int num1 = Int32.Parse(idTesauro.Split('.')[0]);
