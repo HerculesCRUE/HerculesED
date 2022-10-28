@@ -31,14 +31,14 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
             List<CvnItemBean> listado = new ();
 
             // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<Tuple<string, string>> listadoIdentificadoresOtrForPos = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadoresOtrForPos, listaId))
             {
                 return;
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesOtrForPos = GetListLoadedEntity(listadoIdentificadoresOtrForPos, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesOtrForPos)
             {
                 CvnItemBean itemBean = new ()
                 {

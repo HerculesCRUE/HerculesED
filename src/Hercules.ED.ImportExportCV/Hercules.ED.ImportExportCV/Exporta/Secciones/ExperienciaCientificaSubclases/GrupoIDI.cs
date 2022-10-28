@@ -29,17 +29,17 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             List<CvnItemBean> listado = new ();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
-            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            List<Tuple<string, string, string>> listadoIdentificadoresGruIdi = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadoresGruIdi != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0)
+                listadoIdentificadoresGruIdi = listadoIdentificadoresGruIdi.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadoresGruIdi.Count == 0)
                 {
                     return;
                 }
             }
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
-            foreach(KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesGruIdi = GetListLoadedEntityCV(listadoIdentificadoresGruIdi, graph, MultilangProp);
+            foreach(KeyValuePair<string, Entity> keyValue in listaEntidadesGruIdi)
             {
                 CvnItemBean itemBean = new ()
                 {
