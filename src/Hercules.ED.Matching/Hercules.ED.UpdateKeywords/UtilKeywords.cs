@@ -473,69 +473,7 @@ namespace Hercules.ED.UpdateKeywords
 
                 foreach (ResultRelations itemRelacion in data.Relations)
                 {
-                    switch (itemRelacion.RelationLabel)
-                    {
-                        case "AQ":
-                            if (dataConceptMain.Qualifiers == null)
-                            {
-                                dataConceptMain.Qualifiers = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.Qualifiers.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.Qualifiers.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                        case "RL":
-                            if (dataConceptMain.CloseMatch == null)
-                            {
-                                dataConceptMain.CloseMatch = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.CloseMatch.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.CloseMatch.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                        case "SY":
-                            if (dataConceptMain.ExactMatch == null)
-                            {
-                                dataConceptMain.ExactMatch = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.ExactMatch.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.ExactMatch.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                        case "RO":
-                            if (dataConceptMain.RelatedTo == null)
-                            {
-                                dataConceptMain.RelatedTo = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.RelatedTo.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.RelatedTo.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                        case "RU":
-                            if (dataConceptMain.RelatedTo == null)
-                            {
-                                dataConceptMain.RelatedTo = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.RelatedTo.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.RelatedTo.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                        case "CHD":
-                            if (dataConceptMain.Broader == null)
-                            {
-                                dataConceptMain.Broader = new Dictionary<string, string>();
-                            }
-                            if (!dataConceptMain.Broader.ContainsKey(itemRelacion.Ui))
-                            {
-                                dataConceptMain.Broader.Add(itemRelacion.Ui, itemRelacion.RelatedIdName);
-                            }
-                            break;
-                    }
+                    ClasificacionDataConcept(dataConceptMain, itemRelacion.RelationLabel, itemRelacion.Ui, itemRelacion.RelatedIdName);
                 }
 
                 listaDataConcepts.Add(dataConceptMain);
@@ -548,6 +486,72 @@ namespace Hercules.ED.UpdateKeywords
             else
             {
                 return listaDataConcepts;
+            }
+        }
+
+        /// <summary>
+        /// Clasifica el dataconcept según el tipo.
+        /// </summary>
+        /// <param name="pDataConcept">Objeto dataconcept.</param>
+        /// <param name="pTipo">Tipo.</param>
+        /// <param name="pUi">Ui.</param>
+        /// <param name="pRelatedIdName">RelatedIdName.</param>
+        public void ClasificacionDataConcept(DataConcept pDataConcept, string pTipo, string pUi, string pRelatedIdName)
+        {
+            if (pTipo == "AQ")
+            {
+                if (pDataConcept.Qualifiers == null)
+                {
+                    pDataConcept.Qualifiers = new Dictionary<string, string>();
+                }
+                if (!pDataConcept.Qualifiers.ContainsKey(pUi))
+                {
+                    pDataConcept.Qualifiers.Add(pUi, pRelatedIdName);
+                }
+            }
+            else if (pTipo == "RL")
+            {
+                if (pDataConcept.CloseMatch == null)
+                {
+                    pDataConcept.CloseMatch = new Dictionary<string, string>();
+                }
+                if (!pDataConcept.CloseMatch.ContainsKey(pUi))
+                {
+                    pDataConcept.CloseMatch.Add(pUi, pRelatedIdName);
+                }
+            }
+            else if (pTipo == "SY")
+            {
+                if (pDataConcept.ExactMatch == null)
+                {
+                    pDataConcept.ExactMatch = new Dictionary<string, string>();
+                }
+                if (!pDataConcept.ExactMatch.ContainsKey(pUi))
+                {
+                    pDataConcept.ExactMatch.Add(pUi, pRelatedIdName);
+                }
+            }
+            else if (pTipo == "RO" || pTipo == "RU")
+            {
+                if (pDataConcept.RelatedTo == null)
+                {
+                    pDataConcept.RelatedTo = new Dictionary<string, string>();
+                }
+                if (!pDataConcept.RelatedTo.ContainsKey(pUi))
+                {
+                    pDataConcept.RelatedTo.Add(pUi, pRelatedIdName);
+                }
+            }
+            else if (pTipo == "CHD")
+            {
+                if (pDataConcept.Broader == null)
+                {
+                    pDataConcept.Broader = new Dictionary<string, string>();
+                }
+                if (!pDataConcept.Broader.ContainsKey(pUi))
+                {
+                    pDataConcept.Broader.Add(pUi, pRelatedIdName);
+                }
             }
         }
 
@@ -692,23 +696,23 @@ namespace Hercules.ED.UpdateKeywords
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryMesh.results.bindings)
                 {
-                    string id = string.Empty;
-                    string label = string.Empty;
+                    string idMesh = string.Empty;
+                    string labelMesh = string.Empty;
 
                     if (fila.ContainsKey("a") && !string.IsNullOrEmpty(fila["a"].value))
                     {
-                        id = fila["a"].value;
-                        id = id.Substring(id.LastIndexOf("/") + 1);
+                        idMesh = fila["a"].value;
+                        idMesh = idMesh.Substring(idMesh.LastIndexOf("/") + 1);
                     }
 
                     if (fila.ContainsKey("b") && !string.IsNullOrEmpty(fila["b"].value))
                     {
-                        label = fila["b"].value;
+                        labelMesh = fila["b"].value;
                     }
 
-                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(label) && !dicResultados.ContainsKey(id))
+                    if (!string.IsNullOrEmpty(idMesh) && !string.IsNullOrEmpty(labelMesh) && !dicResultados.ContainsKey(idMesh))
                     {
-                        dicResultados.Add(id, label);
+                        dicResultados.Add(idMesh, labelMesh);
                     }
                 }
             }
