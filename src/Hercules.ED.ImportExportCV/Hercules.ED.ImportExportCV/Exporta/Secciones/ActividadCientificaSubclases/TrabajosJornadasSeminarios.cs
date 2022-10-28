@@ -29,18 +29,18 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             List<CvnItemBean> listado = new ();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
-            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            List<Tuple<string, string, string>> listadoIdentificadoresTraJorSem = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadoresTraJorSem != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0)
+                listadoIdentificadoresTraJorSem = listadoIdentificadoresTraJorSem.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadoresTraJorSem.Count == 0)
                 {
                     return;
                 }
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesTraJorSem = GetListLoadedEntityCV(listadoIdentificadoresTraJorSem, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesTraJorSem)
             {
                 CvnItemBean itemBean = new ();
                 itemBean.Code = "060.010.030.000";

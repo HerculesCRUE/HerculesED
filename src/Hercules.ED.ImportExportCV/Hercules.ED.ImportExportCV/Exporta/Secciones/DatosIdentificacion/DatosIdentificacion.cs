@@ -26,8 +26,8 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         public void ExportaDatosIdentificacion(Entity entity, string seccion, [Optional] List<string> listaId)
         {
             // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<Tuple<string, string>> listadoIdentificadoresDatIde = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadoresDatIde, listaId))
             {
                 return;
             }
