@@ -23,7 +23,7 @@ namespace EditorCV.Models
 {
     public class AccionesImportacion
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static Dictionary<string, Dictionary<string, List<string>>> dicPropiedades = new Dictionary<string, Dictionary<string, List<string>>>();
         public byte[] filebytes;
 
@@ -325,40 +325,23 @@ namespace EditorCV.Models
                     List<SubseccionItem> listaSubsecciones = new List<SubseccionItem>();
                     if (string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection))// && !string.IsNullOrEmpty(section.presentation.listItemsPresentation.rdftype_cv))
                     {
-                        if (section.presentation.listItemsPresentation.rdftype_cv != null && 
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+                        Dictionary<string, string> propFecytID = new Dictionary<string, string>();
+                        propFecytID.Add("http://w3id.org/roh/RelatedCompetitiveProjectCV", "050.020.010.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedNonCompetitiveProjectCV", "050.020.020.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedGroupCV", "050.010.000.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedScientificPublicationCV", "060.010.010.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV", "060.010.020.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "060.010.030.000");
+                        propFecytID.Add("http://purl.org/ontology/bibo/Patent", "050.030.010.000");
+
+                        foreach(string prop in propFecytID.Keys)
                         {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.010.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.020.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedGroupCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.010.000.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.010.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.020.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.030.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.listItemEdit.rdftype != null && 
-                            section.presentation.listItemsPresentation.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Patent"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.030.010.000")).SelectMany(x => x.subsecciones).ToList();
+                            if (section.presentation.listItemsPresentation.rdftype_cv != null &&
+                            section.presentation.listItemsPresentation.rdftype_cv.Equals(prop))
+                            {
+                                listaSubsecciones = preimport.secciones.Where(x => x.id.Equals(propFecytID[prop])).SelectMany(x => x.subsecciones).ToList();
+                                break;
+                            }
                         }
                     }
                     else
@@ -405,7 +388,6 @@ namespace EditorCV.Models
                         tabSectionItem.idBBDD = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
                             .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
                             .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x => x.idBBDD).FirstOrDefault();
-                        itemEditSection.title.Select(x => x.Value).ToList();
 
                         tabSectionItem.properties.Add(tsip);
 
@@ -467,11 +449,11 @@ namespace EditorCV.Models
             if (sectionItem.title == null)
             {
                 valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle))?
-                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            .Select(x => x.values.First().Split("@@@").Last()).ToList();
                 if (valor == null || valor.Count == 0)
                 {
                     valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propCompleteTitle).Split("@@@").First())?
-                        .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                        .Select(x => x.values.First().Split("@@@").Last()).ToList();
                 }
                 if (tabSectionListItem.propertyTitle.child != null)
                 {
@@ -514,7 +496,7 @@ namespace EditorCV.Models
                                 //Si es 
                                 property = UtilityCV.GetPropComplete(data),
                                 values = subseccionItem.propiedades.Where(x => x.prop.StartsWith(GetPropCompleteWithoutRelatedBy(UtilityCV.GetPropComplete(data))))?
-                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList()
+                                    .Select(x => x.values.First().Split("@@@").Last()).ToList()
                             };
                             if (sectionItem.orderProperties.Any(x => x.property.Contains(itemOrderProperty.property)))
                             {
@@ -545,11 +527,11 @@ namespace EditorCV.Models
                         {
                             propComplete = UtilityCV.GetPropComplete(propertyDataTemplate.child);
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
-                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                .Select(x => x.values.First().Split("@@@").Last()).ToList();
                             if (valor == null || valor.Count == 0)
                             {
                                 valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
-                                    .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                    .Select(x => x.values.First().Split("@@@").Last()).ToList();
                             }
 
                             int lengthProp = propComplete.Split("@@@").Length;
@@ -570,11 +552,11 @@ namespace EditorCV.Models
                         propComplete = UtilityCV.GetPropComplete(property.child);
 
                         valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete))?
-                            .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                            .Select(x => x.values.First().Split("@@@").Last()).ToList();
                         if (valor == null || valor.Count == 0)
                         {
                             valor = subseccionItem.propiedades.Where(x => GetPropCompleteImport(x.prop) == GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").First())?
-                                .Select(x => x.values.FirstOrDefault().Split("@@@").Last()).ToList();
+                                .Select(x => x.values.First().Split("@@@").Last()).ToList();
                         }
 
                         int lengthProp = propComplete.Split("@@@").Length;

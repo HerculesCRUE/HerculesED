@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class GrupoIDI:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience",
             "http://w3id.org/roh/groups","http://w3id.org/roh/relatedGroupCV",
             "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "group";
@@ -26,7 +26,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaGrupoIDI(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new ();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
@@ -41,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach(KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean()
+                CvnItemBean itemBean = new ()
                 {
                     Code = "050.010.000.000",
                     Items = new List<CVNObject>()

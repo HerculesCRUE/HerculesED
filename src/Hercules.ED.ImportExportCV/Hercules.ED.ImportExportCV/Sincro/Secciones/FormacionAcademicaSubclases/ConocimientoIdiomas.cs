@@ -10,24 +10,15 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
 {
     class ConocimientoIdiomas : DisambiguableEntity
     {
-        public string idioma { get; set; }
+        public string Idioma { get; set; }
 
-        private static readonly DisambiguationDataConfig configIdioma = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
+        private static readonly DisambiguationDataConfig configIdiomaConIdi = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "idioma",
-                    config = configIdioma,
-                    value = idioma
-                }
+                new DisambiguationData(configIdiomaConIdi,"idioma", Idioma)
             };
 
             return data;
@@ -41,12 +32,12 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDConIdi(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosConIdi = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -61,16 +52,16 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas
+                    ConocimientoIdiomas conocimientoIdiomas = new ()
                     {
                         ID = fila["item"].value,
-                        idioma = fila["itemTitle"].value
+                        Idioma = fila["itemTitle"].value
                     };
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), conocimientoIdiomas);
+                    resultadosConIdi.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), conocimientoIdiomas);
                 }
             }
 
-            return resultados;
+            return resultadosConIdi;
         }
     }
 }

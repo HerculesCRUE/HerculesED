@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
     public class ConocimientoIdiomas : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications",
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications",
             "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "languagecertificate";
 
@@ -27,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// <param name="listaId"></param>
         public void ExportaConocimientoIdiomas(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp,[Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean()
+                CvnItemBean itemBean = new ()
                 {
                     Code = "020.060.000.000",
                     Items = new List<CVNObject>()

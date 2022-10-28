@@ -165,39 +165,29 @@ namespace EditorCV.Controllers
                             }
                             else if (estadoRespuesta != null && accion == "POSTIMPORTAR")
                             {
+                                bool actualizar = false;
                                 if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_LECTURA")
                                 {
                                     petitionStatus[petitionID].actualWork = 2;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_DUPLICAR")
                                 {
                                     petitionStatus[petitionID].actualWork = 3;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_FUSIONAR")
                                 {
                                     petitionStatus[petitionID].actualWork = 4;
-                                    petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
-                                    petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
-                                    petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
-                                    petitionStatus[petitionID].actualWorkSubtitle = estadoRespuesta.actualWorkSubtitle;
-                                    petitionStatus[petitionID].actualSubWorks = estadoRespuesta.actualSubWorks;
-                                    petitionStatus[petitionID].actualSubTotalWorks = estadoRespuesta.actualSubTotalWorks;
+                                    actualizar = true;
                                 }
                                 else if (estadoRespuesta.actualWorkTitle == "ESTADO_POSTIMPORTAR_SOBRESCRIBIR")
                                 {
                                     petitionStatus[petitionID].actualWork = 5;
+                                    actualizar = true;
+                                }
+                                if (actualizar)
+                                {
                                     petitionStatus[petitionID].subActualWork = estadoRespuesta.actualWork;
                                     petitionStatus[petitionID].subTotalWorks = estadoRespuesta.totalWorks;
                                     petitionStatus[petitionID].actualWorkTitle = estadoRespuesta.actualWorkTitle;
@@ -247,7 +237,7 @@ namespace EditorCV.Controllers
                 petitionStatus[petitionID] = estadoPostimport;
 
                 List<string> listadoId = new List<string>();
-                List<string> listadoOpciones = new List<string>();
+                
                 Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
 
                 string pCVId = UtilityCV.GetCVFromUser(userID);
@@ -265,7 +255,7 @@ namespace EditorCV.Controllers
                 {
                     string idOpcion;
                     string valueOpcion;
-                    listadoOpciones = listaOpcionSeleccionados.Split("@@@").ToList();
+                    List<string> listadoOpciones = listaOpcionSeleccionados.Split("@@@").ToList();
                     foreach (string opcion in listadoOpciones)
                     {
                         idOpcion = opcion.Split("|||").First();

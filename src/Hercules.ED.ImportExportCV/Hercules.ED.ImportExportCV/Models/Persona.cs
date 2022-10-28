@@ -247,7 +247,7 @@ namespace Hercules.ED.ImportExportCV.Models
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new ()
             {
                 new DisambiguationData()
                 {

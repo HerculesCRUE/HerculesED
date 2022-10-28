@@ -34,18 +34,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/firstSecondCycles", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/firstSecondCycles", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#AcademicDegree";
             string rdfTypePrefix = "RelatedFirstSecondCycles";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -59,15 +59,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     EstudiosCiclos estudiosCiclos = new ();
-                    estudiosCiclos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloNombreTitulo)?.values.FirstOrDefault();
-                    estudiosCiclos.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloEntidadTitulacionNombre)?.values.FirstOrDefault();
-                    estudiosCiclos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloFechaTitulacion)?.values.FirstOrDefault();
+                    estudiosCiclos.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloNombreTitulo)?.values.FirstOrDefault();
+                    estudiosCiclos.EntidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloEntidadTitulacionNombre)?.values.FirstOrDefault();
+                    estudiosCiclos.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.estudiosCicloFechaTitulacion)?.values.FirstOrDefault();
                     estudiosCiclos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(estudiosCiclos.ID, estudiosCiclos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = EstudiosCiclos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = EstudiosCiclos.GetBBDDEstCic(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -93,18 +93,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/doctorates", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/doctorates", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#AcademicDegree";
             string rdfTypePrefix = "RelatedDoctorates";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -118,15 +118,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     Doctorados doctorados = new ();
-                    doctorados.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosProgramaDoctoradoNombre)?.values.FirstOrDefault();
-                    doctorados.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosFechaTitulacion)?.values.FirstOrDefault();
-                    doctorados.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosEntidadTitulacionNombre)?.values.FirstOrDefault();
+                    doctorados.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosProgramaDoctoradoNombre)?.values.FirstOrDefault();
+                    doctorados.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosFechaTitulacion)?.values.FirstOrDefault();
+                    doctorados.EntidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.doctoradosEntidadTitulacionNombre)?.values.FirstOrDefault();
                     doctorados.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(doctorados.ID, doctorados);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = Doctorados.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = Doctorados.GetBBDDDoct(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -153,18 +153,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/postgraduates", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/postgraduates", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#AcademicDegree";
             string rdfTypePrefix = "RelatedPostGraduates";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -178,15 +178,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     OtraFormacionPosgrado otraFormacionPosgrado = new ();
-                    otraFormacionPosgrado.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionTipoFormacion)?.values.FirstOrDefault();
-                    otraFormacionPosgrado.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionEntidadTitulacionNombre)?.values.FirstOrDefault();
-                    otraFormacionPosgrado.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionFechaTitulacion)?.values.FirstOrDefault();
+                    otraFormacionPosgrado.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionTipoFormacion)?.values.FirstOrDefault();
+                    otraFormacionPosgrado.EntidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionEntidadTitulacionNombre)?.values.FirstOrDefault();
+                    otraFormacionPosgrado.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.otraFormacionFechaTitulacion)?.values.FirstOrDefault();
                     otraFormacionPosgrado.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(otraFormacionPosgrado.ID, otraFormacionPosgrado);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtraFormacionPosgrado.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = OtraFormacionPosgrado.GetBBDDOtrFormPos(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -213,18 +213,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/specialisedTraining", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/specialisedTraining", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#AcademicDegree";
             string rdfTypePrefix = "RelatedSpecialisedTrainings";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -239,15 +239,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     FormacionEspecializada formacionEspecializada = new ();
-                    formacionEspecializada.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeTituloFormacion)?.values.FirstOrDefault();
-                    formacionEspecializada.entidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeEntidadTitulacionNombre)?.values.FirstOrDefault();
-                    formacionEspecializada.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeFechaFinalizacion)?.values.FirstOrDefault();
+                    formacionEspecializada.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeTituloFormacion)?.values.FirstOrDefault();
+                    formacionEspecializada.EntidadTitulacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeEntidadTitulacionNombre)?.values.FirstOrDefault();
+                    formacionEspecializada.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.formacionEspeFechaFinalizacion)?.values.FirstOrDefault();
                     formacionEspecializada.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(formacionEspecializada.ID, formacionEspecializada);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = FormacionEspecializada.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = FormacionEspecializada.GetBBDDFormEsp(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -274,18 +274,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/coursesAndSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/coursesAndSeminars", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "academicdegree";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://vivoweb.org/ontology/core#AcademicDegree";
             string rdfTypePrefix = "RelatedCoursesAndSeminars";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -299,16 +299,16 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    CursosMejoraDocente cursosMejoraDocente = new CursosMejoraDocente();
-                    cursosMejoraDocente.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosTitulo)?.values.FirstOrDefault();
-                    cursosMejoraDocente.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosFechaInicio)?.values.FirstOrDefault();
-                    cursosMejoraDocente.entidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
+                    CursosMejoraDocente cursosMejoraDocente = new ();
+                    cursosMejoraDocente.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosTitulo)?.values.FirstOrDefault();
+                    cursosMejoraDocente.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosFechaInicio)?.values.FirstOrDefault();
+                    cursosMejoraDocente.EntidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                     cursosMejoraDocente.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(cursosMejoraDocente.ID, cursosMejoraDocente);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = CursosMejoraDocente.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = CursosMejoraDocente.GetBBDDCurMejDoc(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -335,18 +335,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications", "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "languagecertificate";
             string propTitle = "http://w3id.org/roh/languageOfTheCertificate";
             string rdfType = "http://w3id.org/roh/LanguageCertificate";
             string rdfTypePrefix = "RelatedLanguageSkills";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -360,14 +360,14 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 foreach (Entity entityXML in listadoAux)
                 {
-                    ConocimientoIdiomas conocimientoIdiomas = new ConocimientoIdiomas();
-                    conocimientoIdiomas.idioma = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.conocimientoIdiomasIdioma)?.values.FirstOrDefault();
+                    ConocimientoIdiomas conocimientoIdiomas = new ();
+                    conocimientoIdiomas.Idioma = entityXML.properties.FirstOrDefault(x => x.prop == Variables.FormacionAcademica.conocimientoIdiomasIdioma)?.values.FirstOrDefault();
                     conocimientoIdiomas.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(conocimientoIdiomas.ID, conocimientoIdiomas);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ConocimientoIdiomas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ConocimientoIdiomas.GetBBDDConIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -391,7 +391,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetEstudiosCiclos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoEstudiosCiclos = listadoDatos.Where(x => x.Code.Equals("020.010.010.000")).ToList();
             if (listadoEstudiosCiclos.Count > 0)
@@ -452,7 +452,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstudiosCiclosTipoTitulacion(CvnItemBean item, Entity entidadAux)
+        private static void EstudiosCiclosTipoTitulacion(CvnItemBean item, Entity entidadAux)
         {
             if (item.GetTipoGradoUniversitarioPorIDCampo("020.010.010.010") != null)
             {
@@ -469,7 +469,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstudiosCiclosPremio(CvnItemBean item, Entity entidadAux)
+        private static void EstudiosCiclosPremio(CvnItemBean item, Entity entidadAux)
         {
             if (item.GetPremioPorIDCampo("020.010.010.190") != null)
             {
@@ -486,7 +486,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstudiosCiclosTitulacion(CvnItemBean item, Entity entidadAux)
+        private static void EstudiosCiclosTitulacion(CvnItemBean item, Entity entidadAux)
         {
             Utility.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.030"),
                 Variables.FormacionAcademica.estudiosCicloNombreTitulo,
@@ -499,7 +499,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstudiosCiclosTituloExtrajero(CvnItemBean item, Entity entidadAux)
+        private static void EstudiosCiclosTituloExtrajero(CvnItemBean item, Entity entidadAux)
         {
             Utility.AniadirTitulacion(mResourceApi, item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.010.150"),
                 Variables.FormacionAcademica.estudiosCicloTituloExtranjeroNombre,
@@ -512,7 +512,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void EstudiosCiclosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
+        private static void EstudiosCiclosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Titulacion
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.010.090"),
@@ -535,7 +535,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetDoctorados(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoDoctorados = listadoDatos.Where(x => x.Code.Equals("020.010.020.000")).ToList();
             if (listadoDoctorados.Count > 0)
@@ -599,7 +599,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosProgramaDoctorado(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosProgramaDoctorado(CvnItemBean item, Entity entidadAux)
         {
             string programaDoctorado = item.GetNameTitleBeanPorIDCampo("020.010.020.010");
             entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
@@ -613,7 +613,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosDoctoradoUE(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosDoctoradoUE(CvnItemBean item, Entity entidadAux)
         {
             string tituloDoctoradoUE = item.GetStringBooleanPorIDCampo("020.010.020.200");
             if (!string.IsNullOrEmpty(tituloDoctoradoUE))
@@ -630,7 +630,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosPremioExtraordinario(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosPremioExtraordinario(CvnItemBean item, Entity entidadAux)
         {
             string tituloPremioExtraordinario = item.GetStringBooleanPorIDCampo("020.010.020.220");
             if (!string.IsNullOrEmpty(tituloPremioExtraordinario))
@@ -647,7 +647,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosTituloHomologado(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosTituloHomologado(CvnItemBean item, Entity entidadAux)
         {
             string tituloHomologado = item.GetStringBooleanPorIDCampo("020.010.020.240");
             if (!string.IsNullOrEmpty(tituloHomologado))
@@ -665,7 +665,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosDirectorTesis(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosDirectorTesis(CvnItemBean item, Entity entidadAux)
         {
             CvnItemBeanCvnAuthorBean director = item.GetElementoPorIDCampo<CvnItemBeanCvnAuthorBean>("020.010.020.170");
 
@@ -688,7 +688,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosCodirectoresTesis(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosCodirectoresTesis(CvnItemBean item, Entity entidadAux)
         {
             List<CvnItemBeanCvnAuthorBean> listadoCodirectores = item.GetListaElementosPorIDCampo<CvnItemBeanCvnAuthorBean>("020.010.020.180");
 
@@ -729,7 +729,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosEntidadTitulacionDEA(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosEntidadTitulacionDEA(CvnItemBean item, Entity entidadAux)
         {
             /*
             new Property(Variables.FormacionAcademica.doctoradosEntidadTitulacionDEA, item.GetNameEntityBeanPorIDCampo("020.010.020.040"))
@@ -746,7 +746,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void DoctoradosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
+        private static void DoctoradosEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Añado la referencia si existe Entidad de Titulacion
             UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, item.GetNameEntityBeanPorIDCampo("020.010.020.100"),
@@ -769,7 +769,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetOtraFormacionPosgrado(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoOtraFormacionPosgrado = listadoDatos.Where(x => x.Code.Equals("020.010.030.000")).ToList();
             if (listadoOtraFormacionPosgrado.Count > 0)
@@ -828,7 +828,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtraFormacionPosgradoTitulacionPosgrado(CvnItemBean item, Entity entidadAux)
+        private static void OtraFormacionPosgradoTitulacionPosgrado(CvnItemBean item, Entity entidadAux)
         {
             if (!string.IsNullOrEmpty(item.GetElementoPorIDCampo<CvnItemBeanCvnTitleBean>("020.010.030.020")?.Name))
             {
@@ -851,7 +851,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        private void OtraFormacionPosgradoEntidadTitulacion(CvnItemBean item, Entity entidadAux)
+        private static void OtraFormacionPosgradoEntidadTitulacion(CvnItemBean item, Entity entidadAux)
         {
             //Si es nulo la entidad de titulacion no añado nada
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("020.010.030.080"))) { return; }
@@ -882,7 +882,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetFormacionEspecializada(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoFormacionEspecializada = listadoDatos.Where(x => x.Code.Equals("020.020.000.000")).ToList();
             if (listadoFormacionEspecializada.Count > 0)
@@ -987,7 +987,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetCursosMejoraDocente(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoCursosMejoraDocente = listadoDatos.Where(x => x.Code.Equals("020.050.000.000")).ToList();
             if (listadoCursosMejoraDocente.Count > 0)
@@ -1053,7 +1053,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// </summary>
         /// <param name="item"></param>
         /// <param name="entidadAux"></param>
-        public void CursosSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
+        public static void CursosSeminariosEntidadOrganizadora(CvnItemBean item, Entity entidadAux)
         {
             if (string.IsNullOrEmpty(item.GetNameEntityBeanPorIDCampo("020.050.000.070"))) { return; }
 
@@ -1083,7 +1083,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetConocimientoIdiomas(List<CvnItemBean> listadoDatos, [Optional] bool preimportar, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoConocimientoIdiomas = listadoDatos.Where(x => x.Code.Equals("020.060.000.000")).ToList();
             if (listadoConocimientoIdiomas.Count > 0)

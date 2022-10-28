@@ -31,7 +31,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
             //Actualizo el estado de los recursos tratados
@@ -54,7 +54,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             if (preimportar)
             {
-                List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                List<SubseccionItem> listaAux = new ();
                 listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
 
                 return listaAux;
@@ -99,7 +99,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             catch (NullReferenceException e)
             {
                 Console.Error.WriteLine("Errores al cargar mResourceApi " + e.Message);
-                throw new NullReferenceException("Errores al cargar mResourceApi");
+                throw new ArgumentException("Errores al cargar mResourceApi");
             }
         }
 
@@ -114,8 +114,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             try
             {
-                Entity entity = new Entity();
-                entity.auxEntityRemove = new List<string>();
+                Entity entity = new ();
+                entity.auxEntityRemove = new ();
                 entity.properties = UtilitySecciones.AddProperty(
                     new Property(Variables.DatosIdentificacion.nombre, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.020")),
                     new Property(Variables.DatosIdentificacion.primerApellido, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnFamilyNameBean>("000.010.000.010")?.FirstFamilyName),

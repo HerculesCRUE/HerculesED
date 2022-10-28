@@ -23,6 +23,7 @@ namespace Hercules.ED.Synchronization.Models
             };
             configService.GetCronExternalSource();
             configService.GetFuentesExternasQueueRabbit();
+            configService.GetLogPath();
         }
 
         /// <summary>

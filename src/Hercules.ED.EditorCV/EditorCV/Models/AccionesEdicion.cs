@@ -19,6 +19,7 @@ using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
 using EditorCV.Models.Similarity;
+using System.IO;
 
 namespace EditorCV.Models
 {
@@ -30,18 +31,11 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
-
         private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
         private static Dictionary<string, List<ThesaurusItem>> dicTesauros = new Dictionary<string, List<ThesaurusItem>>();
-
-
-
-
 
         #region Métodos públicos
 
@@ -79,7 +73,7 @@ namespace EditorCV.Models
             string searchText = pSearch.Trim();
 
             //Subdivido las propiedades, en caso de venir varias, y las concateno para la consulta.
-            string pPropertyAux = "";
+            StringBuilder stringBuilderPropertyAux = new StringBuilder();
             string[] pPropertySplit = pProperty.Split("|");
             int contador = 0;
             bool inicio = true;
@@ -87,15 +81,17 @@ namespace EditorCV.Models
             {
                 if (inicio)
                 {
-                    pPropertyAux = pProp + "> ?o" + contador + " . ";
+                    stringBuilderPropertyAux = new StringBuilder();
+                    stringBuilderPropertyAux.Append(pProp + "> ?o" + contador + " . ");
                     inicio = !inicio;
                     continue;
                 }
-                pPropertyAux += " ?o" + contador + " <" + pProp + "> ?o";
+                stringBuilderPropertyAux.Append(" ?o" + contador + " <" + pProp + "> ?o");
                 contador++;
-                pPropertyAux += contador + " . ";
+                stringBuilderPropertyAux.Append(contador + " . ");
             }
-            pPropertyAux = pPropertyAux.Substring(0, pPropertyAux.Length - 8);
+            string propertyAux = stringBuilderPropertyAux.ToString();
+            propertyAux = propertyAux.Substring(0, propertyAux.Length - 8);
 
             if (pCache)
             {
@@ -114,7 +110,7 @@ namespace EditorCV.Models
                         Dictionary<string, string> dicValores = new Dictionary<string, string>();
                         string select = "SELECT * WHERE { SELECT DISTINCT ?s ?o  ";
                         string where = $@"WHERE {{
-                                                            ?s a <{pRdfType}>.  ?s <{pPropertyAux}> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
+                                                            ?s a <{pRdfType}>.  ?s <{propertyAux}> ?o . FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')                          
                                                         }} ORDER BY DESC(?o) DESC (?s) }} LIMIT {limit} OFFSET {offset}";
                         SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, pGraph);
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
@@ -168,7 +164,7 @@ namespace EditorCV.Models
                         }
                         string s = fila.Key;
                         string o = fila.Value;
-                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        if (pLista == null || !respuesta.Keys.Intersect(pLista).Any())
                         {
                             respuesta.Add(s, o);
                         }
@@ -207,28 +203,28 @@ namespace EditorCV.Models
                 if (searchText != "")
                 {
                     filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
-                    //filter = $"bif:contains(?o, \"'{searchText}'\"){filter}";
                 }
-                string select = "SELECT DISTINCT ?s ?o ";
+                StringBuilder stringBuilderSelect = new StringBuilder();
+                stringBuilderSelect.Append("SELECT DISTINCT ?s ?o ");
                 string auxProperties = "";
-                if (pPropertiesAux != null && pPropertiesAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                if (pPropertiesAux != null && pPropertiesAux.Count > 0 && !string.IsNullOrEmpty(pPrint))
                 {
-                    for (int i = 0; i < pPropertiesAux.Count(); i++)
+                    for (int i = 0; i < pPropertiesAux.Count; i++)
                     {
-                        select += " ?o" + (i + 1);
+                        stringBuilderSelect.Append(" ?o" + (i + 1));
                         auxProperties += $"OPTIONAL{{ ?s <{pPropertiesAux[i]}> ?o{i + 1}.}}";
                     }
 
                 }
                 string where = @$"WHERE {{
                                     ?s a <{pRdfType}> .
-                                    ?s <{pPropertyAux}> ?o .
+                                    ?s <{propertyAux}> ?o .
                                     {auxProperties}
                                     FILTER( {filter} ) 
                                     FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
                                 }}
                                 ORDER BY ASC(strlen(?o)) ASC (?o)";
-                SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(stringBuilderSelect.ToString(), where, pGraph);
                 if (!pGetEntityID)
                 {
                     var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
@@ -254,12 +250,13 @@ namespace EditorCV.Models
                             break;
                         }
                         string s = fila["s"].value;
-                        string o = fila["o"].value;
-                        if (pPropertiesAux != null && pPropertyAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
+                        StringBuilder stringBuilderO = new StringBuilder();
+                        stringBuilderO.Append(fila["o"].value);
+                        if (pPropertiesAux != null && propertyAux.Length > 0 && !string.IsNullOrEmpty(pPrint))
                         {
-                            o = "";
+                            stringBuilderO = new StringBuilder();
                             string[] printSplit = pPrint.Split('|');
-                            for (int j = 0; j < printSplit.Count(); j++)
+                            for (int j = 0; j < printSplit.Length; j++)
                             {
                                 string valor = "";
                                 if (j == 0)
@@ -272,14 +269,13 @@ namespace EditorCV.Models
                                 }
                                 if (!string.IsNullOrEmpty(valor))
                                 {
-                                    o += printSplit[j].Replace($"{{{j}}}", valor);
+                                    stringBuilderO.Append(printSplit[j].Replace($"{{{j}}}", valor));
                                 }
                             }
                         }
-
-                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        if (pLista == null || !respuesta.Keys.Intersect(pLista).Any())
                         {
-                            respuesta.Add(s, o);
+                            respuesta.Add(s, stringBuilderO.ToString());
                         }
                     }
                     return respuesta;
@@ -394,77 +390,76 @@ namespace EditorCV.Models
                             // Comprobamos un ítem unicamente o todos los del listado.
                             if (pItemId != null)
                             {
-                                Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                similarsin[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
+                                Dictionary<string, bool> similarsinItem = new Dictionary<string, bool>();
+                                similarsinItem[pItemId] = itemsTitleValidatedSection[pItemId].Item3;
                                 for (int j = 0; j < itemsTitleSectionList.Count; j++)
                                 {
-                                    double similitud = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
-                                    if (similitud > minSimilarity)
+                                    double similitudItemsTitleSectionList = Similarity(itemsTitleValidatedSection[pItemId].Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                    if (similitudItemsTitleSectionList > minSimilarity)
                                     {
-                                        similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                        similarsinItem[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
                                     }
                                 }
                                 //Eliminamos si hay alguno duplicado
-                                foreach (string duplicado in similars.SelectMany(x => x))
+                                foreach (string duplicado in similars.SelectMany(x => x).Where(x=> similarsinItem.ContainsKey(x)))
                                 {
-                                    if (similarsin.ContainsKey(duplicado))
-                                    {
-                                        similarsin.Remove(duplicado);
-                                    }
+                                    similarsinItem.Remove(duplicado);
                                 }
 
                                 //Ordenamos primero con los validados
-                                similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                similarsinItem = similarsinItem.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-                                if (similarsin.Count > 1)
+                                if (similarsinItem.Count > 1)
                                 {
                                     //Si hay mas de uno y hay alguno no validado lo añadimos
-                                    similars.Add(new HashSet<string>(similarsin.Keys));
+                                    similars.Add(new HashSet<string>(similarsinItem.Keys));
                                 }
                             }
                             else
                             {
                                 for (int i = 0; i < itemsTitleValidatedSection.Count; i++)
                                 {
-                                    Dictionary<string, bool> similarsin = new Dictionary<string, bool>();
-                                    similarsin[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
+                                    Dictionary<string, bool> similarsinListado = new Dictionary<string, bool>();
+                                    similarsinListado[itemsTitleSectionList[i].Key] = itemsTitleSectionList[i].Value.Item3;
 
                                     //Añadimos si la similaridad es superior a minSimilarity
                                     for (int j = i + 1; j < itemsTitleValidatedSection.Count; j++)
                                     {
-                                        double similitud = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
-                                        if (similitud > minSimilarity)
+                                        double similitudItemsTitleValidatedSection = Similarity(itemsTitleSectionList[i].Value.Item2, itemsTitleSectionList[j].Value.Item2, minSimilarity);
+                                        if (similitudItemsTitleValidatedSection > minSimilarity)
                                         {
-                                            similarsin[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
+                                            similarsinListado[itemsTitleSectionList[j].Key] = itemsTitleSectionList[j].Value.Item3;
                                         }
                                     }
 
                                     //Eliminamos si hay alguno duplicado
                                     foreach (string duplicado in similars.SelectMany(x => x))
                                     {
-                                        if (similarsin.ContainsKey(duplicado))
+                                        if (similarsinListado.ContainsKey(duplicado))
                                         {
-                                            similarsin.Remove(duplicado);
+                                            similarsinListado.Remove(duplicado);
                                         }
                                     }
 
                                     //Ordenamos primero con los validados
-                                    similarsin = similarsin.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                                    similarsinListado = similarsinListado.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-                                    if (similarsin.Count > 1)
+                                    if (similarsinListado.Count > 1)
                                     {
                                         //Si hay mas de uno y hay alguno no validado lo añadimos
-                                        similars.Add(new HashSet<string>(similarsin.Keys));
+                                        similars.Add(new HashSet<string>(similarsinListado.Keys));
                                     }
                                 }
                             }
+
+
 
                             //Eliminamos de los similares aquellos que estén marcados como no duplicados
                             foreach (HashSet<string> sim in similars.ToList())
                             {
                                 string principalAux = sim.ToList()[0];
                                 string principal = itemsTitleValidatedSection[principalAux].Item1;
-                                List<string> noDuplicados = itemsNoDuplicados.Values.Where(x => x.Contains(principal)).ToList().SelectMany(x => x).Distinct().ToList().Except(new List<string>() { principal }).ToList();
+                                List<string> noDuplicados = itemsNoDuplicados.Values.Where(x => x.Contains(principal)).SelectMany(x => x).Distinct().Except(new List<string>() { principal }).ToList();
                                 foreach (string idAux in sim.ToList())
                                 {
                                     string id = itemsTitleValidatedSection[idAux].Item1;
@@ -529,7 +524,7 @@ namespace EditorCV.Models
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
                             }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae",pGraph});
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", pGraph });
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
                     bool validated = false;
@@ -555,7 +550,7 @@ namespace EditorCV.Models
         /// <param name="y">string B</param>
         /// <param name="min">Similitud minima</param>
         /// <returns></returns>
-        private double Similarity(string x, string y, float min)
+        private static double Similarity(string x, string y, float min)
         {
             if (x == null || y == null)
             {
@@ -672,13 +667,13 @@ namespace EditorCV.Models
             //Obtenemos los datos necesarios para el pintado
             // Consigo el pId y el pCvId a partir del Id de la persona pPersonId
             string pCVId = "";
-            Dictionary<string,Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
             string select = "SELECT ?cv ?property ?id ?rdftype";
             string where = @$"WHERE {{
                     ?cv<http://w3id.org/roh/cvOf> <{pPersonId}>.
                     ?cv ?property ?id.
                     ?id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?rdftype.
-                    FILTER(?property in (<{string.Join(">,<",tabsPublic)}>))
+                    FILTER(?property in (<{string.Join(">,<", tabsPublic)}>))
                 }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
@@ -794,11 +789,11 @@ namespace EditorCV.Models
                     listCombosConfig.Add(comboConfig);
                 }
             }
-            foreach (ItemEditSectionRowProperty rowProperty in pProperties)
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x => x.auxEntityData))
             {
-                if (rowProperty.auxEntityData != null && rowProperty.auxEntityData.rows != null)
+                if (auxEntityData != null && auxEntityData.rows != null)
                 {
-                    foreach (ItemEditSectionRow row in rowProperty.auxEntityData.rows)
+                    foreach (ItemEditSectionRow row in auxEntityData.rows)
                     {
                         List<ItemEditSectionRowPropertyCombo> aux = GetEditCombos(row.properties);
                         foreach (ItemEditSectionRowPropertyCombo comboConfig in aux)
@@ -844,11 +839,11 @@ namespace EditorCV.Models
                 listThesaurusConfig.Add(thesaurusConfig);
             }
 
-            foreach (ItemEditSectionRowProperty rowProperty in pProperties)
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x => x.auxEntityData))
             {
-                if (rowProperty.auxEntityData != null && rowProperty.auxEntityData.rows != null)
+                if (auxEntityData != null && auxEntityData.rows != null)
                 {
-                    foreach (ItemEditSectionRow row in rowProperty.auxEntityData.rows)
+                    foreach (ItemEditSectionRow row in auxEntityData.rows)
                     {
                         listThesaurusConfig.UnionWith(GetEditThesaurus(row.properties));
                     }
@@ -871,7 +866,7 @@ namespace EditorCV.Models
             return pItemsLoad;
         }
 
-        public Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
+        public static Dictionary<string, List<Person>> ValidateSignatures(string pSignatures, string pCVID, string pPersonID, string pLang)
         {
             Disambiguation.mResourceApi = mResourceApi;
             Dictionary<string, List<Person>> listaPersonas = new Dictionary<string, List<Person>>();
@@ -885,7 +880,7 @@ namespace EditorCV.Models
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
                 HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
-                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x=>x!="").ToList();
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x => x != "").ToList();
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
@@ -968,7 +963,7 @@ namespace EditorCV.Models
             return listaPersonas;
         }
 
-        public Dictionary<string, int> ObtenerColaboradoresPublicaciones(string pPersonID)
+        public static Dictionary<string, int> ObtenerColaboradoresPublicaciones(string pPersonID)
         {
             Dictionary<string, int> colaboradoresPublicaciones = new Dictionary<string, int>();
             int limit = 10000;
@@ -998,7 +993,7 @@ namespace EditorCV.Models
             return colaboradoresPublicaciones;
         }
 
-        public Dictionary<string, int> ObtenerColaboradoresProyectos(string pPersonID)
+        public static Dictionary<string, int> ObtenerColaboradoresProyectos(string pPersonID)
         {
             Dictionary<string, int> colaboradoresProyectos = new Dictionary<string, int>();
             int limit = 10000;
@@ -1029,7 +1024,7 @@ namespace EditorCV.Models
             return colaboradoresProyectos;
         }
 
-        public HashSet<string> ObtenerColaboradoresDepartamento(string pPersonID)
+        public static HashSet<string> ObtenerColaboradoresDepartamento(string pPersonID)
         {
             HashSet<string> colaboradoresDepartamento = new HashSet<string>();
             int limit = 10000;
@@ -1042,7 +1037,7 @@ namespace EditorCV.Models
                                 <{pPersonID}> <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
                                 ?personOtherID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.            
                             }}order by desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "department" });
                 offset += limit;
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
@@ -1056,7 +1051,7 @@ namespace EditorCV.Models
             return colaboradoresDepartamento;
         }
 
-        public List<Person> ObtenerPersonasFirma(string firma)
+        public static List<Person> ObtenerPersonasFirma(string firma)
         {
             List<Person> listaPersonas = new List<Person>();
 
@@ -1067,48 +1062,46 @@ namespace EditorCV.Models
             if (wordsTexto.Length > 0)
             {
                 #region Buscamos en nombres
+                List<string> unions = new List<string>();
+                foreach (string wordOut in wordsTexto)
                 {
-                    List<string> unions = new List<string>();
-                    foreach (string wordOut in wordsTexto)
+                    List<string> words = new List<string>();
+                    if (wordOut.Length == 2)
                     {
-                        List<string> words = new List<string>();
-                        if (wordOut.Length == 2)
+                        words.Add(wordOut[0].ToString());
+                        words.Add(wordOut[1].ToString());
+                    }
+                    else
+                    {
+                        words.Add(wordOut);
+                    }
+
+                    foreach (string word in words)
+                    {
+                        int score = 1;
+                        if (word.Length > 1)
                         {
-                            words.Add(wordOut[0].ToString());
-                            words.Add(wordOut[1].ToString());
+                            score = 5;
+                        }
+                        if (score == 1)
+                        {
+                            StringBuilder sbUnion = new StringBuilder();
+                            sbUnion.AppendLine("?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                            unions.Add(sbUnion.ToString());
                         }
                         else
                         {
-                            words.Add(wordOut);
-                        }
-
-                        foreach (string word in words)
-                        {
-                            int score = 1;
-                            if (word.Length > 1)
-                            {
-                                score = 5;
-                            }
-                            if (score == 1)
-                            {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
-                                unions.Add(sbUnion.ToString());
-                            }
-                            else
-                            {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"              {FilterWordComplete(word, "name")} BIND({score} as ?num)");
-                                //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
-                                unions.Add(sbUnion.ToString());
-                            }
+                            StringBuilder sbUnion = new StringBuilder();
+                            sbUnion.AppendLine("?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"{FilterWordComplete(word, "name")} BIND({score} as ?num)");
+                            unions.Add(sbUnion.ToString());
                         }
                     }
+                }
 
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento";
-                    string where = $@"where
+                string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento";
+                string where = $@"where
                             {{
                                 {{
                                     select ?personID ?ORCID ?name ?signature sum(?num) as ?num
@@ -1132,33 +1125,32 @@ namespace EditorCV.Models
                                     ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
                             }}order by desc (?num)limit 500";
-                    SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>{"document","person","department" });
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document", "person", "department" });
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    string personID = fila["personID"].value;
+                    string name = fila["name"].value;
+                    Person persona = listaPersonas.FirstOrDefault(x => x.personid == personID);
+                    if (persona == null)
                     {
-                        string personID = fila["personID"].value;
-                        string name = fila["name"].value;
-                        Person persona = listaPersonas.FirstOrDefault(x => x.personid == personID);
-                        if (persona == null)
-                        {
-                            persona = new Person();
-                            persona.name = name;
-                            persona.personid = personID;
-                            persona.signatures = new HashSet<string>();
-                            listaPersonas.Add(persona);
-                        }
-                        if (fila.ContainsKey("signature"))
-                        {
-                            string signature = fila["signature"].value;
-                            persona.signatures.Add(signature);
-                        }
-                        if (fila.ContainsKey("ORCID"))
-                        {
-                            persona.orcid = fila["ORCID"].value;
-                        }
-                        if (fila.ContainsKey("departamento"))
-                        {
-                            persona.department = fila["departamento"].value;
-                        }
+                        persona = new Person();
+                        persona.name = name;
+                        persona.personid = personID;
+                        persona.signatures = new HashSet<string>();
+                        listaPersonas.Add(persona);
+                    }
+                    if (fila.ContainsKey("signature"))
+                    {
+                        string signature = fila["signature"].value;
+                        persona.signatures.Add(signature);
+                    }
+                    if (fila.ContainsKey("ORCID"))
+                    {
+                        persona.orcid = fila["ORCID"].value;
+                    }
+                    if (fila.ContainsKey("departamento"))
+                    {
+                        persona.department = fila["departamento"].value;
                     }
                 }
                 #endregion
@@ -1166,7 +1158,7 @@ namespace EditorCV.Models
             return listaPersonas;
         }
 
-        public string FilterWordComplete(string pWord, string pVar)
+        public static string FilterWordComplete(string pWord, string pVar)
         {
             Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
             listaReemplazos["a"] = "aáàä";
@@ -1198,7 +1190,7 @@ namespace EditorCV.Models
         /// <param name="pLang">Idioma para recuperar los datos</param>
         /// <param name="pSection">Orden de la sección para la carga parcial</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetTabData(string pId, API.Templates.Tab pTemplate, string pLang, string pSection = null, bool onlyPublicCounters = false)
         {
             List<PropertyData> propertyDatas = new List<PropertyData>();
             List<PropertyData> propertyDatasContadores = new List<PropertyData>();
@@ -1270,7 +1262,7 @@ namespace EditorCV.Models
         /// <param name="pListItemConfig">Configuración del item</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetItemMiniData(string pId, TabSectionListItem pListItemConfig, string pLang)
         {
             string graph = "curriculumvitae";
 
@@ -1292,36 +1284,30 @@ namespace EditorCV.Models
                 }
             }
 
-            //OpenAccess
+            //OpenAccess           
+            PropertyData propertyItemOpenAccess = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+            if (propertyItemOpenAccess != null)
             {
-                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
-                if (propertyItem != null)
-                {
-                    propertyItem.childs.Add(
-                        //OpenAccess
-                        new Utils.PropertyData()
-                        {
-                            property = UtilityCV.PropertyOpenAccess,
-                            childs = new List<Utils.PropertyData>()
-                        }
-                    );
-                }
+                propertyItemOpenAccess.childs.Add(
+                    new PropertyData()
+                    {
+                        property = UtilityCV.PropertyOpenAccess,
+                        childs = new List<PropertyData>()
+                    }
+                );
             }
 
             //ProjectAuthorization
+            PropertyData propertyItemProjectAuthorization = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
+            if (propertyItemProjectAuthorization != null)
             {
-                PropertyData propertyItem = propertyDatas.FirstOrDefault(x => x.property == "http://vivoweb.org/ontology/core#relatedBy");
-                if (propertyItem != null)
-                {
-                    propertyItem.childs.Add(
-                        //ProjectAuthorization
-                        new Utils.PropertyData()
-                        {
-                            property = "http://w3id.org/roh/projectAuthorization",
-                            childs = new List<Utils.PropertyData>()
-                        }
-                    );
-                }
+                propertyItemProjectAuthorization.childs.Add(
+                    new PropertyData()
+                    {
+                        property = "http://w3id.org/roh/projectAuthorization",
+                        childs = new List<Utils.PropertyData>()
+                    }
+                );
             }
 
             Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> data = UtilityCV.GetProperties(new HashSet<string>() { pId }, graph, propertyDatas, pLang, new Dictionary<string, SparqlObject>());
@@ -1333,7 +1319,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador de un CV</param>
         /// <returns></returns>
-        private Dictionary<string, Dictionary<string, HashSet<string>>> GetMultilangDataCV(string pCVId)
+        private static Dictionary<string, Dictionary<string, HashSet<string>>> GetMultilangDataCV(string pCVId)
         {
             Dictionary<string, Dictionary<string, HashSet<string>>> respuesta = new Dictionary<string, Dictionary<string, HashSet<string>>>();
 
@@ -1430,7 +1416,6 @@ namespace EditorCV.Models
                                 }
 
                                 tabSection.items = new Dictionary<string, TabSectionItem>();
-                                string propiedadIdentificador = templateSection.property;
                                 if (pData.ContainsKey(pId))
                                 {
                                     bool soloID = false;
@@ -1619,12 +1604,12 @@ namespace EditorCV.Models
                 if (property.childOR != null && property.childOR.Count > 0)
                 {
                     string aux = "";
-                    string propertyIn = "";
+                    StringBuilder stringBuilderPropertyIn = new StringBuilder();
                     foreach (PropertyDataTemplate propertyData in property.childOR)
                     {
-                        propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                        stringBuilderPropertyIn.Append(aux + UtilityCV.GetPropComplete(propertyData));
                         aux = "||";
-                        listadoPropiedades.Add(propertyIn);
+                        listadoPropiedades.Add(stringBuilderPropertyIn.ToString());
                     }
                 }
                 else
@@ -1653,13 +1638,7 @@ namespace EditorCV.Models
                             if (value.Count > 0)
                             {
                                 string fecha = value.First();
-                                int anio = int.Parse(fecha.Substring(0, 4));
-                                int mes = int.Parse(fecha.Substring(4, 2));
-                                int dia = int.Parse(fecha.Substring(6, 2));
-                                int horas = int.Parse(fecha.Substring(8, 2));
-                                int minutos = int.Parse(fecha.Substring(10, 2));
-                                int segundos = int.Parse(fecha.Substring(12, 2));
-                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateTime = ConvertirFechaGnossADateTimeDia(fecha);
                                 DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
 
                                 if (dateTime > dateMenos5Anio)
@@ -1671,7 +1650,7 @@ namespace EditorCV.Models
                     }
                     else if (propEnd == null && listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.start))
                     {
-                        string propStart = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.start)).First();
+                        string propStart = listadoPropiedades.First(x => x.Split("@@@").Last().Equals(last5Years.start));
                         if (!string.IsNullOrEmpty(propStart))
                         {
                             List<string> value = GetPropValues(pId, propStart, pData);
@@ -1679,13 +1658,7 @@ namespace EditorCV.Models
                             if (value.Count > 0)
                             {
                                 string fecha = value.First();
-                                int anio = int.Parse(fecha.Substring(0, 4));
-                                int mes = int.Parse(fecha.Substring(4, 2));
-                                int dia = int.Parse(fecha.Substring(6, 2));
-                                int horas = int.Parse(fecha.Substring(8, 2));
-                                int minutos = int.Parse(fecha.Substring(10, 2));
-                                int segundos = int.Parse(fecha.Substring(12, 2));
-                                DateTime dateTime = new DateTime(anio, mes, dia);
+                                DateTime dateTime = ConvertirFechaGnossADateTimeDia(fecha);
                                 DateTime dateMenos5Anio = DateTime.Now.AddYears(-5);
 
                                 if (dateTime > dateMenos5Anio)
@@ -1703,7 +1676,7 @@ namespace EditorCV.Models
             {
                 foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
                 {
-                    string propertyIn = "";
+                    StringBuilder stringBuilderPropertyIn = new StringBuilder();
                     TabSectionItemProperty itemProperty = new TabSectionItemProperty()
                     {
                         showMini = property.showMini,
@@ -1713,20 +1686,20 @@ namespace EditorCV.Models
                     };
                     if (property.childOR != null && property.childOR.Count > 0)
                     {
-                        propertyIn = "";
+                        stringBuilderPropertyIn = new StringBuilder();
                         string aux = "";
                         foreach (PropertyDataTemplate propertyData in property.childOR)
                         {
-                            propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                            stringBuilderPropertyIn.Append(aux + UtilityCV.GetPropComplete(propertyData));
                             aux = "||";
                         }
                     }
                     else
                     {
-                        propertyIn = UtilityCV.GetPropComplete(property.child);
+                        stringBuilderPropertyIn.Append(UtilityCV.GetPropComplete(property.child));
                     }
                     itemProperty.type = property.type.ToString();
-                    itemProperty.values = GetPropValues(pId, propertyIn, pData);
+                    itemProperty.values = GetPropValues(pId, stringBuilderPropertyIn.ToString(), pData);
                     if (property.type == DataTypeListItem.number)
                     {
                         itemProperty.values = itemProperty.values.Select(x => UtilityCV.GetTextNumber(x)).ToList();
@@ -1868,13 +1841,13 @@ namespace EditorCV.Models
                         }
                     }
                     //Si el item no tiene fecha, no permito el envío
-                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).Any())
+                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
                     else
                     {
-                        string fechaPublicacion = item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).First().values.First();
+                        string fechaPublicacion = item.properties.Where(x => x.name.Equals("Fecha de publicación")).First(x => x.values.Any()).values.First();
                         int anio = int.Parse(fechaPublicacion.Substring(0, 4));
                         int mes = int.Parse(fechaPublicacion.Substring(4, 2));
                         int dia = int.Parse(fechaPublicacion.Substring(6, 2));
@@ -1888,13 +1861,13 @@ namespace EditorCV.Models
                     }
                     //Si es de tipo publicación y no tiene tipo de proyecto, no permito el envío
                     if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV")
-                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
                     //Si es de tipo congreso y no tiene tipo de proyecto, no permito el envío
                     if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV")
-                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
@@ -1955,6 +1928,13 @@ namespace EditorCV.Models
             return item;
         }
 
+        private static DateTime ConvertirFechaGnossADateTimeDia(string pFecha)
+        {
+            int anio = int.Parse(pFecha.Substring(0, 4));
+            int mes = int.Parse(pFecha.Substring(4, 2));
+            int dia = int.Parse(pFecha.Substring(6, 2));
+            return new DateTime(anio, mes, dia);
+        }
 
         #endregion
 
@@ -1970,7 +1950,7 @@ namespace EditorCV.Models
         /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
         /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pCVId, string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pCVId, string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
             List<PropertyData> propertyDatas = pItemEdit.GenerarPropertyDatas(pGraph);
             //Editabilidad
@@ -2097,7 +2077,7 @@ namespace EditorCV.Models
                                             FILTER(?proy !=<{pId}>)
                                         }}
                                     }}";
-                SparqlObject respuesta = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "projectauthorization" , "project" });
+                SparqlObject respuesta = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "projectauthorization", "project" });
                 foreach (Dictionary<string, SparqlObject.Data> fila in respuesta.results.bindings)
                 {
                     comboAutorizacionesProyecto[fila["s"].value] = fila["nombre"].value;
@@ -2492,15 +2472,15 @@ namespace EditorCV.Models
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
                     entityEditSectionRowProperty.propertyEntityGraph = pItemEditSectionRowProperty.autocompleteConfig.graph;
-                    if(pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity!=null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count>0)
+                    if (pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity != null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count > 0)
                     {
                         entityEditSectionRowProperty.selectPropertyEntity = new List<SelectPropertyEntity>();
-                        foreach(var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
+                        foreach (var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
                         {
                             entityEditSectionRowProperty.selectPropertyEntity.Add(new SelectPropertyEntity() { propertyEntity = item.propertyEntity, propertyCV = item.propertyCV });
                         }
                     }
-                   
+
                 }
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
@@ -2513,9 +2493,9 @@ namespace EditorCV.Models
                         {
                             if (pItemEditSectionRowProperty.autocompleteConfig.propertyAux != null)
                             {
-                                string entityText = "";
+                                StringBuilder stringBuilderEntityText = new StringBuilder();
                                 string[] printSplit = pItemEditSectionRowProperty.autocompleteConfig.propertyAux.print.Split('|');
-                                for (int j = 0; j < printSplit.Count(); j++)
+                                for (int j = 0; j < printSplit.Length; j++)
                                 {
                                     string valor = "";
                                     if (j == 0)
@@ -2528,10 +2508,10 @@ namespace EditorCV.Models
                                     }
                                     if (!string.IsNullOrEmpty(valor))
                                     {
-                                        entityText += printSplit[j].Replace($"{{{j}}}", valor);
+                                        stringBuilderEntityText.Append(printSplit[j].Replace($"{{{j}}}", valor));
                                     }
                                 }
-                                entityEditSectionRowProperty.propertyEntityValue = entityText;
+                                entityEditSectionRowProperty.propertyEntityValue = stringBuilderEntityText.ToString();
                             }
                             else
                             {
@@ -2589,59 +2569,55 @@ namespace EditorCV.Models
                         }
                     }
                     entityEditSectionRowProperty.thesaurus.RemoveAll(y => !cat.Contains(y.id));
-                    //HashSet<string> cat = entityEditSectionRowProperty.entityAuxData.entities.Values.Select(x => x.Select(x => x.properties.Select(x => x.values)));
 
                     return entityEditSectionRowProperty;
                 }
 
-                if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity)
+                if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity && pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
                 {
-                    if (pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
+                    entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
+                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
+                    entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
+                    entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
+                    foreach (string id in entityEditSectionRowProperty.values)
                     {
-                        entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
-                        entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
-                        entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
-                        entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
-                        foreach (string id in entityEditSectionRowProperty.values)
+                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
+                        if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
                         {
-                            entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
-                            if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
+                            string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
+                            int.TryParse(orden, out int ordenInt);
+                            entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
+                        }
+
+                        if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                        {
+                            string title = GetPropValues(id, UtilityCV.GetPropComplete(pItemEditSectionRowProperty.auxEntityData.propertyTitle), pData).FirstOrDefault();
+                            string routeTitle = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute();
+                            if (string.IsNullOrEmpty(title))
                             {
-                                string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
-                                int.TryParse(orden, out int ordenInt);
-                                entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
+                                title = "";
                             }
+                            entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty() { value = title, route = routeTitle });
+                        }
 
-                            if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                        if (pItemEditSectionRowProperty.auxEntityData.properties != null)
+                        {
+                            foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
                             {
-                                string title = GetPropValues(id, UtilityCV.GetPropComplete(pItemEditSectionRowProperty.auxEntityData.propertyTitle), pData).FirstOrDefault();
-                                string routeTitle = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute();
-                                if (string.IsNullOrEmpty(title))
+                                List<string> valores = GetPropValues(id, UtilityCV.GetPropComplete(entityProperty.child), pData);
+                                string routeProp = entityProperty.child.GetRoute();
+                                if (!entityEditSectionRowProperty.entityAuxData.properties.ContainsKey(id))
                                 {
-                                    title = "";
+                                    entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>();
                                 }
-                                entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty() { value = title, route = routeTitle });
-                            }
 
-                            if (pItemEditSectionRowProperty.auxEntityData.properties != null)
-                            {
-                                foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
+                                entityEditSectionRowProperty.entityAuxData.properties[id].Add(new EntityEditRepresentativeProperty()
                                 {
-                                    List<string> valores = GetPropValues(id, UtilityCV.GetPropComplete(entityProperty.child), pData);
-                                    string routeProp = entityProperty.child.GetRoute();
-                                    if (!entityEditSectionRowProperty.entityAuxData.properties.ContainsKey(id))
-                                    {
-                                        entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>();
-                                    }
+                                    name = UtilityCV.GetTextLang(pLang, entityProperty.name),
+                                    value = string.Join(", ", valores),
+                                    route = routeProp
+                                });
 
-                                    entityEditSectionRowProperty.entityAuxData.properties[id].Add(new EntityEditRepresentativeProperty()
-                                    {
-                                        name = UtilityCV.GetTextLang(pLang, entityProperty.name),
-                                        value = string.Join(", ", valores),
-                                        route = routeProp
-                                    });
-
-                                }
                             }
                         }
                     }
@@ -2757,9 +2733,9 @@ namespace EditorCV.Models
         /// <param name="pItemEditSectionRowPropertyCombo">Configuración de un combo para edición</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta;
             string claveCombos = $@"{pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.property.graph} {pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.rdftype} {pItemEditSectionRowPropertyCombo.graph} {pLang}";
             if (pItemEditSectionRowPropertyCombo.filter != null)
             {
@@ -2868,7 +2844,6 @@ namespace EditorCV.Models
                         }
                     }
                 }
-                List<string> finalList = new List<string>();
                 foreach (PropertyData propertyData in propertyDataAux)
                 {
                     idAux.AddRange(GetPropValuesAux(new List<string>() { pId }, propertyData, pData));
@@ -3002,13 +2977,13 @@ namespace EditorCV.Models
                 EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
                 listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
 
-                foreach (EnrichmentResponseItem cat in categoriasObtenidas.topics)
+                foreach (string word in categoriasObtenidas.topics.Select(x => x.word))
                 {
                     List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
 
-                    if (tuplaTesauro.Item2.ContainsKey("general " + cat.word.ToLower().Trim()))
+                    if (tuplaTesauro.Item2.ContainsKey("general " + word.ToLower().Trim()))
                     {
-                        string idTesauro = tuplaTesauro.Item2["general " + cat.word.ToLower().Trim()];
+                        string idTesauro = tuplaTesauro.Item2["general " + word.ToLower().Trim()];
                         listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
 
                         while (!idTesauro.EndsWith(".0.0.0"))
@@ -3017,9 +2992,9 @@ namespace EditorCV.Models
                             listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
                         }
                     }
-                    else if (tuplaTesauro.Item2.ContainsKey(cat.word.ToLower().Trim()))
+                    else if (tuplaTesauro.Item2.ContainsKey(word.ToLower().Trim()))
                     {
-                        string idTesauro = tuplaTesauro.Item2[cat.word.ToLower().Trim()];
+                        string idTesauro = tuplaTesauro.Item2[word.ToLower().Trim()];
                         listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
 
                         while (!idTesauro.EndsWith(".0.0.0"))
@@ -3051,7 +3026,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pIdTesauro">Categoría a consultar.</param>
         /// <returns>Categoría padre.</returns>
-        private string ObtenerIdTesauro(string pIdTesauro)
+        private static string ObtenerIdTesauro(string pIdTesauro)
         {
             string idTesauro = pIdTesauro.Split(new[] { "researcharea_" }, StringSplitOptions.None)[1];
             int num1 = Int32.Parse(idTesauro.Split('.')[0]);

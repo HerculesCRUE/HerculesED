@@ -18,20 +18,15 @@ namespace EditorCV.Models
 {
     public class AccionesEnvioDSpace
     {
-        readonly ConfigService _Configuracion;
+        private static readonly ConfigService _Configuracion=new ConfigService();
 
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static string tokenAuth = "";
 
-        public AccionesEnvioDSpace(ConfigService pConfig)
-        {
-            _Configuracion = pConfig;
-        }
-
-        public void EnvioDSpace(string pIdRecurso, IFormFile file)
+        public static void EnvioDSpace(string pIdRecurso, IFormFile file)
         {
             Publication publication = new Publication("000000", "");
             string idPublication = "";
@@ -140,7 +135,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="publication"></param>
         /// <returns></returns>
-        private DSpaceResponse InsertaMetadatosDspace(Publication publication)
+        private static DSpaceResponse InsertaMetadatosDspace(Publication publication)
         {
             //Colección con handle
             string urlEstado = _Configuracion.GetUrlDSpace() + "/collections/" + _Configuracion.GetCollectionDSpace() + "/items";
@@ -170,7 +165,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="publication"></param>
         /// <returns></returns>
-        private DSpaceResponse ActualizaDspace(Publication publication)
+        private static DSpaceResponse ActualizaDspace(Publication publication)
         {
             MetadataSend metadata = GetListadoValoresItem(publication);
 
@@ -201,7 +196,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="publication"></param>
         /// <param name="file"></param>
-        private void AniadirBitstreamDspace(Publication publication, IFormFile file)
+        private static void AniadirBitstreamDspace(Publication publication, IFormFile file)
         {
             MetadataSend metadata = GetListadoValoresItem(publication);
 
@@ -236,7 +231,7 @@ namespace EditorCV.Models
         /// <param name="pIdRecurso"></param>
         /// <param name="publication"></param>
         /// <param name="idPublication"></param>
-        private void GetDatosPublicacion(string pIdRecurso, Publication publication, ref string idPublication)
+        private static void GetDatosPublicacion(string pIdRecurso, Publication publication, ref string idPublication)
         {
             string select = "SELECT distinct ?doc ?idDspace ?titulo ?anioPublicacion ?issn ?isbn ?handle ?descripcion ?pagIni ?pagFin ?editorial ?isOpenAccess ?idTipo";
             string where = $@"WHERE{{
@@ -319,7 +314,7 @@ namespace EditorCV.Models
             }
         }
 
-        private void GetAutoresPublicacion(string pIdRecurso, Publication publication)
+        private static void GetAutoresPublicacion(string pIdRecurso, Publication publication)
         {
             string selectAutores = "select distinct ?nombrePersona";
             string whereAutores = $@"WHERE{{
@@ -349,7 +344,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="IdDSpace">Identificador de DSpace</param>
         /// <param name="pIdRecurso">Identificador largo del recuso</param>
-        private void AniadirIdDspace(string IdDSpace, string pIdRecurso)
+        private static void AniadirIdDspace(string IdDSpace, string pIdRecurso)
         {
             //No hago nada si el identificador del recurso es nulo.
             if (string.IsNullOrEmpty(pIdRecurso))
@@ -410,24 +405,12 @@ namespace EditorCV.Models
                 listadoValores.Add(metadataEntryDateCreated);
             }
 
-            //Fecha defensa/creación
-            //if (!string.IsNullOrEmpty(publication.)) { 
-            //MetadataEntry metadataEntryDateIssued = new MetadataEntry("dc.date.issued", "2022");
-            //listadoValores.Add(metadataEntryDateIssued);
-            //}
-
             //Descripción
             if (!string.IsNullOrEmpty(publication.descripcion))
             {
                 Metadata metadataEntryDescription = new Metadata("dc.description", publication.descripcion);
                 listadoValores.Add(metadataEntryDescription);
             }
-
-            //Resumen
-            //if (!string.IsNullOrEmpty(publication.)) { 
-            //MetadataEntry metadataEntryDescriptionAbstract = new MetadataEntry("dc.description.abstract", );
-            //listadoValores.Add(metadataEntryDescriptionAbstract);
-            //}
 
             //ISBN
             if (!string.IsNullOrEmpty(publication.isbn))
@@ -449,12 +432,6 @@ namespace EditorCV.Models
                 Metadata metadataEntryIdentifierUri = new Metadata("dc.identifier.uri", publication.handle);
                 listadoValores.Add(metadataEntryIdentifierUri);
             }
-
-            //Idioma
-            //if (!string.IsNullOrEmpty(publication.)) { 
-            //MetadataEntry metadataEntryLanguage = new MetadataEntry("dc.language", "");
-            //listadoValores.Add(metadataEntryLanguage);
-            //}
 
             //Editorial
             if (!string.IsNullOrEmpty(publication.editorial))
@@ -547,7 +524,7 @@ namespace EditorCV.Models
         /// Devuelve el estado del servicio
         /// </summary>
         /// <returns></returns>
-        private Status GetStatus()
+        private static Status GetStatus()
         {
             Status status = new Status();
 
@@ -582,7 +559,7 @@ namespace EditorCV.Models
         /// <summary>
         /// Autentica al usuario con las credenciales de configuración en DSpace y asigna el token a tokenAuth
         /// </summary>
-        private void Authentication()
+        private static void Authentication()
         {
             try
             {

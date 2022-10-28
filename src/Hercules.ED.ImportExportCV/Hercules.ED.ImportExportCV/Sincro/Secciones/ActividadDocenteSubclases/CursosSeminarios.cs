@@ -10,54 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class CursosSeminarios : DisambiguableEntity
     {
-        public string nombreEvento { get; set; }
-        public string fecha { get; set; }
-        public string entidadOrganizadora { get; set; }
+        public string NombreEvento { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadOrganizadora { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombreEvento = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configEO = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configNombreEventoCurSem = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaCurSem = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntOrgCurSem = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "nombreEvento",
-                    config = configNombreEvento,
-                    value = nombreEvento
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadOrganizadora",
-                    config = configEO,
-                    value = entidadOrganizadora
-                }
+                new DisambiguationData(configNombreEventoCurSem,"nombreEvento",NombreEvento),
+                new DisambiguationData(configFechaCurSem,"fecha",Fecha),
+                new DisambiguationData(configEntOrgCurSem,"entidadOrganizadora",EntidadOrganizadora)
             };
             return data;
         }
@@ -70,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDCurSem(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosCurSem = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -92,19 +59,19 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    CursosSeminarios cursos = new CursosSeminarios
+                    CursosSeminarios cursos = new ()
                     {
                         ID = fila["item"].value,
-                        nombreEvento = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
+                        NombreEvento = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadOrganizadora = fila.ContainsKey("itemEO") ? fila["itemEO"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cursos);
+                    resultadosCurSem.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cursos);
                 }
             }
 
-            return resultados;
+            return resultadosCurSem;
         }
     }
 }

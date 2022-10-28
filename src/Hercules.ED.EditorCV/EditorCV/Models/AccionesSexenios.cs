@@ -11,12 +11,13 @@ using System.Runtime.InteropServices;
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology;
 using Gnoss.ApiWrapper.Model;
+using System.IO;
 
 namespace EditorCV.Models
 {
     public class AccionesSexenios
     {
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
         /// Envia una petición para conseguir los Sexenios del usuario

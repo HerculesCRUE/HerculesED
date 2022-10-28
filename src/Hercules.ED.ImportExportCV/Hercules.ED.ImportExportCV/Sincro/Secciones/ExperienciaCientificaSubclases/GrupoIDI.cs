@@ -11,48 +11,28 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 {
     class GrupoIDI : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcionGruIdi = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaGruIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                }
+                new DisambiguationData(configDescripcionGruIdi,"descripcion",Descripcion),
+                new DisambiguationData( configFechaGruIdi,"fecha",Fecha)
             };
             return data;
         }
 
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDGruIdi(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosGruIdi = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -73,16 +53,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     GrupoIDI grupoIDI = new GrupoIDI
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
                         block = fila["isValidated"].value.Equals("true")
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), grupoIDI);
+                    resultadosGruIdi.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), grupoIDI);
                 }
             }
 
-            return resultados;
+            return resultadosGruIdi;
         }
     }
 }

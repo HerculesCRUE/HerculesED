@@ -10,34 +10,25 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
 {
     class ProyectosIDI : DisambiguableEntity
     {
-        public string nombre { get; set; }
+        public string Nombre { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 1f
-        };
+        private static readonly DisambiguationDataConfig configNombreProyIdi = new(DisambiguationDataConfigType.equalsTitle, 1f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "nombre",
-                    config = configNombre,
-                    value = nombre
-                },
+                new DisambiguationData(configNombreProyIdi,"nombre",Nombre)
             };
             return data;
         }
 
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDProyIdi(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosProyIdi = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -56,15 +47,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                     ProyectosIDI proyectosIDI = new ProyectosIDI
                     {
                         ID = fila["item"].value,
-                        nombre = fila["itemTitle"].value,
+                        Nombre = fila["itemTitle"].value,
                         block = fila["isValidated"].value.Equals("true")
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), proyectosIDI);
+                    resultadosProyIdi.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), proyectosIDI);
                 }
             }
 
-            return resultados;
+            return resultadosProyIdi;
         }
     }
 }

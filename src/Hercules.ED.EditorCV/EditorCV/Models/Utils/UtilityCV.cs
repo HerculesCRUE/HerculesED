@@ -8,6 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace EditorCV.Models.Utils
             {"gn", "http://www.geonames.org/ontology#" }
         };
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static ConcurrentBag<Tab> mTabTemplates;
 
         /// <summary>
@@ -440,14 +441,14 @@ namespace EditorCV.Models.Utils
                 List<List<string>> listOfLists = SplitList(pIds.ToList(), maxIn).ToList();
                 foreach (List<string> list in listOfLists)
                 {
-                    int offset = 0;
-                    int limit = paginacion;
-                    while (limit == paginacion)
+                    int offsetSinOrden = 0;
+                    int limitSinOrden = paginacion;
+                    while (limitSinOrden == paginacion)
                     {
-                        string select = @$" select * where
+                        string selectSinOrden = @$" select * where
                                             {{
                                                 select distinct ?s ?p ?o ";
-                        string where = @$"      where
+                        string whereSinOrden = @$"      where
                                                 {{
                                                    ?s ?p ?o. 
                                                    FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
@@ -455,21 +456,21 @@ namespace EditorCV.Models.Utils
                                                    FILTER(?p in(<{string.Join(">,<", pProperties.Where(x => string.IsNullOrEmpty(x.order)).Select(x => x.property).ToList().OrderByDescending(x => x))}>))
                                                 }} 
                                                 order by asc(?o) asc(?p) asc(?s)
-                                            }} limit {limit} offset {offset}";
-                        string claveCache = select + where + pGraph;
-                        SparqlObject sparqlObjectAux = null;
-                        if (pConcDicQueries.ContainsKey(claveCache))
+                                            }} limit {limitSinOrden} offset {offsetSinOrden}";
+                        string claveCacheSinOrden = selectSinOrden + whereSinOrden + pGraph;
+                        SparqlObject sparqlObjectAuxSinOrden = null;
+                        if (pConcDicQueries.ContainsKey(claveCacheSinOrden))
                         {
-                            sparqlObjectAux = pConcDicQueries[claveCache];
+                            sparqlObjectAuxSinOrden = pConcDicQueries[claveCacheSinOrden];
                         }
                         else
                         {
-                            sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-                            pConcDicQueries[claveCache] = sparqlObjectAux;
+                            sparqlObjectAuxSinOrden = mResourceApi.VirtuosoQuery(selectSinOrden, whereSinOrden, pGraph);
+                            pConcDicQueries[claveCacheSinOrden] = sparqlObjectAuxSinOrden;
                         }
-                        limit = sparqlObjectAux.results.bindings.Count;
-                        offset += sparqlObjectAux.results.bindings.Count;
-                        foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAux.results.bindings)
+                        limitSinOrden = sparqlObjectAuxSinOrden.results.bindings.Count;
+                        offsetSinOrden += sparqlObjectAuxSinOrden.results.bindings.Count;
+                        foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAuxSinOrden.results.bindings)
                         {
                             if (!data.ContainsKey(fila["s"].value))
                             {
@@ -479,11 +480,11 @@ namespace EditorCV.Models.Utils
                         }
                         if (sparqlObject == null)
                         {
-                            sparqlObject = sparqlObjectAux;
+                            sparqlObject = sparqlObjectAuxSinOrden;
                         }
                         else
                         {
-                            sparqlObject.results.bindings.AddRange(sparqlObjectAux.results.bindings);
+                            sparqlObject.results.bindings.AddRange(sparqlObjectAuxSinOrden.results.bindings);
                         }
                     }
                 }
@@ -513,14 +514,14 @@ namespace EditorCV.Models.Utils
                     List<List<string>> listOfLists = SplitList(pIds.ToList(), maxIn).ToList();
                     foreach (List<string> list in listOfLists)
                     {
-                        int offset = 0;
-                        int limit = paginacion;
-                        while (limit == paginacion)
+                        int offsetConOrden = 0;
+                        int limitConOrden = paginacion;
+                        while (limitConOrden == paginacion)
                         {
-                            string select = @$" select * where
+                            string selectConOrden = @$" select * where
                                                 {{
                                                     select distinct ?s ?p ?o ";
-                            string where = @$"      where
+                            string whereConOrden = @$"      where
                                                     {{
                                                         ?s ?p ?o. 
                                                         FILTER( lang(?o) = '{pLang}' OR lang(?o) = '' OR !isLiteral(?o) )  
@@ -529,21 +530,21 @@ namespace EditorCV.Models.Utils
                                                         FILTER(?p =<{property.property}>)
                                                     }} 
                                                     order by asc(?level{nivel - 1}) asc(?o) asc(?p) asc(?s)
-                                                }} limit {limit} offset {offset}";
-                            string claveCache = select + where + pGraph;
-                            SparqlObject sparqlObjectAux = null;
-                            if (pConcDicQueries.ContainsKey(claveCache))
+                                                }} limit {limitConOrden} offset {offsetConOrden}";
+                            string claveCacheConOrden = selectConOrden + whereConOrden + pGraph;
+                            SparqlObject sparqlObjectAuxConOrden = null;
+                            if (pConcDicQueries.ContainsKey(claveCacheConOrden))
                             {
-                                sparqlObjectAux = pConcDicQueries[claveCache];
+                                sparqlObjectAuxConOrden = pConcDicQueries[claveCacheConOrden];
                             }
                             else
                             {
-                                sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
-                                pConcDicQueries[claveCache] = sparqlObjectAux;
+                                sparqlObjectAuxConOrden = mResourceApi.VirtuosoQuery(selectConOrden, whereConOrden, pGraph);
+                                pConcDicQueries[claveCacheConOrden] = sparqlObjectAuxConOrden;
                             }
-                            limit = sparqlObjectAux.results.bindings.Count;
-                            offset += sparqlObjectAux.results.bindings.Count;
-                            foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAux.results.bindings)
+                            limitConOrden = sparqlObjectAuxConOrden.results.bindings.Count;
+                            offsetConOrden += sparqlObjectAuxConOrden.results.bindings.Count;
+                            foreach (Dictionary<string, SparqlObject.Data> fila in sparqlObjectAuxConOrden.results.bindings)
                             {
                                 if (!data.ContainsKey(fila["s"].value))
                                 {
@@ -553,11 +554,11 @@ namespace EditorCV.Models.Utils
                             }
                             if (sparqlObject == null)
                             {
-                                sparqlObject = sparqlObjectAux;
+                                sparqlObject = sparqlObjectAuxConOrden;
                             }
                             else
                             {
-                                sparqlObject.results.bindings.AddRange(sparqlObjectAux.results.bindings);
+                                sparqlObject.results.bindings.AddRange(sparqlObjectAuxConOrden.results.bindings);
                             }
                         }
                     }

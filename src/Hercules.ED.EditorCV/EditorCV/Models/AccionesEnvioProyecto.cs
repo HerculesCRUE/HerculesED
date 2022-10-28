@@ -18,14 +18,8 @@ using EditorCV.Models.Utils;
 
 namespace EditorCV.Models
 {
-    public class AccionesEnvioProyecto
+    public class AccionesEnvioProyecto: AccionesEnvio
     {
-        #region --- Constantes   
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
-        private static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
-        private static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models/Utils/prefijos.json";
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
-        #endregion
 
 
         /// <summary>
@@ -141,44 +135,6 @@ namespace EditorCV.Models
         }
 
         /// <summary>
-        /// Inserta un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        private void Insercion(Guid pGuid, string pPropiedad, string pValorNuevo)
-        {
-            Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-            List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
-            TriplesToInclude triple = new TriplesToInclude();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            listaTriplesInsercion.Add(triple);
-            dicInsercion.Add(pGuid, listaTriplesInsercion);
-            mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
-        }
-
-        /// <summary>
-        /// Modifica un triple.
-        /// </summary>
-        /// <param name="pGuid"></param>
-        /// <param name="pPropiedad"></param>
-        /// <param name="pValorNuevo"></param>
-        /// <param name="pValorAntiguo"></param>
-        private void Modificacion(Guid pGuid, string pPropiedad, string pValorNuevo, string pValorAntiguo)
-        {
-            Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-            List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-            TriplesToModify triple = new TriplesToModify();
-            triple.Predicate = pPropiedad;
-            triple.NewValue = pValorNuevo;
-            triple.OldValue = pValorAntiguo;
-            listaTriplesModificacion.Add(triple);
-            dicModificacion.Add(pGuid, listaTriplesModificacion);
-            mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
-        }
-
-        /// <summary>
         /// Obtiene los datos de los Proyectos a enviar a validación.
         /// </summary>
         /// <param name="pIdProyecto">ID del recurso del proyecto.</param>
@@ -253,10 +209,7 @@ namespace EditorCV.Models
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return UtilidadesAPI.GetValorFilaSparqlObject(fila, "crisIdentifier");
-                }
+                return UtilidadesAPI.GetValorFilaSparqlObject(resultadoQuery.results.bindings[0], "crisIdentifier");
             }
 
             return string.Empty;
@@ -283,10 +236,7 @@ namespace EditorCV.Models
 
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
-                {
-                    return int.Parse(fila["crisIdentifier"].value.Split("|").Last());
-                }
+                return int.Parse(resultadoQuery.results.bindings[0]["crisIdentifier"].value.Split("|").Last());
             }
 
             return 0;
@@ -303,97 +253,6 @@ namespace EditorCV.Models
             string mes = pFechaSparql.Substring(4, 2);
             string anyo = pFechaSparql.Substring(0, 4);
             return $@"{anyo}-{mes}-{dia}T00:00:00Z";
-        }
-
-        /// <summary>
-        /// Obtención del token.
-        /// </summary>
-        /// <returns></returns>
-        private string GetTokenCSP(ConfigService pConfig)
-        {
-            Uri url = new Uri(pConfig.GetUrlToken());
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbCsp()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbCsp()),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
-
-            string result = httpCall(url.ToString(), "POST", content).Result;
-            var json = JObject.Parse(result);
-
-            return json["access_token"].ToString();
-        }
-
-        /// <summary>
-        /// Obtención del token.
-        /// </summary>
-        /// <returns></returns>
-        private string GetTokenPRC(ConfigService pConfig)
-        {
-            Uri url = new Uri(pConfig.GetUrlToken());
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("client_id", "front"),
-                new KeyValuePair<string, string>("username", pConfig.GetUsernameEsbPrc()),
-                new KeyValuePair<string, string>("password", pConfig.GetPasswordEsbPrc()),
-                new KeyValuePair<string, string>("grant_type", "password")
-            });
-
-            string result = httpCall(url.ToString(), "POST", content).Result;
-            var json = JObject.Parse(result);
-
-            return json["access_token"].ToString();
-        }
-
-        /// <summary>
-        /// Llamada para la obtención del token.
-        /// </summary>
-        /// <param name="pUrl"></param>
-        /// <param name="pMethod"></param>
-        /// <param name="pBody"></param>
-        /// <returns></returns>
-        protected async Task<string> httpCall(string pUrl, string pMethod, FormUrlEncodedContent pBody)
-        {
-            HttpResponseMessage response;
-            using (var httpClient = new HttpClient())
-            {
-                using (var request = new HttpRequestMessage(new HttpMethod(pMethod), pUrl))
-                {
-                    request.Content = pBody;
-
-                    int intentos = 3;
-                    while (true)
-                    {
-                        try
-                        {
-                            response = await httpClient.SendAsync(request);
-                            break;
-                        }
-                        catch
-                        {
-                            intentos--;
-                            if (intentos == 0)
-                            {
-                                throw;
-                            }
-                            else
-                            {
-                                Thread.Sleep(1000);
-                            }
-                        }
-                    }
-                }
-            }
-            if (response.Content != null)
-            {
-                return await response.Content.ReadAsStringAsync();
-            }
-            else
-            {
-                return string.Empty;
-            }
         }
     }
 }

@@ -10,54 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class PeriodosActividad : DisambiguableEntity
     {
-        public string numTramos { get; set; }
-        public string fecha { get; set; }
-        public string entidadAcreditante { get; set; }
+        public string NumTramos { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadAcreditante { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configEA = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcionPerAct = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaPerAct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntActPerAct = new DisambiguationDataConfig(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "numTramos",
-                    config = configDescripcion,
-                    value = numTramos
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadAcreditacion",
-                    config = configEA,
-                    value = entidadAcreditante
-                }
+                new DisambiguationData(configDescripcionPerAct,"numTramos",NumTramos),
+                new DisambiguationData(configFechaPerAct,"fecha",Fecha),
+                new DisambiguationData(configEntActPerAct,"entidadAcreditacion",EntidadAcreditante)
             };
 
             return data;
@@ -71,12 +38,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDPerAct(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosPerAct = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -97,16 +64,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     PeriodosActividad periodosActividad = new PeriodosActividad
                     {
                         ID = fila["item"].value,
-                        numTramos = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
+                        NumTramos = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadAcreditante = fila.ContainsKey("itemEA") ? fila["itemEA"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), periodosActividad);
+                    resultadosPerAct.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), periodosActividad);
                 }
             }
 
-            return resultados;
+            return resultadosPerAct;
         }
     }
 }

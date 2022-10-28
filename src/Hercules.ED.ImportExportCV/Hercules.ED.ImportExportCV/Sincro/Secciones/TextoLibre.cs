@@ -28,11 +28,11 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
-            List<string> rdfTypeItem = new List<string>() { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
+            List<string> rdfTypeItem = new () { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
 
             //1º Obtenemos la entidad de BBDD.
             Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem, rdfTypeItem);
@@ -46,7 +46,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             if (preimportar)
             {
-                List<SubseccionItem> listaAux = new List<SubseccionItem>();
+                List<SubseccionItem> listaAux = new();
                 if (entityBBDD == null)
                 {
                     listaAux.Add(new SubseccionItem(0, null, entityXML.properties));
@@ -61,7 +61,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
                 {
-                    List<string> listadoEliminacion = new List<string>() { "0", "1", "2" };
+                    List<string> listadoEliminacion = new () { "0", "1", "2" };
                     string numero;
                     for (int i = 0; i < listadoIdBBDD.Count; i++)
                     {
@@ -92,7 +92,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 {
                     listadoIdBBDD.RemoveAll(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_"));
                 }
-                return null;
+                return new List<SubseccionItem>();
             }
         }
 
@@ -100,10 +100,13 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             try
             {
-                Entity entity = new Entity();
+                Entity entity = new ();
                 entity.properties = new List<Property>();
                 List<(string, string)> resumen = GetResumen(listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnRichText>("070.010.000.010"));
-                if (resumen == null) { return entity; }
+                if (!resumen.Any()) 
+                {
+                    return entity;
+                }
 
                 if (resumen.Count == 3)
                 {
@@ -129,7 +132,10 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private List<(string, string)> GetResumen(CvnItemBeanCvnRichText item)
         {
-            if (item == null) { return null; }
+            if (item == null) 
+            { 
+                return new List<(string, string)>();
+            }
 
             string b1 = "B.1. Breve descripción del Trabajo de Fin de Grado (TFG) y puntuación obtenida";
             string b2 = "B.2. Breve descripción del Trabajo de Fin de Máster (TFM) y puntuación obtenida";
@@ -160,7 +166,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 resumenLibre = resumen;
             }
 
-            List<(string, string)> listadoResumen = new List<(string, string)> { ("resumenLibre", resumenLibre.Trim()), ("TFG", TFG.Trim()), ("TFM", TFM.Trim()) };
+            List<(string, string)> listadoResumen = new () { ("resumenLibre", resumenLibre.Trim()), ("TFG", TFG.Trim()), ("TFM", TFM.Trim()) };
 
             return listadoResumen;
         }
@@ -179,11 +185,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item2))
                 {
                     string nombreEntidad = rdfTypeItem.First();
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }
@@ -192,11 +198,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(item3))
                 {
                     string nombreEntidad = rdfTypeItem[1];
-                    if (nombreEntidad.Contains("#"))
+                    if (nombreEntidad.Contains('#'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("#") + 1);
                     }
-                    if (nombreEntidad.Contains("/"))
+                    if (nombreEntidad.Contains('/'))
                     {
                         nombreEntidad = nombreEntidad.Substring(nombreEntidad.LastIndexOf("/") + 1);
                     }

@@ -10,54 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class OtrasActividadesDivulgacion : DisambiguableEntity
     {
-        public string tituloTrabajo { get; set; }
-        public string fecha { get; set; }
-        public string nombreEvento { get; set; }
+        public string TituloTrabajo { get; set; }
+        public string Fecha { get; set; }
+        public string NombreEvento { get; set; }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configNombreEvento = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configTituloOtAcDiv = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaOtAcDiv = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configNombreEventoOtAcDiv = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "tituloTrabajo",
-                    config = configTitulo,
-                    value = tituloTrabajo
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "nombreEvento",
-                    config = configNombreEvento,
-                    value = nombreEvento
-                }
+                new DisambiguationData(configTituloOtAcDiv,"tituloTrabajo",TituloTrabajo),
+                new DisambiguationData(configFechaOtAcDiv,"fecha",Fecha),
+                new DisambiguationData(configNombreEventoOtAcDiv,"nombreEvento",NombreEvento)
             };
             return data;
         }
@@ -70,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDOtAcDiv(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosOtAcDiv = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -96,16 +63,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     OtrasActividadesDivulgacion otrasActividades = new OtrasActividadesDivulgacion
                     {
                         ID = fila["item"].value,
-                        tituloTrabajo = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        nombreEvento = fila.ContainsKey("itemNombre") ? fila["itemNombre"].value : ""
+                        TituloTrabajo = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        NombreEvento = fila.ContainsKey("itemNombre") ? fila["itemNombre"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), otrasActividades);
+                    resultadosOtAcDiv.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), otrasActividades);
                 }
             }
 
-            return resultados;
+            return resultadosOtAcDiv;
         }
     }
 }

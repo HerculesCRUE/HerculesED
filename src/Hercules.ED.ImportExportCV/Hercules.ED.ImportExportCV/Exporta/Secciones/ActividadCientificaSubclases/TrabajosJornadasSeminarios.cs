@@ -11,7 +11,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class TrabajosJornadasSeminarios:SeccionBase
     {
-        private readonly List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificActivity", 
+        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
             "http://w3id.org/roh/worksSubmittedSeminars", "http://w3id.org/roh/relatedWorkSubmittedSeminarsCV", 
             "http://vivoweb.org/ontology/core#relatedBy" };
         private readonly string graph = "document";
@@ -26,19 +26,23 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaTrabajosJornadasSeminarios(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
        {
-            List<CvnItemBean> listado = new List<CvnItemBean>();
-
-            // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<CvnItemBean> listado = new ();
+            //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
+            // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
+            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
             {
-                return;
+                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadores.Count == 0)
+                {
+                    return;
+                }
             }
 
             Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
             {
-                CvnItemBean itemBean = new CvnItemBean();
+                CvnItemBean itemBean = new ();
                 itemBean.Code = "060.010.030.000";
                 if (itemBean.Items == null)
                 {

@@ -10,54 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
 {
     class EstudiosCiclos : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string entidadTitulacion { get; set; }
-        public string fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string EntidadTitulacion { get; set; }
+        public string Fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configET = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcionEstCic = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configEntTitEstCic = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaEstCic = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadTitulacion",
-                    config = configET,
-                    value = entidadTitulacion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                }
+                new DisambiguationData(configDescripcionEstCic,"descripcion",Descripcion),
+                new DisambiguationData(configEntTitEstCic,"entidadTitulacion",EntidadTitulacion),
+                new DisambiguationData(configFechaEstCic,"fecha",Fecha)
             };
             return data;
         }
@@ -70,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDEstCic(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosEstCic = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -92,19 +59,19 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    EstudiosCiclos estudios = new EstudiosCiclos
+                    EstudiosCiclos estudios = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        entidadTitulacion = fila.ContainsKey("itemET") ? fila["itemET"].value : "",
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        EntidadTitulacion = fila.ContainsKey("itemET") ? fila["itemET"].value : "",
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), estudios);
+                    resultadosEstCic.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), estudios);
                 }
             }
 
-            return resultados;
+            return resultadosEstCic;
         }
     }
 }

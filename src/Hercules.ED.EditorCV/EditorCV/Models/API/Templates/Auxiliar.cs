@@ -5,8 +5,6 @@ using System.Web;
 
 namespace EditorCV.Models.API.Templates
 {  
-
-
     /// <summary>
     /// Clase genérica para la configuración de las propiedades
     /// </summary>
@@ -15,29 +13,29 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad
         /// </summary>
-        public string property;
+        public string property { get; set; }
         /// <summary>
         /// Grafo en el que buscar los 'hijos'
         /// </summary>
-        public string graph;
+        public string graph { get; set; }
         /// <summary>
         /// 'Hijos'
         /// </summary>
-        public PropertyDataTemplate child;
+        public PropertyDataTemplate child { get; set; }
 
         /// <summary>
         /// Orden
         /// </summary>
-        public string order;
+        public string order { get; set; }
 
         /// <summary>
         /// Texto auxiliar para el titulo
         /// </summary>
-        public Dictionary<string,string> auxTitle;
+        public Dictionary<string,string> auxTitle { get; set; }
 
         public Utils.PropertyData GenerarPropertyData(string pGraph)
         {
-            Utils.PropertyData property = new Utils.PropertyData()
+            Utils.PropertyData propertyData = new Utils.PropertyData()
             {
                 property = this.property,
                 order = order,
@@ -50,11 +48,11 @@ namespace EditorCV.Models.API.Templates
                 {
                     graphAux = pGraph;
                 }
-                property.graph = graphAux;
-                Utils.UtilityCV.GenerarPropertyData(this, ref property, graphAux);
-                Utils.UtilityCV.CleanPropertyData(ref property);
+                propertyData.graph = graphAux;
+                Utils.UtilityCV.GenerarPropertyData(this, ref propertyData, graphAux);
+                Utils.UtilityCV.CleanPropertyData(ref propertyData);
             }
-            return property;
+            return propertyData;
         }
 
         public string GetRoute()

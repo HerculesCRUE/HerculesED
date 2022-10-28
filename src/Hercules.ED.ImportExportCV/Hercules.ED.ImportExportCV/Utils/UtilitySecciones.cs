@@ -20,21 +20,21 @@ namespace Utils
 {
     public class UtilitySecciones
     {
-        private static Dictionary<string, string> mListaRevistas = new ();
-        private static Dictionary<string, string> mListaPalabrasClave = new ();
-        public static List<Tuple<string, string>> Lenguajes = new ();
-        private static Dictionary<string, string> mOrgsNombreIds = new ();
-        private static Dictionary<string, string> dicTopics = new ();
-        private static Dictionary<string, string> dicDOI = new ();
+        private static Dictionary<string, string> mListaRevistas = new();
+        private static readonly Dictionary<string, string> mListaPalabrasClave = new();
+        private static readonly List<Tuple<string, string>> Lenguajes = new();
+        private static Dictionary<string, string> mOrgsNombreIds = new();
+        private static readonly Dictionary<string, string> dicTopics = new();
+        private static readonly Dictionary<string, string> dicDOI = new();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static Dictionary<string, string> GetIDPersona(string crisID)
         {
-            Dictionary<string, string> PersonaORCID = new Dictionary<string, string>();
-            string persona="";
-            string ORCID="";
+            Dictionary<string, string> PersonaORCID = new ();
+            string persona = "";
+            string ORCID = "";
 
             string select = $@"select distinct ?cv ?person ?cris ?ORCID";
             string where = $@"
@@ -81,24 +81,30 @@ where{{
     FILTER(?cris='{crisID}')
 }} ";
             SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            if (resultData == null || resultData.results == null || resultData.results.bindings == null)
             {
-                if (fila.ContainsKey("cv"))
-                {
-                    return fila["cv"].value;
-                }
+                return "";
             }
 
+            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            if (fila.ContainsKey("cv"))
+            {
+                return fila["cv"].value;
+            }
 
             return "";
+        }
+
+        public static List<Tuple<string, string>> GetLenguajes()
+        {
+            return Lenguajes;
         }
 
         /// <summary>
         /// Inicializa el listado de Lenguajes.
         /// </summary>
         /// <param name="pResourceApi"></param>
-        public static void GetLenguajes(ResourceApi pResourceApi)
+        public static void IniciarLenguajes(ResourceApi pResourceApi)
         {
             string select = $@"select distinct ?title ?ident";
             string where = $@" where {{
@@ -106,7 +112,6 @@ where{{
 ?s <http://purl.org/dc/elements/1.1/title> ?title FILTER(langMatches(lang(?title), ""es""))
 ?s <http://purl.org/dc/elements/1.1/identifier> ?ident .
 }}";
-            List<Tuple<string, string, string>> listaResultado = new List<Tuple<string, string, string>>();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "language");
             if (resultData.results.bindings.Count == 0)
@@ -132,7 +137,7 @@ where{{
         /// <returns>HashSet<string></returns>
         public static HashSet<string> GetIDS(ResourceApi pResourceApi, string pCVID, List<string> propiedadesItem)
         {
-            HashSet<string> ids = new HashSet<string>();
+            HashSet<string> ids = new ();
             int offsetInt = 0;
             int limit = 10000;
 
@@ -184,7 +189,7 @@ where{{
         /// <param name="pResourceApi">pResourceApi</param>
         /// <param name="nombreRevista">nombreRevista</param>
         /// <returns>string</returns>
-        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, [Optional] string issn)
+        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
         {
             //Si el nombre de la revista es nulo o vacio
             if (string.IsNullOrEmpty(nombreRevista))
@@ -197,7 +202,7 @@ where{{
 
             if (mListaRevistas.Count == 0)
             {
-                Dictionary<string, string> listaRevistasAux = new Dictionary<string, string>();
+                Dictionary<string, string> listaRevistasAux = new ();
                 while (true)
                 {
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
@@ -247,7 +252,7 @@ where{{
             //Recalculamos cada 60 minutos
             if (mDateOrgsNombreIds.AddMinutes(60) < DateTime.Now)
             {
-                Dictionary<string, string> aux = new Dictionary<string, string>();
+                Dictionary<string, string> aux = new ();
                 int offset = 0;
                 int limit = 10000;
                 while (true)
@@ -304,7 +309,7 @@ where{{
         /// <param name="list"></param>
         public static List<Property> AddProperty(params Property[] list)
         {
-            List<Property> listado = new List<Property>();
+            List<Property> listado = new ();
             for (int i = 0; i < list.Length; i++)
             {
                 if (!string.IsNullOrEmpty(list[i].values[0]))
@@ -475,7 +480,7 @@ where{{
             try
             {
                 string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pIdentificador=doi&pDoi=" + doi + "&pIdPersona=" + idPersona + "&pNombreCompletoAutor=" + nombreCompletoAutor;
-                HttpClient httpClientEstado = new HttpClient();
+                HttpClient httpClientEstado = new ();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
 
                 bool status = responseEstado.IsSuccessStatusCode;
@@ -580,8 +585,10 @@ where{{
         /// <returns>Listado con los padres del teauro desde el hijo</returns>
         public static List<string> GetPadresTesauro(string hijo)
         {
-            HashSet<string> listado = new HashSet<string>();
-            listado.Add(hijo);
+            HashSet<string> listado = new()
+            {
+                hijo
+            };
 
             //Base del recurso
             string item = hijo.Split("_").First();
@@ -604,7 +611,7 @@ where{{
                 valueAux += numCeros;
                 numCeros += ".0";
                 //Elimino el ultimo valor para llegar a su padre
-                listValues.RemoveAt(listValues.Count() - 1);
+                listValues.RemoveAt(listValues.Count - 1);
                 //En caso de que no esté en el listado añado el valor
                 if (!listado.Contains(valueAux))
                 {
@@ -679,14 +686,14 @@ where{{
         /// <returns></returns>
         public static Dictionary<string, string> ObtenerIdPersona(ResourceApi resourceApi, string CVID)
         {
-            Dictionary<string, string> resultado = new Dictionary<string, string>();
+            Dictionary<string, string> resultado = new ();
             string select = $@"SELECT distinct ?idPersona ?nombreCompleto ";
             string where = $@"where {{
                                 <{CVID}> <http://w3id.org/roh/cvOf> ?idPersona . 
                                 ?idPersona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto 
                             }}";
 
-            SparqlObject sparqlObject = resourceApi.VirtuosoQueryMultipleGraph(select, where, new(){ "curriculumvitae" ,"person"});
+            SparqlObject sparqlObject = resourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae", "person" });
             if (sparqlObject.results.bindings.Count > 0)
             {
                 string nick = sparqlObject.results.bindings.Any(x => x.ContainsKey("nombreCompleto")) ? sparqlObject.results.bindings.Select(x => x["nombreCompleto"].value)?.FirstOrDefault() : null;
@@ -807,7 +814,6 @@ where{{
                         break;
                     case "OTHERS":
                         Property IDOtro = entidadAux.properties.FirstOrDefault(x => x.prop == propIdOtroPub);
-                        Property NombreOtro = entidadAux.properties.FirstOrDefault(x => x.prop == nombreOtroPub);
 
                         string entityPartAux = Guid.NewGuid().ToString() + "@@@";
                         string valorID = StringGNOSSID(entityPartAux, identificador.Value);
@@ -946,7 +952,7 @@ where{{
         {
             try
             {
-                MailAddress mail = new MailAddress(emailAddress);
+                MailAddress mail = new (emailAddress);
 
                 return true;
             }

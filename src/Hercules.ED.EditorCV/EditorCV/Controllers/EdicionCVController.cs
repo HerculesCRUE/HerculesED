@@ -9,6 +9,7 @@ using EditorCV.Models.API.Input;
 using EditorCV.Models.Utils;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace EditorCV.Controllers
 {
@@ -35,7 +36,7 @@ namespace EditorCV.Controllers
         [HttpGet("Test")]
         public IActionResult Test()
         {
-            Gnoss.ApiWrapper.ResourceApi resourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+            Gnoss.ApiWrapper.ResourceApi resourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
             DateTime inicio = DateTime.Now;
             resourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
@@ -284,8 +285,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID, pLang));
+                return Ok(AccionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID, pLang));
             }
             catch (Exception ex)
             {

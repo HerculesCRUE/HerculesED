@@ -2,12 +2,13 @@
 using System;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.IO;
 
 namespace EditorCV.Models
 {
     public static class Security
     {
-        static UserApi mUserApi = new UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        static UserApi mUserApi = new UserApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static bool CheckUser(Guid pUserId,HttpRequest pHttpRequest)
         {

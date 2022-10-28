@@ -16,75 +16,56 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class PublicacionesDocumentos : DisambiguableEntity
     {
-        public string mTitle { get; set; }
-        public string title
+        private string TitlePriv { get; set; }
+        public string Title
         {
             get
             {
-                return mTitle;
+                return TitlePriv;
             }
             set
             {
                 if (value == null)
                 {
-                    mTitle = string.Empty;
+                    TitlePriv = string.Empty;
                 }
                 else
                 {
-                    mTitle = value;
+                    TitlePriv = value;
                 }
             }
-        }       
-        private HashSet<string> mAutores { get; set; }
-        public HashSet<string> autores
+        }
+        private HashSet<string> AutoresPriv { get; set; }
+        public HashSet<string> Autores
         {
             get
             {
-                return mAutores;
+                return AutoresPriv;
             }
             set
             {
                 if (value == null)
                 {
-                    mAutores = new HashSet<string>();
+                    AutoresPriv = new HashSet<string>();
                 }
                 else
                 {
-                    mAutores = value;
+                    AutoresPriv = value;
                 }
             }
         }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
+        private static readonly DisambiguationDataConfig configTituloPubDoc = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
-        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configAutoresPubDoc = new(DisambiguationDataConfigType.equalsItemList, 0.5f);
 
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configTitulo,
-                    value = title
-                },
-
-                new DisambiguationData()
-                {
-                    property = "autores",
-                    config = configAutores,
-                    values = autores
-                }
+                new DisambiguationData(configTituloPubDoc,"descripcion",Title),
+                new DisambiguationData(configAutoresPubDoc,"autores",Autores)
             };
             return data;
         }
@@ -97,12 +78,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem, List<Entity> listadoAux)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDPubDoc(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem, List<Entity> listadoAux)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosPubDoc = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -123,22 +104,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PublicacionesDocumentos publicacionesDocumentos = new PublicacionesDocumentos
+                    PublicacionesDocumentos publicacionesDocumentos = new()
                     {
                         ID = fila["item"].value,
-                        title = fila["itemTitle"].value
+                        Title = fila["itemTitle"].value,
+                        Autores = new HashSet<string>()
                     };
-
-                    publicacionesDocumentos.autores = new HashSet<string>();
                     if (fila.ContainsKey("autores"))
                     {
-                        string[] autores = fila["autores"].value.Split("|");
-                        foreach (string autor in autores)
+                        string[] filasAutores = fila["autores"].value.Split("|");
+                        foreach (string autor in filasAutores)
                         {
-                            publicacionesDocumentos.autores.Add(autor);
+                            publicacionesDocumentos.Autores.Add(autor);
                         }
                     }
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), publicacionesDocumentos);
+                    resultadosPubDoc.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), publicacionesDocumentos);
                 }
             }
 
@@ -212,7 +192,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     }
                 }
 
-                Dictionary<string, HashSet<string>> docAutores = new Dictionary<string, HashSet<string>>();
+                Dictionary<string, HashSet<string>> docAutores = new();
                 int offset = 0;
                 int limit = 10000;
                 while (true)
@@ -231,7 +211,6 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     {
                         string doc = fila["item"].value;
                         string autor = fila["autor"].value;
-                        HashSet<string> autores = new HashSet<string>();
                         if (!docAutores.ContainsKey(doc))
                         {
                             docAutores.Add(doc, new HashSet<string>());
@@ -266,11 +245,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 foreach (Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
                     persona.ID = persona.personid;
-                    resultados[persona.ID] = persona;
+                    resultadosPubDoc[persona.ID] = persona;
                 }
             }
 
-            return resultados;
+            return resultadosPubDoc;
         }
 
     }

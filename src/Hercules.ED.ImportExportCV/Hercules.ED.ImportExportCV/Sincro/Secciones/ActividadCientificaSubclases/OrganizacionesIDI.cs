@@ -10,69 +10,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class OrganizacionesIDI : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string tipoActividad { get; set; }
-        public string entidadConvocante { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string TipoActividad { get; set; }
+        public string EntidadConvocante { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configTipoActividad = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-        
-        private static readonly DisambiguationDataConfig configEC = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcionOrgIdi = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaOrgIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configTipoActividadOrgIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntConOrgIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "tipoActividad",
-                    config = configTipoActividad,
-                    value = tipoActividad
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadConvocante",
-                    config = configEC,
-                    value = entidadConvocante
-                }
+                new DisambiguationData(configDescripcionOrgIdi, "descripcion",Descripcion),
+                new DisambiguationData(configFechaOrgIdi,"fecha",Fecha),
+                new DisambiguationData(configTipoActividadOrgIdi,"tipoActividad",TipoActividad),
+                new DisambiguationData(configEntConOrgIdi,"entidadConvocante",EntidadConvocante)
             };
             return data;
         }
@@ -85,12 +40,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDOrgIdi(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosOrgIdi = new Dictionary<string, DisambiguableEntity>();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -112,17 +67,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     OrganizacionesIDI organizacionesIDI = new OrganizacionesIDI
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        tipoActividad = fila.ContainsKey("itemTipo") ? fila["itemTipo"].value : "",
-                        entidadConvocante = fila.ContainsKey("itemEC") ? fila["itemEC"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        TipoActividad = fila.ContainsKey("itemTipo") ? fila["itemTipo"].value : "",
+                        EntidadConvocante = fila.ContainsKey("itemEC") ? fila["itemEC"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), organizacionesIDI);
+                    resultadosOrgIdi.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), organizacionesIDI);
                 }
             }
 
-            return resultados;
+            return resultadosOrgIdi;
         }
     }
 }

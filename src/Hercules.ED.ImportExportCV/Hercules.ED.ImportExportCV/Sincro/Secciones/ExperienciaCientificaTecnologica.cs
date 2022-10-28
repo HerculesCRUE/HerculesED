@@ -33,10 +33,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/competitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedCompetitiveProjectCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedCompetitiveProjectCV";
             string graph = "project";
@@ -46,7 +46,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
             Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -61,13 +61,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ProyectosIDI proyectosIDI = new ProyectosIDI();
-                    proyectosIDI.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDINombre)?.values.FirstOrDefault();
+                    proyectosIDI.Nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDINombre)?.values.FirstOrDefault();
                     proyectosIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(proyectosIDI.ID, proyectosIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ProyectosIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ProyectosIDI.GetBBDDProyIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -94,10 +94,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/nonCompetitiveProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedNonCompetitiveProjectCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedNonCompetitiveProjectCV";
             string graph = "project";
@@ -105,9 +105,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://vivoweb.org/ontology/core#Project";
             string rdfTypePrefix = "RelatedNonCompetitiveProyect";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -122,13 +122,13 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     Contratos contratos = new Contratos();
-                    contratos.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosNombreProyecto)?.values.FirstOrDefault();
+                    contratos.Nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosNombreProyecto)?.values.FirstOrDefault();
                     contratos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(contratos.ID, contratos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = Contratos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = Contratos.GetBBDDContr(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -155,18 +155,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/patents", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "patent";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://purl.org/ontology/bibo/Patent";
             string rdfTypePrefix = "RelatedPatent";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -181,15 +181,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     PropiedadIndustrialIntelectual propiedadIndustrialIntelectual = new PropiedadIndustrialIntelectual();
-                    propiedadIndustrialIntelectual.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus)?.values.FirstOrDefault();
-                    propiedadIndustrialIntelectual.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIIFechaConcesion)?.values.FirstOrDefault();
-                    propiedadIndustrialIntelectual.entidadTitular = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechosNombre)?.values.FirstOrDefault();
+                    propiedadIndustrialIntelectual.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus)?.values.FirstOrDefault();
+                    propiedadIndustrialIntelectual.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIIFechaConcesion)?.values.FirstOrDefault();
+                    propiedadIndustrialIntelectual.EntidadTitular = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.propIIEntidadTitularDerechosNombre)?.values.FirstOrDefault();
                     propiedadIndustrialIntelectual.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(propiedadIndustrialIntelectual.ID, propiedadIndustrialIntelectual);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = PropiedadIndustrialIntelectual.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = PropiedadIndustrialIntelectual.GetBBDDPropIndInt(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -216,10 +216,10 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/groups", "http://vivoweb.org/ontology/core#relatedBy" };
             string propertyCV = "http://w3id.org/roh/relatedGroupCV";
             string rdfTypeCV = "http://w3id.org/roh/RelatedGroupCV";
             string graph = "group";
@@ -227,9 +227,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://xmlns.com/foaf/0.1/Group";
             string rdfTypePrefix = "RelatedGroup";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -244,14 +244,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     GrupoIDI grupoIDI = new GrupoIDI();
-                    grupoIDI.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDINombreGrupo)?.values.FirstOrDefault();
-                    grupoIDI.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIFechaInicio)?.values.FirstOrDefault();
+                    grupoIDI.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDINombreGrupo)?.values.FirstOrDefault();
+                    grupoIDI.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIFechaInicio)?.values.FirstOrDefault();
                     grupoIDI.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(grupoIDI.ID, grupoIDI);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = GrupoIDI.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = GrupoIDI.GetBBDDGruIdi(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -278,18 +278,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/supervisedArtisticProjects", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "supervisedartisticproject";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/SupervisedArtisticProject";
             string rdfTypePrefix = "RelatedSupervisedArtisticProject";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -304,15 +304,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ObrasArtisticas obrasArtisticas = new ObrasArtisticas();
-                    obrasArtisticas.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasDescripcion)?.values.FirstOrDefault();
-                    obrasArtisticas.nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasNombreExpo)?.values.FirstOrDefault();
-                    obrasArtisticas.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasFechaInicio)?.values.FirstOrDefault();
+                    obrasArtisticas.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasDescripcion)?.values.FirstOrDefault();
+                    obrasArtisticas.Nombre = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasNombreExpo)?.values.FirstOrDefault();
+                    obrasArtisticas.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.obrasArtisticasFechaInicio)?.values.FirstOrDefault();
                     obrasArtisticas.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(obrasArtisticas.ID, obrasArtisticas);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ObrasArtisticas.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ObrasArtisticas.GetBBDDObraArt(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -339,18 +339,18 @@ namespace ImportadorWebCV.Sincro.Secciones
             //Si procesar es false, no hago nada.
             if (!procesar)
             {
-                return null;
+                return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new List<string>() { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
+            List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
             string graph = "technologicalresult";
             string propTitle = "http://w3id.org/roh/title";
             string rdfType = "http://w3id.org/roh/TechnologicalResult";
             string rdfTypePrefix = "RelatedTechnologicalResult";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new Dictionary<string, DisambiguableEntity>();
-            Dictionary<string, string> equivalencias = new Dictionary<string, string>();
-            List<bool> listadoBloqueados = new List<bool>();
+            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
+            Dictionary<string, string> equivalencias = new ();
+            List<bool> listadoBloqueados = new ();
 
             if (petitionStatus != null)
             {
@@ -364,14 +364,14 @@ namespace ImportadorWebCV.Sincro.Secciones
                 foreach (Entity entityXML in listadoAux)
                 {
                     ResultadosTecnologicos resultadosTecnologicos = new ResultadosTecnologicos();
-                    resultadosTecnologicos.descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosDescripcion)?.values.FirstOrDefault();
-                    resultadosTecnologicos.fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosFechaInicio)?.values.FirstOrDefault();
+                    resultadosTecnologicos.Descripcion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosDescripcion)?.values.FirstOrDefault();
+                    resultadosTecnologicos.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosFechaInicio)?.values.FirstOrDefault();
                     resultadosTecnologicos.ID = Guid.NewGuid().ToString();
                     entidadesXML.Add(resultadosTecnologicos.ID, resultadosTecnologicos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
-                Dictionary<string, DisambiguableEntity> entidadesBBDD = ResultadosTecnologicos.GetBBDD(mResourceApi, mCvID, graph, propiedadesItem);
+                Dictionary<string, DisambiguableEntity> entidadesBBDD = ResultadosTecnologicos.GetBBDDResTec(mResourceApi, mCvID, graph, propiedadesItem);
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
@@ -395,7 +395,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetProyectosIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoProyectosIDI = listadoDatos.Where(x => x.Code.Equals("050.020.010.000")).ToList();
             if (listadoProyectosIDI.Count > 0)
@@ -415,7 +415,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.010.010")))
@@ -449,8 +449,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                             new Property(Variables.ExperienciaCientificaTecnologica.proyectosIDIAportacionSolicitante, item.GetStringPorIDCampo("050.020.010.420"))
                         ));
                         ProyectosIDIEntidadRealizacion(item, entidadAux);
-                        //ProyectosIDIResultadosRelevantesPalabrasClave(item, entidadAux);
-                        //ProyectosIDIPalabrasClave(item, entidadAux);
                         ProyectosIDIFinanciacion(item, entidadAux);
                         ProyectosIDIEntidadesParticipantes(item, entidadAux);
                         ProyectosIDIAutores(item, entidadAux);
@@ -466,58 +464,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ProyectosIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.010.020");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave pertenecientes a los resultados relevantes.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ProyectosIDIResultadosRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.010.350");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantesPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
         }
 
         /// <summary>
@@ -686,7 +632,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetContratos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoContratos = listadoDatos.Where(x => x.Code.Equals("050.020.020.000")).ToList();
             if (listadoContratos.Count > 0)
@@ -706,7 +652,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.020.010")))
@@ -740,8 +686,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ContratosEntidadesParticipantes(item, entidadAux);
                         ContratosAutores(item, entidadAux);
                         ContratosEntidadFinanciadora(item, entidadAux);
-                        //ContratosResultadosRelevantesPalabrasClave(item, entidadAux);
-                        //ContratosPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -753,58 +697,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 }
             }
             return listado;
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ContratosPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.020.020");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.contratosPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave pertenecientes a los resultados relevantes.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void ContratosResultadosRelevantesPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.020.020.310");
-
-            string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.contratosResultadosRelevantesPalabrasClave;
-
-            foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            {
-                string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-                foreach (string palabra in listadoPalabras)
-                {
-                    Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.contratosResultadosRelevantesPalabrasClave);
-                    UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-                        UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-                }
-            }
         }
 
         /// <summary>
@@ -965,7 +857,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetPropiedadIndustrialIntelectual(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoPropiedadIndustrialIntelectual = listadoDatos.Where(x => x.Code.Equals("050.030.010.000")).ToList();
             if (listadoPropiedadIndustrialIntelectual.Count > 0)
@@ -985,10 +877,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.010.020")))
-                    {                        
+                    {
                         entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
                             new Property(Variables.ExperienciaCientificaTecnologica.propIIDescripcion, item.GetStringPorIDCampo("050.030.010.010")),
                             new Property(Variables.ExperienciaCientificaTecnologica.propIITituloPropIndus, item.GetStringPorIDCampo("050.030.010.020")),
@@ -1201,7 +1093,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetGrupoIDI(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoGrupoIDI = listadoDatos.Where(x => x.Code.Equals("050.010.000.000")).ToList();
             if (listadoGrupoIDI.Count > 0)
@@ -1221,7 +1113,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     entidadAux.properties_cv = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.010.000.020")))
@@ -1248,7 +1140,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                         ));
                         GrupoIDIAutor(item, entidadAux);
                         GrupoIDIEntidadAfiliacion(item, entidadAux);
-                        //GrupoIDIPalabrasClave(item, entidadAux);
 
                         listado.Add(entidadAux);
                     }
@@ -1262,31 +1153,6 @@ namespace ImportadorWebCV.Sincro.Secciones
             return listado;
         }
 
-        /// <summary>
-        /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
-        /// pertenecientes a las palabaras clave.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="entidadAux"></param>
-        private void GrupoIDIPalabrasClave(CvnItemBean item, Entity entidadAux)
-        {
-            List<CvnItemBeanCvnString> listadoPalabrasClave = item.GetListaElementosPorIDCampo<CvnItemBeanCvnString>("050.010.000.210");
-
-            //string propiedadPalabrasClave = Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave;
-
-            //foreach (CvnItemBeanCvnString palabraClave in listadoPalabrasClave)
-            //{
-            //    string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-            //    List<string> listadoPalabras = Utility.GetPadresPalabrasClave(palabraClave);
-            //    foreach (string palabra in listadoPalabras)
-            //    {
-            //        Property propertyPalabrasClave = entidadAux.properties.FirstOrDefault(x => x.prop == Variables.ExperienciaCientificaTecnologica.grupoIDIPalabrasClave);
-            //        UtilitySecciones.CheckProperty(propertyPalabrasClave, entidadAux,
-            //            UtilitySecciones.StringGNOSSID(entityPartAux, Utility.ObtenerPalabraClave(mResourceApi, palabra)), propiedadPalabrasClave);
-            //    }
-            //}
-        }
 
         /// <summary>
         /// Inserta en <paramref name="entidadAux"/> los valores de <paramref name="item"/>,
@@ -1354,7 +1220,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetObrasArtisticas(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoObrasArtisticas = listadoDatos.Where(x => x.Code.Equals("050.020.030.000")).ToList();
             if (listadoObrasArtisticas.Count > 0)
@@ -1374,7 +1240,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.020.030.010")))
                     {
@@ -1460,7 +1326,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetResultadosTecnologicos(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new List<Entity>();
+            List<Entity> listado = new ();
 
             List<CvnItemBean> listadoResultadosTecnologicos = listadoDatos.Where(x => x.Code.Equals("050.030.020.000")).ToList();
             if (listadoResultadosTecnologicos.Count > 0)
@@ -1480,7 +1346,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                         petitionStatus.actualSubWorks++;
                     }
 
-                    Entity entidadAux = new Entity();
+                    Entity entidadAux = new ();
                     entidadAux.properties = new List<Property>();
                     if (!string.IsNullOrEmpty(item.GetStringPorIDCampo("050.030.020.010")))
                     {
@@ -1675,8 +1541,6 @@ namespace ImportadorWebCV.Sincro.Secciones
                 if (string.IsNullOrEmpty(entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"))) { continue; }
 
                 string entityPartAux = Guid.NewGuid().ToString() + "@@@";
-
-                string valorED = entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210");
 
                 //Añado la referencia si existe Entidad
                 UtilitySecciones.AniadirEntidadOrganizacion(mResourceApi, entidadDestinataria.GetNameEntityBeanCvnCodeGroup("050.030.020.210"),

@@ -9,54 +9,21 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
 {
     class CargosActividades : DisambiguableEntity
     {
-        public string nombre { get; set; }
-        public string categoria { get; set; }
-        public string fechaIni { get; set; }
+        public string Nombre { get; set; }
+        public string Categoria { get; set; }
+        public string FechaIni { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configCategoria = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFechaIni = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configNombreCarAct = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configCategoriaCarAct = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaIniCarAct = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new ()
             {
-                new DisambiguationData()
-                {
-                    property = "nombre",
-                    config = configNombre,
-                    value = nombre
-                },
-
-                new DisambiguationData()
-                {
-                    property = "categoria",
-                    config = configCategoria,
-                    value = categoria
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fechaIni",
-                    config = configFechaIni,
-                    value = fechaIni
-                }
+                new DisambiguationData(configNombreCarAct,"nombre",Nombre),
+                new DisambiguationData(configCategoriaCarAct,"categoria",Categoria),
+                new DisambiguationData(configFechaIniCarAct,"fechaIni",FechaIni)
             };
 
             return data;
@@ -70,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDCarAct(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosCarAct = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -96,16 +63,16 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
                     CargosActividades cargosActividades = new CargosActividades
                     {
                         ID = fila["item"].value,
-                        nombre = fila["itemTitle"].value,
-                        categoria = fila.ContainsKey("itemCategoria") ? fila["itemCategoria"].value : "",
-                        fechaIni = fila.ContainsKey("itemFechaIni") ? fila["itemFechaIni"].value : ""
+                        Nombre = fila["itemTitle"].value,
+                        Categoria = fila.ContainsKey("itemCategoria") ? fila["itemCategoria"].value : "",
+                        FechaIni = fila.ContainsKey("itemFechaIni") ? fila["itemFechaIni"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cargosActividades);
+                    resultadosCarAct.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), cargosActividades);
                 }
             }
 
-            return resultados;
+            return resultadosCarAct;
         }
     }
 }

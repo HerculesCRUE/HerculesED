@@ -99,8 +99,8 @@ namespace Utils
 
             if (fecha != DateTime.MinValue)
             {
-                List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
-                TriplesToModify triple = new TriplesToModify();
+                List<TriplesToModify> listaTriplesModificacion = new ();
+                TriplesToModify triple = new ();
                 triple.Predicate = $@"http://w3id.org/roh/importDate";
                 triple.OldValue = fecha.ToString();
                 triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
@@ -111,8 +111,8 @@ namespace Utils
             }
             else
             {
-                List<TriplesToInclude> listaTriplesModificacion = new List<TriplesToInclude>();
-                TriplesToInclude triple = new TriplesToInclude();
+                List<TriplesToInclude> listaTriplesModificacion = new ();
+                TriplesToInclude triple = new ();
                 triple.Predicate = $@"http://w3id.org/roh/importDate";
                 triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
                 listaTriplesModificacion.Add(triple);
@@ -129,9 +129,9 @@ namespace Utils
         public static void quitarFechaImportacion(string pCVID)
         {
             DateTime fecha = getFechaImportacion(pCVID);
-            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new Dictionary<Guid, List<RemoveTriples>>();
-            List<RemoveTriples> listaTriplesBorrado = new List<RemoveTriples>();
-            RemoveTriples triple = new RemoveTriples();
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new ();
+            List<RemoveTriples> listaTriplesBorrado = new ();
+            RemoveTriples triple = new ();
             triple.Predicate = $@"http://w3id.org/roh/importDate";
             triple.Value = fecha.ToString();
             triple.Title = false;
@@ -779,11 +779,10 @@ namespace Utils
                 {
                     #region Buscamos en nombres
                     {
-                        List<string> unions = new List<string>();
-                        List<string> unionsOut = new List<string>();
+                        List<string> unions = new ();
                         foreach (string wordOut in wordsTexto)
                         {
-                            List<string> words = new List<string>();
+                            List<string> words = new ();
                             if (wordOut.Length == 2)
                             {
                                 words.Add(wordOut[0].ToString());
@@ -2891,7 +2890,7 @@ namespace Utils
         {
             if (item.Value.Length != 6) { return null; }
 
-            List<string> listadoCodigos = new List<string>();
+            List<string> listadoCodigos = new ();
             string codigo = item.Value;
 
             if (Regex.Match(codigo, "^\\d{2}0000$").Success)
@@ -2927,7 +2926,7 @@ namespace Utils
             if (item.Value.Length != 24) { return null; }
 
             Dictionary<string, string> palabrasClave = UtilitySecciones.PalabrasClave(mResourceApi);
-            List<string> listadoCodigos = new List<string>();
+            List<string> listadoCodigos = new ();
             string codigo = item.Value;
 
             string padre = palabrasClave[codigo];

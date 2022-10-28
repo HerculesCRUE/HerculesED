@@ -14,52 +14,21 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class TrabajosCongresos : DisambiguableEntity
     {
-        public string titulo { get; set; }
-        public string fecha { get; set; }
-        public HashSet<string> autores { get; set; }
+        public string Titulo { get; set; }
+        public string Fecha { get; set; }
+        public HashSet<string> Autores { get; set; }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItemList,
-            score = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configTituloTraCon = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaTraCon = new(DisambiguationDataConfigType.equalsItem, 0.5f);
+        private static readonly DisambiguationDataConfig configAutoresTraCon = new(DisambiguationDataConfigType.equalsItemList, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "titulo",
-                    config = configTitulo,
-                    value = titulo
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                },
-
-                new DisambiguationData()
-                {
-                    property = "autores",
-                    config = configAutores,
-                    values = autores
-                }
+                new DisambiguationData(configTituloTraCon,"titulo",Titulo),
+                new DisambiguationData(configFechaTraCon,"fecha",Fecha),
+                new DisambiguationData(configAutoresTraCon,"autores",Autores)
             };
 
             return data;
@@ -73,11 +42,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem, List<Entity> listadoAux)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDTraCon(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem, List<Entity> listadoAux)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosTraCon = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -98,27 +67,26 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    TrabajosCongresos trabajosCongresos = new TrabajosCongresos
+                    TrabajosCongresos trabajosCongresos = new()
                     {
                         ID = fila["item"].value,
-                        titulo = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                        Titulo = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        Autores = new HashSet<string>()
                     };
-
-                    trabajosCongresos.autores = new HashSet<string>();
                     if (fila.ContainsKey("autores"))
                     {
-                        string[] autores = fila["autores"].value.Split("|");
-                        foreach (string autor in autores)
+                        string[] filasAutores = fila["autores"].value.Split("|");
+                        foreach (string autor in filasAutores)
                         {
-                            trabajosCongresos.autores.Add(autor);
+                            trabajosCongresos.Autores.Add(autor);
                         }
                     }
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), trabajosCongresos);
+                    resultadosTraCon.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), trabajosCongresos);
                 }
             }
             HashSet<string> listaNombres = new HashSet<string>();
-            ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new ConcurrentDictionary<string, List<Persona>>();
+            ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new();
 
             //Selecciono el nombre completo o la firma.
             foreach (Entity item in listadoAux)
@@ -201,12 +169,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                                         ?authorList2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor .
                                         FILTER(?autorIn in (<{string.Join(">,<", lista)}>))                                        
                                     }}order by desc(?item) desc(?autor)}} offset {offset} limit {limit}";
-                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectX, whereX, graph);                    
+                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectX, whereX, graph);
                     foreach (Dictionary<string, Data> fila in resultDataX.results.bindings)
                     {
                         string doc = fila["item"].value;
                         string autor = fila["autor"].value;
-                        HashSet<string> autores = new HashSet<string>();
                         if (!docAutores.ContainsKey(doc))
                         {
                             docAutores.Add(doc, new HashSet<string>());
@@ -219,9 +186,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                         break;
                     }
                 }
-                
 
-                foreach(string doc in docAutores.Keys)
+
+                foreach (string doc in docAutores.Keys)
                 {
                     foreach (string autorIn in docAutores[doc])
                     {
@@ -241,11 +208,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 foreach (Persona persona in listaPersonasAux.ElementAt(i).Value)
                 {
                     persona.ID = persona.personid;
-                    resultados[persona.ID] = persona;
+                    resultadosTraCon[persona.ID] = persona;
                 }
             }
 
-            return resultados;
+            return resultadosTraCon;
         }
     }
 }

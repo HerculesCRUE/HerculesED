@@ -10,69 +10,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class GestionIDI : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string funciones { get; set; }
-        public string entidadRealizacion { get; set; }
-        public string fecha { get; set; }
+        public string Descripcion { get; set; }
+        public string Funciones { get; set; }
+        public string EntidadRealizacion { get; set; }
+        public string Fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsTitle,
-            score = 0.8f
-        };
-
-        private static readonly DisambiguationDataConfig configER = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFunciones = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
-
-        private static readonly DisambiguationDataConfig configFecha = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsItem,
-            score = 0.5f,
-            scoreMinus = 0.5f
-        };
+        private static readonly DisambiguationDataConfig configDescripcionGestIdi = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configEntReaGestIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFuncionesGestIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaGestIdi = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData()
-                {
-                    property = "descripcion",
-                    config = configDescripcion,
-                    value = descripcion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "entidadRealizacion",
-                    config = configER,
-                    value = entidadRealizacion
-                },
-
-                new DisambiguationData()
-                {
-                    property = "funciones",
-                    config = configFunciones,
-                    value = funciones
-                },
-
-                new DisambiguationData()
-                {
-                    property = "fecha",
-                    config = configFecha,
-                    value = fecha
-                }
+                new DisambiguationData(configDescripcionGestIdi,"descripcion",Descripcion),
+                new DisambiguationData(configEntReaGestIdi,"entidadRealizacion",EntidadRealizacion),
+                new DisambiguationData(configFuncionesGestIdi,"funciones",Funciones),
+                new DisambiguationData(configFechaGestIdi,"fecha",Fecha)
             };
             return data;
         }
@@ -85,12 +40,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDGestIdi(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosGestIdi = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -109,20 +64,20 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    GestionIDI gestionIDI = new GestionIDI
+                    GestionIDI gestionIDI = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        funciones = fila.ContainsKey("itemFunciones") ? fila["itemFunciones"].value : "",
-                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
-                };
+                        Descripcion = fila["itemTitle"].value,
+                        Funciones = fila.ContainsKey("itemFunciones") ? fila["itemFunciones"].value : "",
+                        EntidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : "",
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : ""
+                    };
 
-                resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), gestionIDI);
+                    resultadosGestIdi.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), gestionIDI);
+                }
             }
-        }
 
-            return resultados;
+            return resultadosGestIdi;
         }
-}
+    }
 }

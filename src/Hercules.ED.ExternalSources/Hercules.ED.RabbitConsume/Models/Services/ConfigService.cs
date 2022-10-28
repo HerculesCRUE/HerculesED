@@ -1,23 +1,21 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
     public class ConfigService
     {
-        private IConfiguration _configuration { get; set; }
+        private IConfiguration Configuration { get; set; }
         private string RabbitConnectionString { get; set; }
         private string FuentesExternasQueueRabbit { get; set; }
-        private string urlPublicacion { get; set; }
-        private string rutaDirectorioEscritura { get; set; }
-        private string urlZenodo { get; set; }
-        private string urlFigShare { get; set; }
-        private string urlGitHub { get; set; }
+        private string UrlPublicacion { get; set; }
+        private string RutaDirectorioEscritura { get; set; }
+        private string UrlZenodo { get; set; }
+        private string UrlFigShare { get; set; }
+        private string UrlGitHub { get; set; }
+        private string LogPath { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -25,7 +23,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="configuration"></param>
         public ConfigService(IConfiguration configuration)
         {
-            _configuration = configuration;
+            Configuration = configuration;
         }
 
         /// <summary>
@@ -42,6 +40,32 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         }
 
         /// <summary>
+        /// Obtiene la ruta de generación de logs.
+        /// </summary>
+        /// <returns>Ruta de logs.</returns>
+        public string GetLogPath()
+        {
+            if (string.IsNullOrEmpty(LogPath))
+            {
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string connectionString;
+
+                if (environmentVariables.Contains("LogPath"))
+                {
+                    connectionString = environmentVariables["LogPath"] as string;
+                }
+                else
+                {
+                    connectionString = Configuration["LogPath"];
+                }
+
+                LogPath = connectionString;
+            }
+
+            return LogPath;
+        }
+
+        /// <summary>
         /// Obtiene la cadena de conexión de Rabbit configurada.
         /// </summary>
         /// <returns>Cadena de conexión de Rabbit.</returns>
@@ -50,17 +74,20 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             if (string.IsNullOrEmpty(RabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string rabbitConnectionString = string.Empty;
+                string rabbitConnectionString;
+
                 if (environmentVariables.Contains("RabbitMQ"))
                 {
                     rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
                 }
                 else
                 {
-                    rabbitConnectionString = _configuration.GetConnectionString("RabbitMQ");
+                    rabbitConnectionString = Configuration.GetConnectionString("RabbitMQ");
                 }
+
                 RabbitConnectionString = rabbitConnectionString;
             }
+
             return RabbitConnectionString;
         }
 
@@ -73,17 +100,20 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             if (string.IsNullOrEmpty(FuentesExternasQueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("FuentesExternasQueueRabbit"))
                 {
                     queue = environmentVariables["FuentesExternasQueueRabbit"] as string;
                 }
                 else
                 {
-                    queue = _configuration["FuentesExternasQueueRabbit"];
+                    queue = Configuration["FuentesExternasQueueRabbit"];
                 }
+
                 FuentesExternasQueueRabbit = queue;
             }
+
             return FuentesExternasQueueRabbit;
         }
 
@@ -93,21 +123,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns>URI del API de Publicacion.</returns>
         public string GetUrlPublicacion()
         {
-            if (string.IsNullOrEmpty(urlPublicacion))
+            if (string.IsNullOrEmpty(UrlPublicacion))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("UrlPublicacion"))
                 {
                     queue = environmentVariables["UrlPublicacion"] as string;
                 }
                 else
                 {
-                    queue = _configuration["UrlPublicacion"];
+                    queue = Configuration["UrlPublicacion"];
                 }
-                urlPublicacion = queue;
+
+                UrlPublicacion = queue;
             }
-            return urlPublicacion;
+
+            return UrlPublicacion;
         }
 
         /// <summary>
@@ -116,23 +149,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns>Ruta de escritura.</returns>
         public string GetRutaDirectorioEscritura()
         {
-            if (string.IsNullOrEmpty(rutaDirectorioEscritura))
+            if (string.IsNullOrEmpty(RutaDirectorioEscritura))
             {
-                string connectionString = string.Empty;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                string connectionString;
+
                 if (environmentVariables.Contains("DirectorioEscritura"))
                 {
                     connectionString = environmentVariables["DirectorioEscritura"] as string;
                 }
                 else
                 {
-                    connectionString = _configuration["DirectorioEscritura"];
+                    connectionString = Configuration["DirectorioEscritura"];
                 }
 
-                rutaDirectorioEscritura = connectionString;
+                RutaDirectorioEscritura = connectionString;
             }
 
-            return rutaDirectorioEscritura;
+            return RutaDirectorioEscritura;
         }
 
         /// <summary>
@@ -141,21 +175,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns>URI del API de Zenodo.</returns>
         public string GetUrlZenodo()
         {
-            if (string.IsNullOrEmpty(urlZenodo))
+            if (string.IsNullOrEmpty(UrlZenodo))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("UrlZenodo"))
                 {
                     queue = environmentVariables["UrlZenodo"] as string;
                 }
                 else
                 {
-                    queue = _configuration["UrlZenodo"];
+                    queue = Configuration["UrlZenodo"];
                 }
-                urlZenodo = queue;
+
+                UrlZenodo = queue;
             }
-            return urlZenodo;
+
+            return UrlZenodo;
         }
 
         /// <summary>
@@ -164,21 +201,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns>URI del API de FigShare.</returns>
         public string GetUrlFigShare()
         {
-            if (string.IsNullOrEmpty(urlFigShare))
+            if (string.IsNullOrEmpty(UrlFigShare))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("UrlFigShare"))
                 {
                     queue = environmentVariables["UrlFigShare"] as string;
                 }
                 else
                 {
-                    queue = _configuration["UrlFigShare"];
+                    queue = Configuration["UrlFigShare"];
                 }
-                urlFigShare = queue;
+
+                UrlFigShare = queue;
             }
-            return urlFigShare;
+
+            return UrlFigShare;
         }
 
         /// <summary>
@@ -187,21 +227,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <returns>URI del API de GitHub.</returns>
         public string GetUrlGitHub()
         {
-            if (string.IsNullOrEmpty(urlGitHub))
+            if (string.IsNullOrEmpty(UrlGitHub))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("UrlGitHub"))
                 {
                     queue = environmentVariables["UrlGitHub"] as string;
                 }
                 else
                 {
-                    queue = _configuration["UrlGitHub"];
+                    queue = Configuration["UrlGitHub"];
                 }
-                urlGitHub = queue;
+
+                UrlGitHub = queue;
             }
-            return urlGitHub;
+
+            return UrlGitHub;
         }
     }
 }

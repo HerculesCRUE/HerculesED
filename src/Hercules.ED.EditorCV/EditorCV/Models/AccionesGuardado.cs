@@ -14,10 +14,12 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -33,7 +35,7 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
         /// Cambia la privacidad de un item
@@ -260,10 +262,19 @@ namespace EditorCV.Models
         {
             string accion = "";
             string personCV = UtilityCV.GetPersonFromCV(pCvID);
+            API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
+
+            //Comprobamos campos con expresiones regulares            
+            JsonResult error = ComprobarErrores(template, pEntity, pSectionID, pRdfTypeTab,pLang);
+            if (error != null)
+            {
+                return error;
+            }
+
+
+
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
-                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
-
                 //Modificamos
                 Entity loadedEntity = GetLoadedEntity(pEntity.id, "curriculumvitae");
                 bool updated = UpdateEntityAux(mResourceApi.GetShortGuid(pCvID), new List<string>() { "http://w3id.org/roh/personalData" }, new List<string>() { pEntity.id }, loadedEntity, pEntity);
@@ -281,7 +292,6 @@ namespace EditorCV.Models
             else
             {
                 //Item de CV
-                API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
                 API.Templates.TabSection templateSection = template.sections.First(x => x.property == pSectionID);
 
                 ItemEdit itemEditConfig = null;
@@ -640,24 +650,24 @@ namespace EditorCV.Models
                     Dictionary<string, List<MultilangProperty>> propiedadesNuevas = new Dictionary<string, List<MultilangProperty>>();
                     if (propiedadesMultiidiomaNoCV != null)
                     {
-                        foreach (Entity.Property prop in propiedadesMultiidiomaNoCV)
+                        foreach (Entity.Property propMultiidiomaNoCV in propiedadesMultiidiomaNoCV)
                         {
-                            if (prop.valuesmultilang != null)
+                            if (propMultiidiomaNoCV.valuesmultilang != null)
                             {
-                                foreach (string idioma in prop.valuesmultilang.Keys)
+                                foreach (string idioma in propMultiidiomaNoCV.valuesmultilang.Keys)
                                 {
-                                    if (!string.IsNullOrEmpty(prop.valuesmultilang[idioma]))
+                                    if (!string.IsNullOrEmpty(propMultiidiomaNoCV.valuesmultilang[idioma]))
                                     {
-                                        if (!propiedadesNuevas.ContainsKey(prop.prop))
+                                        if (!propiedadesNuevas.ContainsKey(propMultiidiomaNoCV.prop))
                                         {
-                                            propiedadesNuevas.Add(prop.prop, new List<MultilangProperty>());
+                                            propiedadesNuevas.Add(propMultiidiomaNoCV.prop, new List<MultilangProperty>());
                                         }
                                         MultilangProperty multilangProperty = new MultilangProperty()
                                         {
                                             lang = idioma,
-                                            value = prop.valuesmultilang[idioma]
+                                            value = propMultiidiomaNoCV.valuesmultilang[idioma]
                                         };
-                                        propiedadesNuevas[prop.prop].Add(multilangProperty);
+                                        propiedadesNuevas[propMultiidiomaNoCV.prop].Add(multilangProperty);
                                     }
                                 }
                             }
@@ -719,6 +729,43 @@ namespace EditorCV.Models
             }
         }
 
+        private JsonResult ComprobarErrores(API.Templates.Tab pTemplate, Entity pEntity, string pSectionID, string pRdfTypeTab, string pLang)
+        {
+            ItemEdit itemEdit = null;
+            List<ItemEditSectionRowProperty> validar = new();
+            
+            if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
+            {
+                itemEdit = pTemplate.personalDataSections;
+            }
+            else
+            {
+                API.Templates.TabSection templateSection = pTemplate.sections.First(x => x.property == pSectionID);
+                itemEdit = templateSection.presentation.listItemsPresentation.listItemEdit;
+            }
+            itemEdit.sections.ForEach(section => section.rows.ForEach(x => validar.AddRange(x.properties.FindAll(x => x.validation != null))));
+            
+            foreach(ItemEditSectionRowProperty item in validar)
+            {
+                Regex rx = new(item.validation.regex);
+                Entity.Property p = pEntity.properties.First(x =>x.prop == item.property);
+                if (p.values != null)
+                {
+                    foreach (string value in p.values)
+                    {
+                        
+                        if (!string.IsNullOrEmpty(value) && !rx.IsMatch(value))
+                        {
+                            return new JsonResult() { ok = false, error = item.validation.error[pLang] };
+                        }
+
+                    };
+                }
+
+            };
+            return null;
+        }
+
         /// <summary>
         /// Modificamos un recurso y lanzamos una notificación a las personas que se vean afectadas por las modificaciones.
         /// </summary>
@@ -739,90 +786,7 @@ namespace EditorCV.Models
 
                 ConcurrentBag<Notification> notificaciones = new ConcurrentBag<Notification>();
 
-                //Añadimos un nuevo item
-                while (true)
-                {
-                    int limit = 500;
-                    string select = @$"select distinct ?cv ?cvSection ?person ";
-                    string where = @$"where{{
-                                    {filter}
-                                    {{
-                                        #DESEABLES
-                                        select distinct ?person ?cv ?cvSection ?document
-                                        Where
-                                        {{
-                                            ?person a <http://xmlns.com/foaf/0.1/Person>. 
-                                            ?document a <{entity.rdfType}>.
-                                            ?cv a <http://w3id.org/roh/CV>.
-                                            ?cv <http://w3id.org/roh/cvOf> ?person.
-                                            ?cv <{template.property}> ?cvSection.
-                                            ?document <http://purl.org/ontology/bibo/authorList> ?autor.
-                                            ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
-                                        }}
-                                    }}
-                                    MINUS
-                                    {{
-                                        #ACTUALES
-                                        ?person a <http://xmlns.com/foaf/0.1/Person>. 
-                                        ?document a <{entity.rdfType}>.
-                                        ?cv a <http://w3id.org/roh/CV>.
-                                        ?cv <http://w3id.org/roh/cvOf> ?person.
-                                        ?cv <{template.property}> ?cvSection.
-                                        ?cvSection ?p ?item.
-                                        ?item <http://vivoweb.org/ontology/core#relatedBy> ?document.
-                                    }}
-                                }}order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
-
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
-                    {
-                        //Obtenemos la auxiliar en la que cargar la entidad                        
-                        string rdfTypePrefix = UtilityCV.AniadirPrefijo(templateSection.rdftype);
-                        rdfTypePrefix = rdfTypePrefix.Substring(rdfTypePrefix.IndexOf(":") + 1);
-                        string idNewAux = $"{mResourceApi.GraphsUrl}items/" + rdfTypePrefix + "_" + mResourceApi.GetShortGuid(fila["cv"].value) + "_" + Guid.NewGuid();
-
-                        List<TriplesToInclude> listaTriples = new List<TriplesToInclude>();
-                        string idEntityAux = fila["cvSection"].value + "|" + idNewAux;
-
-                        //Privacidad, por defecto falso                    
-                        string predicadoPrivacidad = template.property + "|" + templateSection.property + "|" + UtilityCV.PropertyIspublic;
-                        TriplesToInclude tr2 = new TriplesToInclude(idEntityAux + "|false", predicadoPrivacidad);
-                        listaTriples.Add(tr2);
-
-                        //Entidad
-                        string predicadoEntidad = template.property + "|" + templateSection.property + "|" + templateSection.presentation.listItemsPresentation.property;
-                        TriplesToInclude tr1 = new TriplesToInclude(idEntityAux + "|" + entity.id, predicadoEntidad);
-                        listaTriples.Add(tr1);
-
-                        Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new Dictionary<Guid, List<TriplesToInclude>>()
-                            {
-                                {
-                                    mResourceApi.GetShortGuid(fila["cv"].value), listaTriples
-                                }
-                            };
-                        Dictionary<Guid, bool> respuesta = mResourceApi.InsertPropertiesLoadedResources(triplesToInclude);
-
-                        foreach (KeyValuePair<Guid, bool> keyValue in respuesta)
-                        {
-                            Notification notificacion = new Notification();
-                            notificacion.IdRoh_trigger = personaCV;
-                            notificacion.Roh_tabPropertyCV = template.property;
-                            notificacion.Roh_entity = entity.id;
-                            notificacion.IdRoh_owner = fila["person"].value;
-                            notificacion.Dct_issued = DateTime.UtcNow;
-                            notificacion.Roh_type = accion;
-                            notificacion.CvnCode = IdentificadorFECYT(entity.properties.Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
-
-                            notificaciones.Add(notificacion);
-                        }
-                    });
-                    if (resultado.results.bindings.Count != limit)
-                    {
-                        break;
-                    }
-                }
-
-                //Modificamos un item
+                //Añadimos o modificamos un item
                 while (true)
                 {
                     int limit = 500;
@@ -908,9 +872,9 @@ namespace EditorCV.Models
                 //Eliminamos un item
                 while (true)
                 {
-                    int limit = 500;
-                    string select = @$"select distinct ?cv ?cvSection ?item ?person ";
-                    string where = @$"where{{
+                    int limitEliminar = 500;
+                    string selectEliminar = @$"select distinct ?cv ?cvSection ?item ?person ";
+                    string whereEliminar = @$"where{{
                                     {filter} 
                                     {{
                                         #ACTUALES
@@ -937,10 +901,10 @@ namespace EditorCV.Models
                                             ?autor <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person.
                                         }}                                        
                                     }}
-                                }} order by desc(?cv) limit {limit}";
-                    SparqlObject resultado = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
+                                }} order by desc(?cv) limit {limitEliminar}";
+                    SparqlObject resultadoEliminar = mResourceApi.VirtuosoQueryMultipleGraph(selectEliminar, whereEliminar, new List<string>() { "curriculumvitae", "document", "researchobject", "person" });
 
-                    Parallel.ForEach(resultado.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
+                    Parallel.ForEach(resultadoEliminar.results.bindings, new ParallelOptions { MaxDegreeOfParallelism = 5 }, fila =>
                     {
                         Dictionary<Guid, List<RemoveTriples>> triplesToDelete = new();
 
@@ -973,7 +937,7 @@ namespace EditorCV.Models
                             notificaciones.Add(notificacion);
                         }
                     });
-                    if (resultado.results.bindings.Count != limit)
+                    if (resultadoEliminar.results.bindings.Count != limitEliminar)
                     {
                         break;
                     }
@@ -982,7 +946,7 @@ namespace EditorCV.Models
 
                 string propiedad = "http://purl.org/ontology/bibo/authorList@@@http://purl.obolibrary.org/obo/BFO_0000023|http://www.w3.org/1999/02/22-rdf-syntax-ns#member";
                 //Generamos notificaciones de edición
-                List<string> personasEdicion = entity.properties.FirstOrDefault(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
+                List<string> personasEdicion = entity.properties.First(x => x.prop == propiedad).values.Select(x => x.Split("@@@")[1])
                     .Where(x => !notificaciones.Select(x => x.IdRoh_owner).Contains(x) && x != personaCV && !string.IsNullOrEmpty(x)).ToList();
                 foreach (string persona in personasEdicion)
                 {
@@ -1156,9 +1120,10 @@ namespace EditorCV.Models
                                     }}
                                     FILTER(?personID=<{pIdPerson}>)
                                 }}";
-            SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
-            foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+            SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "department" });
+            if (sparqlObject != null && sparqlObject.results != null && sparqlObject.results.bindings != null && sparqlObject.results.bindings.Count > 0)
             {
+                Dictionary<string, Data> fila = sparqlObject.results.bindings[0];
                 Person persona = new Person();
                 persona.name = fila["name"].value;
                 persona.personid = pIdPerson;
@@ -1305,16 +1270,18 @@ namespace EditorCV.Models
                 properties.Add(pProperty);
             }
             List<string> rdftypes = new List<string>();
-            bool continuar = true;
-            while (continuar)
+
+            while (true)
             {
-                continuar = false;
                 SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s a ?rdftype. ?s ?p <" + pEntity + ">. }", "curriculumvitae");
+                if(resultData.results.bindings.Count==0 || !resultData.results.bindings.Any(x=> x["p"].value != "http://gnoss/hasEntidad"))
+                {
+                    break;
+                }
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
                     if (fila["p"].value != "http://gnoss/hasEntidad")
                     {
-                        continuar = true;
                         properties.Add(fila["p"].value);
                         entities.Add(fila["s"].value);
                         pEntity = fila["s"].value;
@@ -1399,19 +1366,22 @@ namespace EditorCV.Models
                 {
                     if (auxEntityRemove.StartsWith("http"))
                     {
-                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        if (pLoadedEntity != null && pLoadedEntity.properties != null)
                         {
-                            List<string> eliminar = new List<string>();
-                            foreach (string value in property.values)
+                            foreach (Entity.Property property in pLoadedEntity.properties)
                             {
-                                if (value.Contains(auxEntityRemove))
+                                List<string> eliminar = new List<string>();
+                                foreach (string value in property.values)
                                 {
-                                    eliminar.Add(value);
+                                    if (value.Contains(auxEntityRemove))
+                                    {
+                                        eliminar.Add(value);
+                                    }
                                 }
-                            }
-                            if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
-                            {
-                                change = true;
+                                if (property.values.RemoveAll(x => eliminar.Contains(x)) > 0)
+                                {
+                                    change = true;
+                                }
                             }
                         }
                     }
@@ -1432,18 +1402,18 @@ namespace EditorCV.Models
         private bool UpdateEntityAux(Guid pIdMainEntity, List<string> pPropertyIDs, List<string> pEntityIDs, Entity pLoadedEntity, Entity pUpdatedEntity)
         {
             bool update = true;
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToInclude>> triplesInclude = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.RemoveTriples>> triplesRemove = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
-            Dictionary<Guid, List<Gnoss.ApiWrapper.Model.TriplesToModify>> triplesModify = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
+            Dictionary<Guid, List<TriplesToInclude>> triplesIncludeGuardado = new Dictionary<Guid, List<TriplesToInclude>>() { { pIdMainEntity, new List<TriplesToInclude>() } };
+            Dictionary<Guid, List<RemoveTriples>> triplesRemoveGuardado = new Dictionary<Guid, List<RemoveTriples>>() { { pIdMainEntity, new List<RemoveTriples>() } };
+            Dictionary<Guid, List<TriplesToModify>> triplesModifyGuardado = new Dictionary<Guid, List<TriplesToModify>>() { { pIdMainEntity, new List<TriplesToModify>() } };
 
-            foreach (Entity.Property property in pUpdatedEntity.properties)
+            foreach (Entity.Property propertyGuardado in pUpdatedEntity.properties)
             {
-                bool remove = property.values == null || property.values.Count == 0 || !property.values.Exists(x => !string.IsNullOrEmpty(x));
+                bool remove = propertyGuardado.values == null || propertyGuardado.values.Count == 0 || !propertyGuardado.values.Exists(x => !string.IsNullOrEmpty(x));
                 //Recorremos las propiedades de la entidad a actualizar y modificamos la entidad recuperada de BBDD               
                 Entity.Property propertyLoadedEntity = null;
                 if (pLoadedEntity != null)
                 {
-                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == property.prop);
+                    propertyLoadedEntity = pLoadedEntity.properties.FirstOrDefault(x => x.prop == propertyGuardado.prop);
                 }
                 if (propertyLoadedEntity != null)
                 {
@@ -1451,10 +1421,10 @@ namespace EditorCV.Models
                     {
                         foreach (string valor in propertyLoadedEntity.values)
                         {
-                            triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                            triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                             {
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                             });
                         }
                     }
@@ -1465,7 +1435,7 @@ namespace EditorCV.Models
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
-                        foreach (string valor in property.values)
+                        foreach (string valor in propertyGuardado.values)
                         {
                             items.Add(GetEntityOfValue(valor));
                         }
@@ -1473,7 +1443,7 @@ namespace EditorCV.Models
                         foreach (string item in items)
                         {
                             List<string> valuesLoadedEntity = propertyLoadedEntity.values.Where(x => GetEntityOfValue(x) == item).ToList();
-                            List<string> valuesEntity = property.values.Where(x => GetEntityOfValue(x) == item).ToList();
+                            List<string> valuesEntity = propertyGuardado.values.Where(x => GetEntityOfValue(x) == item).ToList();
                             int numLoaded = valuesLoadedEntity.Count;
                             int numNew = valuesEntity.Count;
                             int numIntersect = valuesLoadedEntity.Intersect(valuesEntity).Count();
@@ -1481,24 +1451,24 @@ namespace EditorCV.Models
                             {
                                 if (numLoaded == 1 && numNew == 1)
                                 {
-                                    triplesModify[pIdMainEntity].Add(new TriplesToModify()
+                                    triplesModifyGuardado[pIdMainEntity].Add(new TriplesToModify()
                                     {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesEntity[0], property.prop),
-                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesLoadedEntity[0], property.prop)
+                                        Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                        NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesEntity[0], propertyGuardado.prop),
+                                        OldValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valuesLoadedEntity[0], propertyGuardado.prop)
                                     });
                                 }
                                 else
                                 {
                                     //Eliminaciones
-                                    foreach (string valor in valuesLoadedEntity.Except(property.values))
+                                    foreach (string valor in valuesLoadedEntity.Except(propertyGuardado.values))
                                     {
-                                        triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                        triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                         {
 
-                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                            Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                         });
                                     }
                                     //Inserciones
@@ -1506,11 +1476,11 @@ namespace EditorCV.Models
                                     {
                                         if (!valor.EndsWith("@@@"))
                                         {
-                                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
+                                            triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                                             {
 
-                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                             });
                                         }
                                     }
@@ -1521,15 +1491,15 @@ namespace EditorCV.Models
                 }
                 else if (!remove)
                 {
-                    foreach (string valor in property.values)
+                    foreach (string valor in propertyGuardado.values)
                     {
                         if (!valor.EndsWith("@@@"))
                         {
-                            triplesInclude[pIdMainEntity].Add(new TriplesToInclude()
+                            triplesIncludeGuardado[pIdMainEntity].Add(new TriplesToInclude()
                             {
 
-                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                NewValue = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                             });
                         }
                     }
@@ -1538,16 +1508,16 @@ namespace EditorCV.Models
                 {
                     if (pLoadedEntity != null)
                     {
-                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(property.prop)).ToList();
+                        List<Entity.Property> propertiesLoadedEntityRemove = pLoadedEntity.properties.Where(x => x.prop.StartsWith(propertyGuardado.prop)).ToList();
                         foreach (Entity.Property propertyToRemove in propertiesLoadedEntityRemove)
                         {
                             foreach (string valor in propertyToRemove.values)
                             {
-                                triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
                                 {
 
-                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(property.prop),
-                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, property.prop)
+                                    Predicate = string.Join("|", pPropertyIDs) + "|" + GetPropUpdateEntityAux(propertyGuardado.prop),
+                                    Value = string.Join("|", pEntityIDs) + "|" + GetValueUpdateEntityAux(pIdMainEntity, valor, propertyGuardado.prop)
                                 });
                             }
                         }
@@ -1560,39 +1530,42 @@ namespace EditorCV.Models
                 {
                     if (auxEntityRemove.StartsWith("http"))
                     {
-                        foreach (Entity.Property property in pLoadedEntity.properties)
+                        if (pLoadedEntity != null && pLoadedEntity.properties != null)
                         {
-                            foreach (string valor in property.values)
+                            foreach (Entity.Property property in pLoadedEntity.properties)
                             {
-                                if (valor.Contains(auxEntityRemove))
+                                foreach (string valor in property.values)
                                 {
-                                    //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
-                                    triplesRemove[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
-                                    //Eliminamos la entidad auxiliar
-                                    triplesRemove[pIdMainEntity].Add(new RemoveTriples()
+                                    if (valor.Contains(auxEntityRemove))
                                     {
+                                        //Elmiminamos de la lista a aliminar los hijos de la entidad a eliminar
+                                        triplesRemoveGuardado[pIdMainEntity].RemoveAll(x => x.Value.Contains(auxEntityRemove));
+                                        //Eliminamos la entidad auxiliar
+                                        triplesRemoveGuardado[pIdMainEntity].Add(new RemoveTriples()
+                                        {
 
-                                        Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
-                                        Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
-                                    });
-                                    break;
+                                            Predicate = string.Join("|", pPropertyIDs) + "|" + property.prop.Substring(0, property.prop.IndexOf("@@@")),
+                                            Value = string.Join("|", pEntityIDs) + "|" + auxEntityRemove
+                                        });
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            if (triplesRemove[pIdMainEntity].Count > 0)
+            if (triplesRemoveGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemove)[pIdMainEntity];
+                update = update && mResourceApi.DeletePropertiesLoadedResources(triplesRemoveGuardado)[pIdMainEntity];
             }
-            if (triplesInclude[pIdMainEntity].Count > 0)
+            if (triplesIncludeGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesInclude)[pIdMainEntity];
+                update = update && mResourceApi.InsertPropertiesLoadedResources(triplesIncludeGuardado)[pIdMainEntity];
             }
-            if (triplesModify[pIdMainEntity].Count > 0)
+            if (triplesModifyGuardado[pIdMainEntity].Count > 0)
             {
-                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModify)[pIdMainEntity];
+                update = update && mResourceApi.ModifyPropertiesLoadedResources(triplesModifyGuardado)[pIdMainEntity];
             }
             return update;
         }
