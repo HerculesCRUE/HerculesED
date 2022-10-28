@@ -325,40 +325,23 @@ namespace EditorCV.Models
                     List<SubseccionItem> listaSubsecciones = new List<SubseccionItem>();
                     if (string.IsNullOrEmpty(section.presentation.listItemsPresentation.cvnsection))// && !string.IsNullOrEmpty(section.presentation.listItemsPresentation.rdftype_cv))
                     {
-                        if (section.presentation.listItemsPresentation.rdftype_cv != null && 
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedCompetitiveProjectCV"))
+                        Dictionary<string, string> propFecytID = new Dictionary<string, string>();
+                        propFecytID.Add("http://w3id.org/roh/RelatedCompetitiveProjectCV", "050.020.010.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedNonCompetitiveProjectCV", "050.020.020.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedGroupCV", "050.010.000.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedScientificPublicationCV", "060.010.010.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV", "060.010.020.000");
+                        propFecytID.Add("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "060.010.030.000");
+                        propFecytID.Add("http://purl.org/ontology/bibo/Patent", "050.030.010.000");
+
+                        foreach(string prop in propFecytID.Keys)
                         {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.010.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedNonCompetitiveProjectCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.020.020.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedGroupCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.010.000.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.010.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.020.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.rdftype_cv != null &&
-                            section.presentation.listItemsPresentation.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("060.010.030.000")).SelectMany(x => x.subsecciones).ToList();
-                        }
-                        else if (section.presentation.listItemsPresentation.listItemEdit.rdftype != null && 
-                            section.presentation.listItemsPresentation.listItemEdit.rdftype.Equals("http://purl.org/ontology/bibo/Patent"))
-                        {
-                            listaSubsecciones = preimport.secciones.Where(x => x.id.Equals("050.030.010.000")).SelectMany(x => x.subsecciones).ToList();
+                            if (section.presentation.listItemsPresentation.rdftype_cv != null &&
+                            section.presentation.listItemsPresentation.rdftype_cv.Equals(prop))
+                            {
+                                listaSubsecciones = preimport.secciones.Where(x => x.id.Equals(propFecytID[prop])).SelectMany(x => x.subsecciones).ToList();
+                                break;
+                            }
                         }
                     }
                     else

@@ -152,9 +152,9 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static List<FilePDF> GetListPDFFile(string pCVId, string baseUrl, int timezoneOffset)
+        public static List<FilePdf> GetListPDFFile(string pCVId, string baseUrl, int timezoneOffset)
         {
-            List<FilePDF> listadoArchivos = new List<FilePDF>();
+            List<FilePdf> listadoArchivos = new List<FilePdf>();
             string select = "SELECT ?titulo ?fecha ?estado ?fichero";
             string where = $@"WHERE{{
     <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
@@ -172,7 +172,7 @@ namespace EditorCV.Models
                     continue;
                 }
 
-                FilePDF file = new FilePDF();
+                FilePdf file = new FilePdf();
                 file.titulo = fila["titulo"].value;
                 file.fichero = "";
                 file.fecha = fila["fecha"].value;
@@ -711,150 +711,5 @@ namespace EditorCV.Models
             }
             return entityID;
         }
-
-        /// <summary>
-        /// Obtiene todos los datos de una entidad
-        /// </summary>
-        /// <param name="pId">Identificador de la entidad</param>
-        /// <param name="pGraph">Grafo de la entidad</param>
-        /// <returns>Entidad completa</returns>
-        public Entity GetLoadedEntity(string pId, string pGraph)
-        {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new Dictionary<string, List<Dictionary<string, Data>>>();
-            try
-            {
-                int numLimit = 10000;
-                int offset = 0;
-                bool cargar = true;
-                while (cargar)
-                {
-                    string selectID = "select * where{ select distinct ?s ?p ?o";
-                    string whereID = $"where{{?x <http://gnoss/hasEntidad> <{pId}> . ?x <http://gnoss/hasEntidad> ?s . ?s ?p ?o }}order by desc(?s) desc(?p) desc(?o)}} limit {numLimit} offset {offset}";
-                    SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
-                    foreach (Dictionary<string, Data> fila in resultData.results.bindings)
-                    {
-                        if (!listResult.ContainsKey(fila["s"].value))
-                        {
-                            listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
-                        }
-                        listResult[fila["s"].value].Add(fila);
-                    }
-                    offset += numLimit;
-                    if (resultData.results.bindings.Count < numLimit)
-                    {
-                        cargar = false;
-                    }
-                }
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
-            if (listResult.Count > 0 && listResult.ContainsKey(pId))
-            {
-                Entity entity = new Entity()
-                {
-                    id = pId,
-                    ontology = pGraph,
-                    rdfType = listResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value,
-                    properties = new List<Entity.Property>()
-                };
-                GetLoadedEntity(pId, "", "", ref entity, listResult);
-                return entity;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Procesa una entidad auxiliar para crear el ComplexOntologyResource
-        /// </summary>
-        /// <param name="pProperty">Propiedad que apunta a la entidad auxiliar</param>
-        /// <param name="pEntidadAuxiliar">Entidad auxiliar</param>
-        /// <returns></returns>
-        private OntologyEntity ProcesarEntidadAuxiliar(string pProperty, EntityRdf pEntidadAuxiliar)
-        {
-            List<string> prefList = new List<string>();
-            foreach (string key in UtilityCV.dicPrefix.Keys)
-            {
-                prefList.Add($"xmlns:{key}=\"{UtilityCV.dicPrefix[key]}\"");
-            }
-
-            List<OntologyEntity> entList = new List<OntologyEntity>();
-            List<OntologyProperty> propList = new List<OntologyProperty>();
-
-            foreach (string prop in pEntidadAuxiliar.ents.Keys)
-            {
-                foreach (EntityRdf entity in pEntidadAuxiliar.ents[prop])
-                {
-                    entList.Add(ProcesarEntidadAuxiliar(prop, entity));
-                }
-            }
-
-            //Creamos la entidad auxiliar
-            foreach (string prop in pEntidadAuxiliar.props.Keys)
-            {
-                foreach (string value in pEntidadAuxiliar.props[prop])
-                {
-                    propList.Add(new StringOntologyProperty(prop, value));
-                }
-            }
-            OntologyEntity ontologyEntity = new OntologyEntity(pEntidadAuxiliar.rdfType, pEntidadAuxiliar.rdfType, UtilityCV.AniadirPrefijo(pProperty.Split('|').Last()), propList, entList);
-            return ontologyEntity;
-        }
-
-        /// <summary>
-        /// Carga los datos en el objeto entidad con los datos obtenidos
-        /// </summary>
-        /// <param name="pId">Identificador de la entidad</param>
-        /// <param name="pPropAcumulado">Propiedad acumulada</param>
-        /// <param name="pObjAcumulado">Objeto acumulado</param>
-        /// <param name="pEntity">Entidad</param>
-        /// <param name="pListResult">Datos de BBDD</param>
-        private void GetLoadedEntity(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity, Dictionary<string, List<Dictionary<string, Data>>> pListResult)
-        {
-            foreach (Dictionary<string, Data> prop in pListResult[pId])
-            {
-                string s = prop["s"].value;
-                string p = prop["p"].value;
-                string o = prop["o"].value;
-
-                string rdfType = pListResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value;
-                if (s == pId && p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-                {
-                    string pPropAcumuladoAux = pPropAcumulado;
-                    if (!string.IsNullOrEmpty(pPropAcumulado))
-                    {
-                        pPropAcumuladoAux += "@@@" + rdfType + "|";
-                    }
-                    pPropAcumuladoAux += p;
-                    string pObjAcumuladoAux = pObjAcumulado;
-                    if (!string.IsNullOrEmpty(pObjAcumulado))
-                    {
-                        pObjAcumuladoAux += "@@@";
-                    }
-                    pObjAcumuladoAux += o;
-                    if (pListResult.ContainsKey(o))
-                    {
-                        GetLoadedEntity(o, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult);
-                    }
-                    else
-                    {
-                        Entity.Property property = pEntity.properties.FirstOrDefault(x => x.prop == pPropAcumuladoAux);
-                        if (property == null)
-                        {
-                            Entity.Property propiedad = new Entity.Property();
-                            propiedad.prop = pPropAcumuladoAux;
-                            propiedad.values = new List<string>();
-
-                            property = propiedad;
-                            pEntity.properties.Add(property);
-                        }
-                        property.values.Add(pObjAcumuladoAux);
-                    }
-                }
-            }
-        }
-
-
     }
 }

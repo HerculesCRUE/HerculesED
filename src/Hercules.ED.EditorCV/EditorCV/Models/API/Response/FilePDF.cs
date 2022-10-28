@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EditorCV.Models.API.Response
 {
-    public class FilePDF
+    public class FilePdf
     {
         public string titulo { get; set; }
         public string fecha { get; set; }
