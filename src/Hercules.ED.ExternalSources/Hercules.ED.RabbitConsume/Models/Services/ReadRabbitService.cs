@@ -196,14 +196,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
             else if (message != null && message.Count == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
@@ -228,14 +226,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
             else if (message != null && message.Count == 2 && message[0] == "publicación")
@@ -259,14 +255,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
             else if (message != null && message.Count == 2 && message[0] == "zenodo")
@@ -290,14 +284,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
             else if (message != null && message.Count == 2 && message[0] == "figshare")
@@ -321,14 +313,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
             else if (message != null && message.Count == 3 && message[0] == "github")
@@ -352,20 +342,18 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
-                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
+                    EscribirLog(e);
                 }
             }
 
             return true;
         }
-    
+
         /// <summary>
         /// Comprobar directorio de escritura.
         /// </summary>
@@ -375,6 +363,16 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             {
                 Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
             }
+        }
+
+        /// <summary>
+        /// Escribe el mensaje de error.
+        /// </summary>
+        /// <param name="pError">Excepción.</param>
+        public void EscribirLog(Exception pError)
+        {
+            FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.Message}");
+            FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.StackTrace}");
         }
     }
 }
