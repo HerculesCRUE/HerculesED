@@ -48,7 +48,7 @@ namespace Hercules.ED.UpdateKeywords
         {
             mResourceApi.ChangeOntoly("document");
             List<string> listaDocumentos = new();
-            SparqlObject resultadoQuery;
+            SparqlObject resultadoQueryDocument;
 
             // Consulta sparql.
             string select = $@"{mPrefijos} SELECT DISTINCT ?s ";
@@ -66,7 +66,7 @@ namespace Hercules.ED.UpdateKeywords
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document", "person" });
+                    resultadoQueryDocument = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "document", "person" });
                     break;
                 }
                 catch (Exception error)
@@ -77,9 +77,9 @@ namespace Hercules.ED.UpdateKeywords
                 }
             }
 
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
+            if (resultadoQueryDocument != null && resultadoQueryDocument.results != null && resultadoQueryDocument.results.bindings != null && resultadoQueryDocument.results.bindings.Any())
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryDocument.results.bindings)
                 {
                     if (fila.ContainsKey("s") && !string.IsNullOrEmpty(fila["s"].value))
                     {
@@ -100,7 +100,7 @@ namespace Hercules.ED.UpdateKeywords
         {
             mResourceApi.ChangeOntoly("document");
             Dictionary<string, string> dicEtiquetas = new();
-            SparqlObject resultadoQuery;
+            SparqlObject resultadoQueryKeywords;
 
             // Consulta sparql.
             string select = $@"{mPrefijos} SELECT DISTINCT ?freeTextKeyword ?etiqueta ";
@@ -114,7 +114,7 @@ namespace Hercules.ED.UpdateKeywords
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "document");
+                    resultadoQueryKeywords = mResourceApi.VirtuosoQuery(select, where, "document");
                     break;
                 }
                 catch (Exception error)
@@ -125,9 +125,9 @@ namespace Hercules.ED.UpdateKeywords
                 }
             }
 
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
+            if (resultadoQueryKeywords != null && resultadoQueryKeywords.results != null && resultadoQueryKeywords.results.bindings != null && resultadoQueryKeywords.results.bindings.Any())
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryKeywords.results.bindings)
                 {
                     string idRecurso = string.Empty;
                     string nombreEtiqueta = string.Empty;
@@ -159,7 +159,7 @@ namespace Hercules.ED.UpdateKeywords
         /// <returns>Objeto con datos recuperados.</returns>
         public string GetUriTag(string pUrl)
         {
-            SparqlObject resultadoQuery;
+            SparqlObject resultadoQueryUri;
 
             // Consulta sparql.
             string select = $@"{mPrefijos} SELECT DISTINCT ?s ";
@@ -172,7 +172,7 @@ namespace Hercules.ED.UpdateKeywords
             {
                 try
                 {
-                    resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "keywordconcept");
+                    resultadoQueryUri = mResourceApi.VirtuosoQuery(select, where, "keywordconcept");
                     break;
                 }
                 catch (Exception error)
@@ -183,9 +183,9 @@ namespace Hercules.ED.UpdateKeywords
                 }
             }
 
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
+            if (resultadoQueryUri != null && resultadoQueryUri.results != null && resultadoQueryUri.results.bindings != null && resultadoQueryUri.results.bindings.Any())
             {
-                return resultadoQuery.results.bindings[0]["s"].value;
+                return resultadoQueryUri.results.bindings[0]["s"].value;
             }
             else
             {
