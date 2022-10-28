@@ -1064,48 +1064,47 @@ namespace EditorCV.Models
             if (wordsTexto.Length > 0)
             {
                 #region Buscamos en nombres
+                List<string> unions = new List<string>();
+                foreach (string wordOut in wordsTexto)
                 {
-                    List<string> unions = new List<string>();
-                    foreach (string wordOut in wordsTexto)
+                    List<string> words = new List<string>();
+                    if (wordOut.Length == 2)
                     {
-                        List<string> words = new List<string>();
-                        if (wordOut.Length == 2)
+                        words.Add(wordOut[0].ToString());
+                        words.Add(wordOut[1].ToString());
+                    }
+                    else
+                    {
+                        words.Add(wordOut);
+                    }
+
+                    foreach (string word in words)
+                    {
+                        int score = 1;
+                        if (word.Length > 1)
                         {
-                            words.Add(wordOut[0].ToString());
-                            words.Add(wordOut[1].ToString());
+                            score = 5;
+                        }
+                        if (score == 1)
+                        {
+                            StringBuilder sbUnion = new StringBuilder();
+                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
+                            unions.Add(sbUnion.ToString());
                         }
                         else
                         {
-                            words.Add(wordOut);
-                        }
-
-                        foreach (string word in words)
-                        {
-                            int score = 1;
-                            if (word.Length > 1)
-                            {
-                                score = 5;
-                            }
-                            if (score == 1)
-                            {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
-                                unions.Add(sbUnion.ToString());
-                            }
-                            else
-                            {
-                                StringBuilder sbUnion = new StringBuilder();
-                                sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
-                                sbUnion.AppendLine($@"              {FilterWordComplete(word, "name")} BIND({score} as ?num)");
-                                //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
-                                unions.Add(sbUnion.ToString());
-                            }
+                            StringBuilder sbUnion = new StringBuilder();
+                            sbUnion.AppendLine("				?personID <http://xmlns.com/foaf/0.1/name> ?name.");
+                            sbUnion.AppendLine($@"              {FilterWordComplete(word, "name")} BIND({score} as ?num)");
+                            //sbUnion.AppendLine($@"				?name bif:contains ""'{word}'"" BIND({score} as ?num) ");
+                            unions.Add(sbUnion.ToString());
                         }
                     }
+                }
 
-                    string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento";
-                    string where = $@"where
+                string select = $@"select distinct ?signature ?personID ?ORCID ?name ?num ?departamento";
+                string where = $@"where
                             {{
                                 {{
                                     select ?personID ?ORCID ?name ?signature sum(?num) as ?num
@@ -1129,33 +1128,32 @@ namespace EditorCV.Models
                                     ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
                             }}order by desc (?num)limit 500";
-                    SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document", "person", "department" });
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document", "person", "department" });
+                foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
+                {
+                    string personID = fila["personID"].value;
+                    string name = fila["name"].value;
+                    Person persona = listaPersonas.FirstOrDefault(x => x.personid == personID);
+                    if (persona == null)
                     {
-                        string personID = fila["personID"].value;
-                        string name = fila["name"].value;
-                        Person persona = listaPersonas.FirstOrDefault(x => x.personid == personID);
-                        if (persona == null)
-                        {
-                            persona = new Person();
-                            persona.name = name;
-                            persona.personid = personID;
-                            persona.signatures = new HashSet<string>();
-                            listaPersonas.Add(persona);
-                        }
-                        if (fila.ContainsKey("signature"))
-                        {
-                            string signature = fila["signature"].value;
-                            persona.signatures.Add(signature);
-                        }
-                        if (fila.ContainsKey("ORCID"))
-                        {
-                            persona.orcid = fila["ORCID"].value;
-                        }
-                        if (fila.ContainsKey("departamento"))
-                        {
-                            persona.department = fila["departamento"].value;
-                        }
+                        persona = new Person();
+                        persona.name = name;
+                        persona.personid = personID;
+                        persona.signatures = new HashSet<string>();
+                        listaPersonas.Add(persona);
+                    }
+                    if (fila.ContainsKey("signature"))
+                    {
+                        string signature = fila["signature"].value;
+                        persona.signatures.Add(signature);
+                    }
+                    if (fila.ContainsKey("ORCID"))
+                    {
+                        persona.orcid = fila["ORCID"].value;
+                    }
+                    if (fila.ContainsKey("departamento"))
+                    {
+                        persona.department = fila["departamento"].value;
                     }
                 }
                 #endregion
