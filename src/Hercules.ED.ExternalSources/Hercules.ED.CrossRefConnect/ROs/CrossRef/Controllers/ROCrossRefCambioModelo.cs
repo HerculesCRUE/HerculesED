@@ -162,45 +162,15 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                                 {
                                     if (publicacion.page.Contains("-"))
                                     {
-                                        string inicio = publicacion.page.Split("-")[0];
-                                        string fin = publicacion.page.Split("-")[1];
-
-                                        if (Int32.TryParse(inicio, out var pagInicio))
-                                        {
-                                            pubRef.paginaInicio = Int32.Parse(inicio);
-                                        }
-                                        if (Int32.TryParse(fin, out var pagFin))
-                                        {
-                                            pubRef.paginaFin = Int32.Parse(fin);
-                                        }
+                                        ComprobarPaginas(pubRef, publicacion.page.Split("-")[0], publicacion.page.Split("-")[1]);
                                     }
                                     else if (publicacion.page.Contains(" "))
                                     {
-                                        string inicio = publicacion.page.Split(" ")[0];
-                                        string fin = publicacion.page.Split(" ")[1];
-
-                                        if (Int32.TryParse(inicio, out var pagInicio))
-                                        {
-                                            pubRef.paginaInicio = Int32.Parse(inicio);
-                                        }
-                                        if (Int32.TryParse(fin, out var pagFin))
-                                        {
-                                            pubRef.paginaFin = Int32.Parse(fin);
-                                        }
+                                        ComprobarPaginas(pubRef, publicacion.page.Split(" ")[0], publicacion.page.Split(" ")[1]);
                                     }
                                     else if (publicacion.page.Contains("/"))
                                     {
-                                        string inicio = publicacion.page.Split("/")[0];
-                                        string fin = publicacion.page.Split("/")[1];
-
-                                        if (Int32.TryParse(inicio, out var pagInicio))
-                                        {
-                                            pubRef.paginaInicio = Int32.Parse(inicio);
-                                        }
-                                        if (Int32.TryParse(fin, out var pagFin))
-                                        {
-                                            pubRef.paginaFin = Int32.Parse(fin);
-                                        }
+                                        ComprobarPaginas(pubRef, publicacion.page.Split("/")[0], publicacion.page.Split("/")[1]);
                                     }
                                 }
                             }
@@ -209,6 +179,24 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 }
 
                 return listaReferencias;
+            }
+        }
+
+        /// <summary>
+        /// Comprueba que el número de páginas sea válido y los asigna.
+        /// </summary>
+        /// <param name="pPubRef">Publicación a guardar.</param>
+        /// <param name="pInicio">Página de inicio.</param>
+        /// <param name="pFin">Página de fin.</param>
+        public void ComprobarPaginas(PubReferencias pPubRef, string pInicio, string pFin)
+        {
+            if (Int32.TryParse(pInicio, out var pagInicio))
+            {
+                pPubRef.paginaInicio = Int32.Parse(pInicio);
+            }
+            if (Int32.TryParse(pFin, out var pagFin))
+            {
+                pPubRef.paginaFin = Int32.Parse(pFin);
             }
         }
 
@@ -382,45 +370,58 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     if (autor.sequence == "first")
                     {
-                        if (autor.ORCID != null)
-                        {
-                            if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/"))
-                            {
-                                int indice = autor.ORCID.IndexOf("org/");
-                                persona.ORCID = autor.ORCID.Substring(indice + 4);
-                            }
-                            else
-                            {
-                                persona.ORCID = autor.ORCID;
-                            }
-                        }
-                        List<string> name_inicial = new List<string>();
-                        List<string> apellido = new List<string>();
-
-                        if (autor.given != null)
-                        {
-                            name_inicial.Add(autor.given);
-                        }
-                        if (autor.family != null)
-                        {
-                            apellido.Add(autor.family);
-                        }
-                        Name nombre = new Name();
-                        if (name_inicial.Any())
-                        {
-                            nombre.given = name_inicial;
-                        }
-                        if (apellido.Any())
-                        {
-                            nombre.familia = apellido;
-                        }
-                        persona.name = nombre;
+                        RellenarAutor(persona, autor);
                         return persona;
                     }
                 }
             }
             return null;
         }
+
+        /// <summary>
+        /// Permite mapear el objeto autor.
+        /// </summary>
+        /// <param name="pPersona">Persona a devolver.</param>
+        /// <param name="pAutor">Persona con los datos iniciales.</param>
+        public void RellenarAutor(Person pPersona, Author pAutor)
+        {
+            if (pAutor.ORCID != null)
+            {
+                if (pAutor.ORCID.Contains("https://orcid.org/") || pAutor.ORCID.Contains("http://orcid.org/"))
+                {
+                    int indice = pAutor.ORCID.IndexOf("org/");
+                    pPersona.ORCID = pAutor.ORCID.Substring(indice + 4);
+                }
+                else
+                {
+                    pPersona.ORCID = pAutor.ORCID;
+                }
+            }
+
+            List<string> name_inicial = new List<string>();
+            List<string> apellido = new List<string>();
+            if (pAutor.given != null)
+            {
+                name_inicial.Add(pAutor.given);
+            }
+            if (pAutor.family != null)
+            {
+                apellido.Add(pAutor.family);
+            }
+
+            Name nombre = new Name();
+            if (name_inicial.Any())
+            {
+                nombre.given = name_inicial;
+            }
+            if (apellido.Any())
+            {
+                nombre.familia = apellido;
+            }
+
+            pPersona.name = nombre;
+        }
+
         public List<Person> getAuthors(PublicacionInicial objInicial)
         {
             if (objInicial.author != null)
@@ -430,41 +431,7 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                 {
                     Person persona = new Person();
                     persona.fuente = "CrossRef";
-
-                    if (autor.ORCID != null)
-                    {
-                        if (autor.ORCID.Contains("https://orcid.org/") || autor.ORCID.Contains("http://orcid.org/"))
-                        {
-                            int indice = autor.ORCID.IndexOf("org/");
-                            persona.ORCID = autor.ORCID.Substring(indice + 4);
-                        }
-                        else
-                        {
-                            persona.ORCID = autor.ORCID;
-                        }
-                    }
-                    List<string> name_inicial = new List<string>();
-                    List<string> apellido = new List<string>();
-
-                    if (autor.given != null)
-                    {
-                        name_inicial.Add(autor.given);
-                    }
-                    if (autor.family != null)
-                    {
-                        apellido.Add(autor.family);
-                    }
-                    Name nombre = new Name();
-                    if (name_inicial.Any())
-                    {
-                        nombre.given = name_inicial;
-                    }
-                    if (apellido.Any())
-                    {
-                        nombre.familia = apellido;
-                    }
-                    persona.name = nombre;
-                    
+                    RellenarAutor(persona, autor);
                     autores.Add(persona);
                 }
                 return autores;
