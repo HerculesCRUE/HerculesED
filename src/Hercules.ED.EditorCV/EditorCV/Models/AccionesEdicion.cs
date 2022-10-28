@@ -524,7 +524,7 @@ namespace EditorCV.Models
                                 ?item <{pPropTitle}> ?title.
                                 OPTIONAL{{?item <http://w3id.org/roh/isValidated> ?validated}}
                             }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae",pGraph});
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", pGraph });
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
                     bool validated = false;
@@ -667,13 +667,13 @@ namespace EditorCV.Models
             //Obtenemos los datos necesarios para el pintado
             // Consigo el pId y el pCvId a partir del Id de la persona pPersonId
             string pCVId = "";
-            Dictionary<string,Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
+            Dictionary<string, Tuple<string, string>> pId = new Dictionary<string, Tuple<string, string>>();
             string select = "SELECT ?cv ?property ?id ?rdftype";
             string where = @$"WHERE {{
                     ?cv<http://w3id.org/roh/cvOf> <{pPersonId}>.
                     ?cv ?property ?id.
                     ?id <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?rdftype.
-                    FILTER(?property in (<{string.Join(">,<",tabsPublic)}>))
+                    FILTER(?property in (<{string.Join(">,<", tabsPublic)}>))
                 }}";
             SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
@@ -880,7 +880,7 @@ namespace EditorCV.Models
                 Dictionary<string, int> colaboradoresProyectos = ObtenerColaboradoresProyectos(pPersonID);
                 HashSet<string> colaboradoresDepartament = ObtenerColaboradoresDepartamento(pPersonID);
 
-                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x=>x!="").ToList();
+                List<string> signaturesList = pSignatures.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(x => x.Trim()).Where(x => x != "").ToList();
                 Dictionary<string, List<Person>> listaPersonasAux = new Dictionary<string, List<Person>>();
                 Parallel.ForEach(signaturesList, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
                 {
@@ -1037,7 +1037,7 @@ namespace EditorCV.Models
                                 <{pPersonID}> <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.
                                 ?personOtherID <http://vivoweb.org/ontology/core#departmentOrSchool> ?depID.            
                             }}order by desc (?personOtherID) }} LIMIT {limit} OFFSET {offset}";
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person" ,"department"});
+                SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "person", "department" });
                 offset += limit;
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                 {
@@ -1127,7 +1127,7 @@ namespace EditorCV.Models
                                     ?depID <http://purl.org/dc/elements/1.1/title> ?departamento.
                                 }}
                             }}order by desc (?num)limit 500";
-                    SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string>{"document","person","department" });
+                    SparqlObject sparqlObject = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "document", "person", "department" });
                     foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings)
                     {
                         string personID = fila["personID"].value;
@@ -1614,12 +1614,12 @@ namespace EditorCV.Models
                 if (property.childOR != null && property.childOR.Count > 0)
                 {
                     string aux = "";
-                    string propertyIn = "";
+                    StringBuilder stringBuilderPropertyIn = new StringBuilder();
                     foreach (PropertyDataTemplate propertyData in property.childOR)
                     {
-                        propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                        stringBuilderPropertyIn.Append(aux + UtilityCV.GetPropComplete(propertyData));
                         aux = "||";
-                        listadoPropiedades.Add(propertyIn);
+                        listadoPropiedades.Add(stringBuilderPropertyIn.ToString());
                     }
                 }
                 else
@@ -1660,7 +1660,7 @@ namespace EditorCV.Models
                     }
                     else if (propEnd == null && listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.start))
                     {
-                        string propStart = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.start)).First();
+                        string propStart = listadoPropiedades.First(x => x.Split("@@@").Last().Equals(last5Years.start));
                         if (!string.IsNullOrEmpty(propStart))
                         {
                             List<string> value = GetPropValues(pId, propStart, pData);
@@ -1686,7 +1686,7 @@ namespace EditorCV.Models
             {
                 foreach (TabSectionListItemProperty property in pListItemConfig.listItem.properties)
                 {
-                    string propertyIn = "";
+                    StringBuilder stringBuilderPropertyIn = new StringBuilder();
                     TabSectionItemProperty itemProperty = new TabSectionItemProperty()
                     {
                         showMini = property.showMini,
@@ -1696,20 +1696,20 @@ namespace EditorCV.Models
                     };
                     if (property.childOR != null && property.childOR.Count > 0)
                     {
-                        propertyIn = "";
+                        stringBuilderPropertyIn = new StringBuilder();
                         string aux = "";
                         foreach (PropertyDataTemplate propertyData in property.childOR)
                         {
-                            propertyIn += aux + UtilityCV.GetPropComplete(propertyData);
+                            stringBuilderPropertyIn.Append(aux + UtilityCV.GetPropComplete(propertyData));
                             aux = "||";
                         }
                     }
                     else
                     {
-                        propertyIn = UtilityCV.GetPropComplete(property.child);
+                        stringBuilderPropertyIn.Append(UtilityCV.GetPropComplete(property.child));
                     }
                     itemProperty.type = property.type.ToString();
-                    itemProperty.values = GetPropValues(pId, propertyIn, pData);
+                    itemProperty.values = GetPropValues(pId, stringBuilderPropertyIn.ToString(), pData);
                     if (property.type == DataTypeListItem.number)
                     {
                         itemProperty.values = itemProperty.values.Select(x => UtilityCV.GetTextNumber(x)).ToList();
@@ -2087,7 +2087,7 @@ namespace EditorCV.Models
                                             FILTER(?proy !=<{pId}>)
                                         }}
                                     }}";
-                SparqlObject respuesta = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "projectauthorization" , "project" });
+                SparqlObject respuesta = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "projectauthorization", "project" });
                 foreach (Dictionary<string, SparqlObject.Data> fila in respuesta.results.bindings)
                 {
                     comboAutorizacionesProyecto[fila["s"].value] = fila["nombre"].value;
@@ -2482,15 +2482,15 @@ namespace EditorCV.Models
                         entityEditSectionRowProperty.propertyEntityValue = pData[pId].Where(x => x["p"].value == entityEditSectionRowProperty.propertyEntity).Select(x => x["o"].value).Distinct().FirstOrDefault();
                     }
                     entityEditSectionRowProperty.propertyEntityGraph = pItemEditSectionRowProperty.autocompleteConfig.graph;
-                    if(pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity!=null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count>0)
+                    if (pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity != null && pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity.Count > 0)
                     {
                         entityEditSectionRowProperty.selectPropertyEntity = new List<SelectPropertyEntity>();
-                        foreach(var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
+                        foreach (var item in pItemEditSectionRowProperty.autocompleteConfig.selectPropertyEntity)
                         {
                             entityEditSectionRowProperty.selectPropertyEntity.Add(new SelectPropertyEntity() { propertyEntity = item.propertyEntity, propertyCV = item.propertyCV });
                         }
                     }
-                   
+
                 }
 
                 if (pItemEditSectionRowProperty.autocompleteConfig != null && pItemEditSectionRowProperty.type == DataTypeEdit.entityautocomplete)
