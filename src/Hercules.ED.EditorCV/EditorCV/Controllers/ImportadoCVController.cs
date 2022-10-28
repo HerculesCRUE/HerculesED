@@ -237,7 +237,7 @@ namespace EditorCV.Controllers
                 petitionStatus[petitionID] = estadoPostimport;
 
                 List<string> listadoId = new List<string>();
-                List<string> listadoOpciones = new List<string>();
+                
                 Dictionary<string, string> dicOpciones = new Dictionary<string, string>();
 
                 string pCVId = UtilityCV.GetCVFromUser(userID);
@@ -255,7 +255,7 @@ namespace EditorCV.Controllers
                 {
                     string idOpcion;
                     string valueOpcion;
-                    listadoOpciones = listaOpcionSeleccionados.Split("@@@").ToList();
+                    List<string> listadoOpciones = listaOpcionSeleccionados.Split("@@@").ToList();
                     foreach (string opcion in listadoOpciones)
                     {
                         idOpcion = opcion.Split("|||").First();
