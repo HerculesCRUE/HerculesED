@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GitHubAPI.ROs.Codes.Models.Inicial
 {
-// Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
     public class Owner
     {
         public string login { get; set; }
@@ -142,8 +142,8 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public string html_url { get; set; }
     } 
 
-//-----------------------------------------
-public class FileFolder
+    //-----------------------------------------
+    public class FileFolder
     {
         public string type { get; set; }
         public string encoding { get; set; }
@@ -190,20 +190,21 @@ public class FileFolder
     //----------------------
     public class Commit
     {
-       // public User author { get; set; }
+        // public User author { get; set; }
         //public User committer { get; set; }
         public string message { get; set; }
-       // public Tree tree { get; set; }
+        // public Tree tree { get; set; }
         public string url { get; set; }
         public int? comment_count { get; set; }
-       // public Verification verification { get; set; }
+        // public Verification verification { get; set; }
         //public string sha { get; set; }
         //public string node_id { get; set; }
         public CommitInfo commit { get; set; }
         public string html_url { get; set; }
         public string comments_url { get; set; }
-       // public List<Parent> parents { get; set; }
+        // public List<Parent> parents { get; set; }
     }
+
     public class CommitInfo{
         public AuthorCommit author{get; set;}
 
@@ -219,6 +220,7 @@ public class FileFolder
         public string language { get; set; }
         public int? bytes { get; set; }
     }
+
     //-------------------
     public class Tags
     {
@@ -229,7 +231,7 @@ public class FileFolder
         public string node_id { get; set; }
     }
 
-//--------------------------------------
+    //--------------------------------------
 
      public class Issue
     {
@@ -244,10 +246,10 @@ public class FileFolder
         public string title { get; set; }
         public string body { get; set; }
         public User user { get; set; }
-       // public List<Label> labels { get; set; }
+        // public List<Label> labels { get; set; }
         public User assignee { get; set; }
         public List<User> assignees { get; set; }
-       // public Milestone milestone { get; set; }
+        // public Milestone milestone { get; set; }
         public bool locked { get; set; }
         public string active_lock_reason { get; set; }
         public int? comments { get; set; }
