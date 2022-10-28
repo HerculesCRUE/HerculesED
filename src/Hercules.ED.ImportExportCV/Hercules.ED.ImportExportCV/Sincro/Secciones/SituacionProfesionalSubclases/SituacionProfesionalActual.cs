@@ -10,19 +10,19 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
 {
     class SituacionProfesionalActual : DisambiguableEntity
     {
-        public string nombre { get; set; }
-        public string categoria { get; set; }
+        public string Nombre { get; set; }
+        public string Categoria { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombre = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configNombreSitProf = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
 
-        private static readonly DisambiguationDataConfig configCategoria = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configCategoriaSitProf = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configNombre, "nombre", nombre),
-                new DisambiguationData(configCategoria,"categoria",categoria)
+                new DisambiguationData(configNombreSitProf, "nombre", Nombre),
+                new DisambiguationData(configCategoriaSitProf,"categoria",Categoria)
             };
 
             return data;
@@ -36,12 +36,12 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDSitProf(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosSitProf = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -61,15 +61,15 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
                     SituacionProfesionalActual situacion = new ()
                     {
                         ID = fila["item"].value,
-                        nombre = fila["itemTitle"].value,
-                        categoria = fila.ContainsKey("itemCategoria") ? fila["itemCategoria"].value : ""
+                        Nombre = fila["itemTitle"].value,
+                        Categoria = fila.ContainsKey("itemCategoria") ? fila["itemCategoria"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), situacion);
+                    resultadosSitProf.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), situacion);
                 }
             }
 
-            return resultados;
+            return resultadosSitProf;
         }
     }
 }

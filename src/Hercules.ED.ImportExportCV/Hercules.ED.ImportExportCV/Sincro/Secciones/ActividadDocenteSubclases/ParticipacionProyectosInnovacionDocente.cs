@@ -10,23 +10,23 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class ParticipacionProyectosInnovacionDocente : DisambiguableEntity
     {
-        public string titulo { get; set; }
-        public string fecha { get; set; }
-        public string entidadFinanciadora { get; set; }
+        public string Titulo { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadFinanciadora { get; set; }
 
-        private static readonly DisambiguationDataConfig configTitulo = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configTituloPaPrInnDo = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaPaPrInnDo = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
-        private static readonly DisambiguationDataConfig configEF = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntFinPaPrInnDo = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configTitulo,"titulo",titulo),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configEF,"entidadFinanciadora",entidadFinanciadora)
+                new DisambiguationData(configTituloPaPrInnDo,"titulo",Titulo),
+                new DisambiguationData(configFechaPaPrInnDo,"fecha",Fecha),
+                new DisambiguationData(configEntFinPaPrInnDo,"entidadFinanciadora",EntidadFinanciadora)
             };
             return data;
         }
@@ -39,12 +39,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDPaPrInnDo(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosPaPrInnDo = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -64,16 +64,16 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     ParticipacionProyectosInnovacionDocente participacionProyectos = new ParticipacionProyectosInnovacionDocente
                     {
                         ID = fila["item"].value,
-                        titulo = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadFinanciadora = fila.ContainsKey("itemEF") ? fila["itemEF"].value : ""
+                        Titulo = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadFinanciadora = fila.ContainsKey("itemEF") ? fila["itemEF"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), participacionProyectos);
+                    resultadosPaPrInnDo.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), participacionProyectos);
                 }
             }
 
-            return resultados;
+            return resultadosPaPrInnDo;
         }
     }
 }

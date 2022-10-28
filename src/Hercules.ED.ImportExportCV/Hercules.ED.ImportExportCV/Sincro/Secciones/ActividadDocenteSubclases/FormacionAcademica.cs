@@ -11,24 +11,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 {
     class FormacionAcademica : DisambiguableEntity
     {
-        public string titulo { get; set; }
-        public string nombreAsignatura { get; set; }
-        public string fecha { get; set; }
-        public string entidadRealizacion { get; set; }
+        public string Titulo { get; set; }
+        public string NombreAsignatura { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadRealizacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configTitulo = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configNombre = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configER = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configTituloForAca = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaForAca = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configNombreForAca = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntReaForAca = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configTitulo,"titulo",titulo),
-                new DisambiguationData(configNombre,"nombreAsignatura",nombreAsignatura),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configER,"entidadRealizacion",entidadRealizacion)
+                new DisambiguationData(configTituloForAca,"titulo",Titulo),
+                new DisambiguationData(configNombreForAca,"nombreAsignatura",NombreAsignatura),
+                new DisambiguationData(configFechaForAca,"fecha",Fecha),
+                new DisambiguationData(configEntReaForAca,"entidadRealizacion",EntidadRealizacion)
             };
             return data;
         }
@@ -41,12 +41,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDForAca(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosForAca = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -67,17 +67,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                     FormacionAcademica formacionAcademica = new ()
                     {
                         ID = fila["item"].value,
-                        titulo = fila["itemTitle"].value,
-                        nombreAsignatura = fila.ContainsKey("itemName") ? fila["itemName"].value : "",
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
+                        Titulo = fila["itemTitle"].value,
+                        NombreAsignatura = fila.ContainsKey("itemName") ? fila["itemName"].value : "",
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), formacionAcademica);
+                    resultadosForAca.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), formacionAcademica);
                 }
             }
 
-            return resultados;
+            return resultadosForAca;
         }
     }
 }

@@ -10,18 +10,18 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class ProduccionCientifica : DisambiguableEntity
     {
-        public string fuenteH { get; set; }
-        public string fuenteHOtros { get; set; }
+        public string FuenteH { get; set; }
+        public string FuenteHOtros { get; set; }
 
-        private static readonly DisambiguationDataConfig configFuenteH = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFuenteHOtros = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFuenteHProCie = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFuenteHOtrosProCie = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configFuenteH,"fuenteIndiceH",fuenteH),
-                new DisambiguationData(configFuenteHOtros,"fuenteIndiceHOtros",fuenteHOtros)
+                new DisambiguationData(configFuenteHProCie,"fuenteIndiceH",FuenteH),
+                new DisambiguationData(configFuenteHOtrosProCie,"fuenteIndiceHOtros",FuenteHOtros)
             };
 
             return data;
@@ -35,12 +35,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDProCie(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosProCie = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -61,15 +61,15 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     ProduccionCientifica produccionCientifica = new ProduccionCientifica
                     {
                         ID = fila["item"].value,
-                        fuenteH = fila.ContainsKey("itemFuenteH") ? fila["itemFuenteH"].value : "",
-                        fuenteHOtros = fila.ContainsKey("itemFuenteHOtros") ? fila["itemFuenteHOtros"].value : ""
+                        FuenteH = fila.ContainsKey("itemFuenteH") ? fila["itemFuenteH"].value : "",
+                        FuenteHOtros = fila.ContainsKey("itemFuenteHOtros") ? fila["itemFuenteHOtros"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), produccionCientifica);
+                    resultadosProCie.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), produccionCientifica);
                 }
             }
 
-            return resultados;
+            return resultadosProCie;
         }
     }
 }

@@ -10,24 +10,24 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
 {
     class EvalRevIDI : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string nombreActividad { get; set; }
-        public string entidadRealizacion { get; set; }
-        public string fechaInicio { get; set; }
+        public string Descripcion { get; set; }
+        public string NombreActividad { get; set; }
+        public string EntidadRealizacion { get; set; }
+        public string FechaInicio { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configNomAct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configFechaIni = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEntidadRealizacion = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionEvalRev = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configNomActEvalRev = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaIniEvalRev = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntReaEvalRev = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcion,"descripcion",descripcion),
-                new DisambiguationData(configNomAct,"nombreActividad",nombreActividad),
-                new DisambiguationData(configFechaIni,"fechaInicio",fechaInicio),
-                new DisambiguationData(configEntidadRealizacion,"entidadRealizacion",entidadRealizacion)
+                new DisambiguationData(configDescripcionEvalRev,"descripcion",Descripcion),
+                new DisambiguationData(configNomActEvalRev,"nombreActividad",NombreActividad),
+                new DisambiguationData(configFechaIniEvalRev,"fechaInicio",FechaInicio),
+                new DisambiguationData(configEntReaEvalRev,"entidadRealizacion",EntidadRealizacion)
             };
             return data;
         }
@@ -40,12 +40,12 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDEvalRev(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new Dictionary<string, DisambiguableEntity>();
+            Dictionary<string, DisambiguableEntity> resultadosEvalRev = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -67,17 +67,17 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     EvalRevIDI evalRevIDI = new EvalRevIDI
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        nombreActividad = fila.ContainsKey("itemNombre") ? fila["itemNombre"].value : "",
-                        fechaInicio = fila.ContainsKey("itemFecha") ? fila["itemFecha"].value : "",
-                        entidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        NombreActividad = fila.ContainsKey("itemNombre") ? fila["itemNombre"].value : "",
+                        FechaInicio = fila.ContainsKey("itemFecha") ? fila["itemFecha"].value : "",
+                        EntidadRealizacion = fila.ContainsKey("itemER") ? fila["itemER"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), evalRevIDI);
+                    resultadosEvalRev.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), evalRevIDI);
                 }
             }
 
-            return resultados;
+            return resultadosEvalRev;
         }
     }
 }

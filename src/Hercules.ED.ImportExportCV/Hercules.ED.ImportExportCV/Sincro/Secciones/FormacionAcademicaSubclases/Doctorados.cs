@@ -10,21 +10,21 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
 {
     class Doctorados : DisambiguableEntity
     {
-        public string descripcion { get; set; }
-        public string fecha { get; set; }
-        public string entidadTitulacion { get; set; }
+        public string Descripcion { get; set; }
+        public string Fecha { get; set; }
+        public string EntidadTitulacion { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcion = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFecha = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configET = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionDoct = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaDoct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntTitDoct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData( configDescripcion,"descripcion", descripcion),
-                new DisambiguationData(configFecha,"fecha",fecha),
-                new DisambiguationData(configET,"entidadTitulacion",entidadTitulacion)
+                new DisambiguationData( configDescripcionDoct,"descripcion", Descripcion),
+                new DisambiguationData(configFechaDoct,"fecha",Fecha),
+                new DisambiguationData(configEntTitDoct,"entidadTitulacion",EntidadTitulacion)
             };
             return data;
         }
@@ -37,12 +37,12 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         /// <param name="graph">graph</param>
         /// <param name="propiedadesItem">propiedadesItem</param>
         /// <returns></returns>
-        public static Dictionary<string, DisambiguableEntity> GetBBDD(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
+        public static Dictionary<string, DisambiguableEntity> GetBBDDDoct(ResourceApi pResourceApi, string pCVID, string graph, List<string> propiedadesItem)
         {
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultados = new ();
+            Dictionary<string, DisambiguableEntity> resultadosDoct = new ();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -62,16 +62,16 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                     Doctorados doctorados = new ()
                     {
                         ID = fila["item"].value,
-                        descripcion = fila["itemTitle"].value,
-                        fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
-                        entidadTitulacion = fila.ContainsKey("itemET") ? fila["itemET"].value : ""
+                        Descripcion = fila["itemTitle"].value,
+                        Fecha = fila.ContainsKey("itemDate") ? fila["itemDate"].value : "",
+                        EntidadTitulacion = fila.ContainsKey("itemET") ? fila["itemET"].value : ""
                     };
 
-                    resultados.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), doctorados);
+                    resultadosDoct.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), doctorados);
                 }
             }
 
-            return resultados;
+            return resultadosDoct;
         }
     }
 }
