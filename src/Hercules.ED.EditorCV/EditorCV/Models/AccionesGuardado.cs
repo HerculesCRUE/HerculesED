@@ -166,7 +166,7 @@ namespace EditorCV.Models
                     //Otros identificadores
                     Entity.Property nombreIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic");
                     Entity.Property valorIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title");
-                    if (nombreIdentificador != null & valorIdentificador != null && nombreIdentificador.values != null && valorIdentificador.values != null)
+                    if (nombreIdentificador != null && valorIdentificador != null && nombreIdentificador.values != null && valorIdentificador.values != null)
                     {
                         foreach (string identificador in nombreIdentificador.values)
                         {
