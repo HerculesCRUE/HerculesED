@@ -32,17 +32,10 @@ namespace EditorCV.Models
         /// API
         /// </summary>
         private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
-        private static readonly CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
-
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
-
         private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();
         private static Dictionary<string, List<ThesaurusItem>> dicTesauros = new Dictionary<string, List<ThesaurusItem>>();
-
-
-
-
 
         #region Métodos públicos
 
@@ -169,7 +162,7 @@ namespace EditorCV.Models
                         }
                         string s = fila.Key;
                         string o = fila.Value;
-                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        if (pLista == null || !respuesta.Keys.Intersect(pLista).Any())
                         {
                             respuesta.Add(s, o);
                         }
@@ -255,10 +248,11 @@ namespace EditorCV.Models
                             break;
                         }
                         string s = fila["s"].value;
-                        string o = fila["o"].value;
+                        StringBuilder stringBuilderO = new StringBuilder();
+                        stringBuilderO.Append(fila["o"].value);
                         if (pPropertiesAux != null && pPropertyAux.Count() > 0 && !string.IsNullOrEmpty(pPrint))
                         {
-                            o = "";
+                            stringBuilderO = new StringBuilder();
                             string[] printSplit = pPrint.Split('|');
                             for (int j = 0; j < printSplit.Count(); j++)
                             {
@@ -273,14 +267,13 @@ namespace EditorCV.Models
                                 }
                                 if (!string.IsNullOrEmpty(valor))
                                 {
-                                    o += printSplit[j].Replace($"{{{j}}}", valor);
+                                    stringBuilderO.Append(printSplit[j].Replace($"{{{j}}}", valor));
                                 }
                             }
                         }
-
-                        if (pLista == null || respuesta.Keys.Intersect(pLista).Count() == 0)
+                        if (pLista == null || !respuesta.Keys.Intersect(pLista).Any())
                         {
-                            respuesta.Add(s, o);
+                            respuesta.Add(s, stringBuilderO.ToString());
                         }
                     }
                     return respuesta;
