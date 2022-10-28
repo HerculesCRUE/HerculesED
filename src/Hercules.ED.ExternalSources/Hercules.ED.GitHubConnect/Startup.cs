@@ -41,7 +41,7 @@ namespace GitHubAPI
                 });
             });
 
-            // Configuración.
+            // ConfiguraciÃ³n.
             services.AddSingleton(typeof(ConfigService));
         }
 
