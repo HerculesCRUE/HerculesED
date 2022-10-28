@@ -253,7 +253,7 @@ namespace EditorCV.Models
                         {
                             stringBuilderO = new StringBuilder();
                             string[] printSplit = pPrint.Split('|');
-                            for (int j = 0; j < printSplit.Count(); j++)
+                            for (int j = 0; j < printSplit.Length; j++)
                             {
                                 string valor = "";
                                 if (j == 0)
@@ -1851,13 +1851,13 @@ namespace EditorCV.Models
                         }
                     }
                     //Si el item no tiene fecha, no permito el envío
-                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).Any())
+                    if (!item.properties.Where(x => x.name.Equals("Fecha de publicación")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
                     else
                     {
-                        string fechaPublicacion = item.properties.Where(x => x.name.Equals("Fecha de publicación")).Where(x => x.values.Any()).First().values.First();
+                        string fechaPublicacion = item.properties.Where(x => x.name.Equals("Fecha de publicación")).First(x => x.values.Any()).values.First();
                         int anio = int.Parse(fechaPublicacion.Substring(0, 4));
                         int mes = int.Parse(fechaPublicacion.Substring(4, 2));
                         int dia = int.Parse(fechaPublicacion.Substring(6, 2));
@@ -1871,13 +1871,13 @@ namespace EditorCV.Models
                     }
                     //Si es de tipo publicación y no tiene tipo de proyecto, no permito el envío
                     if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedScientificPublicationCV")
-                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
                     //Si es de tipo congreso y no tiene tipo de proyecto, no permito el envío
                     if (pListItemConfig.rdftype_cv.Equals("http://w3id.org/roh/RelatedWorkSubmittedConferencesCV")
-                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Where(x => x.values.Any()).Any())
+                        && !item.properties.Where(x => x.name.Equals("Tipo de producción")).Any(x => x.values.Any()))
                     {
                         item.sendPRC = false;
                     }
@@ -1938,7 +1938,7 @@ namespace EditorCV.Models
             return item;
         }
 
-        private DateTime ConvertirFechaGnossADateTimeDia(string pFecha)
+        private static DateTime ConvertirFechaGnossADateTimeDia(string pFecha)
         {
             int anio = int.Parse(pFecha.Substring(0, 4));
             int mes = int.Parse(pFecha.Substring(4, 2));
@@ -1960,7 +1960,7 @@ namespace EditorCV.Models
         /// <param name="pEntityCV">Entidad del cv desde la que se apunta a la entidad</param>
         /// <param name="pPropertyCV">Propiedad que apunta a la entidad en el CV</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pCVId, string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetEditData(string pCVId, string pId, ItemEdit pItemEdit, string pGraph, string pLang, string pEntityCV = null, string pPropertyCV = null)
         {
             List<PropertyData> propertyDatas = pItemEdit.GenerarPropertyDatas(pGraph);
             //Editabilidad
@@ -2503,9 +2503,9 @@ namespace EditorCV.Models
                         {
                             if (pItemEditSectionRowProperty.autocompleteConfig.propertyAux != null)
                             {
-                                string entityText = "";
+                                StringBuilder stringBuilderEntityText = new StringBuilder();
                                 string[] printSplit = pItemEditSectionRowProperty.autocompleteConfig.propertyAux.print.Split('|');
-                                for (int j = 0; j < printSplit.Count(); j++)
+                                for (int j = 0; j < printSplit.Length; j++)
                                 {
                                     string valor = "";
                                     if (j == 0)
@@ -2518,10 +2518,10 @@ namespace EditorCV.Models
                                     }
                                     if (!string.IsNullOrEmpty(valor))
                                     {
-                                        entityText += printSplit[j].Replace($"{{{j}}}", valor);
+                                        stringBuilderEntityText.Append(printSplit[j].Replace($"{{{j}}}", valor));
                                     }
                                 }
-                                entityEditSectionRowProperty.propertyEntityValue = entityText;
+                                entityEditSectionRowProperty.propertyEntityValue = stringBuilderEntityText.ToString();
                             }
                             else
                             {
@@ -2579,59 +2579,55 @@ namespace EditorCV.Models
                         }
                     }
                     entityEditSectionRowProperty.thesaurus.RemoveAll(y => !cat.Contains(y.id));
-                    //HashSet<string> cat = entityEditSectionRowProperty.entityAuxData.entities.Values.Select(x => x.Select(x => x.properties.Select(x => x.values)));
 
                     return entityEditSectionRowProperty;
                 }
 
-                if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity)
+                if (pItemEditSectionRowProperty.type == DataTypeEdit.auxEntity && pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
                 {
-                    if (pItemEditSectionRowProperty.auxEntityData != null && pItemEditSectionRowProperty.auxEntityData.rows != null && pItemEditSectionRowProperty.auxEntityData.rows.Count > 0)
+                    entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
+                    entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
+                    entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
+                    entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
+                    foreach (string id in entityEditSectionRowProperty.values)
                     {
-                        entityEditSectionRowProperty.entityAuxData.entities = new Dictionary<string, List<EntityEditSectionRow>>();
-                        entityEditSectionRowProperty.entityAuxData.rows = GetRowsEdit(null, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph);
-                        entityEditSectionRowProperty.entityAuxData.titles = new Dictionary<string, EntityEditRepresentativeProperty>();
-                        entityEditSectionRowProperty.entityAuxData.properties = new Dictionary<string, List<EntityEditRepresentativeProperty>>();
-                        foreach (string id in entityEditSectionRowProperty.values)
+                        entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
+                        if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
                         {
-                            entityEditSectionRowProperty.entityAuxData.entities.Add(id, GetRowsEdit(id, pItemEditSectionRowProperty.auxEntityData.rows, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph));
-                            if (!string.IsNullOrEmpty(entityEditSectionRowProperty.entityAuxData.propertyOrder))
+                            string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
+                            int.TryParse(orden, out int ordenInt);
+                            entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
+                        }
+
+                        if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                        {
+                            string title = GetPropValues(id, UtilityCV.GetPropComplete(pItemEditSectionRowProperty.auxEntityData.propertyTitle), pData).FirstOrDefault();
+                            string routeTitle = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute();
+                            if (string.IsNullOrEmpty(title))
                             {
-                                string orden = GetPropertiesEdit(id, new ItemEditSectionRowProperty() { property = entityEditSectionRowProperty.entityAuxData.propertyOrder }, pData, pCombos, pComboAutorizacionesProyectos, pCombosDependency, pTesauros, pLang, pGraph).values.FirstOrDefault();
-                                int.TryParse(orden, out int ordenInt);
-                                entityEditSectionRowProperty.entityAuxData.childsOrder[id] = ordenInt;
+                                title = "";
                             }
+                            entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty() { value = title, route = routeTitle });
+                        }
 
-                            if (pItemEditSectionRowProperty.auxEntityData.propertyTitle != null)
+                        if (pItemEditSectionRowProperty.auxEntityData.properties != null)
+                        {
+                            foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
                             {
-                                string title = GetPropValues(id, UtilityCV.GetPropComplete(pItemEditSectionRowProperty.auxEntityData.propertyTitle), pData).FirstOrDefault();
-                                string routeTitle = pItemEditSectionRowProperty.auxEntityData.propertyTitle.GetRoute();
-                                if (string.IsNullOrEmpty(title))
+                                List<string> valores = GetPropValues(id, UtilityCV.GetPropComplete(entityProperty.child), pData);
+                                string routeProp = entityProperty.child.GetRoute();
+                                if (!entityEditSectionRowProperty.entityAuxData.properties.ContainsKey(id))
                                 {
-                                    title = "";
+                                    entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>();
                                 }
-                                entityEditSectionRowProperty.entityAuxData.titles.Add(id, new EntityEditRepresentativeProperty() { value = title, route = routeTitle });
-                            }
 
-                            if (pItemEditSectionRowProperty.auxEntityData.properties != null)
-                            {
-                                foreach (ItemEditEntityProperty entityProperty in pItemEditSectionRowProperty.auxEntityData.properties)
+                                entityEditSectionRowProperty.entityAuxData.properties[id].Add(new EntityEditRepresentativeProperty()
                                 {
-                                    List<string> valores = GetPropValues(id, UtilityCV.GetPropComplete(entityProperty.child), pData);
-                                    string routeProp = entityProperty.child.GetRoute();
-                                    if (!entityEditSectionRowProperty.entityAuxData.properties.ContainsKey(id))
-                                    {
-                                        entityEditSectionRowProperty.entityAuxData.properties[id] = new List<EntityEditRepresentativeProperty>();
-                                    }
+                                    name = UtilityCV.GetTextLang(pLang, entityProperty.name),
+                                    value = string.Join(", ", valores),
+                                    route = routeProp
+                                });
 
-                                    entityEditSectionRowProperty.entityAuxData.properties[id].Add(new EntityEditRepresentativeProperty()
-                                    {
-                                        name = UtilityCV.GetTextLang(pLang, entityProperty.name),
-                                        value = string.Join(", ", valores),
-                                        route = routeProp
-                                    });
-
-                                }
                             }
                         }
                     }
@@ -2747,9 +2743,9 @@ namespace EditorCV.Models
         /// <param name="pItemEditSectionRowPropertyCombo">Configuración de un combo para edición</param>
         /// <param name="pLang">Idioma</param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
+        private static Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> GetSubjectsCombo(ItemEditSectionRowPropertyCombo pItemEditSectionRowPropertyCombo, string pLang)
         {
-            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta = new Dictionary<string, List<Dictionary<string, Data>>>();
+            Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> respuesta;
             string claveCombos = $@"{pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.property.graph} {pItemEditSectionRowPropertyCombo.property.property} {pItemEditSectionRowPropertyCombo.rdftype} {pItemEditSectionRowPropertyCombo.graph} {pLang}";
             if (pItemEditSectionRowPropertyCombo.filter != null)
             {
@@ -2992,13 +2988,13 @@ namespace EditorCV.Models
                 EnrichmentResponseCategory listaCategoria = new EnrichmentResponseCategory();
                 listaCategoria.topics = new List<List<EnrichmentResponseCategory.EnrichmentResponseItem>>();
 
-                foreach (EnrichmentResponseItem cat in categoriasObtenidas.topics)
+                foreach (string word in categoriasObtenidas.topics.Select(x=>x.word))
                 {
                     List<EnrichmentResponseCategory.EnrichmentResponseItem> listaTesauro = new List<EnrichmentResponseCategory.EnrichmentResponseItem>();
 
-                    if (tuplaTesauro.Item2.ContainsKey("general " + cat.word.ToLower().Trim()))
+                    if (tuplaTesauro.Item2.ContainsKey("general " + word.ToLower().Trim()))
                     {
-                        string idTesauro = tuplaTesauro.Item2["general " + cat.word.ToLower().Trim()];
+                        string idTesauro = tuplaTesauro.Item2["general " + word.ToLower().Trim()];
                         listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
 
                         while (!idTesauro.EndsWith(".0.0.0"))
@@ -3007,9 +3003,9 @@ namespace EditorCV.Models
                             listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
                         }
                     }
-                    else if (tuplaTesauro.Item2.ContainsKey(cat.word.ToLower().Trim()))
+                    else if (tuplaTesauro.Item2.ContainsKey(word.ToLower().Trim()))
                     {
-                        string idTesauro = tuplaTesauro.Item2[cat.word.ToLower().Trim()];
+                        string idTesauro = tuplaTesauro.Item2[word.ToLower().Trim()];
                         listaTesauro.Add(new EnrichmentResponseCategory.EnrichmentResponseItem() { id = idTesauro });
 
                         while (!idTesauro.EndsWith(".0.0.0"))

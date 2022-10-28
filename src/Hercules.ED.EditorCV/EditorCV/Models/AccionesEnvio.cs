@@ -14,10 +14,10 @@ namespace EditorCV.Models
     public abstract class AccionesEnvio
     {
         #region --- Constantes   
-        protected static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
-        protected static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
-        protected static string RUTA_PREFIJOS = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models{Path.DirectorySeparatorChar}Utils{Path.DirectorySeparatorChar}prefijos.json";
-        protected static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
+        protected readonly static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        protected readonly static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
+        protected readonly static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models{Path.DirectorySeparatorChar}Utils{Path.DirectorySeparatorChar}prefijos.json";
+        protected readonly static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         #endregion
 
         /// <summary>
