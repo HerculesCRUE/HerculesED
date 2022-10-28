@@ -48,7 +48,7 @@ Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenido
 Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
 
 ## Petición para el enriquecimiento de datos
-Se realizará una petición GET desde la propia API ha GitHub para obtener los datos enriquecidos
+Se realizará una petición GET desde la propia API ha GitHub para obtener los datos enriquecidos.
 Ejemplo de petición curl:
 ```
 curl -X 'GET' \
