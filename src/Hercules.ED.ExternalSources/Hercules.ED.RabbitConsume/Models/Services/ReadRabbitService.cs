@@ -4,7 +4,6 @@ using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -180,21 +179,18 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
+                    Uri urlDoi = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultDoi = HttpCall(urlDoi.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     string id = message[2].Substring(message[2].LastIndexOf('/') + 1);
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultDoi);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -215,21 +211,18 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
+                    Uri urlInv = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultInv = HttpCall(urlInv.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     string id = message[3].Substring(message[3].LastIndexOf('/') + 1);
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultInv);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[3], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -250,20 +243,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
+                    Uri urlPub = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultPub = HttpCall(urlPub.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json", resultPub);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -284,20 +274,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
+                    Uri urlZenodo = new(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultZenodo = HttpCall(urlZenodo.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultZenodo);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -318,20 +305,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
+                    Uri urlFigShare = new(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultFigShare = HttpCall(urlFigShare.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultFigShare);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -352,20 +336,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
+                    Uri urlGitHub = new(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
+                    string resultGitHub = HttpCall(urlGitHub.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
-                    if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
-                    {
-                        Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                    }
+                    ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
+                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultGitHub);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -383,6 +364,17 @@ namespace Gnoss.Web.ReprocessData.Models.Services
             }
 
             return true;
+        }
+    
+        /// <summary>
+        /// Comprobar directorio de escritura.
+        /// </summary>
+        public void ComprobarDirectorio()
+        {
+            if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
+            {
+                Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
+            }
         }
     }
 }

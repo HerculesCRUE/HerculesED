@@ -22,16 +22,15 @@ namespace Hercules.ED.RabbitConsume.Models.Services
             string idRecurso = string.Empty;
 
             SparqlObject resultadoQuery;
-            StringBuilder select = new(), where = new();
 
             // Consulta sparql.
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?s ?fecha ");
-            where.Append("WHERE { ");
-            where.Append($@"FILTER(?s = <{pIdGnoss}>)");
-            where.Append("OPTIONAL {?s roh:lastUpdatedDate ?fecha. } ");
-            where.Append("} ");
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
+            string select = $@"{mPrefijos} SELECT DISTINCT ?s ?fecha ";
+            string where = $@"WHERE {{
+                                FILTER(?s = <{pIdGnoss}>) 
+                                OPTIONAL {{?s roh:lastUpdatedDate ?fecha. }} 
+                            }}";
+            
+            resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)

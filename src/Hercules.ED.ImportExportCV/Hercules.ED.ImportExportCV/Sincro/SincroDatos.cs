@@ -36,7 +36,7 @@ namespace ImportadorWebCV.Sincro
 
         private readonly List<string> listadoIdentificadorSecciones = new ()
         {
-            //Datos identificacion
+            // Datos identificacion
             "000.010.000.000",
             //Situación profesional
             "010.010.000.000","010.020.000.000",
