@@ -381,7 +381,7 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Objecto que almacena toda la informacion necesaria para la validacion
         /// </summary>
-        public ItemEditSectionRowValidation validation;
+        public ItemEditSectionRowValidation validation { get; set; }
     }
     public class ItemEditSectionRowValidation
     {
