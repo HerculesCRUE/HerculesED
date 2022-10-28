@@ -129,8 +129,8 @@ where {{
                 RellenarDiccionarioCongresos();
             }
 
-            string valorEnviado = "";
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false, out valorEnviado);
+            string valorEnviadoEnvioPRC = "";
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, false, out valorEnviadoEnvioPRC);
 
             #region --- Inserción y obtención del Proyecto asociado.
             // Comprobar si está el triple.
@@ -207,21 +207,21 @@ where {{
             #region --- Envío a SGI.
             try
             {
-                IRestResponse response = null;
+                IRestResponse responseEnvioPRC = null;
 
                 if (PRC.epigrafeCVN.Equals("060.010.010.000") && !PRC.campos.Any(x => x.codigoCVN.Equals("060.010.010.010")))
                 {
                     throw new Exception("El recurso no tiene tipo de proyecto");
                 }
 
-                if (valorEnviado == "rechazado")
+                if (valorEnviadoEnvioPRC == "rechazado")
                 {
                     RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
                     client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.PUT);
                     request.AddJsonBody(PRC);
                     string jsonString = JsonConvert.SerializeObject(PRC);
-                    response = client.Execute(request);
+                    responseEnvioPRC = client.Execute(request);
                 }
                 else
                 {
@@ -230,12 +230,12 @@ where {{
                     var request = new RestRequest(Method.POST);
                     request.AddJsonBody(PRC);
                     string jsonString = JsonConvert.SerializeObject(PRC);
-                    response = client.Execute(request);
+                    responseEnvioPRC = client.Execute(request);
                 }
 
-                if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
+                if ((int)responseEnvioPRC.StatusCode < 200 || (int)responseEnvioPRC.StatusCode >= 300)
                 {
-                    throw new Exception(response.StatusCode.ToString() + ", " + response.Content);
+                    throw new Exception(responseEnvioPRC.StatusCode.ToString() + ", " + responseEnvioPRC.Content);
                 }
             }
             catch (Exception)
@@ -248,7 +248,7 @@ where {{
             mResourceApi.ChangeOntoly("document");
             guid = mResourceApi.GetShortGuid(pIdDocumento);
 
-            if (string.IsNullOrEmpty(valorEnviado))
+            if (string.IsNullOrEmpty(valorEnviadoEnvioPRC))
             {
                 // Inserción.
                 Insercion(guid, "http://w3id.org/roh/validationStatusPRC", "pendiente");
@@ -256,7 +256,7 @@ where {{
             else
             {
                 // Modificación.
-                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "pendiente", valorEnviado);
+                Modificacion(guid, "http://w3id.org/roh/validationStatusPRC", "pendiente", valorEnviadoEnvioPRC);
             }
             #endregion
         }
@@ -285,29 +285,29 @@ where {{
                 RellenarDiccionarioCongresos();
             }
 
-            string valorEnviado = "";
-            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true, out valorEnviado);
+            string valorEnviadoEliminacion = "";
+            ProduccionCientifica PRC = CrearPRC(pIdDocumento, true, out valorEnviadoEliminacion);
 
             ObtencionRevistasPubicacionesCongresos(PRC, pIdDocumento, true);
 
             #region --- Envío a SGI.
             try
             {
-                IRestResponse response = null;
+                IRestResponse responseEliminacion = null;
 
                 if (PRC.epigrafeCVN.Equals("060.010.010.000") && !PRC.campos.Any(x => x.codigoCVN.Equals("060.010.010.010")))
                 {
                     throw new Exception("El recurso no tiene tipo de proyecto");
                 }
 
-                if (valorEnviado == "rechazado")
+                if (valorEnviadoEliminacion == "rechazado")
                 {
                     RestClient client = new($@"{pConfig.GetUrlProduccionCientifica()}/{PRC.idRef}");
                     client.AddDefaultHeader("Authorization", "Bearer " + GetTokenPRC(pConfig));
                     var request = new RestRequest(Method.PUT);
                     request.AddJsonBody(PRC);
-                    string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
-                    response = client.Execute(request);
+                    string jsonString = JsonConvert.SerializeObject(PRC);
+                    responseEliminacion = client.Execute(request);
                 }
                 else
                 {
@@ -316,12 +316,12 @@ where {{
                     var request = new RestRequest(Method.POST);
                     request.AddJsonBody(PRC);
                     string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(PRC);
-                    response = client.Execute(request);
+                    responseEliminacion = client.Execute(request);
                 }
 
-                if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
+                if ((int)responseEliminacion.StatusCode < 200 || (int)responseEliminacion.StatusCode >= 300)
                 {
-                    throw new Exception(response.StatusCode.ToString() + ", " + response.Content);
+                    throw new Exception(responseEliminacion.StatusCode.ToString() + ", " + responseEliminacion.Content);
                 }
             }
             catch (Exception)
@@ -334,7 +334,7 @@ where {{
             mResourceApi.ChangeOntoly("document");
             Guid guid = mResourceApi.GetShortGuid(pIdDocumento);
 
-            if (string.IsNullOrEmpty(valorEnviado))
+            if (string.IsNullOrEmpty(valorEnviadoEliminacion))
             {
                 // Inserción.
                 Insercion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "pendiente");
@@ -342,7 +342,7 @@ where {{
             else
             {
                 // Modificación.
-                Modificacion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "pendiente", valorEnviado);
+                Modificacion(guid, "http://w3id.org/roh/validationDeleteStatusPRC", "pendiente", valorEnviadoEliminacion);
             }
             #endregion
         }

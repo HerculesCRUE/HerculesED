@@ -152,9 +152,9 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador del CV</param>
         /// <returns></returns>
-        public static List<FilePDF> GetListPDFFile(string pCVId, string baseUrl, int timezoneOffset)
+        public static List<FilePdf> GetListPDFFile(string pCVId, string baseUrl, int timezoneOffset)
         {
-            List<FilePDF> listadoArchivos = new List<FilePDF>();
+            List<FilePdf> listadoArchivos = new List<FilePdf>();
             string select = "SELECT ?titulo ?fecha ?estado ?fichero";
             string where = $@"WHERE{{
     <{pCVId}> <http://w3id.org/roh/generatedPDFFile> ?pdfFile .
@@ -172,7 +172,7 @@ namespace EditorCV.Models
                     continue;
                 }
 
-                FilePDF file = new FilePDF();
+                FilePdf file = new FilePdf();
                 file.titulo = fila["titulo"].value;
                 file.fichero = "";
                 file.fecha = fila["fecha"].value;

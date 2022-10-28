@@ -171,7 +171,7 @@ namespace EditorCV.Controllers
                 {
                     throw new Exception("Usuario no encontrado " + userID);
                 }
-                List<FilePDF> pListId = AccionesExportacion.GetListPDFFile(pCVId, baseUrl, timezoneOffset);
+                List<FilePdf> pListId = AccionesExportacion.GetListPDFFile(pCVId, baseUrl, timezoneOffset);
                 return Ok(pListId);
             }
             catch (Exception ex)

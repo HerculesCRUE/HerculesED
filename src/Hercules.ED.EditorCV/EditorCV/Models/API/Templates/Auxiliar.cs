@@ -5,8 +5,6 @@ using System.Web;
 
 namespace EditorCV.Models.API.Templates
 {  
-
-
     /// <summary>
     /// Clase genérica para la configuración de las propiedades
     /// </summary>
@@ -15,25 +13,25 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad
         /// </summary>
-        public string property;
+        public string property { get; set; }
         /// <summary>
         /// Grafo en el que buscar los 'hijos'
         /// </summary>
-        public string graph;
+        public string graph { get; set; }
         /// <summary>
         /// 'Hijos'
         /// </summary>
-        public PropertyDataTemplate child;
+        public PropertyDataTemplate child { get; set; }
 
         /// <summary>
         /// Orden
         /// </summary>
-        public string order;
+        public string order { get; set; }
 
         /// <summary>
         /// Texto auxiliar para el titulo
         /// </summary>
-        public Dictionary<string,string> auxTitle;
+        public Dictionary<string,string> auxTitle { get; set; }
 
         public Utils.PropertyData GenerarPropertyData(string pGraph)
         {

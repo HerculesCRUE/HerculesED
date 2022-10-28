@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace EditorCV.Models.API.Input
 {
@@ -77,14 +79,12 @@ namespace EditorCV.Models.API.Input
 
         public string GetPropComplete()
         {
-            string propComplete = "";
-            foreach (string routeIn in route.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries))
+            StringBuilder stringBuilder = new StringBuilder();            
+            foreach (string routeIn in route.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries).Where(x => x.StartsWith("http")))
             {
-                if (routeIn.StartsWith("http"))
-                {
-                    propComplete += routeIn+"@@@";
-                }
+                stringBuilder.Append(routeIn + "@@@");
             }
+            string propComplete = stringBuilder.ToString();
             if (propComplete.Length >= 3)
             {
                 propComplete = propComplete.Substring(0, propComplete.Length - 3);
