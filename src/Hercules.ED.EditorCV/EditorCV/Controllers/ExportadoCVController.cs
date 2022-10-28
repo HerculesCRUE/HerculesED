@@ -53,7 +53,6 @@ namespace EditorCV.Controllers
                 List<string> listadoId = null;
                 if (listaId != null)
                 {
-                    listadoId = new List<string>();
                     listadoId = listaId.Split("@@@", StringSplitOptions.RemoveEmptyEntries).ToList();
                 }
 
@@ -132,11 +131,11 @@ namespace EditorCV.Controllers
 
                 PetitionStatus peticionCarga = new PetitionStatus(2, 3, "CARGANDO_DATOS_CV");
                 peticionCarga.subActualWork = 0;
-                peticionCarga.subTotalWorks = tabTemplatesAux.Count();
+                peticionCarga.subTotalWorks = tabTemplatesAux.Count;
                 petitionStatus[petitionID] = peticionCarga;
                 Parallel.ForEach(pListId, new ParallelOptions { MaxDegreeOfParallelism = 5 }, keyValue =>
                 {
-                    int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.ToList().First(x => x.rdftype == keyValue.Key));
+                    int index = tabTemplatesAux.ToList().IndexOf(UtilityCV.TabTemplates.First(x => x.rdftype == keyValue.Key));
                     listTabs.TryAdd(index, accionesEdicion.GetTab(_Configuracion, pCVId, keyValue.Value, keyValue.Key, pLang));
                     petitionStatus[petitionID].subActualWork++;
                 });
