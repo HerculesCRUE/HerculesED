@@ -13,19 +13,19 @@ namespace EditorCV.Models.API
         /// <summary>
         /// Identificador
         /// </summary>
-        public string id;
+        public string id { get; set; }
         /// <summary>
         /// rdf:type
         /// </summary>
-        public string rdfType;
+        public string rdfType { get; set; }
         /// <summary>
         /// Propiedades
         /// </summary>
-        public Dictionary<string, List<string>> props = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<string>> props { get; set; }
         /// <summary>
         /// Entidades
         /// </summary>
-        public Dictionary<string, List<EntityRdf>> ents = new Dictionary<string, List<EntityRdf>>();
+        public Dictionary<string, List<EntityRdf>> ents { get; set; }
 
     }
 }
