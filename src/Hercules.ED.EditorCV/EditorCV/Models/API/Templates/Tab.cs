@@ -159,31 +159,31 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Tipo de presentación de una sección
         /// </summary>
-        public TabSectionPresentationType type;
+        public TabSectionPresentationType type { get; set; }
         /// <summary>
         /// Título de la sección
         /// </summary>
-        public Dictionary<string, string> title;
+        public Dictionary<string, string> title { get; set; }
         /// <summary>
         /// Información de la sección
         /// </summary>
-        public Dictionary<string, string> information;
+        public Dictionary<string, string> information { get; set; }
         /// <summary>
         /// Es parte del CV abreviado del ISCIII
         /// </summary>
-        public bool cvaISCIII;
+        public bool cvaISCIII { get; set; }
         /// <summary>
         /// Es parte del CV abreviado del AEI
         /// </summary>
-        public bool cvaAEI;
+        public bool cvaAEI { get; set; }
         /// <summary>
         /// Configuración de la presentación para los listados de items
         /// </summary>
-        public TabSectionPresentationListItems listItemsPresentation;
+        public TabSectionPresentationListItems listItemsPresentation { get; set; }
         /// <summary>
         /// Configuración de la presentación para un item
         /// </summary>
-        public TabSectionPresentationItem itemPresentation;
+        public TabSectionPresentationItem itemPresentation { get; set; }
     }
 
     /// <summary>
@@ -194,39 +194,39 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad para indicar los valores indicando si el recurso está dentro de los ultimos 5 años.
         /// </summary>
-        public Last5Years last5Years;
+        public Last5Years last5Years { get; set; }
         /// <summary>
         /// Propiedad para acceder a la entidad desde la minificha
         /// </summary>
-        public string property;
+        public string property { get; set; }
         /// <summary>
         /// Propiedad para acceder a la entidad del cv desde la minificha
         /// </summary>
-        public string property_cv;
+        public string property_cv { get; set; }
         /// <summary>
         /// Propiedad para indicar que se quieren revisar los duplicados
         /// </summary>
-        public bool checkDuplicates;
+        public bool checkDuplicates { get; set; }
         /// <summary>
         /// Propiedad para indicar si los items son publicables
         /// </summary>
-        public bool isPublishable;
+        public bool isPublishable { get; set; }
         /// <summary>
         /// Rdf:type de ña entidad del cv 
         /// </summary>
-        public string rdftype_cv;        
+        public string rdftype_cv { get; set; }
         /// <summary>
         /// Datos de configuración para la presentación de los items del listado de la lista
         /// </summary>
-        public TabSectionListItem listItem;
+        public TabSectionListItem listItem { get; set; }
         /// <summary>
         /// Datos de configuración de edición para los items del listado de la lista
         /// </summary>
-        public ItemEdit listItemEdit;
+        public ItemEdit listItemEdit { get; set; }
         /// <summary>
         /// Propiedad con el ID de la sección de CVN
         /// </summary>
-        public string cvnsection;
+        public string cvnsection { get; set; }
     }
 
     /// <summary>
@@ -237,15 +237,15 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Booleano indicando si debe añadirse siempre independientemente de las fechas de inicio y fin.
         /// </summary>
-        public bool always;
+        public bool always { get; set; }
         /// <summary>
         /// Propiedad indicadora del fin temporal del atributo.
         /// </summary>
-        public string end;
+        public string end { get; set; }
         /// <summary>
         /// Propiedad indicadora del inicio temporal del atributo.
         /// </summary>
-        public string start;
+        public string start { get; set; }
     }
 
     /// <summary>
@@ -256,11 +256,11 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad para acceder a la entidad desde la minificha
         /// </summary>
-        public string property;
+        public string property { get; set; }
         /// <summary>
         /// Datos de configuración de edición para el item
         /// </summary>
-        public ItemEdit itemEdit;
+        public ItemEdit itemEdit { get; set; }
     }
 
     /// <summary>
@@ -271,27 +271,25 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad para pintar el título del ítem
         /// </summary>
-        public PropertyDataTemplate propertyTitle;
+        public PropertyDataTemplate propertyTitle { get; set; }
         /// <summary>
         /// Propiedad para pintar el título del ítem
         /// </summary>
-        public List<PropertyDataTemplate> propertyTitleOR;
-
+        public List<PropertyDataTemplate> propertyTitleOR { get; set; }
         /// <summary>
         /// Órdenes disponibles en el listado
         /// </summary>
-        public List<TabSectionListItemOrder> orders;
+        public List<TabSectionListItemOrder> orders { get; set; }
         /// <summary>
         /// Listado con las propiedades a pintar en el listado
         /// </summary>
-        public List<TabSectionListItemProperty> properties;
-
-        public Utils.PropertyData GenerarPropertyData(string pGraph)
+        public List<TabSectionListItemProperty> properties { get; set; }
+        public PropertyData GenerarPropertyData(string pGraph)
         {
-            Utils.PropertyData propertyData = new Utils.PropertyData()
+            PropertyData propertyData = new PropertyData()
             {
                 graph = pGraph,
-                childs = new List<Utils.PropertyData>()
+                childs = new List<PropertyData>()
             };
             if (orders != null)
             {
@@ -316,10 +314,10 @@ namespace EditorCV.Models.API.Templates
             }
 
             //Visibilidad
-            Utils.PropertyData property = new Utils.PropertyData()
+            PropertyData property = new PropertyData()
             {
-                property = Utils.UtilityCV.PropertyIspublic,
-                childs = new List<Utils.PropertyData>()
+                property = UtilityCV.PropertyIspublic,
+                childs = new List<PropertyData>()
             };
             if (!propertyData.childs.Exists(x => x.property == property.property))
             {
@@ -342,7 +340,7 @@ namespace EditorCV.Models.API.Templates
                     }
                 }
             }
-            Utils.UtilityCV.CleanPropertyData(ref propertyData);
+            UtilityCV.CleanPropertyData(ref propertyData);
             return propertyData;
         }
     }
@@ -355,11 +353,11 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Nombre
         /// </summary>
-        public Dictionary<string, string> name;
+        public Dictionary<string, string> name { get; set; }
         /// <summary>
         /// Propiedades utilizadas para los órdenes
         /// </summary>
-        public List<TabSectionListItemOrderProperty> properties;
+        public List<TabSectionListItemOrderProperty> properties { get; set; }
     }
 
 
@@ -371,7 +369,7 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// TRUE para orden ascendente
         /// </summary>
-        public bool asc;
+        public bool asc { get; set; }
     }
 
 
@@ -383,31 +381,31 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Tipo de la propiedad a pintar
         /// </summary>
-        public DataTypeListItem type;
+        public DataTypeListItem type { get; set; }
         /// <summary>
         /// Nombre de la propiedad
         /// </summary>
-        public Dictionary<string, string> name;
+        public Dictionary<string, string> name { get; set; }
         /// <summary>
         /// Información del item
         /// </summary>
-        public Dictionary<string, string> information;
+        public Dictionary<string, string> information { get; set; }
         /// <summary>
         /// Indica si se muestra en la minificha (sin desplegar)
         /// </summary>
-        public bool showMini;
+        public bool showMini { get; set; }
         /// <summary>
         /// Indica si se muestra en la minificha en negrita(sin desplegar)
         /// </summary>
-        public bool showMiniBold;
+        public bool showMiniBold { get; set; }
         /// <summary>
         /// Propiedad a pintar
         /// </summary>
-        public PropertyDataTemplate child;
+        public PropertyDataTemplate child { get; set; }
         /// <summary>
         /// Propiedades a pintar de forma alternativa (si no está la primera se pinta la siguiente y así sucesivamente)
         /// </summary>
-        public List<PropertyDataTemplate> childOR;
+        public List<PropertyDataTemplate> childOR { get; set; }
     }
 
 }
