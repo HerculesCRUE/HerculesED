@@ -9,14 +9,13 @@ using System.Threading;
 
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
-    public class ROScopusLogic : ScopusInterface
+    public class ROScopusLogic
     {
-
         protected string bareer;
 
-        protected Dictionary<string, string> headers = new Dictionary<string, string>();
+        protected Dictionary<string, string> headers = new();
 
-        public static string apiKey = "75f4ab3fac56f42ac83cdeb7c98882ca";
+        private static readonly string apiKey = "75f4ab3fac56f42ac83cdeb7c98882ca";
 
         /// <summary>
         /// A Http calls function
@@ -25,7 +24,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// <param name="method">Crud method for the call</param>
         /// <param name="headers">The headers for the call</param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
+        protected async Task<string> HttpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -82,31 +81,30 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <param name="date"></param>
-        /// <param name="uri"></param>
         /// <returns></returns>
-        public List<Publication> getPublications(string name, string date = "1500-01-01", string uri = "content/search/scopus?query=ORCID(\"{0}\")&date={1}%&start={2}")//AU-ID?{0}")
+        public List<Publication> GetPublications(string name, string date)
         {
             // Fecha requerida para Scopus.
             string date_scopus = date.Substring(0, 4) + "-" + (DateTime.Now.Date.Year + 1).ToString();
 
-            ROScopusControllerJSON info = new ROScopusControllerJSON(this);
+            ROScopusControllerJSON info = new(this);
 
             int n = 0;
-            List<Publication> listaResultados = new List<Publication>();
+            List<Publication> listaResultados = new();
             int result = 1;
             int cardinalidad = 1;
             while (cardinalidad >= result)
             {
-                uri = "content/search/scopus?query=ORCID(\"{0}\")&apikey={1}&date={2}&start={3}";
-                Uri url = new Uri("https://api.elsevier.com/" + string.Format(uri, name, apiKey, date_scopus, result.ToString()));
+                string uri = "content/search/scopus?query=ORCID(\"{0}\")&apikey={1}&date={2}&start={3}";
+                Uri url = new("https://api.elsevier.com/" + string.Format(uri, name, apiKey, date_scopus, result.ToString()));
                 n++;
                 result = 200 * n;
 
-                string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
                 if (!info_publication.StartsWith("{\"service-error\":"))
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(info_publication);
-                    List<Publication> nuevas = info.getListPublications(objInicial, date);
+                    List<Publication> nuevas = info.GetListPublications(objInicial);
                     listaResultados.AddRange(nuevas);
                     cardinalidad = 0;
                     if (objInicial.SearchResults.entry != null)
@@ -123,7 +121,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         /// </summary>
         /// <param name="pDoi">Identificador DOI de la publicación a obtener.</param>
         /// <returns>Publicación obtenida. (Null --> Error)</returns>
-        public Publication getPublicationDoi(string pDoi)
+        public Publication GetPublicationDoi(string pDoi)
         {
             // Objeto publicación.
             Publication publicacionFinal = null;
@@ -131,18 +129,18 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             try
             {
                 // Clase.
-                ROScopusControllerJSON info = new ROScopusControllerJSON(this);
+                ROScopusControllerJSON info = new(this);
 
                 // Petición.
-                Uri url = new Uri($@"https://api.elsevier.com/content/search/scopus?apikey={apiKey}&query=DOI({pDoi})");
-                string result = httpCall(url.ToString(), "GET", headers).Result;
+                Uri url = new($@"https://api.elsevier.com/content/search/scopus?apikey={apiKey}&query=DOI({pDoi})");
+                string result = HttpCall(url.ToString(), "GET", headers).Result;
 
                 // Obtención de datos.
                 if (!string.IsNullOrEmpty(result) && !result.StartsWith("{\"service-error\":"))
                 {
                     Root objInicial = JsonConvert.DeserializeObject<Root>(result);
                     PublicacionInicial publicacionInicial = objInicial.SearchResults.entry[0];
-                    publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true);
+                    publicacionFinal = info.CambioDeModeloPublicacion(publicacionInicial);
                 }
             }
             catch (Exception)
@@ -151,31 +149,6 @@ namespace ScopusConnect.ROs.Scopus.Controllers
             }
 
             return publicacionFinal;
-        }
-
-        public float getHIndex(string pOrcid)
-        {
-            try
-            {
-                // Clase.
-                ROScopusControllerJSON info = new ROScopusControllerJSON(this);
-
-                // Petición.
-                Uri url = new Uri($@"https://api.elsevier.com/analytics/scival/author/orcid/{pOrcid}?apikey={apiKey}&httpAccept=application/json");
-                string result = httpCall(url.ToString(), "GET", headers).Result;
-
-                // Obtención de datos.
-                if (!string.IsNullOrEmpty(result) && !result.StartsWith("{\"service-error\":"))
-                {
-
-                }
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-
-            return 0;
         }
     }
 }
