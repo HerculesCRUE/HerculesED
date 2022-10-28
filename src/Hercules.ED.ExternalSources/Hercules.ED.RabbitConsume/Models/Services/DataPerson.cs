@@ -5,19 +5,15 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.RabbitConsume.Models.Services
 {
     public class DataPerson
     {
         // Prefijos.
-        private static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/configJson/prefijos.json")));
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static CommunityApi mCommunityApi = new CommunityApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        private static Guid mCommunityID = mCommunityApi.GetCommunityId();
+        private static readonly string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}configJson{Path.DirectorySeparatorChar}prefijos.json")));
+        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static void ModifyDate(string pIdGnoss, DateTime pDate)
         {
@@ -25,8 +21,8 @@ namespace Hercules.ED.RabbitConsume.Models.Services
             string fechaAntigua = string.Empty;
             string idRecurso = string.Empty;
 
-            SparqlObject resultadoQuery = null;
-            StringBuilder select = new StringBuilder(), where = new StringBuilder();
+            SparqlObject resultadoQuery;
+            StringBuilder select = new(), where = new();
 
             // Consulta sparql.
             select.Append(mPrefijos);
@@ -54,39 +50,39 @@ namespace Hercules.ED.RabbitConsume.Models.Services
 
             // Inserción/Modificación de triples.
             mResourceApi.ChangeOntoly("person");
-            Guid guid = mResourceApi.GetShortGuid(idRecurso);            
+            Guid guid = mResourceApi.GetShortGuid(idRecurso);
 
-            if(!string.IsNullOrEmpty(fechaAntigua))
+            if (!string.IsNullOrEmpty(fechaAntigua))
             {
                 // Modificación.
-                Dictionary<Guid, List<TriplesToModify>> dicModificacion = new Dictionary<Guid, List<TriplesToModify>>();
-                List<TriplesToModify> listaTriplesModificacion = new List<TriplesToModify>();
+                Dictionary<Guid, List<TriplesToModify>> dicModificacion = new();
+                List<TriplesToModify> listaTriplesModificacion = new();
 
                 // Modificación (Triples).
-                TriplesToModify triple = new TriplesToModify();
+                TriplesToModify triple = new();
                 triple.Predicate = $@"http://w3id.org/roh/lastUpdatedDate";
                 triple.NewValue = fechaFinal;
                 triple.OldValue = fechaAntigua;
                 listaTriplesModificacion.Add(triple);
 
                 dicModificacion.Add(guid, listaTriplesModificacion);
-                Dictionary<Guid, bool> modificado = mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
+                mResourceApi.ModifyPropertiesLoadedResources(dicModificacion);
             }
             else
             {
                 // Inserción.
-                Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new Dictionary<Guid, List<TriplesToInclude>>();
-                List<TriplesToInclude> listaTriplesInsercion = new List<TriplesToInclude>();
+                Dictionary<Guid, List<TriplesToInclude>> dicInsercion = new();
+                List<TriplesToInclude> listaTriplesInsercion = new();
 
                 // Inserción (Triples).                 
-                TriplesToInclude triple = new TriplesToInclude();
+                TriplesToInclude triple = new();
                 triple.Predicate = $@"http://w3id.org/roh/lastUpdatedDate";
                 triple.NewValue = fechaFinal;
                 listaTriplesInsercion.Add(triple);
 
                 dicInsercion.Add(guid, listaTriplesInsercion);
-                Dictionary<Guid, bool> insertado = mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
-            }            
+                mResourceApi.InsertPropertiesLoadedResources(dicInsercion);
+            }
         }
     }
 }
