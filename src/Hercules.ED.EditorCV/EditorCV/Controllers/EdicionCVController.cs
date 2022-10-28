@@ -285,8 +285,7 @@ namespace EditorCV.Controllers
         {
             try
             {
-                AccionesEdicion accionesEdicion = new AccionesEdicion();
-                return Ok(accionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID, pLang));
+                return Ok(AccionesEdicion.ValidateSignatures(pSignatures, pCVID, pPersonID, pLang));
             }
             catch (Exception ex)
             {

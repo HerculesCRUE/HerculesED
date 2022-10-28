@@ -702,28 +702,28 @@ where {{
                     }
                 }
 
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
+                List<string> listaIdsPublicaciones = new List<string>();
+                List<string> listaValoresPublicaciones = new List<string>();
                 foreach (KeyValuePair<string, string> item in dicIds)
                 {
                     if (!string.IsNullOrEmpty(item.Value))
                     {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
+                        listaIdsPublicaciones.Add(item.Key);
+                        listaValoresPublicaciones.Add(item.Value);
                     }
                 }
-                if (listaValores != null && listaValores.Any())
+                if (listaValoresPublicaciones != null && listaValoresPublicaciones.Any())
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
+                    campoAux.valores = listaValoresPublicaciones;
                     PRC.campos.Add(campoAux);
                 }
-                if (listaIds != null && listaIds.Any())
+                if (listaIdsPublicaciones != null && listaIdsPublicaciones.Any())
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
+                    campoAux.valores = listaIdsPublicaciones;
                     PRC.campos.Add(campoAux);
                 }
             }
@@ -828,28 +828,29 @@ where {{
                         }
                     }
                 }
-                List<string> listaIds = new List<string>();
-                List<string> listaValores = new List<string>();
+
+                List<string> listaIdsCongresos = new List<string>();
+                List<string> listaValoresCongresos = new List<string>();
                 foreach (KeyValuePair<string, string> item in dicIds)
                 {
                     if (!string.IsNullOrEmpty(item.Value))
                     {
-                        listaIds.Add(item.Key);
-                        listaValores.Add(item.Value);
+                        listaIdsCongresos.Add(item.Key);
+                        listaValoresCongresos.Add(item.Value);
                     }
                 }
-                if (listaValores != null && listaValores.Any())
+                if (listaValoresCongresos != null && listaValoresCongresos.Any())
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.400";
-                    campoAux.valores = listaValores;
+                    campoAux.valores = listaValoresCongresos;
                     PRC.campos.Add(campoAux);
                 }
-                if (listaIds != null && listaIds.Any())
+                if (listaIdsCongresos != null && listaIdsCongresos.Any())
                 {
                     CampoProduccionCientifica campoAux = new CampoProduccionCientifica();
                     campoAux.codigoCVN = "060.010.010.410";
-                    campoAux.valores = listaIds;
+                    campoAux.valores = listaIdsCongresos;
                     PRC.campos.Add(campoAux);
                 }
             }

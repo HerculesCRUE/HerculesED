@@ -4,23 +4,20 @@ using System;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
-using Gnoss.Web.ReprocessData.Models;
 using Newtonsoft.Json;
-using System.Threading;
 using static Hercules.ED.RabbitConsume.Program;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
     public class ReadRabbitService
     {
-        private ConfigService _configService;
+        private readonly ConfigService _configService;
         private readonly ConnectionFactory connectionFactory;
         private readonly IConnection connection;
-        private Dictionary<string, string> headers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> headers = new();
 
         /// <summary>
         /// ReceivedDelegate.
@@ -41,6 +38,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         public ReadRabbitService(ConfigService configService)
         {
             _configService = configService;
+            _configService.GetLogPath();
             connectionFactory = new ConnectionFactory
             {
                 Uri = new Uri(_configService.GetrabbitConnectionString())
@@ -96,13 +94,12 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                                  autoDelete: false,
                                  arguments: null);
 
-            EventingBasicConsumer eventingBasicConsumer = new EventingBasicConsumer(channel);
+            EventingBasicConsumer eventingBasicConsumer = new(channel);
 
             eventingBasicConsumer.Received += (sender, basicDeliveryEventArgs) =>
             {
                 try
                 {
-                    IBasicProperties basicProperties = basicDeliveryEventArgs.BasicProperties;
                     string body = Encoding.UTF8.GetString(basicDeliveryEventArgs.Body.ToArray());
 
                     if (receivedFunction(body))
@@ -135,7 +132,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="url">The http call URL.</param>
         /// <param name="method">Crud method for the call.</param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
+        protected static async Task<string> HttpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -169,34 +166,29 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         }
 
         /// <summary>
-        /// Permite mandar a procesar los datos a una cola Rabbit.
-        /// {"investigador"; [ORCID]; "2021-11-01"} -> Obtiene todos los datos relacionados con ese autor desde una fecha indicada. 
-        /// {"publicación"; [DOI]} -> Actualización de citas de un documento en concreto en las diversas fuentes que puedas encontrarlo.
+        /// Obtiene el ítem de la cola de Rabbit.
         /// </summary>
-        /// <param name="pMessage">Datos en formato string de un json.</param>
-        /// <returns></returns>
+        /// <param name="pMessage">Ítem en formato string de una lista.</param>
+        /// <returns>True o False si se procesa o no.</returns>
         public bool ProcessItem(string pMessage)
         {
             // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
 
-            if (message != null && message.Count() == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
+            if (message != null && message.Count == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
-                    FileLogger.Log($@"Haciendo petición a {url}");
+                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
@@ -204,36 +196,34 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     string id = message[2].Substring(message[2].LastIndexOf('/') + 1);
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
-            else if (message != null && message.Count() == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
+            else if (message != null && message.Count == 4 && message[0] == "investigador" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]) && !string.IsNullOrEmpty(message[3]))
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
-                    FileLogger.Log($@"Haciendo petición a {url}");
+                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
@@ -241,157 +231,154 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                     string id = message[3].Substring(message[3].LastIndexOf('/') + 1);
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[3], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
-            else if (message != null && message.Count() == 2 && message[0] == "publicación")
+            else if (message != null && message.Count == 2 && message[0] == "publicación")
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
+                    Uri url = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - Publicación obtenida.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
-            else if (message != null && message.Count() == 2 && message[0] == "zenodo")
+            else if (message != null && message.Count == 2 && message[0] == "zenodo")
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
+                    Uri url = new(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - RO Zenodo obtenido.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
-            else if (message != null && message.Count() == 2 && message[0] == "figshare")
+            else if (message != null && message.Count == 2 && message[0] == "figshare")
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
+                    Uri url = new(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - RO FigShare obtenido.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
-            else if (message != null && message.Count() == 3 && message[0] == "github")
+            else if (message != null && message.Count == 3 && message[0] == "github")
             {
                 try
                 {
                     // Creación de la URL.
-                    Uri url = new Uri(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
+                    Uri url = new(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
 
                     // Obtención de datos con la petición.
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
-                    FileLogger.Log($@"{DateTime.Now} - RO GitHub obtenido.");
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
                     if (!Directory.Exists(_configService.GetRutaDirectorioEscritura()))
                     {
                         Directory.CreateDirectory(_configService.GetRutaDirectorioEscritura());
-                        FileLogger.Log($@"{DateTime.Now} - Directorio creado: {_configService.GetRutaDirectorioEscritura()}");
                     }
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", info_publication);
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
-                    FileLogger.Log($@"{fecha} - fichero JSON creado.");
                 }
                 catch (System.Net.Sockets.SocketException e)
                 {
                     // Fallo de conexión al leer la cola. Se vuelve a encolar de nuevo.
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    FileLogger.Log($@"{DateTime.Now} - {e}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.Message}");
+                    FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {e.StackTrace}");
                 }
             }
 

@@ -74,36 +74,36 @@ namespace EditorCV.Models.API.Templates
             {
                 case TabSectionPresentationType.listitems:
                     {
-                        Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+                        PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
                         //Editabilidad
-                        foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                        foreach (string propEditabilidad in UtilityCV.PropertyNotEditable.Keys)
                         {
                             propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
                                 //Editabilidad
-                                new Utils.PropertyData()
+                                new PropertyData()
                                 {
                                     property = propEditabilidad,
-                                    childs = new List<Utils.PropertyData>()
+                                    childs = new List<PropertyData>()
                                 }
                             );
                         }
                         //OpenAccess
                         propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
                                 //Editabilidad
-                                new Utils.PropertyData()
+                                new PropertyData()
                                 {
                                     property = UtilityCV.PropertyOpenAccess,
-                                    childs = new List<Utils.PropertyData>()
+                                    childs = new List<PropertyData>()
                                 }
                             );
 
                         //ProjectAuthorization
                         propertyDataListItems.childs.First(x => x.graph == this.presentation.listItemsPresentation.listItemEdit.graph).childs.Add(
                                //Editabilidad
-                               new Utils.PropertyData()
+                               new PropertyData()
                                {
                                    property = "http://w3id.org/roh/projectAuthorization",
-                                   childs = new List<Utils.PropertyData>()
+                                   childs = new List<PropertyData>()
                                }
                            );
 
@@ -112,11 +112,11 @@ namespace EditorCV.Models.API.Templates
                     }
                 case TabSectionPresentationType.item:
                     {
-                        List<Utils.PropertyData> propertyDatasItem = this.presentation.itemPresentation.itemEdit.GenerarPropertyDatas(pGraph);
-                        Utils.PropertyData propertyData = new Utils.PropertyData();
+                        List<PropertyData> propertyDatasItem = this.presentation.itemPresentation.itemEdit.GenerarPropertyDatas(pGraph);
+                        PropertyData propertyData = new PropertyData();
                         propertyData.property = this.property;
-                        propertyData.childs = new List<Utils.PropertyData>() { 
-                            new Utils.PropertyData() { 
+                        propertyData.childs = new List<PropertyData>() { 
+                            new PropertyData() { 
                                 property = this.presentation.itemPresentation.property,
                                 childs=propertyDatasItem,
                                 graph=this.presentation.itemPresentation.itemEdit.graph
@@ -135,10 +135,9 @@ namespace EditorCV.Models.API.Templates
         /// </summary>
         /// <param name="pGraph">grafo</param>
         /// <returns></returns>
-        public Utils.PropertyData GenerarPropertyDataContadores(string pGraph)
+        public PropertyData GenerarPropertyDataContadores(string pGraph)
         {
-
-            Utils.PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
+            PropertyData propertyDataListItems = this.presentation.listItemsPresentation.listItem.GenerarPropertyData(pGraph);
             propertyDataListItems.property = this.property;
             
             //Eliminamos 'ispublic'
@@ -148,7 +147,6 @@ namespace EditorCV.Models.API.Templates
             propertyDataListItems.childs.First(x => x.property == "http://vivoweb.org/ontology/core#relatedBy").childs = null;
             return propertyDataListItems;
         }
-
     }
 
     /// <summary>

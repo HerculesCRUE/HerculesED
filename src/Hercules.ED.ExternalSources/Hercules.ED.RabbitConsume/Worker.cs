@@ -1,19 +1,13 @@
 using Gnoss.Web.ReprocessData.Models.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static Hercules.ED.RabbitConsume.Program;
 
 namespace Hercules.ED.RabbitConsume
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
         /// <summary>
@@ -21,9 +15,8 @@ namespace Hercules.ED.RabbitConsume
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="serviceScopeFactory"></param>
-        public Worker(ILogger<Worker> logger, IServiceScopeFactory serviceScopeFactory)
+        public Worker(IServiceScopeFactory serviceScopeFactory)
         {
-            _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
         }
 

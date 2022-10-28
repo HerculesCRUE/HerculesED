@@ -30,8 +30,7 @@ namespace EditorCV.Controllers
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized);
                 }
-                AccionesEnvioDSpace accionesEnvioDSpace = new AccionesEnvioDSpace(_Configuracion);
-                accionesEnvioDSpace.EnvioDSpace(pIdRecurso, file);
+                AccionesEnvioDSpace.EnvioDSpace(pIdRecurso, file);
             }
             catch (Exception e)
             {
