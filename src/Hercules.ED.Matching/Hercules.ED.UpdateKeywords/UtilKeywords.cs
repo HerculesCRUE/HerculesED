@@ -681,16 +681,16 @@ namespace Hercules.ED.UpdateKeywords
             }
 
             // Obtención de datos.
-            SparqlObject resultadoQuery = null;
-            string jsonRespuesta = Encoding.UTF8.GetString(responseArray);
-            if (!string.IsNullOrEmpty(jsonRespuesta))
+            SparqlObject resultadoQueryMesh = null;
+            string jsonRespuestaMesh = Encoding.UTF8.GetString(responseArray);
+            if (!string.IsNullOrEmpty(jsonRespuestaMesh))
             {
-                resultadoQuery = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuesta);
+                resultadoQueryMesh = JsonConvert.DeserializeObject<SparqlObject>(jsonRespuestaMesh);
             }
 
-            if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Any())
+            if (resultadoQueryMesh != null && resultadoQueryMesh.results != null && resultadoQueryMesh.results.bindings != null && resultadoQueryMesh.results.bindings.Any())
             {
-                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryMesh.results.bindings)
                 {
                     string id = string.Empty;
                     string label = string.Empty;
