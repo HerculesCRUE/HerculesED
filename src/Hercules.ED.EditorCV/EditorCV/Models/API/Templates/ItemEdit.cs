@@ -60,16 +60,10 @@ namespace EditorCV.Models.API.Templates
             List<Utils.PropertyData> propertyDatas = new List<Utils.PropertyData>();
             if (this.sections != null)
             {
-                foreach (ItemEditSection itemEditSection in this.sections)
+                foreach (ItemEditSectionRow itemEditSectionRow in this.sections.SelectMany(x => x.rows))
                 {
-                    if (itemEditSection.rows != null)
-                    {
-                        foreach (ItemEditSectionRow itemEditSectionRow in itemEditSection.rows)
-                        {
-                            List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph, pCV);
-                            propertyDatas.AddRange(aux);
-                        }
-                    }
+                    List<Utils.PropertyData> aux = itemEditSectionRow.GenerarPropertyDatas(pGraph, pCV);
+                    propertyDatas.AddRange(aux);
                 }
             }
             for (int i = 0; i < propertyDatas.Count; i++)
@@ -142,20 +136,17 @@ namespace EditorCV.Models.API.Templates
             {
                 if ((!pCV && !itemEditSectionRowProperty.entity_cv) || (pCV && itemEditSectionRowProperty.entity_cv))
                 {
-                    if (itemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                    if (itemEditSectionRowProperty.autocompleteConfig != null && !string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity) && !string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
                     {
-                        if (!string.IsNullOrEmpty(itemEditSectionRowProperty.autocompleteConfig.propertyEntity))
+                        Utils.PropertyData propertyAC = new Utils.PropertyData()
                         {
-                            Utils.PropertyData propertyAC = new Utils.PropertyData()
-                            {
-                                property = itemEditSectionRowProperty.autocompleteConfig.propertyEntity,
-                                childs = new List<Utils.PropertyData>(),
-                                graph = pGraph
-                            };
-                            if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
-                            {
-                                propertyDatas.Add(propertyAC);
-                            }
+                            property = itemEditSectionRowProperty.autocompleteConfig.propertyEntity,
+                            childs = new List<Utils.PropertyData>(),
+                            graph = pGraph
+                        };
+                        if (!propertyDatas.Exists(x => x.property == itemEditSectionRowProperty.property))
+                        {
+                            propertyDatas.Add(propertyAC);
                         }
                     }
                     Utils.PropertyData property = new Utils.PropertyData()
@@ -176,9 +167,9 @@ namespace EditorCV.Models.API.Templates
                         {
                             property.childs.Add(propertyAC);
                         }
-                        if(itemEditSectionRowProperty.autocompleteConfig.propertyAux!=null)
+                        if (itemEditSectionRowProperty.autocompleteConfig.propertyAux != null)
                         {
-                            foreach(var aux in itemEditSectionRowProperty.autocompleteConfig.propertyAux.properties)
+                            foreach (var aux in itemEditSectionRowProperty.autocompleteConfig.propertyAux.properties)
                             {
                                 Utils.PropertyData propertyAux = new Utils.PropertyData()
                                 {
@@ -263,7 +254,7 @@ namespace EditorCV.Models.API.Templates
         /// Genera los PropertyData para obtener los datos de autores
         /// </summary>
         /// <returns></returns>
-        private List<Utils.PropertyData> GetPropertyDataAuthorList()
+        private static List<Utils.PropertyData> GetPropertyDataAuthorList()
         {
             List<Utils.PropertyData> listado = new List<Utils.PropertyData>() {
                 new Utils.PropertyData() {

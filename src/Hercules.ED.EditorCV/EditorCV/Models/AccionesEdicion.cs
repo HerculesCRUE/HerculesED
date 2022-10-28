@@ -204,13 +204,14 @@ namespace EditorCV.Models
                 {
                     filter = $"lcase(?o) like \"{searchText}%\" OR lcase(?o) like \"% {searchText}%\" ";
                 }
-                string select = "SELECT DISTINCT ?s ?o ";
+                StringBuilder stringBuilderSelect = new StringBuilder();
+                stringBuilderSelect.Append("SELECT DISTINCT ?s ?o ");
                 string auxProperties = "";
                 if (pPropertiesAux != null && pPropertiesAux.Count > 0 && !string.IsNullOrEmpty(pPrint))
                 {
                     for (int i = 0; i < pPropertiesAux.Count; i++)
                     {
-                        select += " ?o" + (i + 1);
+                        stringBuilderSelect.Append(" ?o" + (i + 1));
                         auxProperties += $"OPTIONAL{{ ?s <{pPropertiesAux[i]}> ?o{i + 1}.}}";
                     }
 
@@ -223,7 +224,7 @@ namespace EditorCV.Models
                                     FILTER( lang(?o) = '{pLang}' OR lang(?o) = '')   
                                 }}
                                 ORDER BY ASC(strlen(?o)) ASC (?o)";
-                SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(select, where, pGraph);
+                SparqlObject sparqlObjectAux = mResourceApi.VirtuosoQuery(stringBuilderSelect.ToString(), where, pGraph);
                 if (!pGetEntityID)
                 {
                     var resultados = sparqlObjectAux.results.bindings.Select(x => x["o"].value).Distinct();
@@ -400,12 +401,9 @@ namespace EditorCV.Models
                                     }
                                 }
                                 //Eliminamos si hay alguno duplicado
-                                foreach (string duplicado in similars.SelectMany(x => x))
+                                foreach (string duplicado in similars.SelectMany(x => x).Where(x=> similarsinItem.ContainsKey(x)))
                                 {
-                                    if (similarsinItem.ContainsKey(duplicado))
-                                    {
-                                        similarsinItem.Remove(duplicado);
-                                    }
+                                    similarsinItem.Remove(duplicado);
                                 }
 
                                 //Ordenamos primero con los validados
@@ -461,7 +459,7 @@ namespace EditorCV.Models
                             {
                                 string principalAux = sim.ToList()[0];
                                 string principal = itemsTitleValidatedSection[principalAux].Item1;
-                                List<string> noDuplicados = itemsNoDuplicados.Values.Where(x => x.Contains(principal)).ToList().SelectMany(x => x).Distinct().ToList().Except(new List<string>() { principal }).ToList();
+                                List<string> noDuplicados = itemsNoDuplicados.Values.Where(x => x.Contains(principal)).SelectMany(x => x).Distinct().Except(new List<string>() { principal }).ToList();
                                 foreach (string idAux in sim.ToList())
                                 {
                                     string id = itemsTitleValidatedSection[idAux].Item1;
@@ -552,7 +550,7 @@ namespace EditorCV.Models
         /// <param name="y">string B</param>
         /// <param name="min">Similitud minima</param>
         /// <returns></returns>
-        private double Similarity(string x, string y, float min)
+        private static double Similarity(string x, string y, float min)
         {
             if (x == null || y == null)
             {
@@ -791,7 +789,7 @@ namespace EditorCV.Models
                     listCombosConfig.Add(comboConfig);
                 }
             }
-            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x=>x.auxEntityData))
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x => x.auxEntityData))
             {
                 if (auxEntityData != null && auxEntityData.rows != null)
                 {
@@ -841,7 +839,7 @@ namespace EditorCV.Models
                 listThesaurusConfig.Add(thesaurusConfig);
             }
 
-            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x=>x.auxEntityData))
+            foreach (ItemEditAuxEntityData auxEntityData in pProperties.Select(x => x.auxEntityData))
             {
                 if (auxEntityData != null && auxEntityData.rows != null)
                 {
@@ -1321,7 +1319,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pCVId">Identificador de un CV</param>
         /// <returns></returns>
-        private Dictionary<string, Dictionary<string, HashSet<string>>> GetMultilangDataCV(string pCVId)
+        private static Dictionary<string, Dictionary<string, HashSet<string>>> GetMultilangDataCV(string pCVId)
         {
             Dictionary<string, Dictionary<string, HashSet<string>>> respuesta = new Dictionary<string, Dictionary<string, HashSet<string>>>();
 
@@ -1418,7 +1416,6 @@ namespace EditorCV.Models
                                 }
 
                                 tabSection.items = new Dictionary<string, TabSectionItem>();
-                                string propiedadIdentificador = templateSection.property;
                                 if (pData.ContainsKey(pId))
                                 {
                                     bool soloID = false;
@@ -2847,7 +2844,6 @@ namespace EditorCV.Models
                         }
                     }
                 }
-                List<string> finalList = new List<string>();
                 foreach (PropertyData propertyData in propertyDataAux)
                 {
                     idAux.AddRange(GetPropValuesAux(new List<string>() { pId }, propertyData, pData));
