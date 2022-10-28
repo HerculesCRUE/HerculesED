@@ -30,13 +30,26 @@ Para realizar las pruebas, se ha implementado una interfaz Swagger con la ruta: 
 La estructura es una estructura NVC con un endpoint para realizar las peticones. 
 
 
-### Constroladores
+### Controladores
 Tenemos un único controlador para realizar las peticiones y obtener así la información desde GitHub del investigador:
 
 #### APIController
-Éste controlador contiene un único método, y es el encargado de obtener los repositorios y la información de GitHub y devolver el objeto con todos los repositorios
+Este controlador contiene un único método, y es el encargado de obtener los repositorios y la información de GitHub y devolver el objeto con todos los repositorios
 
-Petición curl para obtener los items desde GitHub:
+
+### Modelos
+Los modelos se corresponden a los modelos de datos devueltos por GitHub:
+
+#### DataGitHub
+Modelo principal de los datos de GitHub
+#### ObjEnriquecimiento
+Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
+#### Repositories
+Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
+
+## Petición para el enriquecimiento de datos
+Se realizará una petición GET desde la propia API ha GitHub para obtener los datos enriquecidos
+Ejemplo de petición curl:
 ```
 curl -X 'GET' \
   'https://[host]:[port]/github/GetData?pUser=[user]&pToken=[GitHubToken]' \
@@ -48,16 +61,6 @@ curl -X 'GET' \
 *Crear tu token: https://github.com/settings/tokens*
 
 *Podría haber limitaciones de peticiones por causa de las limitaciones de GitHub*
-
-### Modelos
-Los modelos se corresponden a los modelos de datos devueltos por GitHub:
-
-#### DataGitHub
-Modelo principal de los datos de GitHub
-#### ObjEnriquecimiento
-Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
-#### Repositories
-Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
 
 ## Configuración del servicio
 El servicio no requiere ninguna configuración especial.
