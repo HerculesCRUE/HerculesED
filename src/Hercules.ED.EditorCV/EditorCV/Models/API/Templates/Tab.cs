@@ -15,32 +15,32 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// rdf:type de la entidad representante de la pestaña
         /// </summary>
-        public string rdftype;
+        public string rdftype { get; set; }
 
         /// <summary>
         /// propiedad que apunta a la entidad representante de la pestaña
         /// </summary>
-        public string property;
+        public string property { get; set; }
 
         /// <summary>
         /// Secciones de la pestaña
         /// </summary>
-        public List<TabSection> sections;
+        public List<TabSection> sections { get; set; }
 
         /// <summary>
         /// Indica si se trata de los datos personales
         /// </summary>
-        public bool personalData;
+        public bool personalData { get; set; }
 
         /// <summary>
         /// Secciones de los datos personales
         /// </summary>
-        public ItemEdit personalDataSections;
+        public ItemEdit personalDataSections { get; set; }
 
         /// <summary>
         /// Título de la sección
         /// </summary>
-        public Dictionary<string,string> title;
+        public Dictionary<string,string> title { get; set; }
     }
 
     /// <summary>
@@ -51,17 +51,17 @@ namespace EditorCV.Models.API.Templates
         /// <summary>
         /// Propiedad que apunta a la sección
         /// </summary>
-        public string property;
+        public string property { get; set; }
 
         /// <summary>
         /// rdf:type de la entidad auxiliar
         /// </summary>
-        public string rdftype;
+        public string rdftype { get; set; }
 
         /// <summary>
         /// Presentacion de la sección
         /// </summary>
-        public TabSectionPresentation presentation;
+        public TabSectionPresentation presentation { get; set; }
 
         /// <summary>
         /// Genera el PropertyData para recuperar los datos
