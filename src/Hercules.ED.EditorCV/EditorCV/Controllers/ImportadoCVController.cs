@@ -38,12 +38,10 @@ namespace EditorCV.Controllers
         }
 
         /// <summary>
-        /// Servicio de Preimportación del CV
+        /// Petición del check de la fecha.
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="File"></param>
-        /// <param name="petitionID">ID de la petición</param>
-        /// <returns></returns>
+        /// <param name="pCVID">Identificador del cv</param>
+        /// <returns>OK</returns>
         [HttpPost("FechaCheck")]
         public IActionResult FechaCheck([FromForm][Required] string pCVID)
         {
@@ -69,8 +67,8 @@ namespace EditorCV.Controllers
        /// <summary>
        /// Servicio de Preimportación del CV
        /// </summary>
-       /// <param name="userID"></param>
-       /// <param name="File"></param>
+       /// <param name="userID">Identificador del usuario</param>
+       /// <param name="File">Archivo</param>
        /// <param name="petitionID">ID de la petición</param>
        /// <returns></returns>
        [HttpPost("PreimportarCV")]
@@ -204,7 +202,7 @@ namespace EditorCV.Controllers
                         }
                         catch (Exception)
                         {
-
+                            //
                         }
                     }
                     return Ok(petitionStatus[petitionID]);
@@ -220,11 +218,12 @@ namespace EditorCV.Controllers
         /// <summary>
         /// Servicio de Postimportación del CV
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="fileData"></param>
-        /// <param name="filePreimport"></param>
-        /// <param name="listaId"></param>
-        /// <param name="listaOpcionSeleccionados"></param>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="petitionID">Identificador de la petición</param>
+        /// <param name="fileData">Datos del fichero</param>
+        /// <param name="filePreimport">Datos del fichero preimport</param>
+        /// <param name="listaId">Listado de identificadores</param>
+        /// <param name="listaOpcionSeleccionados">Listado de seleccionados</param>
         /// <returns></returns>
         [HttpPost("PostimportarCV")]
         public IActionResult PostimportarCV([Required][FromForm] string userID, [Required][FromForm] string petitionID,

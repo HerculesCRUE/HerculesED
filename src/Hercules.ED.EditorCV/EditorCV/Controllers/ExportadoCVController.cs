@@ -36,8 +36,8 @@ namespace EditorCV.Controllers
         /// <summary>
         /// Añade un archivo descargable al CV
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="lang"></param>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="lang">Lenguaje</param>
         /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
         [HttpPost("GetCV")]
         public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV,
@@ -102,7 +102,7 @@ namespace EditorCV.Controllers
         /// Obtiene los datos de todas las pestaña dentro del editor
         /// </summary>
         /// <param name="userID">Identificador del usuario</param>
-        /// <param name="pLang">lenguaje </param>
+        /// <param name="pLang">Lenguaje </param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
         public IActionResult GetAllTabs([Required] string userID, [Required] string petitionID, [Required] string pLang)
