@@ -20,6 +20,20 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.RabbitConsume&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.RabbitConsume)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.RabbitConsume&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.RabbitConsume)
 
+## Funcionamiento
+El consumidor se va a encargar de leer de la cola de Rabbit y hacer unas acciones u otras dependiendo del dato leído. El mensaje recibido será una lista en formato string, la cual va a tener los siguientes valores:
+- listaString[0] determina el tipo del mensaje para saber a que controlador ha de hacer la petición. Los posibles valores son los siguientes:
+	- doi: Hace la petición a fuentes externas únicamente por DOI. Es requerido que en listaString[3] esté el nombre del autor y en listaString[1] el código DOI y listaString[2] el ID del recurso.
+	- investigador: Hace la petición a fuentes externas únicamente por ORCID. Es requerido que en listaString[1] esté el código ORCID y en listaString[2] la fecha y listaString[3] el ID del recurso.
+	- publicación: Hace la petición a fuentes externas únicamente por DOI. Es requerido que en listaString[1] esté el DOI de la publicación.
+	- zenodo: Hace la petición a Zenodo. Es requerido que en listaString[1] tenga el ORCID.
+	- figshare: Hace la petición a FigShare. Es requerido que en listaString[1] tenga el token de FigShare.
+	- github: Hace la petición a GitHub. Es requerido que en listaString[1] tenga el token de GitHub y listaString[2] el usuario de GitHub.
+
+Al identificar dónde ha de hacer la petición, hace la llamada al servicio correspondiente y obtiene los datos en JSON en formato string. Posteriormente, guarda los datos en un fichero JSON en la ruta indicada en el appsettings.
+
+En el caso que todo haya funcionado correctamente, quitará la petición de la cola y continuará con la siguiente. Si falla al leer la petición, escribirá en el log y la volverá a encolar.
+
 ## Configuración en el appsetting.json
 ```json{
 {
