@@ -20,6 +20,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.SemanticScholar&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.SemanticScholar)
 
+## Descripción.
+Servicio encargado de obtener la información de SemanticScholar. Documentación del API de [SemanticScholar](https://api.semanticscholar.org/api-docs/graph#tag/Paper-Data/operation/get_graph_get_paper_search). 
+
+## Controladores
+
+**APIController**  
+[GET] GetROs -> Obtiene los datos de una publicación.  
+[GET] GetReferences -> Obtiene los datos de las referencias de una publicación.
+
 ## Configuración en el appsetting.json
 ```json{
 {
