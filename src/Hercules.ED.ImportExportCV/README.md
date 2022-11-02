@@ -98,11 +98,12 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 	"Usuario_PDF": "",
 	"PSS_PDF": "",
 	"Version": "",
+	"LogPath": "",
 	"ConnectionStrings": {
 		"RabbitMQ": ""
 	},
 	"UrlEnriquecimiento": "",
-	"UrlPublicationAPI": "",
+	"UrlServicioExterno": "",
 	"DenormalizerQueueRabbit": ""
 }
 ```
@@ -113,13 +114,14 @@ El servicio de exportación limitada, es similar al de exportación, pero filtra
 - Usuario_PDF: Usuario de autenticación para la conversión de ficheros en el endpoint de FECYT.
 - PSS_PDF: Contraseña de autenticación para la conversión de ficheros en el endpoint de FECYT.
 - Version: Version del documento PDF.
+- LogPath: Ruta del fichero de logs.
 - ConnectionStrings.RabbitMQ: Cadena de conexión de Rabbit.
 - UrlEnriquecimiento: URL dónde está instalado el servicio de enriquecimiento.
-- UrlPublicationAPI: URL dónde está instalado el servicio de publicación.
+- UrlServicioExterno: URL dónde está instalado el servicio de publicación.
 - DenormalizerQueueRabbit: Nombre de la cola de Rabbit.
 
 ## Dependencias
-- **GnossApiWrapper.NetCore**: v1.0.8
+- **GnossApiWrapper.NetCore**: v6.0.6
 - **RabbitMQ.Client**: v6.3.0
 - **Swashbuckle.AspNetCore**: v5.6.3
 - **System.ServiceModel.Http**: v4.9.0
