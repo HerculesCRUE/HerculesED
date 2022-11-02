@@ -36,12 +36,6 @@ namespace PublicationAPI.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            //if (string.IsNullOrEmpty(_timeStamp) || !_timeStamp.Equals(CreateTimeStamp()))
-            //{
-            //    _timeStamp = CreateTimeStamp();
-            //    CreateLoggin(_timeStamp);
-            //}
-
             var code = HttpStatusCode.InternalServerError;
 
             var result = JsonConvert.SerializeObject(new { error = "Internal server error" });
@@ -59,11 +53,6 @@ namespace PublicationAPI.Middlewares
 
             return context.Response.WriteAsync(result);
         }
-
-
-
-
-
 
     }
 }
