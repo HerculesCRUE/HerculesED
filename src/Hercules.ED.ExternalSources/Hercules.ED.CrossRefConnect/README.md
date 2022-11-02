@@ -25,6 +25,7 @@ Servicio encargado de obtener la información de CrossRef. Documentación del AP
 
 ## Controladores
 
+**ROCrossRefController**  
 [GET] GetROs -> Obtiene los datos de una publicación.
 
 ## Configuración en el appsetting.json
