@@ -153,6 +153,13 @@ namespace PublicationConnect.ROs.Publications.Models
 
     public class ObjEnriquecimientoSinPdf
     {
+        public ObjEnriquecimientoSinPdf(string rotype, string title, string abstract_)
+        {
+            this.rotype = rotype;
+            this.title = title;
+            this.abstract_ = abstract_;
+        }
+
         public string rotype { get; set; }
 
         public string title { get; set; }
