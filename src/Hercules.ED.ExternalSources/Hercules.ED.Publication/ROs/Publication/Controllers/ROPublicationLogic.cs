@@ -244,12 +244,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 if (pub_scopus != null)
                                 {
                                     Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
-                                    if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_completa.doi))
+                                    if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_scopus.doi.ToLower() == pub_completa.doi.ToLower())
                                     {
-                                        if (pub_scopus.doi.ToLower() == pub_completa.doi.ToLower())
-                                        {
-                                            pub_completa = compactacion(pub_completa, pubScopus);
-                                        }
+                                        pub_completa = compactacion(pub_completa, pubScopus);
                                     }
                                 }
                             }
@@ -260,15 +257,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         {
                             foreach (Publication pub_openAire in objInicial_openAire)
                             {
-                                if (pub_openAire != null)
+                                if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                 {
-                                    if (pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi))
-                                    {
-                                        if (pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
-                                        {
-                                            pub_completa = compactacion(pub_completa, pub_openAire);
-                                        }
-                                    }
+                                    pub_completa = compactacion(pub_completa, pub_openAire);
                                 }
                             }
                         }
@@ -359,15 +350,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             {
                                 foreach (Publication pub_openAire in objInicial_openAire)
                                 {
-                                    if (pub_openAire != null)
+                                    if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                     {
-                                        if (pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi))
-                                        {
-                                            if (pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
-                                            {
-                                                pub_completa = compactacion(pub_completa, pub_openAire);
-                                            }
-                                        }
+                                        pub_completa = compactacion(pub_completa, pub_openAire);
                                     }
                                 }
                             }
@@ -1279,13 +1264,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 foreach (Person personaCrossRef in dicPersonas["OpenAire"])
                 {
                     // Comprobación por ORCID
-                    if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                    if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaCrossRef.ORCID)
                     {
-                        if (personaFinal.ORCID == personaCrossRef.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
+                        personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                        break;
                     }
 
                     // Comprobración por nombre completo
@@ -1317,13 +1299,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                     }
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
+                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
                     {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
+                        personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                        break;
                     }
 
                     if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
@@ -1335,13 +1314,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 foreach (Person personaSemantic in dicPersonas["SemanticScholar"])
                 {
                     // Comprobación por ORCID
-                    if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                    if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaSemantic.ORCID)
                     {
-                        if (personaFinal.ORCID == personaSemantic.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaSemantic);
-                            break;
-                        }
+                        personaFinal = UnirPersonas(personaFinal, personaSemantic);
+                        break;
                     }
 
                     // Comprobración por nombre completo
@@ -1373,13 +1349,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         personaSemantic.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                     }
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaSemantic.name.nombre_completo != null && personaSemantic.name.nombre_completo.Any())
+                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaSemantic.name.nombre_completo != null && personaSemantic.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], personaSemantic.name.nombre_completo[0]) >= umbral)
                     {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaSemantic.name.nombre_completo[0]) >= umbral)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaSemantic);
-                            break;
-                        }
+                        personaFinal = UnirPersonas(personaFinal, personaSemantic);
+                        break;
                     }
 
                     personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
@@ -1394,13 +1367,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 Models.Person personaFinal = persona;
 
                 // Comprobación por ORCID
-                if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
                 {
-                    if (personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
-                    {
-                        pPublicacion.correspondingAuthor = personaFinal;
-                        break;
-                    }
+                    pPublicacion.correspondingAuthor = personaFinal;
+                    break;
                 }
 
                 // Comprobración por nombre completo
@@ -1432,22 +1402,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                 }
 
-                if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && pPublicacion.correspondingAuthor.name.nombre_completo != null && pPublicacion.correspondingAuthor.name.nombre_completo.Any())
+                if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && pPublicacion.correspondingAuthor.name.nombre_completo != null && pPublicacion.correspondingAuthor.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.name.nombre_completo[0]) >= umbral)
                 {
-                    if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.name.nombre_completo[0]) >= umbral)
-                    {
-                        pPublicacion.correspondingAuthor = personaFinal;
-                        break;
-                    }
+                    pPublicacion.correspondingAuthor = personaFinal;
+                    break;
                 }
 
-                if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
+                if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick) && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
                 {
-                    if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
-                    {
-                        pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
-                        break;
-                    }
+                    pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
+                    break;
                 }
                 if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
                 {
@@ -1492,13 +1456,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
                     {
                         // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaCrossRef.ORCID)
                         {
-                            if (personaFinal.ORCID == personaCrossRef.ORCID)
-                            {
-                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                                break;
-                            }
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
                         }
 
                         // Comprobración por nombre completo
@@ -1530,13 +1491,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                         }
 
-                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
+                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() &&
+                            personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() &&
+                            GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
                         {
-                            if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                            {
-                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                                break;
-                            }
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
                         }
 
                         if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
@@ -1548,13 +1508,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
                     {
                         // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaCrossRef.ORCID)
                         {
-                            if (personaFinal.ORCID == personaCrossRef.ORCID)
-                            {
-                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                                break;
-                            }
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
                         }
 
                         // Comprobración por nombre completo
@@ -1586,13 +1543,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                         }
 
-                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any())
+                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() &&
+                            personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() &&
+                            GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
                         {
-                            if (GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                            {
-                                personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                                break;
-                            }
+                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
+                            break;
                         }
                         if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
                         {
@@ -1606,18 +1562,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 // ÑAPA
                 if (!dicPersonas["SemanticScholar"].Any())
                 {
-                    foreach (Models.Person personaOpenAire in dicPersonas["OpenAire"])
+                    foreach (Person personaOpenAire in dicPersonas["OpenAire"])
                     {
-                        Models.Person personaFinal = personaOpenAire;
+                        Person personaFinal = personaOpenAire;
 
                         // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaOpenAire.ORCID)
                         {
-                            if (personaFinal.ORCID == personaOpenAire.ORCID)
-                            {
-                                personaFinal = UnirPersonas(personaFinal, personaOpenAire);
-                                break;
-                            }
+                            personaFinal = UnirPersonas(personaFinal, personaOpenAire);
+                            break;
                         }
 
                         // Comprobración por nombre completo
@@ -1659,18 +1612,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
 
                 // Encontrar el autor
-                foreach (Models.Person persona in listaPersonasDefinitivas)
+                foreach (Person persona in listaPersonasDefinitivas)
                 {
-                    Models.Person personaFinal = persona;
+                    Person personaFinal = persona;
 
                     // Comprobación por ORCID
-                    if (!string.IsNullOrEmpty(personaFinal.ORCID))
+                    if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
                     {
-                        if (personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
-                        {
-                            pPublicacion.correspondingAuthor = personaFinal;
-                            break;
-                        }
+                        pPublicacion.correspondingAuthor = personaFinal;
+                        break;
                     }
 
                     // Comprobración por nombre completo
@@ -1702,13 +1652,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                     }
 
-                    if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick))
+                    if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick) && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
                     {
-                        if (GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
-                        {
-                            pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
-                            break;
-                        }
+                        pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
+                        break;
                     }
 
                     if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
@@ -1905,7 +1852,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 float score = 0;
                 string wordSource = source[i];
                 bool wordSourceInicial = wordSource.Length == 1;
-                //int desplazamiento = 0;
                 for (int j = indexTarget; j < target.Length; j++)
                 {
                     string wordTarget = target[j];
@@ -1920,7 +1866,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             {
                                 score = 0.5f;
                                 indexTarget = j + 1;
-                                //desplazamiento = Math.Abs(j - i);
                                 break;
                             }
                         }
@@ -1929,7 +1874,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             //Son las dos iniciales
                             score = 0.75f;
                             indexTarget = j + 1;
-                            //desplazamiento = Math.Abs(j - i);
                             break;
                         }
                     }
