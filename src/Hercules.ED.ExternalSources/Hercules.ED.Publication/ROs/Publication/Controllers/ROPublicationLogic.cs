@@ -1271,19 +1271,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
 
                     // Comprobración por nombre completo
-                    string nombreCompleto1 = string.Empty;
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.given[0] + " ";
-                    }
-                    if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.familia[0];
-                    }
-                    if (!string.IsNullOrEmpty(nombreCompleto1))
-                    {
-                        personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                    }
+                    ComprobarNombreCompleto1(personaFinal);
 
                     string nombreCompleto2 = string.Empty;
                     if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
@@ -1374,19 +1362,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
 
                 // Comprobración por nombre completo
-                string nombreCompleto1 = string.Empty;
-                if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                {
-                    nombreCompleto1 += personaFinal.name.given[0] + " ";
-                }
-                if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                {
-                    nombreCompleto1 += personaFinal.name.familia[0];
-                }
-                if (!string.IsNullOrEmpty(nombreCompleto1))
-                {
-                    personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                }
+                ComprobarNombreCompleto1(personaFinal);
 
                 string nombreCompleto2 = string.Empty;
                 if (pPublicacion.correspondingAuthor.name.given != null && pPublicacion.correspondingAuthor.name.given.Any())
@@ -1515,19 +1491,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
 
                         // Comprobración por nombre completo
-                        string nombreCompleto1 = string.Empty;
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.given[0] + " ";
-                        }
-                        if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto1))
-                        {
-                            personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                        }
+                        ComprobarNombreCompleto1(personaFinal);
 
                         string nombreCompleto2 = string.Empty;
                         if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
@@ -1574,19 +1538,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         }
 
                         // Comprobración por nombre completo
-                        string nombreCompleto1 = string.Empty;
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.given[0] + " ";
-                        }
-                        if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto1))
-                        {
-                            personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                        }
+                        ComprobarNombreCompleto1(personaFinal);
 
                         string nombreCompleto2 = string.Empty;
                         if (personaOpenAire.name.given != null && personaOpenAire.name.given.Any())
@@ -1624,19 +1576,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
 
                     // Comprobración por nombre completo
-                    string nombreCompleto1 = string.Empty;
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.given[0] + " ";
-                    }
-                    if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                    {
-                        nombreCompleto1 += personaFinal.name.familia[0];
-                    }
-                    if (!string.IsNullOrEmpty(nombreCompleto1))
-                    {
-                        personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                    }
+                    ComprobarNombreCompleto1(personaFinal);
 
                     string nombreCompleto2 = string.Empty;
                     if (pPublicacion.correspondingAuthor != null && pPublicacion.correspondingAuthor.name != null && pPublicacion.correspondingAuthor.name.given != null && pPublicacion.correspondingAuthor.name.given.Any())
@@ -1668,6 +1608,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             return pPublicacion;
+        }
+
+        private void ComprobarNombreCompleto1(Person personaFinal) {
+            string nombreCompleto1 = "";
+            if (personaFinal.name.given != null && personaFinal.name.given.Any())
+            {
+                nombreCompleto1 += personaFinal.name.given[0] + " ";
+            }
+            if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
+            {
+                nombreCompleto1 += personaFinal.name.familia[0];
+            }
+            if (!string.IsNullOrEmpty(nombreCompleto1))
+            {
+                personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
+            }
         }
 
         /// <summary>
