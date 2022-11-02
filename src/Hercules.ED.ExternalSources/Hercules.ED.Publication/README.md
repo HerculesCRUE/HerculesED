@@ -99,7 +99,7 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
 
 ## Controladores
 
-**APIController**
+**APIController**  
 [GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
 [GET] GetRoPublication -> Obtiene los datos de una publicación.
 
