@@ -1,13 +1,13 @@
 ![](../../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 21/10/2022                                                  |
+| Fecha         | 02/11/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
 |Titulo|API Hercules.ED.CrossRefConnect| 
 |Descripción|Manual del servicio API Hercules.ED.CrossRefConnect para la importación de recursos|
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión| Inicial |
 
 ## Sobre Hercules.ED.CrossRefConnect
 
@@ -19,6 +19,14 @@
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.CrossRefConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.CrossRefConnect)
+
+## Descripción.
+Servicio encargado de obtener la información de CrossRef. Documentación del API de [CrossRef](https://www.crossref.org/documentation/retrieve-metadata/rest-api/). 
+
+## Controladores
+
+**ROCrossRefController**  
+[GET] GetROs -> Obtiene los datos de una publicación.
 
 ## Configuración en el appsetting.json
 ```json{
