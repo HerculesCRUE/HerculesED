@@ -1,13 +1,13 @@
 ![](../../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 21/10/2022                                                  |
+| Fecha         | 02/11/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
-|Titulo|API Hercules.ED.Publication| 
-|Descripción|Manual del servicio API Hercules.ED.Publication para la importación de recursos desde Publication|
+|Titulo|Publication| 
+|Descripción|Manual del servicio Publication para la importación de recursos desde Publication|
 |Versión|1.0|
-|Módulo|Hercules.ED.ExternalSources|
+|Módulo|Hércules ED - ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión| Versión inicial |
 
 ## Sobre Hercules.ED.Publication
 
