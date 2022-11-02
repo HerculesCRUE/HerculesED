@@ -85,7 +85,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                     resultadosTraCon.Add(pResourceApi.GetShortGuid(fila["item"].value).ToString(), trabajosCongresos);
                 }
             }
-            HashSet<string> listaNombres = new HashSet<string>();
+            HashSet<string> listaNombresTC = new HashSet<string>();
             ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new();
 
             //Selecciono el nombre completo o la firma.
@@ -93,14 +93,14 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             {
                 for (int i = 0; i < item.autores.Count; i++)
                 {
-                    listaNombres.Add(item.autores[i].NombreBuscar);
+                    listaNombresTC.Add(item.autores[i].NombreBuscar);
                 }
             }
 
             //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaNombres = UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
+            List<List<string>> listaListaNombresTC = UtilitySecciones.SplitList(listaNombresTC.ToList(), 10).ToList();
 
-            Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
+            Parallel.ForEach(listaListaNombresTC, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
             {
                 Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
                 foreach (KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
@@ -160,8 +160,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 int limit = 10000;
                 while (true)
                 {
-                    string selectX = $@"select * where{{ SELECT distinct ?item ?autor ";
-                    string whereX = $@"where {{
+                    string selectTC = $@"select * where{{ SELECT distinct ?item ?autor ";
+                    string whereTC = $@"where {{
                                         ?item a <http://purl.org/ontology/bibo/Document> . 
                                         ?item <http://purl.org/ontology/bibo/authorList> ?authorList . 
                                         ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autorIn .                                        
@@ -169,7 +169,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                                         ?authorList2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor .
                                         FILTER(?autorIn in (<{string.Join(">,<", lista)}>))                                        
                                     }}order by desc(?item) desc(?autor)}} offset {offset} limit {limit}";
-                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectX, whereX, graph);
+                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectTC, whereTC, graph);
                     foreach (Dictionary<string, Data> fila in resultDataX.results.bindings)
                     {
                         string doc = fila["item"].value;
