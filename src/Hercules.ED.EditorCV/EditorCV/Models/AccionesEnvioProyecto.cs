@@ -59,12 +59,12 @@ namespace EditorCV.Models
                 IRestResponse response = client.Execute(request);
                 if ((int)response.StatusCode < 200 || (int)response.StatusCode >= 300)
                 {
-                    throw new Exception();
+                    throw new InvalidOperationException("Response not 200");
                 }
             }
             catch (Exception)
             {
-                throw;
+                //
             }
 
             CambioEstadoEnvio(pIdProyecto);

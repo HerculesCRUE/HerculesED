@@ -38,7 +38,7 @@ namespace EditorCV.Models
 
                 if (status.okay != "true")
                 {
-                    throw new Exception("El servicio no está operativo");
+                    throw new MethodAccessException("El servicio no está operativo");
                 }
 
                 //Compruebo si estoy autenticado
@@ -50,7 +50,7 @@ namespace EditorCV.Models
                 status = GetStatus();
                 if(status.authenticated != "true")
                 {
-                    throw new Exception("No se ha conseguido autenticar");
+                    throw new ArgumentException("No se ha conseguido autenticar");
                 }
 
 
@@ -78,7 +78,7 @@ namespace EditorCV.Models
                     }
                     catch (Exception)
                     {
-
+                        //
                     }
                 }
 
@@ -97,7 +97,7 @@ namespace EditorCV.Models
                     dSpace = InsertaMetadatosDspace(publication);
                     if (dSpace.id.Equals("000000"))
                     {
-                        throw new Exception("Error al insertar datos");
+                        throw new ArgumentException("Error al insertar datos");
                     }
                     //Inserta el triple con el Identificador de DSpace 
                     AniadirIdDspace(dSpace.id, idPublication);
@@ -121,7 +121,7 @@ namespace EditorCV.Models
                 }
                 else
                 {
-                    throw new Exception("No se ha recibido un código de estado válido");
+                    throw new ArgumentException("No se ha recibido un código de estado válido");
                 }
             }
             catch (Exception ex)
@@ -148,7 +148,7 @@ namespace EditorCV.Models
                 HttpResponseMessage responseInserta = httpClientInserta.PostAsJsonAsync($"{urlEstado}", metadata.rootObject).Result;
                 if (responseInserta.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new Exception("Error en la inserción");
+                    throw new ArgumentException("Error en la inserción");
                 }
 
                 DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseInserta.Content.ReadAsStringAsync().Result.ToString());
@@ -178,7 +178,7 @@ namespace EditorCV.Models
                 HttpResponseMessage responseActualiza = httpClientActualiza.PutAsJsonAsync($"{urlEstado}", metadata.rootObject.metadata).Result;
                 if (responseActualiza.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new Exception("Error en la actualización");
+                    throw new ArgumentException("Error en la actualización");
                 }
 
                 DSpaceResponse dSpace = JsonConvert.DeserializeObject<DSpaceResponse>(responseActualiza.Content.ReadAsStringAsync().Result.ToString());
@@ -216,7 +216,7 @@ namespace EditorCV.Models
                 HttpResponseMessage responseBitstream = httpClientBitstream.PostAsync($"{urlEstado}", multipartFormData).Result;
                 if (responseBitstream.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new Exception("Error en la inserción del archivo");
+                    throw new ArgumentException("Error en la inserción del archivo");
                 }
             }
             catch (Exception ex)
@@ -544,7 +544,7 @@ namespace EditorCV.Models
                     status = responseStatus.Content.ReadFromJsonAsync<Status>().Result;
                     if (status.okay != "true")
                     {
-                        throw new Exception("Status not okay");
+                        throw new InvalidOperationException("Status not okay");
                     }
                 }
             }
@@ -585,7 +585,7 @@ namespace EditorCV.Models
             }
             catch (Exception)
             {
-
+                //
             }
         }
     }

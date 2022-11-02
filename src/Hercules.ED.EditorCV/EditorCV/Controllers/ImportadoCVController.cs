@@ -85,7 +85,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
 
 
@@ -243,7 +243,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
 
                 if (!string.IsNullOrEmpty(listaId))
