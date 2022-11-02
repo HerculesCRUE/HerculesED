@@ -592,414 +592,415 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             Publication pub = new Publication();
             pub.dataOriginList = pub_1.dataOriginList;
-            if (pub_1 == null)
+
+            if (pub_1 == null && pub_2 == null)
             {
-                if (pub_2 == null)
-                {
-                    return null;
-                }
-                else { return pub_2; }
+                return null;
+            }
+            if (pub_1 == null && pub_2 != null)
+            {
+                return pub_2;
+            }
+
+
+            if (pub_2 == null)
+            {
+                return pub_1;
             }
             else
             {
-                if (pub_2 == null)
+                bool pub1 = false;
+                bool pub2 = false;
+                if (!string.IsNullOrEmpty(pub_1.typeOfPublication))
                 {
-                    return pub_1;
+                    pub.typeOfPublication = pub_1.typeOfPublication;
+                    pub1 = true;
                 }
                 else
                 {
-                    bool pub1 = false;
-                    bool pub2 = false;
-                    if (!string.IsNullOrEmpty(pub_1.typeOfPublication))
+                    pub.typeOfPublication = pub_2.typeOfPublication;
+                    pub2 = true;
+                }
+
+                if (!string.IsNullOrEmpty(pub_1.title))
+                {
+                    pub.title = pub_1.title;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.title = pub_2.title;
+                    pub2 = true;
+                }
+
+                if (!string.IsNullOrEmpty(pub_1.Abstract))
+                {
+                    pub.Abstract = pub_1.Abstract;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.Abstract = pub_2.Abstract;
+                    pub2 = true;
+                }
+
+                if (pub_1.freetextKeywords != null && pub_1.freetextKeywords.Any())
+                {
+                    pub.freetextKeywords = pub_1.freetextKeywords;
+                    pub1 = true;
+                    if (pub_2.freetextKeywords != null)
                     {
-                        pub.typeOfPublication = pub_1.typeOfPublication;
+                        pub.freetextKeywords.AddRange(pub_2.freetextKeywords);
+                        pub2 = true;
+                    }
+                }
+                else
+                {
+                    pub.freetextKeywords = pub_2.freetextKeywords;
+                    pub2 = true;
+                }
+
+                if (!string.IsNullOrEmpty(pub_1.language))
+                {
+                    pub.language = pub_1.language;
+                    pub1 = true;
+                }
+                else
+                {
+
+                    pub.language = pub_2.language;
+                    pub2 = true;
+                }
+
+                // Si es un capitulo de libro, no necesita DOI (Da problemas en el motor de desambiguación).
+                if (pub.typeOfPublication != "Chapter")
+                {
+                    if (pub_1.doi != null)
+                    {
+                        pub.doi = pub_1.doi;
                         pub1 = true;
                     }
                     else
                     {
-                        pub.typeOfPublication = pub_2.typeOfPublication;
+                        pub.doi = pub_2.doi;
                         pub2 = true;
                     }
+                }
 
-                    if (!string.IsNullOrEmpty(pub_1.title))
+                if (pub_1.dataIssued != null)
+                {
+                    pub.dataIssued = pub_1.dataIssued;
+                    pub1 = true;
+                }
+                else
+                {
+                    if (pub_2.dataIssued != null)
                     {
-                        pub.title = pub_1.title;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.title = pub_2.title;
+                        pub.dataIssued = pub_2.dataIssued;
                         pub2 = true;
                     }
-
-                    if (!string.IsNullOrEmpty(pub_1.Abstract))
+                    else { pub.dataIssued = null; }
+                }
+                if (pub_1.url != null && pub_1.url.Any())
+                {
+                    pub.url = pub_1.url;
+                    pub1 = true;
+                    if (pub_2.url != null)
                     {
-                        pub.Abstract = pub_1.Abstract;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.Abstract = pub_2.Abstract;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.freetextKeywords != null && pub_1.freetextKeywords.Any())
-                    {
-                        pub.freetextKeywords = pub_1.freetextKeywords;
-                        pub1 = true;
-                        if (pub_2.freetextKeywords != null)
+                        foreach (string item in pub_2.url)
                         {
-                            pub.freetextKeywords.AddRange(pub_2.freetextKeywords);
+                            pub.url.Add(item);
                             pub2 = true;
                         }
                     }
-                    else
+                }
+                else
+                {
+                    pub.url = pub_2.url;
+                    pub2 = true;
+                }
+                if (pub_1.correspondingAuthor != null)
+                {
+                    pub.correspondingAuthor = pub_1.correspondingAuthor;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.correspondingAuthor = pub_2.correspondingAuthor;
+                    pub2 = true;
+                }
+
+                pub.seqOfAuthors = new List<Models.Person>();
+                if (pub_1.seqOfAuthors != null && pub_1.seqOfAuthors.Count > 0)
+                {
+                    pub.seqOfAuthors.AddRange(pub_1.seqOfAuthors);
+                    pub1 = true;
+                }
+                if (pub_2.seqOfAuthors != null && pub_2.seqOfAuthors.Count > 0)
+                {
+                    pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+                    pub2 = true;
+                }
+
+                if (pub_1.hasKnowledgeAreas != null && pub_1.hasKnowledgeAreas.Any())
+                {
+                    pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
+                    pub1 = true;
+                    if (pub_2.hasKnowledgeAreas != null)
                     {
-                        pub.freetextKeywords = pub_2.freetextKeywords;
+                        pub.hasKnowledgeAreas.AddRange(pub_2.hasKnowledgeAreas);
                         pub2 = true;
                     }
+                }
+                else
+                {
+                    pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
+                    pub2 = true;
+                }
 
-                    if (!string.IsNullOrEmpty(pub_1.language))
-                    {
-                        pub.language = pub_1.language;
-                        pub1 = true;
-                    }
-                    else
-                    {
+                if (!string.IsNullOrEmpty(pub_1.pageEnd))
+                {
+                    pub.pageEnd = pub_1.pageEnd;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.pageEnd = pub_2.pageEnd;
+                    pub2 = true;
+                }
 
-                        pub.language = pub_2.language;
+                if (!string.IsNullOrEmpty(pub_1.pageStart))
+                {
+                    pub.pageStart = pub_1.pageStart;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.pageStart = pub_2.pageStart;
+                    pub2 = true;
+                }
+
+                if (!string.IsNullOrEmpty(pub_1.volume))
+                {
+                    pub.volume = pub_1.volume;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.volume = pub_2.volume;
+                    pub2 = true;
+                }
+
+                if (!string.IsNullOrEmpty(pub_1.articleNumber))
+                {
+                    pub.articleNumber = pub_1.articleNumber;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.articleNumber = pub_2.articleNumber;
+                    pub2 = true;
+                }
+
+                if (pub_1.openAccess != null)
+                {
+                    pub.openAccess = pub_1.openAccess;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.openAccess = pub_2.openAccess;
+                    pub2 = true;
+                }
+
+                if (pub_1.IDs != null && pub_1.IDs.Any())
+                {
+                    pub.IDs = pub_1.IDs;
+                    pub1 = true;
+                    if (pub_2.IDs != null)
+                    {
+                        pub.IDs.AddRange(pub_2.IDs);
                         pub2 = true;
                     }
+                }
+                else
+                {
+                    pub.IDs = pub_2.IDs;
+                    pub2 = true;
+                }
 
-                    // Si es un capitulo de libro, no necesita DOI (Da problemas en el motor de desambiguación).
-                    if (pub.typeOfPublication != "Chapter")
+                if (!string.IsNullOrEmpty(pub_1.presentedAt))
+                {
+                    pub.presentedAt = pub_1.presentedAt;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.presentedAt = pub_2.presentedAt;
+                    pub2 = true;
+                }
+
+                if (pub_1.conferencia != null)
+                {
+                    pub.conferencia = pub_1.conferencia;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.conferencia = pub_2.conferencia;
+                    pub2 = true;
+                }
+
+                Dictionary<string, Models.PublicationMetric> dicMetricas = new Dictionary<string, Models.PublicationMetric>();
+
+                if (pub_1.hasMetric != null && pub_1.hasMetric.Any())
+                {
+                    foreach (Models.PublicationMetric metrica in pub_1.hasMetric)
                     {
-                        if (pub_1.doi != null)
+                        if (!dicMetricas.ContainsKey(metrica.metricName))
                         {
-                            pub.doi = pub_1.doi;
+                            dicMetricas.Add(metrica.metricName, metrica);
                             pub1 = true;
                         }
-                        else
-                        {
-                            pub.doi = pub_2.doi;
-                            pub2 = true;
-                        }
                     }
-
-                    if (pub_1.dataIssued != null)
-                    {
-                        pub.dataIssued = pub_1.dataIssued;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        if (pub_2.dataIssued != null)
-                        {
-                            pub.dataIssued = pub_2.dataIssued;
-                            pub2 = true;
-                        }
-                        else { pub.dataIssued = null; }
-                    }
-                    if (pub_1.url != null && pub_1.url.Any())
-                    {
-                        pub.url = pub_1.url;
-                        pub1 = true;
-                        if (pub_2.url != null)
-                        {
-                            foreach (string item in pub_2.url)
-                            {
-                                pub.url.Add(item);
-                                pub2 = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        pub.url = pub_2.url;
-                        pub2 = true;
-                    }
-                    if (pub_1.correspondingAuthor != null)
-                    {
-                        pub.correspondingAuthor = pub_1.correspondingAuthor;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.correspondingAuthor = pub_2.correspondingAuthor;
-                        pub2 = true;
-                    }
-
-                    pub.seqOfAuthors = new List<Models.Person>();
-                    if (pub_1.seqOfAuthors != null && pub_1.seqOfAuthors.Count > 0)
-                    {
-                        pub.seqOfAuthors.AddRange(pub_1.seqOfAuthors);
-                        pub1 = true;
-                    }
-                    if (pub_2.seqOfAuthors != null && pub_2.seqOfAuthors.Count > 0)
-                    {
-                        pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
-                        pub2 = true;
-                    }
-
-                    if (pub_1.hasKnowledgeAreas != null && pub_1.hasKnowledgeAreas.Any())
-                    {
-                        pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
-                        pub1 = true;
-                        if (pub_2.hasKnowledgeAreas != null)
-                        {
-                            pub.hasKnowledgeAreas.AddRange(pub_2.hasKnowledgeAreas);
-                            pub2 = true;
-                        }
-                    }
-                    else
-                    {
-                        pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
-                        pub2 = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(pub_1.pageEnd))
-                    {
-                        pub.pageEnd = pub_1.pageEnd;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.pageEnd = pub_2.pageEnd;
-                        pub2 = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(pub_1.pageStart))
-                    {
-                        pub.pageStart = pub_1.pageStart;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.pageStart = pub_2.pageStart;
-                        pub2 = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(pub_1.volume))
-                    {
-                        pub.volume = pub_1.volume;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.volume = pub_2.volume;
-                        pub2 = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(pub_1.articleNumber))
-                    {
-                        pub.articleNumber = pub_1.articleNumber;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.articleNumber = pub_2.articleNumber;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.openAccess != null)
-                    {
-                        pub.openAccess = pub_1.openAccess;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.openAccess = pub_2.openAccess;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.IDs != null && pub_1.IDs.Any())
-                    {
-                        pub.IDs = pub_1.IDs;
-                        pub1 = true;
-                        if (pub_2.IDs != null)
-                        {
-                            pub.IDs.AddRange(pub_2.IDs);
-                            pub2 = true;
-                        }
-                    }
-                    else
-                    {
-                        pub.IDs = pub_2.IDs;
-                        pub2 = true;
-                    }
-
-                    if (!string.IsNullOrEmpty(pub_1.presentedAt))
-                    {
-                        pub.presentedAt = pub_1.presentedAt;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.presentedAt = pub_2.presentedAt;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.conferencia != null)
-                    {
-                        pub.conferencia = pub_1.conferencia;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.conferencia = pub_2.conferencia;
-                        pub2 = true;
-                    }
-
-                    Dictionary<string, Models.PublicationMetric> dicMetricas = new Dictionary<string, Models.PublicationMetric>();
-
-                    if (pub_1.hasMetric != null && pub_1.hasMetric.Any())
-                    {
-                        foreach (Models.PublicationMetric metrica in pub_1.hasMetric)
-                        {
-                            if (!dicMetricas.ContainsKey(metrica.metricName))
-                            {
-                                dicMetricas.Add(metrica.metricName, metrica);
-                                pub1 = true;
-                            }
-                        }
-                    }
-                    if (pub_2.hasMetric != null && pub_2.hasMetric.Any())
-                    {
-                        foreach (Models.PublicationMetric metrica in pub_2.hasMetric)
-                        {
-                            if (!dicMetricas.ContainsKey(metrica.metricName))
-                            {
-                                dicMetricas.Add(metrica.metricName, metrica);
-                                pub2 = true;
-                            }
-                        }
-                    }
-
-                    pub.hasMetric = new List<Models.PublicationMetric>();
-                    foreach (KeyValuePair<string, Models.PublicationMetric> metrica in dicMetricas)
-                    {
-                        pub.hasMetric.Add(metrica.Value);
-                    }
-
-                    pub.hasPublicationVenue = new Models.Source();
-                    HashSet<string> listaIssn = new HashSet<string>();
-
-                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
-                    {
-                        pub.hasPublicationVenue.type = pub_1.hasPublicationVenue.type;
-                        pub1 = true;
-                    }
-                    else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.type))
-                    {
-                        pub.hasPublicationVenue.type = pub_2.hasPublicationVenue.type;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
-                    {
-                        pub.hasPublicationVenue.eissn = pub_1.hasPublicationVenue.eissn;
-                        pub1 = true;
-                    }
-                    else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.eissn))
-                    {
-                        pub.hasPublicationVenue.eissn = pub_2.hasPublicationVenue.eissn;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
-                    {
-                        pub.hasPublicationVenue.name = pub_1.hasPublicationVenue.name;
-                        pub1 = true;
-                    }
-                    else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.name))
-                    {
-                        pub.hasPublicationVenue.name = pub_2.hasPublicationVenue.name;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.hasPublicationVenue != null && pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
-                    {
-                        foreach (string item in pub_1.hasPublicationVenue.issn)
-                        {
-                            if (item != pub.hasPublicationVenue.eissn)
-                            {
-                                listaIssn.Add(item);
-                                pub1 = true;
-                            }
-                        }
-                    }
-
-                    if (pub_2.hasPublicationVenue != null && pub_2.hasPublicationVenue.issn != null && pub_2.hasPublicationVenue.issn.Count > 0)
-                    {
-                        foreach (string item in pub_2.hasPublicationVenue.issn)
-                        {
-                            if (item != pub.hasPublicationVenue.eissn)
-                            {
-                                listaIssn.Add(item);
-                                pub2 = true;
-                            }
-                        }
-                    }
-
-                    pub.hasPublicationVenue.issn = listaIssn.ToList();
-
-                    if (!string.IsNullOrEmpty(pub_1.pdf))
-                    {
-                        pub.pdf = pub_1.pdf;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.pdf = pub_2.pdf;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.topics_enriquecidos != null && pub_1.topics_enriquecidos.Any())
-                    {
-                        pub.topics_enriquecidos = pub_1.topics_enriquecidos;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.topics_enriquecidos = pub_2.topics_enriquecidos;
-                        pub2 = true;
-                    }
-
-
-                    if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
-                    {
-                        pub.freetextKeyword_enriquecidas = pub_1.freetextKeyword_enriquecidas;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.freetextKeyword_enriquecidas = pub_2.freetextKeyword_enriquecidas;
-                        pub2 = true;
-                    }
-
-                    if (pub_1.bibliografia != null && pub_1.bibliografia.Any())
-                    {
-                        pub.bibliografia = pub_1.bibliografia;
-                        pub1 = true;
-                    }
-                    else
-                    {
-                        pub.bibliografia = pub_2.bibliografia;
-                        pub2 = true;
-                    }
-
-                    if (pub1 && pub_1.dataOrigin != null)
-                    {
-                        pub.dataOriginList.Add(pub_1.dataOrigin);
-                    }
-                    if (pub2)
-                    {
-                        pub.dataOriginList.Add(pub_2.dataOrigin);
-                    }
-
-                    return pub;
                 }
+                if (pub_2.hasMetric != null && pub_2.hasMetric.Any())
+                {
+                    foreach (Models.PublicationMetric metrica in pub_2.hasMetric)
+                    {
+                        if (!dicMetricas.ContainsKey(metrica.metricName))
+                        {
+                            dicMetricas.Add(metrica.metricName, metrica);
+                            pub2 = true;
+                        }
+                    }
+                }
+
+                pub.hasMetric = new List<Models.PublicationMetric>();
+                foreach (KeyValuePair<string, Models.PublicationMetric> metrica in dicMetricas)
+                {
+                    pub.hasMetric.Add(metrica.Value);
+                }
+
+                pub.hasPublicationVenue = new Models.Source();
+                HashSet<string> listaIssn = new HashSet<string>();
+
+                if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
+                {
+                    pub.hasPublicationVenue.type = pub_1.hasPublicationVenue.type;
+                    pub1 = true;
+                }
+                else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.type))
+                {
+                    pub.hasPublicationVenue.type = pub_2.hasPublicationVenue.type;
+                    pub2 = true;
+                }
+
+                if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
+                {
+                    pub.hasPublicationVenue.eissn = pub_1.hasPublicationVenue.eissn;
+                    pub1 = true;
+                }
+                else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.eissn))
+                {
+                    pub.hasPublicationVenue.eissn = pub_2.hasPublicationVenue.eissn;
+                    pub2 = true;
+                }
+
+                if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
+                {
+                    pub.hasPublicationVenue.name = pub_1.hasPublicationVenue.name;
+                    pub1 = true;
+                }
+                else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.name))
+                {
+                    pub.hasPublicationVenue.name = pub_2.hasPublicationVenue.name;
+                    pub2 = true;
+                }
+
+                if (pub_1.hasPublicationVenue != null && pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
+                {
+                    foreach (string item in pub_1.hasPublicationVenue.issn)
+                    {
+                        if (item != pub.hasPublicationVenue.eissn)
+                        {
+                            listaIssn.Add(item);
+                            pub1 = true;
+                        }
+                    }
+                }
+
+                if (pub_2.hasPublicationVenue != null && pub_2.hasPublicationVenue.issn != null && pub_2.hasPublicationVenue.issn.Count > 0)
+                {
+                    foreach (string item in pub_2.hasPublicationVenue.issn)
+                    {
+                        if (item != pub.hasPublicationVenue.eissn)
+                        {
+                            listaIssn.Add(item);
+                            pub2 = true;
+                        }
+                    }
+                }
+
+                pub.hasPublicationVenue.issn = listaIssn.ToList();
+
+                if (!string.IsNullOrEmpty(pub_1.pdf))
+                {
+                    pub.pdf = pub_1.pdf;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.pdf = pub_2.pdf;
+                    pub2 = true;
+                }
+
+                if (pub_1.topics_enriquecidos != null && pub_1.topics_enriquecidos.Any())
+                {
+                    pub.topics_enriquecidos = pub_1.topics_enriquecidos;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.topics_enriquecidos = pub_2.topics_enriquecidos;
+                    pub2 = true;
+                }
+
+
+                if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
+                {
+                    pub.freetextKeyword_enriquecidas = pub_1.freetextKeyword_enriquecidas;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.freetextKeyword_enriquecidas = pub_2.freetextKeyword_enriquecidas;
+                    pub2 = true;
+                }
+
+                if (pub_1.bibliografia != null && pub_1.bibliografia.Any())
+                {
+                    pub.bibliografia = pub_1.bibliografia;
+                    pub1 = true;
+                }
+                else
+                {
+                    pub.bibliografia = pub_2.bibliografia;
+                    pub2 = true;
+                }
+
+                if (pub1 && pub_1.dataOrigin != null)
+                {
+                    pub.dataOriginList.Add(pub_1.dataOrigin);
+                }
+                if (pub2)
+                {
+                    pub.dataOriginList.Add(pub_2.dataOrigin);
+                }
+
+                return pub;
             }
+
         }
 
         /// <summary>
@@ -1610,7 +1611,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return pPublicacion;
         }
 
-        private void ComprobarNombreCompleto1(Person personaFinal) {
+        private void ComprobarNombreCompleto1(Person personaFinal)
+        {
             string nombreCompleto1 = "";
             if (personaFinal.name.given != null && personaFinal.name.given.Any())
             {
