@@ -567,7 +567,7 @@ namespace EditorCV.Models.Utils
 
             Parallel.ForEach(pProperties, new ParallelOptions { MaxDegreeOfParallelism = 5 }, property =>
             {
-                if (property.childs != null && property.childs.Count() > 0 && sparqlObject != null)
+                if (property.childs != null && property.childs.Count > 0 && sparqlObject != null)
                 {
                     HashSet<string> ids = new HashSet<string>(sparqlObject.results.bindings.Where(x => x["p"].value == property.property).Select(x => x["o"].value).ToList());
                     Dictionary<string, SparqlObject> dicAux = new Dictionary<string, SparqlObject>(pConcDicQueries);
@@ -856,7 +856,7 @@ namespace EditorCV.Models.Utils
             string input = pInput.Replace(",", ".");
             string entero = "";
             string decimales = "";
-            if (input.Contains("."))
+            if (input.Contains('.'))
             {
                 entero = input.Substring(0, input.IndexOf("."));
                 decimales = input.Substring(input.IndexOf(".") + 1);
