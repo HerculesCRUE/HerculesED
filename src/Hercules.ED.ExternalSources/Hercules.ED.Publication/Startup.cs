@@ -127,7 +127,7 @@ namespace PublicationConnect
             return _LogPath;
         }
 
-        private string CreateTimeStamp()
+        private static string CreateTimeStamp()
         {
             DateTime time = DateTime.Now;
             string month = time.Month.ToString();
