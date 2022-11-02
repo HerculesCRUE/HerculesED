@@ -89,54 +89,6 @@ namespace Utils
             }
             return null;
         }
-
-        /// <summary>
-        /// Transforma el valor de la propiedad para su carga en una entiadad auxiliar
-        /// </summary>
-        /// <param name="pValue">Valor</param>
-        /// <returns>Valor trasnformado</returns>
-        private static string GetValueUpdateEntityAux(string pValue)
-        {
-            return pValue.Replace("@@@", "|");
-        }
-
-        /// <summary>
-        /// Transforma la propiedad para su carga en una entiadad auxiliar
-        /// </summary>
-        /// <param name="pProp">Propiedad</param>
-        /// <returns>Propiedad transformada</returns>
-        private static string GetPropUpdateEntityAux(string pProp)
-        {
-            while (pProp.Contains("@@@"))
-            {
-                int indexInitRdfType = pProp.IndexOf("@@@");
-                int indexEndRdfType = pProp.IndexOf("|", indexInitRdfType);
-                if (indexEndRdfType > indexInitRdfType)
-                {
-                    pProp = pProp.Substring(0, indexInitRdfType) + pProp.Substring(indexEndRdfType);
-                }
-                else
-                {
-                    pProp = pProp.Substring(0, indexInitRdfType);
-                }
-            }
-            return pProp;
-        }
-
-        /// <summary>
-        /// Obtiene la entidad del valor
-        /// </summary>
-        /// <param name="pValue">Valor</param>
-        /// <returns>Valor de la entidad</returns>
-        private static string GetEntityOfValue(string pValue)
-        {
-            string entityID = "";
-            if (pValue.Contains("@@@"))
-            {
-                entityID = pValue.Substring(0, pValue.IndexOf("@@@"));
-            }
-            return entityID;
-        }
-
+                
     }
 }
