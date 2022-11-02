@@ -41,7 +41,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="method">Crud method for the call</param>
         /// <param name="headers">The headers for the call</param>
         /// <returns></returns>
-        protected async Task<string> httpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
+        protected async Task<string> HttpCall(string url, string method = "GET", Dictionary<string, string> headers = null)
         {
             HttpResponseMessage response;
             using (var httpClient = new HttpClient())
@@ -87,7 +87,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pDoi">Código DOI de la publicación.</param>
         /// <param name="pNombreCompletoAutor">Nombre completo del autor.</param>
         /// <returns></returns>
-        public List<Publication> getPublications(string pOrcid, string pDate = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
+        public List<Publication> GetPublications(string pOrcid, string pDate = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
         {
             // Diccionario con las peticiones.
             Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
@@ -105,7 +105,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a Wos...");
-                    objInicial_woS = llamada_WoS_Doi(pDoi);
+                    objInicial_woS = LlamadaWoSDoi(pDoi);
                 }
                 catch (Exception error)
                 {
@@ -117,7 +117,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus_Doi(pDoi);
+                    objInicial_Scopus = LlamadaScopusDoi(pDoi);
                 }
                 catch (Exception error)
                 {
@@ -129,7 +129,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a OpenAire...");
-                    objInicial_openAire = llamada_OpenAire_Doi(pDoi);
+                    objInicial_openAire = LlamadaOpenAireDoi(pDoi);
                 }
                 catch (Exception error)
                 {
@@ -143,7 +143,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a Wos...");
-                    objInicial_woS = llamada_WoS(pOrcid, pDate);
+                    objInicial_woS = LlamadaWoS(pOrcid, pDate);
                 }
                 catch (Exception error)
                 {
@@ -155,7 +155,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a Scopus...");
-                    objInicial_Scopus = llamada_Scopus(pOrcid, pDate);
+                    objInicial_Scopus = LlamadaScopus(pOrcid, pDate);
                 }
                 catch (Exception error)
                 {
@@ -167,7 +167,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 try
                 {
                     Console.WriteLine("Haciendo petición a OpenAire...");
-                    objInicial_openAire = llamada_OpenAire(pOrcid, pDate);
+                    objInicial_openAire = LlamadaOpenAire(pOrcid, pDate);
                 }
                 catch (Exception error)
                 {
@@ -199,7 +199,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                         {
                             Console.WriteLine($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                            dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
+                            dataSemanticScholar = LlamadaRefSemanticScholar(pub.doi);
                             contadorSemanticScholar++;
 
                             // Si se obtienen datos, es válido.
@@ -220,13 +220,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         pub_completa.dataOriginList = new HashSet<string>() { "WoS" };
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                         {
-                            pub_completa = compactacion(pub, dataSemanticScholar.Item1);
+                            pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
                             pub_completa.bibliografia = dataSemanticScholar.Item2;
                         }
 
                         // Zenodo - Archivos pdf...
                         Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
-                        pub_completa.pdf = llamadaZenodo(pub.doi, dicZenodo);
+                        pub_completa.pdf = LlamadaZenodo(pub.doi, dicZenodo);
                         if (pub_completa.pdf == string.Empty)
                         {
                             pub_completa.pdf = null;
@@ -246,7 +246,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                     Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
                                     if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_scopus.doi.ToLower() == pub_completa.doi.ToLower())
                                     {
-                                        pub_completa = compactacion(pub_completa, pubScopus);
+                                        pub_completa = Compactacion(pub_completa, pubScopus);
                                     }
                                 }
                             }
@@ -259,7 +259,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             {
                                 if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                 {
-                                    pub_completa = compactacion(pub_completa, pub_openAire);
+                                    pub_completa = Compactacion(pub_completa, pub_openAire);
                                 }
                             }
                         }
@@ -308,7 +308,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Console.WriteLine($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = llamadaRefSemanticScholar(pubScopus.doi);
+                                dataSemanticScholar = LlamadaRefSemanticScholar(pubScopus.doi);
                                 contadorSemanticScholar++;
 
                                 // Si se obtienen datos, es válido.
@@ -329,13 +329,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             pub_completa.dataOriginList = new HashSet<string>() { "Scopus" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
-                                pub_completa = compactacion(pubScopus, dataSemanticScholar.Item1);
+                                pub_completa = Compactacion(pubScopus, dataSemanticScholar.Item1);
                                 pub_completa.bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Console.WriteLine("[Scopus] Haciendo petición a Zenodo...");
-                            pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
+                            pub_completa.pdf = LlamadaZenodo(pub_completa.doi, dicZenodo);
                             if (pub_completa.pdf == String.Empty)
                             {
                                 pub_completa.pdf = null;
@@ -352,7 +352,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 {
                                     if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
                                     {
-                                        pub_completa = compactacion(pub_completa, pub_openAire);
+                                        pub_completa = Compactacion(pub_completa, pub_openAire);
                                     }
                                 }
                             }
@@ -400,7 +400,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Console.WriteLine($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = llamadaRefSemanticScholar(pub.doi);
+                                dataSemanticScholar = LlamadaRefSemanticScholar(pub.doi);
                                 contadorSemanticScholar++;
 
                                 // Si se obtienen datos, es válido.
@@ -421,13 +421,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             pub_completa.dataOriginList = new HashSet<string>() { "OpenAire" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
-                                pub_completa = compactacion(pub, dataSemanticScholar.Item1);
+                                pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
                                 pub_completa.bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Console.WriteLine("[OpenAire] Haciendo petición a Zenodo...");
-                            pub_completa.pdf = llamadaZenodo(pub_completa.doi, dicZenodo);
+                            pub_completa.pdf = LlamadaZenodo(pub_completa.doi, dicZenodo);
                             if (pub_completa.pdf == string.Empty)
                             {
                                 pub_completa.pdf = null;
@@ -500,20 +500,20 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 string jsonData = string.Empty;
                 if (string.IsNullOrEmpty(publicacion.pdf))
                 {
-                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimiento(publicacion));
+                    jsonData = JsonConvert.SerializeObject(ObtenerObjEnriquecimiento(publicacion));
                 }
                 else
                 {
-                    jsonData = JsonConvert.SerializeObject(obtenerObjEnriquecimientoPdf(publicacion));
+                    jsonData = JsonConvert.SerializeObject(ObtenerObjEnriquecimientoPdf(publicacion));
                 }
 
                 if (!string.IsNullOrEmpty(jsonData))
                 {
                     // Peticiones.
                     Console.WriteLine("Obteniendo topics enriquecidos...");
-                    Dictionary<string, string> listaTopics = getDescriptores(jsonData, "thematic");
+                    Dictionary<string, string> listaTopics = GetDescriptores(jsonData, "thematic");
                     Console.WriteLine("Obteniendo freeTextKeywords enriquecidos...");
-                    Dictionary<string, string> listaEtiquetas = getDescriptores(jsonData, "specific");
+                    Dictionary<string, string> listaEtiquetas = GetDescriptores(jsonData, "specific");
 
                     if (listaTopics != null && listaTopics.Any())
                     {
@@ -588,7 +588,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pub_1">Publicación número uno (con prioridad).</param>
         /// <param name="pub_2">Publicación número dos.</param>
         /// <returns></returns>
-        public Publication compactacion(Publication pub_1, Publication pub_2)
+        public Publication Compactacion(Publication pub_1, Publication pub_2)
         {
             Publication pub = new Publication();
             pub.dataOriginList = pub_1.dataOriginList;
@@ -1007,7 +1007,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <returns>Objeto Publication con los datos obtenidos.</returns>
-        public Tuple<Publication, List<PubReferencias>> llamadaRefSemanticScholar(string pDoi)
+        public Tuple<Publication, List<PubReferencias>> LlamadaRefSemanticScholar(string pDoi)
         {
             Tuple<Publication, List<PubReferencias>> objInicial_SemanticScholar = null;
 
@@ -1018,7 +1018,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // URL a la petición.
                     Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
 
-                    string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                    string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
                     objInicial_SemanticScholar = JsonConvert.DeserializeObject<Tuple<Publication, List<PubReferencias>>>(info_publication);
                 }
             }
@@ -1037,10 +1037,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pOrcid">ORCID del autor.</param>
         /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<PublicacionScopus> llamada_Scopus(string pOrcid, string date)
+        public List<PublicacionScopus> LlamadaScopus(string pOrcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", pOrcid, date));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<PublicacionScopus> objInicial_Scopus = null;
             try
             {
@@ -1059,10 +1059,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">ID de la publicación.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<PublicacionScopus> llamada_Scopus_Doi(string pDoi)
+        public List<PublicacionScopus> LlamadaScopusDoi(string pDoi)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetPublicationByDOI?pDoi={0}", pDoi));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<PublicacionScopus> objInicial_Scopus = null;
             try
             {
@@ -1083,7 +1083,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pOrcid">ORCID del autor.</param>
         /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<Publication> llamada_WoS(string pOrcid, string date)
+        public List<Publication> LlamadaWoS(string pOrcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
 
@@ -1091,7 +1091,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             string info_publication = string.Empty;
             while (true)
             {
-                info_publication = httpCall(url.ToString(), "GET", headers).Result;
+                info_publication = HttpCall(url.ToString(), "GET", headers).Result;
                 if (contadorVeces == 5 || !string.IsNullOrEmpty(info_publication))
                 {
                     break;
@@ -1118,10 +1118,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">ID de la publicación.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<Publication> llamada_WoS_Doi(string pDoi)
+        public List<Publication> LlamadaWoSDoi(string pDoi)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetRoByDoi?pDoi={0}", pDoi));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_woS = null;
             try
             {
@@ -1145,10 +1145,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pOrcid">ORCID del autor.</param>
         /// <param name="date">Fecha.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<Publication> llamada_OpenAire(string pOrcid, string date)
+        public List<Publication> LlamadaOpenAire(string pOrcid, string date)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetROs?orcid={0}&date={1}", pOrcid, date));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_openAire = null;
             try
             {
@@ -1167,10 +1167,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pDoi">ID de la publicación.</param>
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
-        public List<Publication> llamada_OpenAire_Doi(string pDoi)
+        public List<Publication> LlamadaOpenAireDoi(string pDoi)
         {
             Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetRoByDoi?pDoi={0}", pDoi));
-            string info_publication = httpCall(url.ToString(), "GET", headers).Result;
+            string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_openAire = null;
             try
             {
@@ -1194,7 +1194,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pDoi">DOI de la publicación a consultar.</param>
         /// <param name="pDic">Diccionario con los objetos de Zenodo.</param>
         /// <returns>String con la URL del archivo PDF obtenido.</returns>
-        public string llamadaZenodo(string pDoi, Dictionary<string, string> pDic)
+        public string LlamadaZenodo(string pDoi, Dictionary<string, string> pDic)
         {
             string urlPdf = string.Empty;
 
@@ -1208,7 +1208,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     // Comprobación de la petición.
                     if (!pDic.ContainsKey(pDoi))
                     {
-                        string info_publication = httpCall(url.ToString(), "GET", headers).Result.Replace("\"", "");
+                        string info_publication = HttpCall(url.ToString(), "GET", headers).Result.Replace("\"", "");
                         if (!string.IsNullOrEmpty(info_publication) && info_publication.EndsWith(".pdf"))
                         {
                             urlPdf = info_publication;
@@ -1989,7 +1989,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         #endregion
 
         #region --- Enriquecimiento
-        public static ObjEnriquecimientoConPdf obtenerObjEnriquecimientoPdf(Publication pPub)
+        public static ObjEnriquecimientoConPdf ObtenerObjEnriquecimientoPdf(Publication pPub)
         {
             if (!string.IsNullOrEmpty(pPub.title) && !string.IsNullOrEmpty(pPub.Abstract))
             {
@@ -2011,7 +2011,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-        public static ObjEnriquecimientoSinPdf obtenerObjEnriquecimiento(Publication pPub)
+        public static ObjEnriquecimientoSinPdf ObtenerObjEnriquecimiento(Publication pPub)
         {
             if (!string.IsNullOrEmpty(pPub.title))
             {
@@ -2033,7 +2033,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
         }
 
-        public Dictionary<string, string> getDescriptores(string pDataEnriquecimiento, string pTipo)
+        public Dictionary<string, string> GetDescriptores(string pDataEnriquecimiento, string pTipo)
         {
             // Petición.
             HttpResponseMessage response = null;
