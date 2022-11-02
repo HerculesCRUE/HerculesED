@@ -204,7 +204,7 @@ namespace EditorCV.Models
         /// <param name="section"></param>
         /// <param name="preimport"></param>
         /// <returns></returns>
-        private API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
+        private static API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
         {
             string lang = "es";
             API.Response.TabSection tabSection = new API.Response.TabSection();
@@ -408,7 +408,7 @@ namespace EditorCV.Models
         /// <param name="tabSectionListItem"></param>
         /// <param name="subseccionItem"></param>
         /// <returns></returns>
-        private TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
+        private static TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
         {
             string lang = "es";
 
@@ -650,7 +650,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pPropImport"></param>
         /// <returns></returns>
-        private string GetPropCompleteImport(string pPropImport)
+        private static string GetPropCompleteImport(string pPropImport)
         {
             if (string.IsNullOrEmpty(pPropImport))
             {
@@ -664,7 +664,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pPropCompelte"></param>
         /// <returns></returns>
-        private string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
+        private static string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
         {
             return pPropCompelte.Replace("http://vivoweb.org/ontology/core#relatedBy@@@", "");
         }
