@@ -37,7 +37,7 @@ namespace PublicationConnect.Controllers
             Log.Information("Leyendo Configuración...");
             ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);
             Log.Information("Obteniendo datos de publicación...");
-            List<Publication> publication = PublicationObject.getPublications(orcid, date);
+            List<Publication> publication = PublicationObject.GetPublications(orcid, date);
             return publication;
         }
 
@@ -56,7 +56,7 @@ namespace PublicationConnect.Controllers
             Log.Information("Leyendo Configuración...");
             ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);
             Log.Information("Obteniendo datos de publicación...");
-            List<Publication> publication = PublicationObject.getPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
+            List<Publication> publication = PublicationObject.GetPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
             return publication;
         }
     }
