@@ -140,7 +140,7 @@ namespace PublicationConnect
             {
                 day = $"0{day}";
             }
-            string timeStamp = $"{time.Year.ToString()}{month}{day}";
+            string timeStamp = $"{time.Year}{month}{day}";
             return timeStamp;
         }
     }
