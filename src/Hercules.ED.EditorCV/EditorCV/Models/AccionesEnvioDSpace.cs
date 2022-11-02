@@ -584,7 +584,7 @@ namespace EditorCV.Models
             }
             catch (Exception)
             {
-                //
+                throw new BadHttpRequestException("Error de autenticacion");
             }
         }
     }
