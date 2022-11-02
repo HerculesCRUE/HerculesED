@@ -2,6 +2,9 @@
 
 namespace GitHubAPI.Models.Data
 {
+    /**
+    * Modelo encargado de los datos del pricipales del investigador
+    */
     public class DataGitHub
     {
         public int? id { get; set; }
