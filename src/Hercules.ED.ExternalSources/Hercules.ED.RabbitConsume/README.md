@@ -1,13 +1,13 @@
 ![](../../../Docs/media/CabeceraDocumentosMD.png)
 
-| Fecha         | 21/10/2022                                                  |
+| Fecha         | 02/11/2022                                                  |
 | ------------- | ------------------------------------------------------------ |
 |Titulo|API Hercules.ED.RabbitConsume| 
 |Descripción|Manual del servicio API Hercules.ED.RabbitConsume|
 |Versión|1.0|
 |Módulo|Hercules.ED.ExternalSources|
 |Tipo|Manual|
-|Cambios de la Versión| |
+|Cambios de la Versión| Versión inicial |
 
 ## Sobre Hercules.ED.RabbitConsume
 
