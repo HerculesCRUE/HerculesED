@@ -20,6 +20,16 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.FigShare&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.FigShare)
 
+## Descripción.
+Servicio encargado de obtener la información de FigShare. Documentación del API de [FigShare](https://docs.figshare.com/). 
+
+## Controladores
+
+**APIController**  
+[GET] GetIdentifiers -> Obtiene los IDs de los ROs.  
+[GET] GetData -> Obtiene los datos de un ROs.  
+[GET] GetROs -> Transforma los datos al objeto necesario.  
+
 ## Configuración en el appsetting.json
 ```json{
 {
