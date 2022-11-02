@@ -54,8 +54,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 int numLimit = 10000;
                 int offset = 0;
-                bool cargar = true;
-                while (cargar)
+                while (true)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o";
                     string whereID = $"where{{?x <http://gnoss/hasEntidad> <{pId}> . ?x <http://gnoss/hasEntidad> ?s . ?s ?p ?o }}order by desc(?s) desc(?p) desc(?o)}} limit {numLimit} offset {offset}";
@@ -71,7 +70,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
                     {
-                        cargar = false;
+                        break;
                     }
                 }
             }
