@@ -228,7 +228,7 @@ namespace EditorCV.Models
                 }
                 catch (Exception)
                 {
-
+                    //
                 }
             }
 
@@ -238,7 +238,7 @@ namespace EditorCV.Models
             tiposDesnormalizar.Add("ResearchObject_", DenormalizerItemQueue.ItemType.researchobject);
             tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
             tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
-            string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
+            string claveDiccionario = tiposDesnormalizar.Keys.FirstOrDefault(x => entityDestino.Contains(x));
             if (claveDiccionario != null && tiposDesnormalizar.ContainsKey(claveDiccionario))
             {
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
@@ -1057,7 +1057,7 @@ namespace EditorCV.Models
                 }
                 catch (Exception)
                 {
-
+                    //
                 }
             }
             if (!string.IsNullOrEmpty(idPerson))
@@ -1969,7 +1969,7 @@ namespace EditorCV.Models
                         listResult[fila["s"].value].Add(fila);
                     }
                     offset += numLimit;
-                    if (resultData.results.bindings.Count() < numLimit)
+                    if (resultData.results.bindings.Count < numLimit)
                     {
                         cargar = false;
                     }

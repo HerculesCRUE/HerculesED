@@ -24,7 +24,7 @@ namespace EditorCV.Models
             }
             catch (Exception)
             {
-                
+                //
             }
             return userIdCookie==pUserId;
         }
@@ -43,7 +43,7 @@ namespace EditorCV.Models
             }
             catch (Exception)
             {
-
+                //
             }
             return pUsersId.Contains(userIdCookie);
         }

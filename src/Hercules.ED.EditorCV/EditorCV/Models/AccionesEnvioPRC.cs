@@ -91,7 +91,7 @@ where {{
         /// </summary>
         /// <param name="fecha"></param>
         /// <returns></returns>
-        private string ConversorFechas(string fecha)
+        private static string ConversorFechas(string fecha)
         {
             string fechaConvertida = "";
             if (!string.IsNullOrEmpty(fecha) && fecha.Length > 8)
@@ -347,7 +347,7 @@ where {{
             #endregion
         }
 
-        private ProduccionCientifica CrearPRC(string pIdDocumento, bool pEliminar, out string valorEnviado)
+        private static ProduccionCientifica CrearPRC(string pIdDocumento, bool pEliminar, out string valorEnviado)
         {
             ProduccionCientifica PRC = new ProduccionCientifica();
             string propStatus = "";
@@ -468,7 +468,7 @@ where {{
             return PRC;
         }
 
-        private void ObtencionRevistasPubicacionesCongresos(ProduccionCientifica PRC, string pIdDocumento, bool pEliminacion)
+        private static void ObtencionRevistasPubicacionesCongresos(ProduccionCientifica PRC, string pIdDocumento, bool pEliminacion)
         {
             #region --- Obtención de Revistas
             if (PRC.epigrafeCVN == "060.010.010.000")
@@ -877,7 +877,7 @@ where {{
         /// <summary>
         /// Mapea el código CVN con la propiedad usada en SPARQL de PUBLICACIONES.
         /// </summary>
-        private void RellenarDiccionarioPublicaciones()
+        private static void RellenarDiccionarioPublicaciones()
         {
             // <060.010.010.000> Publicaciones
             dicPropiedadesPublicaciones.Add("title", "060.010.010.030");
@@ -903,7 +903,7 @@ where {{
         /// <summary>
         /// Mapea el código CVN con la propiedad usada en SPARQL de CONGRESOS.
         /// </summary>
-        private void RellenarDiccionarioCongresos()
+        private static void RellenarDiccionarioCongresos()
         {
             dicPropiedadesCongresos.Add("title", "060.010.020.030");
             dicPropiedadesCongresos.Add("type", "060.010.010.010");
