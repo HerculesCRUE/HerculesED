@@ -93,8 +93,7 @@ namespace EditorCV.Models
                 if (responseEstado.StatusCode == HttpStatusCode.NotFound)
                 {
                     //Añade los metadatos a DSpace
-                    DSpaceResponse dSpace = new();
-                    dSpace = InsertaMetadatosDspace(publication);
+                    DSpaceResponse dSpace = InsertaMetadatosDspace(publication);
                     if (dSpace.id.Equals("000000"))
                     {
                         throw new ArgumentException("Error al insertar datos");
