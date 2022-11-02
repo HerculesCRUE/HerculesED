@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PublicationAPI.Controllers
-{    
+{
     public class ConfigService
     {
         // Archivo de configuración.
@@ -19,7 +16,7 @@ namespace PublicationAPI.Controllers
         private string urlCrossRef { get; set; }
         private string urlOpenCitations { get; set; }
         private string urlSemanticScholar { get; set; }
-        private string urlZenodo { get; set; } 
+        private string urlZenodo { get; set; }
         private string urlEnriquecimiento { get; set; }
         private string rutaJsonSalida { get; set; }
 

@@ -3,10 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,7 +14,7 @@ namespace PublicationAPI.Middlewares
         private readonly RequestDelegate _next;
         private IConfiguration _configuration { get; set; }
         private string _timeStamp;
-        
+
         public ErrorHandlingMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
@@ -63,10 +60,10 @@ namespace PublicationAPI.Middlewares
             return context.Response.WriteAsync(result);
         }
 
-       
 
-        
 
-        
+
+
+
     }
 }

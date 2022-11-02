@@ -12,7 +12,6 @@ using PublicationAPI.ROs.Publication.Models;
 using System.Threading;
 using Person = PublicationConnect.ROs.Publications.Models.Person;
 using System.Text.RegularExpressions;
-using System.IO;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -595,9 +594,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            //string data = JsonConvert.SerializeObject(listaPubsFinal);
-            //File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
-
             return listaPubsFinal;
         }
 
@@ -1119,7 +1115,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 Thread.Sleep(3000);
             }
 
-            //Log.Information("Respuesta WoS --> " + info_publication);
             List<Publication> objInicial_woS = null;
             try
             {
@@ -1748,9 +1743,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pPersonaFinal.orden = pPersonaAUnir.orden;
             }
 
-            // Fuente
-            //pPersonaFinal.fuente = "Hércules"; // Fuente de unificación.
-
             // Firma
             if (string.IsNullOrEmpty(pPersonaFinal.nick))
             {
@@ -2139,7 +2131,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }

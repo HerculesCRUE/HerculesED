@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using PublicationAPI.ROs.Publication.Models;
@@ -45,7 +44,7 @@ namespace PublicationConnect.ROs.Publications.Models
         public List<PublicationMetric> hasMetric { get; set; }
         public List<PubReferencias> bibliografia { get; set; }
         //public List<Publication> citas {get;set;}
-        
+
         public HashSet<string> dataOriginList { get; set; }
 
         public Conferencia conferencia { get; set; }
