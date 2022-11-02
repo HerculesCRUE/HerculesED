@@ -33,7 +33,7 @@ namespace Hercules.ED.RabbitConsume.Models.Services
                                 FILTER(?s = <{pIdGnoss}>) 
                                 OPTIONAL {{?s roh:lastUpdatedDate ?fecha. }} 
                             }}";
-            
+
             resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
