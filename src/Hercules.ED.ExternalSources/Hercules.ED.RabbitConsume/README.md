@@ -34,9 +34,14 @@ Al identificar dónde ha de hacer la petición, hace la llamada al servicio corr
 
 En el caso que todo haya funcionado correctamente, quitará la petición de la cola y continuará con la siguiente. Si falla al leer la petición, escribirá en el log y la volverá a encolar.
 
+Finalmente, modificará la fecha de actualización de la persona que ha solicitado dicha actualización de datos.
+
 ## Configuración en el appsetting.json
 ```json{
 {
+	"ConnectionStrings": {
+		"RabbitMQ": ""
+	},
 	"Logging": {
 		"LogLevel": {
 			"Default": "",
@@ -55,6 +60,7 @@ En el caso que todo haya funcionado correctamente, quitará la petición de la c
 }
 ```
 
+- ConnectionStrings.RabbitMQ: Cadena de conexión de la cola.
 - LogLevel.Default: Nivel de error por defecto.
 - LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
 - LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
@@ -71,5 +77,3 @@ En el caso que todo haya funcionado correctamente, quitará la petición de la c
 - **Microsoft.Extensions.Hosting**: v6.0.1
 - **Newtonsoft.Json**: v13.0.1
 - **RabbitMQ.Client**: v6.2.3
-- **Serilog**: v2.10.0
-- **Serilog.AspNetCore**: v5.0.0
