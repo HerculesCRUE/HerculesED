@@ -20,6 +20,17 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.WoSConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.WoSConnect)
 
+## Descripción.
+Servicio encargado de obtener la información de WoS. Documentación del API de [WoS](https://api.clarivate.com/swagger-ui/?url=https%3A%2F%2Fdeveloper.clarivate.com%2Fapis%2Fwos%2Fswagger). 
+
+## Controladores
+
+**APIController**  
+[GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
+[GET] GetRoByWosId -> Obtiene los datos de una publicación mediante el ID de WoS.  
+[GET] GetRoByDoi -> Obtiene los datos de una publicación.  
+[GET] GetCitesByWosId -> Obtiene las citas mediante el ID de WoS.
+
 ## Configuración en el appsetting.json
 ```json{
 {

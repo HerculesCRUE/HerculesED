@@ -20,6 +20,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.Zenodo&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.Zenodo)
 
+## Descripción.
+Servicio encargado de obtener la información de Zenodo. Documentación del API de [Zenodo](https://developers.zenodo.org/). 
+
+## Controladores
+
+**APIController**  
+[GET] GetROsByOrcid -> Obtiene los datos de una publicación.  
+[GET] GetOntologyData -> Obtiene los datos necesarios para la carga en BBDD.
+
 ## Configuración en el appsetting.json
 ```json{
 {

@@ -20,6 +20,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.ScopusConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.ScopusConnect)
 
+## Descripción.
+Servicio encargado de obtener la información de Scopus. Documentación del API de [Scopus](https://dev.elsevier.com/search.html#!/Scopus_Search/ScopusSearch). 
+
+## Controladores
+
+**APIControllerScopus**  
+[GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
+[GET] GetPublicationByDOI -> Obtiene los datos de una publicación.
+
 ## Configuración en el appsetting.json
 ```json{
 {
