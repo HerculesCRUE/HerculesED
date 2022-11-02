@@ -20,6 +20,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.OpenAireConnect&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.OpenAireConnect)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.OpenAireConnect&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.OpenAireConnect)
 
+## Descripción.
+Servicio encargado de obtener la información de OpenAire. Documentación del API de [OpenAire](https://graph.openaire.eu/develop/). 
+
+## Controladores
+
+**APIController**  
+[GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
+[GET] GetRoByDoi -> Obtiene los datos de una publicación.
+
 ## Configuración en el appsetting.json
 ```json{
 {
