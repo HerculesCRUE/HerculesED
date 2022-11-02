@@ -67,15 +67,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             {
                 if (versionExportacion.Equals("1_4_0"))
                 {
-                    Export140.GenerarPDFWSClient client = new ();
-
-                    //Aumento el tiempo de espera a 2 hora como maximo
-                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                    var resp = peticion.Result.@return;
-                    client.Close();
+                    var resp = exporta.ExportarVersion140(_Configuracion, _cvn, tipoCVNExportacion, lang);                    
 
                     if (resp.returnCode != "00")
                     {
@@ -87,15 +79,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else if (versionExportacion.Equals("1_4_3"))
                 {
-                    Export.GenerarPDFWSClient client = new ();
-
-                    //Aumento el tiempo de espera a 2 hora como maximo
-                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                    var resp = peticion.Result.@return;
-                    client.Close();
+                    var resp = exporta.ExportarVersion143(_Configuracion, _cvn, tipoCVNExportacion, lang);
 
                     if (resp.returnCode != "00")
                     {
@@ -158,16 +142,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
             {
                 if (versionExportacion.Equals("1_4_0"))
                 {
-                    Export140.GenerarPDFWSClient client = new ();
-
-                    //Aumento el tiempo de espera a 2 hora como máximo
-                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                    var resp = peticion.Result.@return;
-                    client.Close();
-
+                    var resp = exporta.ExportarVersion140(_Configuracion, _cvn, tipoCVNExportacion, lang);
 
                     if (resp.returnCode != "00")
                     {
@@ -180,16 +155,7 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
                 else if (versionExportacion.Equals("1_4_3"))
                 {
-                    Export.GenerarPDFWSClient client = new ();
-
-                    //Aumento el tiempo de espera a 2 hora como máximo
-                    client.Endpoint.Binding.CloseTimeout = new TimeSpan(2, 0, 0);
-                    client.Endpoint.Binding.SendTimeout = new TimeSpan(2, 0, 0);
-
-                    var peticion = client.crearPDFBeanCvnRootBeanAsync(_Configuracion.GetUsuarioPDF(), _Configuracion.GetContraseñaPDF(), "CVN", _cvn.cvnRootBean, tipoCVNExportacion, Utils.UtilityExportar.CvnLangCode(lang));
-                    var resp = peticion.Result.@return;
-                    client.Close();
-
+                    var resp = exporta.ExportarVersion143(_Configuracion, _cvn, tipoCVNExportacion, lang);
 
                     if (resp.returnCode != "00")
                     {
