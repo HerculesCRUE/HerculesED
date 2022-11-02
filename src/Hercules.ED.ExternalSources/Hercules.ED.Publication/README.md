@@ -97,6 +97,15 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
         - Se llama al enriquecimiento de áreas temáticas y de palabras clave para completar la publicación. 
 - Llegados a este punto ya tenemos completas todas las publicaciones de este autor. 
 
+## Controladores
+
+[GET] GetROs  
+Parámetros: orcid, date  
+Descripción: Obtiene los datos de las publicaciones de un autor.
+
+[GET] GetRoPublication  
+Parámetros: pDoi, pNombreCompletoAutor  
+Descripción: Obtiene los datos de una publicación.
 
 ## Configuración en el appsetting.json
 ```json{
