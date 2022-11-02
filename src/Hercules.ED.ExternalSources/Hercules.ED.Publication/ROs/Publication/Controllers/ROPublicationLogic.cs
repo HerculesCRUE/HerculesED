@@ -1607,7 +1607,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return pPublicacion;
         }
 
-        private void ComprobarNombreCompleto1(Person personaFinal)
+        private static void ComprobarNombreCompleto1(Person personaFinal)
         {
             string nombreCompleto1 = "";
             if (personaFinal.name.given != null && personaFinal.name.given.Any())
@@ -1969,10 +1969,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         {
             if (!string.IsNullOrEmpty(pPub.title))
             {
-                ObjEnriquecimientoSinPdf objEnriquecimiento = new ObjEnriquecimientoSinPdf();
-                objEnriquecimiento.rotype = "papers";
-                objEnriquecimiento.title = pPub.title;
-                objEnriquecimiento.abstract_ = pPub.Abstract;
+                ObjEnriquecimientoSinPdf objEnriquecimiento = new ObjEnriquecimientoSinPdf("papers", pPub.title, pPub.Abstract);
 
                 if (string.IsNullOrEmpty(objEnriquecimiento.abstract_))
                 {
