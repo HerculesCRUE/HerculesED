@@ -8,13 +8,12 @@ namespace PublicationConnect.ROs.Publications.Models
     public class Publication
     {
         public List<string> problema { get; set; }
-        public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
+        public string typeOfPublication { get; set; } 
         public string title { get; set; }
         public List<FreetextKeywords> freetextKeywords { get; set; }
         public string Abstract { get; set; }
         public string language { get; set; }
         public string doi { get; set; }
-        // public string identifier {get;set;}
         public DateTimeValue dataIssued { get; set; }
 
         public HashSet<string> url { get; set; }
@@ -25,25 +24,20 @@ namespace PublicationConnect.ROs.Publications.Models
         public Person correspondingAuthor { get; set; }
 
         public List<Person> seqOfAuthors { get; set; }
-        //  public Organization correspondingOrganization { get; set; }
         public List<KnowledgeAreas> hasKnowledgeAreas { get; set; }
         public string pageEnd { get; set; }
 
         public string pageStart { get; set; }
-        //public Status documentStatus { get; set; }
-        //public string eanucc13 { get; set; }
         public string volume { get; set; }
         public string articleNumber { get; set; }
         public bool? openAccess { get; set; }
         public List<string> IDs { get; set; }
         public string presentedAt { get; set; }
-        //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
 
         public Source hasPublicationVenue { get; set; }
 
         public List<PublicationMetric> hasMetric { get; set; }
         public List<PubReferencias> bibliografia { get; set; }
-        //public List<Publication> citas {get;set;}
 
         public HashSet<string> dataOriginList { get; set; }
 
@@ -79,22 +73,14 @@ namespace PublicationConnect.ROs.Publications.Models
         public string datimeTime { get; set; }
     }
 
-    public class Source
-    {
-        // public KnowledgeArea hasKnowledgeArea { get; set; }
-        //  public JournalMetric hasMetric { get; set; }
-        // public string abbreviation { get; set; }
-        //public string language { get; set; }
-        //  public Organization publisher { get; set; }
-        //public Organization correspongingOrganization { get; set; }
+    public class Source 
+    {     
         public string type { get; set; }
         public List<string> issn { get; set; }
         public List<string> isbn { get; set; }
         public string name { get; set; }
         public string eissn { get; set; }
         public List<JournalMetric> hasMetric { get; set; }
-
-        //  public string oclcnum { get; set; }
     }
 
 
@@ -107,18 +93,9 @@ namespace PublicationConnect.ROs.Publications.Models
         public string metricName { get; set; }
     }
 
-    // public class Status
-    // {
-    //     public string status { get; set; }
-    //     public DateTimeValue dateIssued { get; set; }
-    // }
-
     public class Person
     {
-        //public string id_persona {get;set;}
-        //public DateTimeValue birthdate { get; set; }
         public Name name { get; set; }
-        //public string surname { get; set; }
         public string ORCID { get; set; }
         public List<string> IDs { get; set; }
         public List<string> links { get; set; }
@@ -131,7 +108,6 @@ namespace PublicationConnect.ROs.Publications.Models
     public class Name
     {
         public List<string> given { get; set; }
-        //
         public List<string> familia { get; set; }
         public List<string> nombre_completo { get; set; }
     }
@@ -149,7 +125,6 @@ namespace PublicationConnect.ROs.Publications.Models
         public string title { get; set; }
         public string freetextKeyword { get; set; }
         public string locality { get; set; }
-        //public ParticipatedBy participatedBy { get; set; }
         public List<KnowledgeAreas> hasKnowledgeArea { get; set; }
 
     }
@@ -162,7 +137,6 @@ namespace PublicationConnect.ROs.Publications.Models
     public class KnowledgeArea
     {
         public string name { get; set; }
-        // public string abbreviation { get; set; }
         public string hasCode { get; set; }
 
 
