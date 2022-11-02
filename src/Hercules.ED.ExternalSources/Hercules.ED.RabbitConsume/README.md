@@ -34,6 +34,8 @@ Al identificar dónde ha de hacer la petición, hace la llamada al servicio corr
 
 En el caso que todo haya funcionado correctamente, quitará la petición de la cola y continuará con la siguiente. Si falla al leer la petición, escribirá en el log y la volverá a encolar.
 
+Finalmente, modificará la fecha de actualización de la persona que ha solicitado dicha actualización de datos.
+
 ## Configuración en el appsetting.json
 ```json{
 {
