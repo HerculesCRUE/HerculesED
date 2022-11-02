@@ -99,13 +99,9 @@ Con esta función se combinan todos los metadatos de las publicaciones recibidas
 
 ## Controladores
 
-[GET] GetROs  
-Parámetros: orcid, date  
-Descripción: Obtiene los datos de las publicaciones de un autor.
-
-[GET] GetRoPublication  
-Parámetros: pDoi, pNombreCompletoAutor  
-Descripción: Obtiene los datos de una publicación.
+**APIController**
+[GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
+[GET] GetRoPublication -> Obtiene los datos de una publicación.
 
 ## Configuración en el appsetting.json
 ```json{
