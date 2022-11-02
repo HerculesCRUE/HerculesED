@@ -1,7 +1,6 @@
 ﻿using Gnoss.ApiWrapper;
 using System;
 using Hercules.ED.ResearcherObjectLoad.Models;
-using Microsoft.Extensions.Configuration;
 using Hercules.ED.ResearcherObjectLoad.Config;
 using System.IO;
 using System.Threading;

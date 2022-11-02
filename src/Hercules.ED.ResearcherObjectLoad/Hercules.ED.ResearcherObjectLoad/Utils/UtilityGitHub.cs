@@ -136,7 +136,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                     ?personID <http://w3id.org/roh/usuarioGitHub> ?github .
                                     OPTIONAL{{ ?personID <http://w3id.org/roh/ORCID> ?orcid }}
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name .
-                                    FILTER(?github in ('{string.Join("','",listaIn)}'))
+                                    FILTER(?github in ('{string.Join("','", listaIn)}'))
                                     }}";
 
                 SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");

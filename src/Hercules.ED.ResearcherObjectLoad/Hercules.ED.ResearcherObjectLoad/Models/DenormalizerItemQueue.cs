@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models
 {
@@ -20,7 +16,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         public ItemType _itemType { get; set; }
         public HashSet<string> _items { get; set; }
 
-        public DenormalizerItemQueue(ItemType itemType,HashSet<string> items)
+        public DenormalizerItemQueue(ItemType itemType, HashSet<string> items)
         {
             _itemType = itemType;
             _items = items;

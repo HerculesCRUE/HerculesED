@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 {
-    public class ResearchObjectGitHub:RO_JSON
-    {                
+    public class ResearchObjectGitHub : RO_JSON
+    {
         public List<string> listaAutores { get; set; }
         public string fechaCreacion { get; set; }
         public string fechaActualizacion { get; set; }

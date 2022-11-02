@@ -2700,7 +2700,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             pPublicacion.ID = Guid.NewGuid().ToString();
             string wosIdValue = "";
             string scopusIdValue = "";
-            
+
             // Se comprueba que los IDs no son nulos.
             if (pPublicacion.iDs != null)
             {
@@ -2813,7 +2813,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
         /// <returns>Devuelve Sparql Object</returns>
         private static SparqlObject GetAutorsFromDocumentQuery(List<string> lista, int limit, int offset, string type, string varType)
         {
-            string select = "SELECT * WHERE { SELECT DISTINCT ?"+varType+" ?autor ";
+            string select = "SELECT * WHERE { SELECT DISTINCT ?" + varType + " ?autor ";
             string where = $@"WHERE {{
                                 ?{varType} a <http://purl.org/ontology/bibo/Document>. 
                                 ?{varType} <http://purl.org/ontology/bibo/authorList> ?listaAutores. 

@@ -1,15 +1,7 @@
 ﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System;
 using System.Text;
-using System.IO;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net.Http;
 using Newtonsoft.Json;
-using System.Threading;
 using Hercules.ED.ResearcherObjectLoad.Config;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models

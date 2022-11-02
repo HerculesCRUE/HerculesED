@@ -5,9 +5,6 @@ using System.Linq;
 using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
 using Hercules.ED.ResearcherObjectLoad.Models;
 using ResearchobjectOntology;
-using Gnoss.ApiWrapper.ApiModel;
-using Gnoss.ApiWrapper.Model;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
@@ -276,22 +273,25 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             KeyValuePair<string, string> prefix = dicPrefix.First(x => pProperty.StartsWith(x.Value));
             return pProperty.Replace(prefix.Value, prefix.Key + ":");
         }
-                
-                
+
+
         public static string IdentificadorFECYT(string tipoDocumento)
         {
             if (string.IsNullOrEmpty(tipoDocumento))
             {
                 return null;
             }
-            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1")) { 
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD1"))
+            {
                 return "060.010.010.000";
             }
-            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2")) { 
-                return "060.010.020.000"; 
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD2"))
+            {
+                return "060.010.020.000";
             }
-            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD3")) { 
-                return "060.010.030.000"; 
+            if (tipoDocumento.Equals("http://gnoss.com/items/scientificactivitydocument_SAD3"))
+            {
+                return "060.010.030.000";
             }
             return null;
         }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 {
     public class ResearchObjectFigShare : RO_JSON
-    {             
+    {
         public string urlPdf { get; set; }
         public string fechaPublicacion { get; set; }
         public string doi { get; set; }
