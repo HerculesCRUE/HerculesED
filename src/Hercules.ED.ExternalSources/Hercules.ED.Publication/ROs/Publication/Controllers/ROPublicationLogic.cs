@@ -474,9 +474,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            string data = JsonConvert.SerializeObject(listaPubsFinal);
-            System.IO.File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
-
             return listaPubsFinal;
         }
 
