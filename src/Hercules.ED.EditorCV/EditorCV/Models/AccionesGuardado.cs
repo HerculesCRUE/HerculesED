@@ -997,7 +997,8 @@ namespace EditorCV.Models
                 //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-                HttpResponseMessage response = client.GetAsync($"https://pub.orcid.org/v3.0/{pORCID}/person").Result;
+                string url = $@"https://pub.orcid.org/v3.0/{pORCID}/person";
+                HttpResponseMessage response = client.GetAsync(url).Result;
 
                 string jsonRespuestaOrcidPerson = "";
                 if (response.IsSuccessStatusCode)
