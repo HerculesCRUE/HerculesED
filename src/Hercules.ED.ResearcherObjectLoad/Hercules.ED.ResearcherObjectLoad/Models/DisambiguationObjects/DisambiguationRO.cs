@@ -125,35 +125,29 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             }
         }
 
-        private static readonly DisambiguationDataConfig configTitulo = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configTitulo = new()
         {
             type = DisambiguationDataConfigType.equalsTitle,
             score = 0.8f
         };
 
-        private static readonly DisambiguationDataConfig configDOI = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDOI = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configIdFigshare = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsIdentifiers
-        };
-
-
-        private static readonly DisambiguationDataConfig configIdGitHub = new DisambiguationDataConfig()
-        {
-            type = DisambiguationDataConfigType.equalsIdentifiers
-        };
-
-        private static readonly DisambiguationDataConfig configIdZenodo = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configIdFigshare = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
 
-        private static readonly DisambiguationDataConfig configAutores = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configIdGitHub = new()
+        {
+            type = DisambiguationDataConfigType.equalsIdentifiers
+        };
+
+        private static readonly DisambiguationDataConfig configAutores = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
@@ -161,7 +155,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
+            List<DisambiguationData> data = new();
 
             data.Add(new DisambiguationData()
             {

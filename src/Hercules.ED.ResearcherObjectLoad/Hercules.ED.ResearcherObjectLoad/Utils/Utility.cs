@@ -10,8 +10,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 {
     public class Utility
     {
-        private static ResourceApi mResourceApi = Carga.mResourceApi;
-
         /// <summary>
         /// Lista con los prefijos
         /// </summary>
@@ -52,7 +50,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre,
             object pResearchObject_b = null)
         {
-            ResearchObject ro = new ResearchObject();
+            ResearchObject ro = new();
 
             // Estado de validación (IsValidated)
             ro.Roh_isValidated = true;
@@ -102,13 +100,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="ro"></param>
         public static void Licencia<T>(T researchObject, T researchObject_B, ResearchObject ro) where T : RO_JSON
         {
-            if (!string.IsNullOrEmpty(researchObject.licencia))
+            if (!string.IsNullOrEmpty(researchObject.Licencia))
             {
-                ro.Dct_license = researchObject.licencia;
+                ro.Dct_license = researchObject.Licencia;
 
-                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.licencia) && string.IsNullOrEmpty(ro.Dct_license))
+                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.Licencia) && string.IsNullOrEmpty(ro.Dct_license))
                 {
-                    ro.Dct_license = researchObject_B.licencia;
+                    ro.Dct_license = researchObject_B.Licencia;
                 }
             }
         }
@@ -122,13 +120,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="ro"></param>
         public static void Titulo<T>(T researchObject, T researchObject_B, ResearchObject ro) where T : RO_JSON
         {
-            if (!string.IsNullOrEmpty(researchObject.titulo))
+            if (!string.IsNullOrEmpty(researchObject.Titulo))
             {
-                ro.Roh_title = researchObject.titulo;
+                ro.Roh_title = researchObject.Titulo;
 
-                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.titulo) && string.IsNullOrEmpty(ro.Roh_title))
+                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.Titulo) && string.IsNullOrEmpty(ro.Roh_title))
                 {
-                    ro.Roh_title = researchObject_B.titulo;
+                    ro.Roh_title = researchObject_B.Titulo;
                 }
             }
         }
@@ -142,13 +140,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="ro"></param>
         public static void Descripcion<T>(T researchObject, T researchObject_B, ResearchObject ro) where T : RO_JSON
         {
-            if (!string.IsNullOrEmpty(researchObject.titulo))
+            if (!string.IsNullOrEmpty(researchObject.Titulo))
             {
-                ro.Bibo_abstract = researchObject.descripcion;
+                ro.Bibo_abstract = researchObject.Descripcion;
 
-                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
+                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.Descripcion) && string.IsNullOrEmpty(ro.Bibo_abstract))
                 {
-                    ro.Bibo_abstract = researchObject_B.descripcion;
+                    ro.Bibo_abstract = researchObject_B.Descripcion;
                 }
             }
         }
@@ -162,13 +160,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="ro"></param>
         public static void URL<T>(T researchObject, T researchObject_B, ResearchObject ro) where T : RO_JSON
         {
-            if (!string.IsNullOrEmpty(researchObject.url))
+            if (!string.IsNullOrEmpty(researchObject.Url))
             {
-                ro.Vcard_url = researchObject.url;
+                ro.Vcard_url = researchObject.Url;
 
-                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.url) && string.IsNullOrEmpty(ro.Vcard_url))
+                if (researchObject_B != null && !string.IsNullOrEmpty(researchObject_B.Url) && string.IsNullOrEmpty(ro.Vcard_url))
                 {
-                    ro.Vcard_url = researchObject_B.url;
+                    ro.Vcard_url = researchObject_B.Url;
                 }
             }
         }
@@ -182,13 +180,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <param name="ro"></param>
         public static void EtiquetasEnriquecidas<T>(T researchObject, T researchObject_B, ResearchObject ro) where T : RO_JSON
         {
-            if (researchObject.etiquetasEnriquecidas != null && researchObject.etiquetasEnriquecidas.Any())
+            if (researchObject.EtiquetasEnriquecidas != null && researchObject.EtiquetasEnriquecidas.Any())
             {
-                ro.Roh_enrichedKeywords = researchObject.etiquetasEnriquecidas;
+                ro.Roh_enrichedKeywords = researchObject.EtiquetasEnriquecidas;
 
-                if (researchObject_B != null && researchObject_B.etiquetasEnriquecidas != null && researchObject_B.etiquetasEnriquecidas.Any())
+                if (researchObject_B != null && researchObject_B.EtiquetasEnriquecidas != null && researchObject_B.EtiquetasEnriquecidas.Any())
                 {
-                    ro.Roh_enrichedKeywords = researchObject_B.etiquetasEnriquecidas;
+                    ro.Roh_enrichedKeywords = researchObject_B.EtiquetasEnriquecidas;
                 }
             }
         }
@@ -203,16 +201,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         public static void CategoriasEnriquecidas<T>(T researchObject, T researchObject_B,
             Dictionary<string, string> pDicAreasNombre, Dictionary<string, string> pDicAreasBroader, ResearchObject ro) where T : RO_JSON
         {
-            HashSet<string> listaIDs = new HashSet<string>();
-            if (researchObject.categoriasEnriquecidas != null && researchObject.categoriasEnriquecidas.Count > 0)
+            HashSet<string> listaIDs = new();
+            if (researchObject.CategoriasEnriquecidas != null && researchObject.CategoriasEnriquecidas.Count > 0)
             {
-                ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                foreach (string area in researchObject.categoriasEnriquecidas)
+                ro.Roh_enrichedKnowledgeArea = new();
+                foreach (string area in researchObject.CategoriasEnriquecidas)
                 {
                     if (pDicAreasNombre.ContainsKey(area.ToLower()))
                     {
-                        CategoryPath categoria = new CategoryPath();
-                        categoria.IdsRoh_categoryNode = new List<string>();
+                        CategoryPath categoria = new();
+                        categoria.IdsRoh_categoryNode = new();
                         categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                         string idHijo = pDicAreasNombre[area.ToLower()];
                         string idHijoAux = idHijo;
@@ -232,15 +230,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     }
                 }
 
-                if (researchObject_B != null && researchObject_B.categoriasEnriquecidas != null && researchObject_B.categoriasEnriquecidas.Any())
+                if (researchObject_B != null && researchObject_B.CategoriasEnriquecidas != null && researchObject_B.CategoriasEnriquecidas.Any())
                 {
                     ro.Roh_enrichedKnowledgeArea = new List<CategoryPath>();
-                    foreach (string area in researchObject_B.categoriasEnriquecidas)
+                    foreach (string area in researchObject_B.CategoriasEnriquecidas)
                     {
                         if (pDicAreasNombre.ContainsKey(area.ToLower()))
                         {
-                            CategoryPath categoria = new CategoryPath();
-                            categoria.IdsRoh_categoryNode = new List<string>();
+                            CategoryPath categoria = new();
+                            categoria.IdsRoh_categoryNode = new();
                             categoria.IdsRoh_categoryNode.Add(pDicAreasNombre[area.ToLower()]);
                             string idHijo = pDicAreasNombre[area.ToLower()];
                             string idHijoAux = idHijo;

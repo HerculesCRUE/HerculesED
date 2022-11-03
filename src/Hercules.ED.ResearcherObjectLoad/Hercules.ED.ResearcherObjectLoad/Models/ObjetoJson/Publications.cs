@@ -5,131 +5,131 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 {
     public class FreetextKeyword
     {
-        public string source { get; set; }
+        public string Source { get; set; }
         public List<string> freetextKeyword { get; set; }
     }
 
     public class DataIssued
     {
-        public DateTime? datimeTime { get; set; }
+        public DateTime? DatimeTime { get; set; }
     }
 
     public class TopicsEnriquecido
     {
-        public string word { get; set; }
-        public string porcentaje { get; set; }
+        public string Word { get; set; }
+        public string Porcentaje { get; set; }
     }
 
     public class FreetextKeywordEnriquecida
     {
-        public string word { get; set; }
-        public string porcentaje { get; set; }
+        public string Word { get; set; }
+        public string Porcentaje { get; set; }
     }
 
     public class Name
     {
-        public List<string> given { get; set; }
-        public List<string> familia { get; set; }
-        public List<string> nombre_completo { get; set; }
+        public List<string> Given { get; set; }
+        public List<string> Familia { get; set; }
+        public List<string> Nombre_completo { get; set; }
     }
 
     public class PersonaPub
     {
-        public string idGnoss { get; set; }
+        public string IdGnoss { get; set; }
         public string ID { get; set; }
-        public string id_persona { get; set; }
-        public Name name { get; set; }
-        public string orcid { get; set; }
-        public List<string> iDs { get; set; }
-        public List<string> links { get; set; }
-        public string fuente { get; set; }
-        public string researcherID { get; set; }
-        public string nick { get; set; }
-        public int? orden { get; set; }
+        public string Id_persona { get; set; }
+        public Name Name { get; set; }
+        public string Orcid { get; set; }
+        public List<string> IDs { get; set; }
+        public List<string> Links { get; set; }
+        public string Fuente { get; set; }
+        public string ResearcherID { get; set; }
+        public string Nick { get; set; }
+        public int? Orden { get; set; }
     }
 
     public class KnowledgeArea
     {
-        public string name { get; set; }
-        public string hasCode { get; set; }
+        public string Name { get; set; }
+        public string HasCode { get; set; }
     }
 
     public class HasKnowledgeArea
     {
-        public List<KnowledgeArea> knowledgeArea { get; set; }
-        public string resource { get; set; }
+        public List<KnowledgeArea> KnowledgeArea { get; set; }
+        public string Resource { get; set; }
     }
 
     public class HasMetric
     {
-        public string quartile { get; set; }
-        public string ranking { get; set; }
-        public string impactFactorName { get; set; }
-        public string impactFactor { get; set; }
-        public string citationCount { get; set; }
-        public string metricName { get; set; }
+        public string Quartile { get; set; }
+        public string Ranking { get; set; }
+        public string ImpactFactorName { get; set; }
+        public string ImpactFactor { get; set; }
+        public string CitationCount { get; set; }
+        public string MetricName { get; set; }
     }
 
     public class HasPublicationVenue
     {
-        public string type { get; set; }
-        public List<string> issn { get; set; }
-        public List<string> isbn { get; set; }
-        public string name { get; set; }
-        public string eissn { get; set; }
-        public List<HasMetric> hasMetric { get; set; }
+        public string Type { get; set; }
+        public List<string> Issn { get; set; }
+        public List<string> Isbn { get; set; }
+        public string Name { get; set; }
+        public string Eissn { get; set; }
+        public List<HasMetric> HasMetric { get; set; }
     }
     public class Publication
     {
         public string ID { get; set; }
-        public object problema { get; set; }
-        public string typeOfPublication { get; set; }
-        public string title { get; set; }
+        public object Problema { get; set; }
+        public string TypeOfPublication { get; set; }
+        public string Title { get; set; }
         public List<FreetextKeyword> freetextKeywords { get; set; }
-        public List<string> etiquetasUsuario { get; set; }
+        public List<string> EtiquetasUsuario { get; set; }
         public string @abstract { get; set; }
-        public string language { get; set; }
-        public string doi { get; set; }
-        public DataIssued dataIssued { get; set; }
-        public List<string> url { get; set; }
-        public string pdf { get; set; }
-        public List<TopicsEnriquecido> topics_enriquecidos { get; set; }
-        public List<FreetextKeywordEnriquecida> freetextKeyword_enriquecidas { get; set; }
-        public List<string> categoriasUsuario { get; set; }
-        public PersonaPub correspondingAuthor { get; set; }
-        public List<PersonaPub> seqOfAuthors { get; set; }
-        public List<HasKnowledgeArea> hasKnowledgeAreas { get; set; }
-        public string pageEnd { get; set; }
-        public string pageStart { get; set; }
-        public string volume { get; set; }
-        public string articleNumber { get; set; }
-        public bool? openAccess { get; set; }
-        public List<string> iDs { get; set; }
-        public Conferencia conferencia { get; set; }
-        public HasPublicationVenue hasPublicationVenue { get; set; }
-        public List<HasMetric> hasMetric { get; set; }
-        public List<Bibliografia> bibliografia { get; set; }
-        public List<Publication> citas { get; set; }
-        public List<string> dataOriginList { get; set; }
+        public string Language { get; set; }
+        public string Doi { get; set; }
+        public DataIssued DataIssued { get; set; }
+        public List<string> Url { get; set; }
+        public string Pdf { get; set; }
+        public List<TopicsEnriquecido> TopicsEnriquecidos { get; set; }
+        public List<FreetextKeywordEnriquecida> FreetextKeywordEnriquecidas { get; set; }
+        public List<string> CategoriasUsuario { get; set; }
+        public PersonaPub CorrespondingAuthor { get; set; }
+        public List<PersonaPub> SeqOfAuthors { get; set; }
+        public List<HasKnowledgeArea> HasKnowledgeAreas { get; set; }
+        public string PageEnd { get; set; }
+        public string PageStart { get; set; }
+        public string Volume { get; set; }
+        public string ArticleNumber { get; set; }
+        public bool? OpenAccess { get; set; }
+        public List<string> IDs { get; set; }
+        public Conferencia Conferencia { get; set; }
+        public HasPublicationVenue HasPublicationVenue { get; set; }
+        public List<HasMetric> HasMetric { get; set; }
+        public List<Bibliografia> Bibliografia { get; set; }
+        public List<Publication> Citas { get; set; }
+        public List<string> DataOriginList { get; set; }
     }
 
     public class Conferencia
     {
-        public int id { get; set; }
-        public string titulo { get; set; }
-        public string fechaInicio { get; set; }
-        public string fechaFin { get; set; }
-        public string pais { get; set; }
-        public string ciudad { get; set; }
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public string FechaInicio { get; set; }
+        public string FechaFin { get; set; }
+        public string Pais { get; set; }
+        public string Ciudad { get; set; }
     }
 
     public class Bibliografia
     {
-        public string doi { get; set; }
-        public string url { get; set; }
-        public int? anyoPublicacion { get; set; }
-        public string titulo { get; set; }
-        public string revista { get; set; }
-        public Dictionary<string, string> autores { get; set; }
+        public string Doi { get; set; }
+        public string Url { get; set; }
+        public int? AnyoPublicacion { get; set; }
+        public string Titulo { get; set; }
+        public string Revista { get; set; }
+        public Dictionary<string, string> Autores { get; set; }
     }
 }

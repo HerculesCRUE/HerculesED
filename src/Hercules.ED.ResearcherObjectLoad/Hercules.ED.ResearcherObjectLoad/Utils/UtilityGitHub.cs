@@ -20,7 +20,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectGitHub roA = pDicIdRo[idRo];
-            ResearchObject roCreado = new ResearchObject();
+            ResearchObject roCreado = new();
 
             foreach (string idSimilar in pListaIds)
             {
@@ -35,7 +35,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         /// <summary>
         /// Consulta en SPARQL si hay alguna persona con el usuario de git.
-        /// TODO: Revisar si hay más de una persona con el mismo ID.
         /// </summary>
         /// <param name="pNombre"></param>
         /// <returns></returns>
@@ -62,11 +61,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             pGithubObj.ID = Guid.NewGuid().ToString();
 
-            DisambiguationRO ro = new DisambiguationRO()
+            DisambiguationRO ro = new()
             {
                 ID = pGithubObj.ID,
-                title = pGithubObj.titulo,
-                idGithub = pGithubObj.id.ToString()
+                title = pGithubObj.Titulo,
+                idGithub = pGithubObj.Id.ToString()
             };
 
             return ro;
@@ -125,7 +124,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, DisambiguationPerson> ObtenerPersonasGitHub(List<string> listado)
         {
-            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
+            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new();
             List<List<string>> listadoLista = Utility.SplitList(listado.Distinct().ToList(), 1000).ToList();
             foreach (List<string> listaIn in listadoLista)
             {
@@ -148,7 +147,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         string personID = fila["personID"].value;
                         if (!diccionarioPersonas.ContainsKey(personID))
                         {
-                            diccionarioPersonas[personID] = new DisambiguationPerson();
+                            diccionarioPersonas[personID] = new();
                         }
 
                         string github = fila["github"].value;
@@ -158,7 +157,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                             orcid = fila["orcid"].value;
                         }
                         string name = fila["name"].value;
-                        DisambiguationPerson persona = new DisambiguationPerson
+                        DisambiguationPerson persona = new()
                         {
                             gitHubId = github,
                             orcid = orcid,
@@ -182,11 +181,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             //Selecciono el identificador de GitHub
             foreach (ResearchObjectGitHub item in listadoAux)
             {
-                for (int i = 0; i < item.listaAutores.Count; i++)
+                for (int i = 0; i < item.ListaAutores.Count; i++)
                 {
-                    if (!string.IsNullOrEmpty(item.listaAutores[i]))
+                    if (!string.IsNullOrEmpty(item.ListaAutores[i]))
                     {
-                        listaGitHub.Add(item.listaAutores[i]);
+                        listaGitHub.Add(item.ListaAutores[i]);
                     }
                 }
             }
@@ -196,22 +195,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectGitHub pGitHubObjB = null)
         {
             // ID
-            if (pGitHubObj.id.HasValue)
+            if (pGitHubObj.Id.HasValue)
             {
-                ro.Roh_idGit = pGitHubObj.id.Value.ToString();
+                ro.Roh_idGit = pGitHubObj.Id.Value.ToString();
 
-                if (pGitHubObjB != null && pGitHubObjB.id.HasValue && string.IsNullOrEmpty(ro.Roh_idGit))
+                if (pGitHubObjB != null && pGitHubObjB.Id.HasValue && string.IsNullOrEmpty(ro.Roh_idGit))
                 {
-                    ro.Roh_idGit = pGitHubObjB.id.Value.ToString();
+                    ro.Roh_idGit = pGitHubObjB.Id.Value.ToString();
                 }
             }
 
             // ResearchObject Type
-            if (!string.IsNullOrEmpty(pGitHubObj.tipo))
+            if (!string.IsNullOrEmpty(pGitHubObj.Tipo))
             {
                 ro.IdDc_type = $"{mResourceApi.GraphsUrl}items/researchobjecttype_9";
 
-                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.Tipo) && string.IsNullOrEmpty(ro.IdDc_type))
                 {
                     ro.IdDc_type = $"{mResourceApi.GraphsUrl}items/researchobjecttype_9";
                 }
@@ -227,63 +226,63 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Utility.URL(pGitHubObj, pGitHubObjB, ro);
 
             // Fecha Actualización
-            if (!string.IsNullOrEmpty(pGitHubObj.fechaActualizacion))
+            if (!string.IsNullOrEmpty(pGitHubObj.FechaActualizacion))
             {
-                int dia = int.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[0]);
-                int mes = int.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[1]);
-                int anyo = int.Parse(pGitHubObj.fechaActualizacion.Split(" ")[0].Split("/")[2]);
+                int dia = int.Parse(pGitHubObj.FechaActualizacion.Split(" ")[0].Split("/")[0]);
+                int mes = int.Parse(pGitHubObj.FechaActualizacion.Split(" ")[0].Split("/")[1]);
+                int anyo = int.Parse(pGitHubObj.FechaActualizacion.Split(" ")[0].Split("/")[2]);
 
                 ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
 
-                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.fechaActualizacion) && ro.Roh_updatedDate == null)
+                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.FechaActualizacion) && ro.Roh_updatedDate == null)
                 {
-                    dia = int.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[0]);
-                    mes = int.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[1]);
-                    anyo = int.Parse(pGitHubObjB.fechaActualizacion.Split(" ")[0].Split("/")[2]);
+                    dia = int.Parse(pGitHubObjB.FechaActualizacion.Split(" ")[0].Split("/")[0]);
+                    mes = int.Parse(pGitHubObjB.FechaActualizacion.Split(" ")[0].Split("/")[1]);
+                    anyo = int.Parse(pGitHubObjB.FechaActualizacion.Split(" ")[0].Split("/")[2]);
 
                     ro.Roh_updatedDate = new DateTime(anyo, mes, dia);
                 }
             }
 
             // Fecha Creación
-            if (!string.IsNullOrEmpty(pGitHubObj.fechaCreacion))
+            if (!string.IsNullOrEmpty(pGitHubObj.FechaCreacion))
             {
-                int dia = int.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[0]);
-                int mes = int.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[1]);
-                int anyo = int.Parse(pGitHubObj.fechaCreacion.Split(" ")[0].Split("/")[2]);
+                int dia = int.Parse(pGitHubObj.FechaCreacion.Split(" ")[0].Split("/")[0]);
+                int mes = int.Parse(pGitHubObj.FechaCreacion.Split(" ")[0].Split("/")[1]);
+                int anyo = int.Parse(pGitHubObj.FechaCreacion.Split(" ")[0].Split("/")[2]);
 
                 ro.Dct_issued = new DateTime(anyo, mes, dia);
 
-                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.fechaCreacion) && ro.Roh_updatedDate == null)
+                if (pGitHubObjB != null && !string.IsNullOrEmpty(pGitHubObjB.FechaCreacion) && ro.Roh_updatedDate == null)
                 {
-                    dia = int.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[0]);
-                    mes = int.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[1]);
-                    anyo = int.Parse(pGitHubObjB.fechaCreacion.Split(" ")[0].Split("/")[2]);
+                    dia = int.Parse(pGitHubObjB.FechaCreacion.Split(" ")[0].Split("/")[0]);
+                    mes = int.Parse(pGitHubObjB.FechaCreacion.Split(" ")[0].Split("/")[1]);
+                    anyo = int.Parse(pGitHubObjB.FechaCreacion.Split(" ")[0].Split("/")[2]);
 
                     ro.Dct_issued = new DateTime(anyo, mes, dia);
                 }
             }
 
             // Lenguajes de programación.
-            if (pGitHubObj.lenguajes != null && pGitHubObj.lenguajes.Any())
+            if (pGitHubObj.Lenguajes != null && pGitHubObj.Lenguajes.Any())
             {
                 ro.Vcard_hasLanguage = new List<Language>();
 
-                foreach (KeyValuePair<string, float> item in pGitHubObj.lenguajes)
+                foreach (KeyValuePair<string, float> item in pGitHubObj.Lenguajes)
                 {
-                    Language lenguajeProg = new Language();
+                    Language lenguajeProg = new();
                     lenguajeProg.Roh_title = item.Key;
                     lenguajeProg.Roh_percentage = item.Value;
                     ro.Vcard_hasLanguage.Add(lenguajeProg);
                 }
 
-                if (pGitHubObjB != null && pGitHubObjB.lenguajes != null && pGitHubObjB.lenguajes.Any() && ro.Vcard_hasLanguage == null)
+                if (pGitHubObjB != null && pGitHubObjB.Lenguajes != null && pGitHubObjB.Lenguajes.Any() && ro.Vcard_hasLanguage == null)
                 {
                     ro.Vcard_hasLanguage = new List<Language>();
 
-                    foreach (KeyValuePair<string, float> item in pGitHubObjB.lenguajes)
+                    foreach (KeyValuePair<string, float> item in pGitHubObjB.Lenguajes)
                     {
-                        Language lenguajeProg = new Language();
+                        Language lenguajeProg = new();
                         lenguajeProg.Roh_title = item.Key;
                         lenguajeProg.Roh_percentage = item.Value;
                         ro.Vcard_hasLanguage.Add(lenguajeProg);
@@ -295,46 +294,46 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Utility.Licencia(pGitHubObj, pGitHubObjB, ro);
 
             // Número de Releases
-            if (pGitHubObj.numReleases.HasValue)
+            if (pGitHubObj.NumReleases.HasValue)
             {
-                ro.Roh_releasesNumber = pGitHubObj.numReleases.Value;
+                ro.Roh_releasesNumber = pGitHubObj.NumReleases.Value;
 
-                if (pGitHubObjB != null && pGitHubObjB.numReleases.HasValue && ro.Roh_releasesNumber == null)
+                if (pGitHubObjB != null && pGitHubObjB.NumReleases.HasValue && ro.Roh_releasesNumber == null)
                 {
-                    ro.Roh_releasesNumber = pGitHubObjB.numReleases.Value;
+                    ro.Roh_releasesNumber = pGitHubObjB.NumReleases.Value;
                 }
             }
 
             // Número de Forks
-            if (pGitHubObj.numForks.HasValue)
+            if (pGitHubObj.NumForks.HasValue)
             {
-                ro.Roh_forksNumber = pGitHubObj.numForks.Value;
+                ro.Roh_forksNumber = pGitHubObj.NumForks.Value;
 
-                if (pGitHubObjB != null && pGitHubObjB.numForks.HasValue && ro.Roh_forksNumber == null)
+                if (pGitHubObjB != null && pGitHubObjB.NumForks.HasValue && ro.Roh_forksNumber == null)
                 {
-                    ro.Roh_forksNumber = pGitHubObjB.numForks.Value;
+                    ro.Roh_forksNumber = pGitHubObjB.NumForks.Value;
                 }
             }
 
             // Número de Issues
-            if (pGitHubObj.numIssues.HasValue)
+            if (pGitHubObj.NumIssues.HasValue)
             {
-                ro.Roh_issuesNumber = pGitHubObj.numIssues.Value;
+                ro.Roh_issuesNumber = pGitHubObj.NumIssues.Value;
 
-                if (pGitHubObjB != null && pGitHubObjB.numIssues.HasValue && ro.Roh_issuesNumber == null)
+                if (pGitHubObjB != null && pGitHubObjB.NumIssues.HasValue && ro.Roh_issuesNumber == null)
                 {
-                    ro.Roh_issuesNumber = pGitHubObjB.numIssues.Value;
+                    ro.Roh_issuesNumber = pGitHubObjB.NumIssues.Value;
                 }
             }
 
             // Etiquetas
-            if (pGitHubObj.etiquetas != null && pGitHubObj.etiquetas.Any())
+            if (pGitHubObj.Etiquetas != null && pGitHubObj.Etiquetas.Any())
             {
-                ro.Roh_externalKeywords = pGitHubObj.etiquetas;
+                ro.Roh_externalKeywords = pGitHubObj.Etiquetas;
 
-                if (pGitHubObjB != null && pGitHubObjB.etiquetas != null && pGitHubObjB.etiquetas.Any())
+                if (pGitHubObjB != null && pGitHubObjB.Etiquetas != null && pGitHubObjB.Etiquetas.Any())
                 {
-                    ro.Roh_externalKeywords = pGitHubObjB.etiquetas;
+                    ro.Roh_externalKeywords = pGitHubObjB.Etiquetas;
                 }
             }
 
@@ -345,17 +344,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Utility.CategoriasEnriquecidas(pGitHubObj, pGitHubObjB, pDicAreasNombre, pDicAreasBroader, ro);
 
             // Autores.
-            if (pGitHubObj.listaAutores != null && pGitHubObj.listaAutores.Any())
+            if (pGitHubObj.ListaAutores != null && pGitHubObj.ListaAutores.Any())
             {
                 ro.Bibo_authorList = new List<BFO_0000023>();
                 int seqAutor = 1;
-                foreach (string nombre in pGitHubObj.listaAutores)
+                foreach (string nombre in pGitHubObj.ListaAutores)
                 {
                     string idRecursoPersona = UtilityGitHub.ComprobarPersonaUsuarioGitHub(nombre);
                     if (!string.IsNullOrEmpty(idRecursoPersona))
                     {
                         // Autores.   
-                        BFO_0000023 miembro = new BFO_0000023();
+                        BFO_0000023 miembro = new();
                         miembro.IdRdf_member = idRecursoPersona;
                         miembro.Rdf_comment = seqAutor;
                         seqAutor++;
@@ -363,18 +362,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     }
                 }
 
-                if (pGitHubObjB != null && pGitHubObjB.listaAutores != null && pGitHubObjB.listaAutores.Any())
+                if (pGitHubObjB != null && pGitHubObjB.ListaAutores != null && pGitHubObjB.ListaAutores.Any())
                 {
                     ro.Bibo_authorList = new List<BFO_0000023>();
                     seqAutor = 1;
 
-                    foreach (string nombre in pGitHubObjB.listaAutores)
+                    foreach (string nombre in pGitHubObjB.ListaAutores)
                     {
                         string idRecursoPersona = UtilityGitHub.ComprobarPersonaUsuarioGitHub(nombre);
                         if (!string.IsNullOrEmpty(idRecursoPersona))
                         {
                             // Autores.   
-                            BFO_0000023 miembro = new BFO_0000023();
+                            BFO_0000023 miembro = new();
                             miembro.IdRdf_member = idRecursoPersona;
                             miembro.Rdf_comment = seqAutor;
                             seqAutor++;

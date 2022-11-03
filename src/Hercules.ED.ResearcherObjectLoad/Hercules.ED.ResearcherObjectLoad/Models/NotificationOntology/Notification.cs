@@ -9,9 +9,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
     [ExcludeFromCodeCoverage]
     public class Notification
     {
-        private List<OntologyEntity> entList = new List<OntologyEntity>();
-        private List<OntologyProperty> propList = new List<OntologyProperty>();
-        private List<string> prefList = new List<string>();
+        private List<OntologyEntity> entList = new();
+        private List<OntologyProperty> propList = new();
+        private List<string> prefList = new();
 
         public Notification()
         {
@@ -65,8 +65,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.NotificationOntology
 
         public ComplexOntologyResource ToGnossApiResource(ResourceApi resourceAPI, Guid idrecurso, Guid idarticulo)
         {
-            ComplexOntologyResource resource = new ComplexOntologyResource();
-            Ontology ontology = null;
+            ComplexOntologyResource resource = new();
+            Ontology ontology;
             GetProperties();
             if (idrecurso.Equals(Guid.Empty) && idarticulo.Equals(Guid.Empty))
             {

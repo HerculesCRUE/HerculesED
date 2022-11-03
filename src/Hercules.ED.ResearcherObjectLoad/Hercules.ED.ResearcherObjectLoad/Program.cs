@@ -9,11 +9,10 @@ namespace Hercules.ED.ResearcherObjectLoad
 {
     class Program
     {
-        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
         private static ResourceApi mResourceApi = null;
-        private static CommunityApi mCommunityApi = null;
 
-        private static ResourceApi resourceApi
+        private static ResourceApi ResourceApi
         {
             get
             {
@@ -26,7 +25,7 @@ namespace Hercules.ED.ResearcherObjectLoad
                     catch (Exception)
                     {
                         Console.WriteLine("No se ha podido iniciar ResourceApi");
-                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
                         Thread.Sleep(10000);
                     }
                 }
@@ -34,31 +33,9 @@ namespace Hercules.ED.ResearcherObjectLoad
             }
         }
 
-        private static CommunityApi communityApi
-        {
-            get
-            {
-                while (mCommunityApi == null)
-                {
-                    try
-                    {
-                        mCommunityApi = new CommunityApi(RUTA_OAUTH);
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("No se ha podido iniciar CommunityApi");
-                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
-                        Thread.Sleep(10000);
-                    }
-                }
-                return mCommunityApi;
-            }
-        }
-
         static void Main(string[] args)
         {
-            Carga.mResourceApi = resourceApi;
-            Carga.mCommunityApi = communityApi;
+            Carga.mResourceApi = ResourceApi;
             Carga.configuracion = new ConfigService();
             Carga.CargaMain();
         }
