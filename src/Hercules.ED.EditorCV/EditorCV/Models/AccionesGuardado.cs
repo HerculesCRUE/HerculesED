@@ -32,6 +32,9 @@ namespace EditorCV.Models
     /// </summary>
     public class AccionesGuardado
     {
+        // URL ORCID
+        private static string ORCID_URL = "https://pub.orcid.org/v3.0/";
+
         /// <summary>
         /// API
         /// </summary>
@@ -997,8 +1000,7 @@ namespace EditorCV.Models
                 //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-                string url = $@"https://pub.orcid.org/v3.0/{pORCID}/person";
-                HttpResponseMessage response = client.GetAsync(url).Result;
+                HttpResponseMessage response = client.GetAsync($"{ORCID_URL}{pORCID}/person").Result;
 
                 string jsonRespuestaOrcidPerson = "";
                 if (response.IsSuccessStatusCode)
