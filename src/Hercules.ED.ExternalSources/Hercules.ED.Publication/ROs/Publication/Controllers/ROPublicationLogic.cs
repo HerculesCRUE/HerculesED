@@ -196,10 +196,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Publication pub_completa = pub;
 
                         // SemanticScholar.
-                        ConsultaSemanticScholar(pub, pub_completa);
+                        ConsultaSemanticScholar(pub, ref pub_completa);
 
                         // Zenodo - Archivos pdf...
-                        ConsultaZenodo(pub, pub_completa, dicZenodo);
+                        ConsultaZenodo(pub, ref pub_completa, dicZenodo);
 
                         // Completar información faltante con las publicaciones de Scopus.
                         if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -270,10 +270,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             Publication pub_completa = pubScopus;
 
                             // SemanticScholar.
-                            ConsultaSemanticScholar(pubScopus, pub_completa);
+                            ConsultaSemanticScholar(pubScopus, ref pub_completa);
 
                             // Zenodo - Archivos pdf...
-                            ConsultaZenodo(pubScopus, pub_completa, dicZenodo);
+                            ConsultaZenodo(pubScopus, ref pub_completa, dicZenodo);
 
                             // Completar información faltante con las publicaciones de OpenAire.
                             if (objInicial_openAire != null && objInicial_openAire.Any())
@@ -327,10 +327,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             Publication pub_completa = pub;
 
                             // SemanticScholar.
-                            ConsultaSemanticScholar(pub, pub_completa);
+                            ConsultaSemanticScholar(pub, ref pub_completa);
 
                             // Zenodo - Archivos pdf...
-                            ConsultaZenodo(pub, pub_completa, dicZenodo);
+                            ConsultaZenodo(pub, ref pub_completa, dicZenodo);
 
                             // Unificar Autores.
                             pub_completa = CompararAutores(pub_completa);
@@ -474,6 +474,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
+            string data = JsonConvert.SerializeObject(listaPubsFinal);
+            System.IO.File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
+
             return listaPubsFinal;
         }
 
@@ -482,7 +485,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// </summary>
         /// <param name="pPubLectura">Publicación inicial.</param>
         /// <param name="pPubCompleta">Publicación resultante.</param>
-        public void ConsultaSemanticScholar(Publication pPubLectura, Publication pPubCompleta)
+        public void ConsultaSemanticScholar(Publication pPubLectura, ref Publication pPubCompleta)
         {
             int contadorSemanticScholar = 1;
             Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
@@ -520,7 +523,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <param name="pPubLectura">Publicación inicial.</param>
         /// <param name="pPubCompleta">Publicación resultante.</param>
         /// <param name="pDicZenodo">Diccionario de Zenodo.</param>
-        public void ConsultaZenodo(Publication pPubLectura, Publication pPubCompleta, Dictionary<string, string> pDicZenodo)
+        public void ConsultaZenodo(Publication pPubLectura, ref Publication pPubCompleta, Dictionary<string, string> pDicZenodo)
         {
             Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
             pPubCompleta.Pdf = LlamadaZenodo(pPubLectura.Doi, pDicZenodo);
