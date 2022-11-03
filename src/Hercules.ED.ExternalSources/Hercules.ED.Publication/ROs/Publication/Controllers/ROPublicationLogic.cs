@@ -193,48 +193,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             this.dois_principales.Add(pub.Doi.ToLower());
                         }
 
-                        // SemanticScholar.
-                        int contadorSemanticScholar = 1;
-                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
-                        while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
-                        {
-                            Console.WriteLine($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                            dataSemanticScholar = LlamadaRefSemanticScholar(pub.Doi);
-                            contadorSemanticScholar++;
-
-                            // Si se obtienen datos, es válido.
-                            if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
-                            {
-                                break;
-                            }
-
-                            // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
-                            if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
-                            {
-                                Thread.Sleep(10000);
-                            }
-                        }
-
-                        Console.WriteLine("[WoS] Comparación (SemanticScholar)...");
                         Publication pub_completa = pub;
-                        pub_completa.DataOriginList = new HashSet<string>() { "WoS" };
-                        if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
-                        {
-                            pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
-                            pub_completa.Bibliografia = dataSemanticScholar.Item2;
-                        }
+
+                        // SemanticScholar.
+                        ConsultaSemanticScholar(pub, pub_completa);
 
                         // Zenodo - Archivos pdf...
-                        Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
-                        pub_completa.Pdf = LlamadaZenodo(pub.Doi, dicZenodo);
-                        if (pub_completa.Pdf == string.Empty)
-                        {
-                            pub_completa.Pdf = null;
-                        }
-                        else
-                        {
-                            pub_completa.DataOriginList.Add("Zenodo");
-                        }
+                        ConsultaZenodo(pub, pub_completa, dicZenodo);
 
                         // Completar información faltante con las publicaciones de Scopus.
                         if (objInicial_Scopus != null && objInicial_Scopus.Any())
@@ -302,48 +267,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 this.dois_principales.Add(pub_scopus.doi.ToLower());
                             }
 
-                            // SemanticScholar.
-                            int contadorSemanticScholar = 1;
-                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
-                            while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
-                            {
-                                Console.WriteLine($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = LlamadaRefSemanticScholar(pubScopus.Doi);
-                                contadorSemanticScholar++;
-
-                                // Si se obtienen datos, es válido.
-                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
-                                {
-                                    break;
-                                }
-
-                                // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
-                                if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
-                                {
-                                    Thread.Sleep(10000);
-                                }
-                            }
-
-                            Console.WriteLine("[Scopus] Comparación (SemanticScholar)...");
                             Publication pub_completa = pubScopus;
-                            pub_completa.DataOriginList = new HashSet<string>() { "Scopus" };
-                            if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
-                            {
-                                pub_completa = Compactacion(pubScopus, dataSemanticScholar.Item1);
-                                pub_completa.Bibliografia = dataSemanticScholar.Item2;
-                            }
+
+                            // SemanticScholar.
+                            ConsultaSemanticScholar(pubScopus, pub_completa);
 
                             // Zenodo - Archivos pdf...
-                            Console.WriteLine("[Scopus] Haciendo petición a Zenodo...");
-                            pub_completa.Pdf = LlamadaZenodo(pub_completa.Doi, dicZenodo);
-                            if (pub_completa.Pdf == string.Empty)
-                            {
-                                pub_completa.Pdf = null;
-                            }
-                            else
-                            {
-                                pub_completa.DataOriginList.Add("Zenodo");
-                            }
+                            ConsultaZenodo(pubScopus, pub_completa, dicZenodo);
 
                             // Completar información faltante con las publicaciones de OpenAire.
                             if (objInicial_openAire != null && objInicial_openAire.Any())
@@ -394,48 +324,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 this.dois_principales.Add(pub.Doi.ToLower());
                             }
 
-                            // SemanticScholar.
-                            int contadorSemanticScholar = 1;
-                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
-                            while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
-                            {
-                                Console.WriteLine($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = LlamadaRefSemanticScholar(pub.Doi);
-                                contadorSemanticScholar++;
-
-                                // Si se obtienen datos, es válido.
-                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
-                                {
-                                    break;
-                                }
-
-                                // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
-                                if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
-                                {
-                                    Thread.Sleep(10000);
-                                }
-                            }
-
-                            Console.WriteLine("[OpenAire] Comparación (SemanticScholar)...");
                             Publication pub_completa = pub;
-                            pub_completa.DataOriginList = new HashSet<string>() { "OpenAire" };
-                            if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
-                            {
-                                pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
-                                pub_completa.Bibliografia = dataSemanticScholar.Item2;
-                            }
+
+                            // SemanticScholar.
+                            ConsultaSemanticScholar(pub, pub_completa);
 
                             // Zenodo - Archivos pdf...
-                            Console.WriteLine("[OpenAire] Haciendo petición a Zenodo...");
-                            pub_completa.Pdf = LlamadaZenodo(pub_completa.Doi, dicZenodo);
-                            if (pub_completa.Pdf == string.Empty)
-                            {
-                                pub_completa.Pdf = null;
-                            }
-                            else
-                            {
-                                pub_completa.DataOriginList.Add("Zenodo");
-                            }
+                            ConsultaZenodo(pub, pub_completa, dicZenodo);
 
                             // Unificar Autores.
                             pub_completa = CompararAutores(pub_completa);
@@ -579,10 +474,64 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            string data = JsonConvert.SerializeObject(listaPubsFinal);
-            System.IO.File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
-
             return listaPubsFinal;
+        }
+
+        /// <summary>
+        /// Construye los datos obtenidos de SemanticScholar.
+        /// </summary>
+        /// <param name="pPubLectura">Publicación inicial.</param>
+        /// <param name="pPubCompleta">Publicación resultante.</param>
+        public void ConsultaSemanticScholar(Publication pPubLectura, Publication pPubCompleta)
+        {
+            int contadorSemanticScholar = 1;
+            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
+            while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
+            {
+                Console.WriteLine($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
+                dataSemanticScholar = LlamadaRefSemanticScholar(pPubLectura.Doi);
+                contadorSemanticScholar++;
+
+                // Si se obtienen datos, es válido.
+                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
+                {
+                    break;
+                }
+
+                // En el caso que venga vacío, esperamos 10 segundos a volverlo a intentar.
+                if (dataSemanticScholar.Item2 == null && contadorSemanticScholar != 5)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+
+            Console.WriteLine("[WoS] Comparación (SemanticScholar)...");
+            pPubCompleta.DataOriginList = new HashSet<string>() { "WoS" };
+            if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
+            {
+                pPubCompleta = Compactacion(pPubLectura, dataSemanticScholar.Item1);
+                pPubCompleta.Bibliografia = dataSemanticScholar.Item2;
+            }
+        }
+
+        /// <summary>
+        /// Construye los datos obtenidos de Zenodo.
+        /// </summary>
+        /// <param name="pPubLectura">Publicación inicial.</param>
+        /// <param name="pPubCompleta">Publicación resultante.</param>
+        /// <param name="pDicZenodo">Diccionario de Zenodo.</param>
+        public void ConsultaZenodo(Publication pPubLectura, Publication pPubCompleta, Dictionary<string, string> pDicZenodo)
+        {
+            Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
+            pPubCompleta.Pdf = LlamadaZenodo(pPubLectura.Doi, pDicZenodo);
+            if (pPubCompleta.Pdf == string.Empty)
+            {
+                pPubCompleta.Pdf = null;
+            }
+            else
+            {
+                pPubCompleta.DataOriginList.Add("Zenodo");
+            }
         }
 
         /// <summary>
@@ -1353,7 +1302,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Encontrar el autor
             foreach (Person persona in listaPersonasDefinitivas)
             {
-                Models.Person personaFinal = persona;
+                Person personaFinal = persona;
 
                 // Comprobación por ORCID
                 if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.CorrespondingAuthor.ORCID)
