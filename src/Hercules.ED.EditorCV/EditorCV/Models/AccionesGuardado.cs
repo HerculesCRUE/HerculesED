@@ -1000,7 +1000,7 @@ namespace EditorCV.Models
                     HttpClient client = new HttpClient();
                     client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                    string url = $@"https://pub.orcid.org/v3.0/{pORCID}/person";
+                    Uri url = new Uri($@"https://pub.orcid.org/v3.0/{pORCID}/person");
                     HttpResponseMessage response = client.GetAsync(url).Result;
 
                     string jsonRespuestaOrcidPerson = "";
