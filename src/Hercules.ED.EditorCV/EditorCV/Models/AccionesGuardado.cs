@@ -32,9 +32,6 @@ namespace EditorCV.Models
     /// </summary>
     public class AccionesGuardado
     {
-        // URL ORCID
-        private static string ORCID_URL = "https://pub.orcid.org/v3.0/";
-
         /// <summary>
         /// API
         /// </summary>
@@ -997,36 +994,40 @@ namespace EditorCV.Models
             }
             if (string.IsNullOrEmpty(idPerson))
             {
-                //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-                HttpResponseMessage response = client.GetAsync($"{ORCID_URL}{pORCID}/person").Result;
-
-                string jsonRespuestaOrcidPerson = "";
-                if (response.IsSuccessStatusCode)
+                if (pORCID.Length == 19)
                 {
-                    jsonRespuestaOrcidPerson = response.Content.ReadAsStringAsync().Result;
-                }
-                client.Dispose();
+                    //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
+                    HttpClient client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
+                    string url = $@"https://pub.orcid.org/v3.0/{pORCID}/person";
+                    HttpResponseMessage response = client.GetAsync(url).Result;
 
-                if (person != null)
-                {
-                    Entity entity = new Entity();
-                    entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
-                    entity.propTitle = "http://xmlns.com/foaf/0.1/name";
-                    string name = "";
-                    if (person.name.given_names != null)
+                    string jsonRespuestaOrcidPerson = "";
+                    if (response.IsSuccessStatusCode)
                     {
-                        name = person.name.given_names.value.Trim();
+                        jsonRespuestaOrcidPerson = response.Content.ReadAsStringAsync().Result;
                     }
-                    string lastName = "";
-                    if (person.name.family_name != null)
+                    client.Dispose();
+
+                    ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
+
+                    if (person != null)
                     {
-                        lastName = person.name.family_name.value.Trim();
-                    }
-                    entity.properties = new List<Entity.Property>()
+                        Entity entity = new Entity();
+                        entity.rdfType = "http://xmlns.com/foaf/0.1/Person";
+                        entity.propTitle = "http://xmlns.com/foaf/0.1/name";
+                        string name = "";
+                        if (person.name.given_names != null)
+                        {
+                            name = person.name.given_names.value.Trim();
+                        }
+                        string lastName = "";
+                        if (person.name.family_name != null)
+                        {
+                            lastName = person.name.family_name.value.Trim();
+                        }
+                        entity.properties = new List<Entity.Property>()
                         {
                             new Entity.Property()
                             {
@@ -1049,17 +1050,18 @@ namespace EditorCV.Models
                                 values = new List<string>() {pORCID }
                             }
                         };
-                    mResourceApi.ChangeOntoly("person");
-                    ComplexOntologyResource resource = ToGnossApiResource(entity);
-                    string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
+                        mResourceApi.ChangeOntoly("person");
+                        ComplexOntologyResource resource = ToGnossApiResource(entity);
+                        string result = mResourceApi.LoadComplexSemanticResource(resource, false, true);
 
-                    //Insertamos en la cola del desnormalizador
-                    RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
-                    rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { result }));
+                        //Insertamos en la cola del desnormalizador
+                        RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new RabbitServiceWriterDenormalizer(pConfigService);
+                        rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(DenormalizerItemQueue.ItemType.person, new HashSet<string> { result }));
 
-                    if (resource.Uploaded)
-                    {
-                        idPerson = result;
+                        if (resource.Uploaded)
+                        {
+                            idPerson = result;
+                        }
                     }
                 }
             }
