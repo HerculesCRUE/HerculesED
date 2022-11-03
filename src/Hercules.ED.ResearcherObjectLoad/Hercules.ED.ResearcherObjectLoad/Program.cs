@@ -45,17 +45,19 @@ namespace Hercules.ED.ResearcherObjectLoad
         /// </summary>
         public static class FileLogger
         {
-            private const string FilePath = $@"/app/logs/log.txt"; // --- TODO: Sacarlo a archivo de configuración.
-
             /// <summary>
             /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
             /// </summary>
             /// <param name="messsage"></param>
             public static void Log(string messsage)
             {
-                using var fileStream = new FileStream(FilePath, FileMode.Append);
-                using var writter = new StreamWriter(fileStream);
-                writter.WriteLine(messsage);
+                string fecha = DateTime.Now.ToString().Split(" ")[0].Replace("/", "-");
+                string ruta = $@"{Carga.configuracion.GetLogPath()}{Path.DirectorySeparatorChar}ResearcherLoadObject_{fecha}.log";
+                if (!File.Exists(ruta))
+                {
+                    using (FileStream fs = File.Create(ruta)) { }
+                }
+                File.AppendAllText(ruta, messsage + Environment.NewLine);
             }
         }
     }

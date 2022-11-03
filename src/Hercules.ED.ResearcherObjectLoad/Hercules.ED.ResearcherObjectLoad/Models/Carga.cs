@@ -887,7 +887,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log($@"ERROR - {ex.Message}");
+                        FileLogger.Log($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         File.Delete(fichero.FullName);
                     }
                 }

@@ -14,6 +14,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
         private string RutaDirectorioLectura { get; set; }
         private string RutaDirectorioEscritura { get; set; }
 
+        // Ruta Logs
+        private string LogPath { get; set; }
+
         // Configuración Rabbit para el desnormalizador.
         private string RabbitConnectionString { get; set; }
         private string DenormalizerQueueRabbit { get; set; }
@@ -93,6 +96,31 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
                 RabbitConnectionString = rabbitConnectionString;
             }
             return RabbitConnectionString;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta de los logs que ha sido configurado.
+        /// </summary>
+        /// <returns>Ruta.</returns>
+        public string GetLogPath()
+        {
+            if (string.IsNullOrEmpty(LogPath))
+            {
+                string connectionString;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("LogPath"))
+                {
+                    connectionString = environmentVariables["LogPath"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["LogPath"];
+                }
+
+                LogPath = connectionString;
+            }
+
+            return LogPath;
         }
 
         /// <summary>
