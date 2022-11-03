@@ -7,26 +7,18 @@ namespace PublicationAPI.Controllers
     public class ConfigService
     {
         // Archivo de configuración.
-        public static IConfigurationRoot configuracion;
+        private static readonly IConfigurationRoot configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
 
         // URLs
-        private string urlWos { get; set; }
-        private string urlScopus { get; set; }
-        private string urlOpenAire { get; set; }
-        private string urlCrossRef { get; set; }
-        private string urlOpenCitations { get; set; }
-        private string urlSemanticScholar { get; set; }
-        private string urlZenodo { get; set; }
-        private string urlEnriquecimiento { get; set; }
-        private string rutaJsonSalida { get; set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public ConfigService()
-        {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}appsettings.json").Build();
-        }
+        private string UrlWos { get; set; }
+        private string UrlScopus { get; set; }
+        private string UrlOpenAire { get; set; }
+        private string UrlCrossRef { get; set; }
+        private string UrlOpenCitations { get; set; }
+        private string UrlSemanticScholar { get; set; }
+        private string UrlZenodo { get; set; }
+        private string UrlEnriquecimiento { get; set; }
+        private string RutaJsonSalida { get; set; }
 
         /// <summary>
         /// Obtiene la URL del API de enriquecimiento que ha sido configurada.
@@ -34,9 +26,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de enriquecimiento.</returns>
         public string GetUrlEnriquecimiento()
         {
-            if (string.IsNullOrEmpty(urlEnriquecimiento))
+            if (string.IsNullOrEmpty(UrlEnriquecimiento))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlEnriquecimiento"))
                 {
@@ -47,10 +39,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlEnriquecimiento"];
                 }
 
-                urlEnriquecimiento = connectionString;
+                UrlEnriquecimiento = connectionString;
             }
 
-            return urlEnriquecimiento;
+            return UrlEnriquecimiento;
         }
 
         /// <summary>
@@ -59,9 +51,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de WoS.</returns>
         public string GetUrlWos()
         {
-            if (string.IsNullOrEmpty(urlWos))
+            if (string.IsNullOrEmpty(UrlWos))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlWos"))
                 {
@@ -72,10 +64,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlWos"];
                 }
 
-                urlWos = connectionString;
+                UrlWos = connectionString;
             }
 
-            return urlWos;
+            return UrlWos;
         }
 
         /// <summary>
@@ -84,9 +76,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de Scopus.</returns>
         public string GetUrlScopus()
         {
-            if (string.IsNullOrEmpty(urlScopus))
+            if (string.IsNullOrEmpty(UrlScopus))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlScopus"))
                 {
@@ -97,10 +89,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlScopus"];
                 }
 
-                urlScopus = connectionString;
+                UrlScopus = connectionString;
             }
 
-            return urlScopus;
+            return UrlScopus;
         }
 
         /// <summary>
@@ -109,9 +101,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de OpenAire.</returns>
         public string GetUrlOpenAire()
         {
-            if (string.IsNullOrEmpty(urlOpenAire))
+            if (string.IsNullOrEmpty(UrlOpenAire))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlOpenAire"))
                 {
@@ -122,10 +114,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlOpenAire"];
                 }
 
-                urlOpenAire = connectionString;
+                UrlOpenAire = connectionString;
             }
 
-            return urlOpenAire;
+            return UrlOpenAire;
         }
 
         /// <summary>
@@ -134,9 +126,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de CrossRef.</returns>
         public string GetUrlCrossRef()
         {
-            if (string.IsNullOrEmpty(urlCrossRef))
+            if (string.IsNullOrEmpty(UrlCrossRef))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlCrossRef"))
                 {
@@ -147,10 +139,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlCrossRef"];
                 }
 
-                urlCrossRef = connectionString;
+                UrlCrossRef = connectionString;
             }
 
-            return urlCrossRef;
+            return UrlCrossRef;
         }
 
         /// <summary>
@@ -159,9 +151,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de OpenCitations.</returns>
         public string GetUrlOpenCitations()
         {
-            if (string.IsNullOrEmpty(urlOpenCitations))
+            if (string.IsNullOrEmpty(UrlOpenCitations))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlOpenCitations"))
                 {
@@ -172,10 +164,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlOpenCitations"];
                 }
 
-                urlOpenCitations = connectionString;
+                UrlOpenCitations = connectionString;
             }
 
-            return urlOpenCitations;
+            return UrlOpenCitations;
         }
 
         /// <summary>
@@ -184,9 +176,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de SemanticScholar.</returns>
         public string GetUrlSemanticScholar()
         {
-            if (string.IsNullOrEmpty(urlSemanticScholar))
+            if (string.IsNullOrEmpty(UrlSemanticScholar))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlSemanticScholar"))
                 {
@@ -197,10 +189,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlSemanticScholar"];
                 }
 
-                urlSemanticScholar = connectionString;
+                UrlSemanticScholar = connectionString;
             }
 
-            return urlSemanticScholar;
+            return UrlSemanticScholar;
         }
 
         /// <summary>
@@ -209,9 +201,9 @@ namespace PublicationAPI.Controllers
         /// <returns>URI del API de Zenodo.</returns>
         public string GetUrlZenodo()
         {
-            if (string.IsNullOrEmpty(urlZenodo))
+            if (string.IsNullOrEmpty(UrlZenodo))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("UrlZenodo"))
                 {
@@ -222,10 +214,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["UrlZenodo"];
                 }
 
-                urlZenodo = connectionString;
+                UrlZenodo = connectionString;
             }
 
-            return urlZenodo;
+            return UrlZenodo;
         }
 
         /// <summary>
@@ -234,9 +226,9 @@ namespace PublicationAPI.Controllers
         /// <returns>Ruta del json de salida.</returns>
         public string GetRutaJsonSalida()
         {
-            if (string.IsNullOrEmpty(rutaJsonSalida))
+            if (string.IsNullOrEmpty(RutaJsonSalida))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 if (environmentVariables.Contains("RutaJsonSalida"))
                 {
@@ -247,10 +239,10 @@ namespace PublicationAPI.Controllers
                     connectionString = configuracion["RutaJsonSalida"];
                 }
 
-                rutaJsonSalida = connectionString;
+                RutaJsonSalida = connectionString;
             }
 
-            return rutaJsonSalida;
+            return RutaJsonSalida;
         }
     }
 }

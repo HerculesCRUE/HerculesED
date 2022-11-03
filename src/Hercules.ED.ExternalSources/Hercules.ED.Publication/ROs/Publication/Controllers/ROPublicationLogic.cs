@@ -21,10 +21,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
     public class ROPublicationLogic
     {
         // Listado de DOIs.
-        public List<string> dois_principales = new List<string>();
+        private readonly List<string> dois_principales = new();
 
         // Headers para las peticiones.
-        public Dictionary<string, string> headers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> headers = new();
 
         // Configuración.
         readonly ConfigService _Configuracion;
@@ -90,10 +90,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public List<Publication> GetPublications(string pOrcid, string pDate = "1500-01-01", string pDoi = null, string pNombreCompletoAutor = null)
         {
             // Diccionario con las peticiones.
-            Dictionary<string, string> dicZenodo = new Dictionary<string, string>();
+            Dictionary<string, string> dicZenodo = new();
 
             // Lista para almacenar las publicaciones resultantes.
-            List<Publication> resultado = new List<Publication>();
+            List<Publication> resultado = new();
 
             // Lista con los datos obtenidos por fuentes externas.
             List<PublicacionScopus> objInicial_Scopus = null;
@@ -188,22 +188,22 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         Console.WriteLine($@"[WoS] Publicación {contadorPubWos}/{objInicial_woS.Count}");
 
                         // Inserción de DOI en la lista de DOIs.
-                        if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
+                        if (pub.Doi != null && !string.IsNullOrEmpty(pub.Doi))
                         {
-                            this.dois_principales.Add(pub.doi.ToLower());
+                            this.dois_principales.Add(pub.Doi.ToLower());
                         }
 
                         // SemanticScholar.
                         int contadorSemanticScholar = 1;
-                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
+                        Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
                         while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                         {
                             Console.WriteLine($@"[WoS] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                            dataSemanticScholar = LlamadaRefSemanticScholar(pub.doi);
+                            dataSemanticScholar = LlamadaRefSemanticScholar(pub.Doi);
                             contadorSemanticScholar++;
 
                             // Si se obtienen datos, es válido.
-                            if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
+                            if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
                             {
                                 break;
                             }
@@ -217,23 +217,23 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                         Console.WriteLine("[WoS] Comparación (SemanticScholar)...");
                         Publication pub_completa = pub;
-                        pub_completa.dataOriginList = new HashSet<string>() { "WoS" };
+                        pub_completa.DataOriginList = new HashSet<string>() { "WoS" };
                         if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                         {
                             pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
-                            pub_completa.bibliografia = dataSemanticScholar.Item2;
+                            pub_completa.Bibliografia = dataSemanticScholar.Item2;
                         }
 
                         // Zenodo - Archivos pdf...
                         Console.WriteLine("[WoS] Haciendo petición a Zenodo...");
-                        pub_completa.pdf = LlamadaZenodo(pub.doi, dicZenodo);
-                        if (pub_completa.pdf == string.Empty)
+                        pub_completa.Pdf = LlamadaZenodo(pub.Doi, dicZenodo);
+                        if (pub_completa.Pdf == string.Empty)
                         {
-                            pub_completa.pdf = null;
+                            pub_completa.Pdf = null;
                         }
                         else
                         {
-                            pub_completa.dataOriginList.Add("Zenodo");
+                            pub_completa.DataOriginList.Add("Zenodo");
                         }
 
                         // Completar información faltante con las publicaciones de Scopus.
@@ -244,7 +244,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                 if (pub_scopus != null)
                                 {
                                     Publication pubScopus = ObtenerPublicacionDeScopus(pub_scopus);
-                                    if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_scopus.doi.ToLower() == pub_completa.doi.ToLower())
+                                    if (pub_scopus.doi != null && !string.IsNullOrEmpty(pub_completa.Doi) && pub_scopus.doi.ToLower() == pub_completa.Doi.ToLower())
                                     {
                                         pub_completa = Compactacion(pub_completa, pubScopus);
                                     }
@@ -257,7 +257,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                         {
                             foreach (Publication pub_openAire in objInicial_openAire)
                             {
-                                if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
+                                if (pub_openAire != null && pub_openAire.Doi != null && !string.IsNullOrEmpty(pub_completa.Doi) && pub_openAire.Doi.ToLower() == pub_completa.Doi.ToLower())
                                 {
                                     pub_completa = Compactacion(pub_completa, pub_openAire);
                                 }
@@ -304,15 +304,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             // SemanticScholar.
                             int contadorSemanticScholar = 1;
-                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
+                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Console.WriteLine($@"[Scopus] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = LlamadaRefSemanticScholar(pubScopus.doi);
+                                dataSemanticScholar = LlamadaRefSemanticScholar(pubScopus.Doi);
                                 contadorSemanticScholar++;
 
                                 // Si se obtienen datos, es válido.
-                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
+                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
                                 {
                                     break;
                                 }
@@ -326,23 +326,23 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Console.WriteLine("[Scopus] Comparación (SemanticScholar)...");
                             Publication pub_completa = pubScopus;
-                            pub_completa.dataOriginList = new HashSet<string>() { "Scopus" };
+                            pub_completa.DataOriginList = new HashSet<string>() { "Scopus" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = Compactacion(pubScopus, dataSemanticScholar.Item1);
-                                pub_completa.bibliografia = dataSemanticScholar.Item2;
+                                pub_completa.Bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Console.WriteLine("[Scopus] Haciendo petición a Zenodo...");
-                            pub_completa.pdf = LlamadaZenodo(pub_completa.doi, dicZenodo);
-                            if (pub_completa.pdf == String.Empty)
+                            pub_completa.Pdf = LlamadaZenodo(pub_completa.Doi, dicZenodo);
+                            if (pub_completa.Pdf == string.Empty)
                             {
-                                pub_completa.pdf = null;
+                                pub_completa.Pdf = null;
                             }
                             else
                             {
-                                pub_completa.dataOriginList.Add("Zenodo");
+                                pub_completa.DataOriginList.Add("Zenodo");
                             }
 
                             // Completar información faltante con las publicaciones de OpenAire.
@@ -350,7 +350,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             {
                                 foreach (Publication pub_openAire in objInicial_openAire)
                                 {
-                                    if (pub_openAire != null && pub_openAire.doi != null && !string.IsNullOrEmpty(pub_completa.doi) && pub_openAire.doi.ToLower() == pub_completa.doi.ToLower())
+                                    if (pub_openAire != null && pub_openAire.Doi != null && !string.IsNullOrEmpty(pub_completa.Doi) && pub_openAire.Doi.ToLower() == pub_completa.Doi.ToLower())
                                     {
                                         pub_completa = Compactacion(pub_completa, pub_openAire);
                                     }
@@ -358,7 +358,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
 
                             // Unificar Autores.
-                            pub_completa = CompararAutoresCitasReferencias(pub_completa);
+                            pub_completa = CompararAutores(pub_completa);
 
                             // Se guarda la publicación.
                             resultado.Add(pub_completa);
@@ -387,24 +387,24 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     foreach (Publication pub in objInicial_openAire)
                     {
                         Console.WriteLine($@"[OpenAire] Publicación {contadorPubOpenAire}/{objInicial_openAire.Count}");
-                        if (pub != null && !string.IsNullOrEmpty(pub.doi) && !dois_principales.Contains(pub.doi.ToLower()))
+                        if (pub != null && !string.IsNullOrEmpty(pub.Doi) && !dois_principales.Contains(pub.Doi.ToLower()))
                         {
-                            if (pub.doi != null && !string.IsNullOrEmpty(pub.doi))
+                            if (pub.Doi != null && !string.IsNullOrEmpty(pub.Doi))
                             {
-                                this.dois_principales.Add(pub.doi.ToLower());
+                                this.dois_principales.Add(pub.Doi.ToLower());
                             }
 
                             // SemanticScholar.
                             int contadorSemanticScholar = 1;
-                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new Tuple<Publication, List<PubReferencias>>(null, null);
+                            Tuple<Publication, List<PubReferencias>> dataSemanticScholar = new(null, null);
                             while (dataSemanticScholar.Item2 == null && contadorSemanticScholar <= 5)
                             {
                                 Console.WriteLine($@"[OpenAire] Haciendo petición a SemanticScholar ({contadorSemanticScholar})...");
-                                dataSemanticScholar = LlamadaRefSemanticScholar(pub.doi);
+                                dataSemanticScholar = LlamadaRefSemanticScholar(pub.Doi);
                                 contadorSemanticScholar++;
 
                                 // Si se obtienen datos, es válido.
-                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.title) && dataSemanticScholar.Item2 == null)
+                                if (dataSemanticScholar == null || !string.IsNullOrEmpty(dataSemanticScholar.Item1.Title) && dataSemanticScholar.Item2 == null)
                                 {
                                     break;
                                 }
@@ -418,27 +418,27 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                             Console.WriteLine("[OpenAire] Comparación (SemanticScholar)...");
                             Publication pub_completa = pub;
-                            pub_completa.dataOriginList = new HashSet<string>() { "OpenAire" };
+                            pub_completa.DataOriginList = new HashSet<string>() { "OpenAire" };
                             if (dataSemanticScholar != null && dataSemanticScholar.Item2 != null)
                             {
                                 pub_completa = Compactacion(pub, dataSemanticScholar.Item1);
-                                pub_completa.bibliografia = dataSemanticScholar.Item2;
+                                pub_completa.Bibliografia = dataSemanticScholar.Item2;
                             }
 
                             // Zenodo - Archivos pdf...
                             Console.WriteLine("[OpenAire] Haciendo petición a Zenodo...");
-                            pub_completa.pdf = LlamadaZenodo(pub_completa.doi, dicZenodo);
-                            if (pub_completa.pdf == string.Empty)
+                            pub_completa.Pdf = LlamadaZenodo(pub_completa.Doi, dicZenodo);
+                            if (pub_completa.Pdf == string.Empty)
                             {
-                                pub_completa.pdf = null;
+                                pub_completa.Pdf = null;
                             }
                             else
                             {
-                                pub_completa.dataOriginList.Add("Zenodo");
+                                pub_completa.DataOriginList.Add("Zenodo");
                             }
 
                             // Unificar Autores.
-                            pub_completa = CompararAutoresCitasReferencias(pub_completa);
+                            pub_completa = CompararAutores(pub_completa);
 
                             // Se guarda la publicación.
                             resultado.Add(pub_completa);
@@ -457,15 +457,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
             #endregion
 
             // Comprobación de que las publicaciones estén bien formadas.
-            List<Publication> listaPubsFinal = new List<Publication>();
+            List<Publication> listaPubsFinal = new();
             foreach (Publication publicacion in resultado)
             {
-                if (publicacion != null && !string.IsNullOrEmpty(publicacion.title) && publicacion.seqOfAuthors != null && publicacion.seqOfAuthors.Any() && publicacion.title != "One or more validation errors occurred.")
+                if (publicacion != null && !string.IsNullOrEmpty(publicacion.Title) && publicacion.SeqOfAuthors != null && publicacion.SeqOfAuthors.Any() && publicacion.Title != "One or more validation errors occurred.")
                 {
                     if (!string.IsNullOrEmpty(pNombreCompletoAutor))
                     {
                         bool encontrado = false;
-                        foreach (Person persona in publicacion.seqOfAuthors)
+                        foreach (Person persona in publicacion.SeqOfAuthors)
                         {
                             if (persona.ORCID == pOrcid || pDoi != null)
                             {
@@ -490,7 +490,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             foreach (Publication publicacion in listaPubsFinal)
             {
                 // Limpieza del título y descripción.
-                publicacion.title = Regex.Replace(publicacion.title, "<.*?>", string.Empty);
+                publicacion.Title = Regex.Replace(publicacion.Title, "<.*?>", string.Empty);
                 if (publicacion.Abstract != null)
                 {
                     publicacion.Abstract = Regex.Replace(publicacion.Abstract, "<.*?>", string.Empty);
@@ -498,7 +498,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 // Preparación del objeto a enviar para el enriquecimiento.
                 string jsonData = string.Empty;
-                if (string.IsNullOrEmpty(publicacion.pdf))
+                if (string.IsNullOrEmpty(publicacion.Pdf))
                 {
                     jsonData = JsonConvert.SerializeObject(ObtenerObjEnriquecimiento(publicacion));
                 }
@@ -517,34 +517,34 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     if (listaTopics != null && listaTopics.Any())
                     {
-                        publicacion.topics_enriquecidos = new List<Knowledge_enriquecidos>();
+                        publicacion.Topics_enriquecidos = new List<KnowledgeEnriquecidos>();
                         foreach (KeyValuePair<string, string> item in listaTopics)
                         {
-                            Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                            topic.word = item.Key;
-                            topic.porcentaje = item.Value;
-                            publicacion.topics_enriquecidos.Add(topic);
+                            KnowledgeEnriquecidos topic = new();
+                            topic.Word = item.Key;
+                            topic.Porcentaje = item.Value;
+                            publicacion.Topics_enriquecidos.Add(topic);
                         }
                     }
                     else
                     {
-                        publicacion.topics_enriquecidos = null;
+                        publicacion.Topics_enriquecidos = null;
                     }
 
                     if (listaEtiquetas != null && listaEtiquetas.Any())
                     {
-                        publicacion.freetextKeyword_enriquecidas = new List<Knowledge_enriquecidos>();
+                        publicacion.FreetextKeyword_enriquecidas = new List<KnowledgeEnriquecidos>();
                         foreach (KeyValuePair<string, string> item in listaEtiquetas)
                         {
-                            Knowledge_enriquecidos topic = new Knowledge_enriquecidos();
-                            topic.word = item.Key;
-                            topic.porcentaje = item.Value;
-                            publicacion.freetextKeyword_enriquecidas.Add(topic);
+                            KnowledgeEnriquecidos topic = new();
+                            topic.Word = item.Key;
+                            topic.Porcentaje = item.Value;
+                            publicacion.FreetextKeyword_enriquecidas.Add(topic);
                         }
                     }
                     else
                     {
-                        publicacion.freetextKeyword_enriquecidas = null;
+                        publicacion.FreetextKeyword_enriquecidas = null;
                     }
                 }
             }
@@ -557,9 +557,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 foreach (Publication publicacion in listaPubsFinal)
                 {
-                    foreach (Person persona in publicacion.seqOfAuthors)
+                    foreach (Person persona in publicacion.SeqOfAuthors)
                     {
-                        string nombreCompleto = persona.name.nombre_completo.First();
+                        string nombreCompleto = persona.Name.Nombre_completo.First();
 
                         // Comprueba si el nombre del autor corresponde con alguno de la publicación.
                         float resultadoSimilaridad = GetNameSimilarity(pNombreCompletoAutor, nombreCompleto);
@@ -579,6 +579,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
+            string data = JsonConvert.SerializeObject(listaPubsFinal);
+            System.IO.File.WriteAllText($@"Files/{pOrcid}___{pDate}.json", data);
+
             return listaPubsFinal;
         }
 
@@ -590,8 +593,8 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns></returns>
         public Publication Compactacion(Publication pub_1, Publication pub_2)
         {
-            Publication pub = new Publication();
-            pub.dataOriginList = pub_1.dataOriginList;
+            Publication pub = new();
+            pub.DataOriginList = pub_1.DataOriginList;
 
             if (pub_1 == null && pub_2 == null)
             {
@@ -609,25 +612,25 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             bool pub1 = false;
             bool pub2 = false;
-            if (!string.IsNullOrEmpty(pub_1.typeOfPublication))
+            if (!string.IsNullOrEmpty(pub_1.TypeOfPublication))
             {
-                pub.typeOfPublication = pub_1.typeOfPublication;
+                pub.TypeOfPublication = pub_1.TypeOfPublication;
                 pub1 = true;
             }
             else
             {
-                pub.typeOfPublication = pub_2.typeOfPublication;
+                pub.TypeOfPublication = pub_2.TypeOfPublication;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.title))
+            if (!string.IsNullOrEmpty(pub_1.Title))
             {
-                pub.title = pub_1.title;
+                pub.Title = pub_1.Title;
                 pub1 = true;
             }
             else
             {
-                pub.title = pub_2.title;
+                pub.Title = pub_2.Title;
                 pub2 = true;
             }
 
@@ -642,172 +645,172 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pub2 = true;
             }
 
-            if (pub_1.freetextKeywords != null && pub_1.freetextKeywords.Any())
+            if (pub_1.FreetextKeywords != null && pub_1.FreetextKeywords.Any())
             {
-                pub.freetextKeywords = pub_1.freetextKeywords;
+                pub.FreetextKeywords = pub_1.FreetextKeywords;
                 pub1 = true;
-                if (pub_2.freetextKeywords != null)
+                if (pub_2.FreetextKeywords != null)
                 {
-                    pub.freetextKeywords.AddRange(pub_2.freetextKeywords);
+                    pub.FreetextKeywords.AddRange(pub_2.FreetextKeywords);
                     pub2 = true;
                 }
             }
             else
             {
-                pub.freetextKeywords = pub_2.freetextKeywords;
+                pub.FreetextKeywords = pub_2.FreetextKeywords;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.language))
+            if (!string.IsNullOrEmpty(pub_1.Language))
             {
-                pub.language = pub_1.language;
+                pub.Language = pub_1.Language;
                 pub1 = true;
             }
             else
             {
 
-                pub.language = pub_2.language;
+                pub.Language = pub_2.Language;
                 pub2 = true;
             }
 
             // Si es un capitulo de libro, no necesita DOI (Da problemas en el motor de desambiguación).
-            if (pub.typeOfPublication != "Chapter")
+            if (pub.TypeOfPublication != "Chapter")
             {
-                if (pub_1.doi != null)
+                if (pub_1.Doi != null)
                 {
-                    pub.doi = pub_1.doi;
+                    pub.Doi = pub_1.Doi;
                     pub1 = true;
                 }
                 else
                 {
-                    pub.doi = pub_2.doi;
+                    pub.Doi = pub_2.Doi;
                     pub2 = true;
                 }
             }
 
-            if (pub_1.dataIssued != null)
+            if (pub_1.DataIssued != null)
             {
-                pub.dataIssued = pub_1.dataIssued;
+                pub.DataIssued = pub_1.DataIssued;
                 pub1 = true;
             }
             else
             {
-                if (pub_2.dataIssued != null)
+                if (pub_2.DataIssued != null)
                 {
-                    pub.dataIssued = pub_2.dataIssued;
+                    pub.DataIssued = pub_2.DataIssued;
                     pub2 = true;
                 }
-                else { pub.dataIssued = null; }
+                else { pub.DataIssued = null; }
             }
-            if (pub_1.url != null && pub_1.url.Any())
+            if (pub_1.Url != null && pub_1.Url.Any())
             {
-                pub.url = pub_1.url;
+                pub.Url = pub_1.Url;
                 pub1 = true;
-                if (pub_2.url != null)
+                if (pub_2.Url != null)
                 {
-                    foreach (string item in pub_2.url)
+                    foreach (string item in pub_2.Url)
                     {
-                        pub.url.Add(item);
+                        pub.Url.Add(item);
                         pub2 = true;
                     }
                 }
             }
             else
             {
-                pub.url = pub_2.url;
+                pub.Url = pub_2.Url;
                 pub2 = true;
             }
-            if (pub_1.correspondingAuthor != null)
+            if (pub_1.CorrespondingAuthor != null)
             {
-                pub.correspondingAuthor = pub_1.correspondingAuthor;
+                pub.CorrespondingAuthor = pub_1.CorrespondingAuthor;
                 pub1 = true;
             }
             else
             {
-                pub.correspondingAuthor = pub_2.correspondingAuthor;
+                pub.CorrespondingAuthor = pub_2.CorrespondingAuthor;
                 pub2 = true;
             }
 
-            pub.seqOfAuthors = new List<Models.Person>();
-            if (pub_1.seqOfAuthors != null && pub_1.seqOfAuthors.Count > 0)
+            pub.SeqOfAuthors = new List<Models.Person>();
+            if (pub_1.SeqOfAuthors != null && pub_1.SeqOfAuthors.Count > 0)
             {
-                pub.seqOfAuthors.AddRange(pub_1.seqOfAuthors);
+                pub.SeqOfAuthors.AddRange(pub_1.SeqOfAuthors);
                 pub1 = true;
             }
-            if (pub_2.seqOfAuthors != null && pub_2.seqOfAuthors.Count > 0)
+            if (pub_2.SeqOfAuthors != null && pub_2.SeqOfAuthors.Count > 0)
             {
-                pub.seqOfAuthors.AddRange(pub_2.seqOfAuthors);
+                pub.SeqOfAuthors.AddRange(pub_2.SeqOfAuthors);
                 pub2 = true;
             }
 
-            if (pub_1.hasKnowledgeAreas != null && pub_1.hasKnowledgeAreas.Any())
+            if (pub_1.HasKnowledgeAreas != null && pub_1.HasKnowledgeAreas.Any())
             {
-                pub.hasKnowledgeAreas = pub_1.hasKnowledgeAreas;
+                pub.HasKnowledgeAreas = pub_1.HasKnowledgeAreas;
                 pub1 = true;
-                if (pub_2.hasKnowledgeAreas != null)
+                if (pub_2.HasKnowledgeAreas != null)
                 {
-                    pub.hasKnowledgeAreas.AddRange(pub_2.hasKnowledgeAreas);
+                    pub.HasKnowledgeAreas.AddRange(pub_2.HasKnowledgeAreas);
                     pub2 = true;
                 }
             }
             else
             {
-                pub.hasKnowledgeAreas = pub_2.hasKnowledgeAreas;
+                pub.HasKnowledgeAreas = pub_2.HasKnowledgeAreas;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.pageEnd))
+            if (!string.IsNullOrEmpty(pub_1.PageEnd))
             {
-                pub.pageEnd = pub_1.pageEnd;
+                pub.PageEnd = pub_1.PageEnd;
                 pub1 = true;
             }
             else
             {
-                pub.pageEnd = pub_2.pageEnd;
+                pub.PageEnd = pub_2.PageEnd;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.pageStart))
+            if (!string.IsNullOrEmpty(pub_1.PageStart))
             {
-                pub.pageStart = pub_1.pageStart;
+                pub.PageStart = pub_1.PageStart;
                 pub1 = true;
             }
             else
             {
-                pub.pageStart = pub_2.pageStart;
+                pub.PageStart = pub_2.PageStart;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.volume))
+            if (!string.IsNullOrEmpty(pub_1.Volume))
             {
-                pub.volume = pub_1.volume;
+                pub.Volume = pub_1.Volume;
                 pub1 = true;
             }
             else
             {
-                pub.volume = pub_2.volume;
+                pub.Volume = pub_2.Volume;
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.articleNumber))
+            if (!string.IsNullOrEmpty(pub_1.ArticleNumber))
             {
-                pub.articleNumber = pub_1.articleNumber;
+                pub.ArticleNumber = pub_1.ArticleNumber;
                 pub1 = true;
             }
             else
             {
-                pub.articleNumber = pub_2.articleNumber;
+                pub.ArticleNumber = pub_2.ArticleNumber;
                 pub2 = true;
             }
 
-            if (pub_1.openAccess != null)
+            if (pub_1.OpenAccess != null)
             {
-                pub.openAccess = pub_1.openAccess;
+                pub.OpenAccess = pub_1.OpenAccess;
                 pub1 = true;
             }
             else
             {
-                pub.openAccess = pub_2.openAccess;
+                pub.OpenAccess = pub_2.OpenAccess;
                 pub2 = true;
             }
 
@@ -827,100 +830,100 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pub2 = true;
             }
 
-            if (!string.IsNullOrEmpty(pub_1.presentedAt))
+            if (!string.IsNullOrEmpty(pub_1.PresentedAt))
             {
-                pub.presentedAt = pub_1.presentedAt;
+                pub.PresentedAt = pub_1.PresentedAt;
                 pub1 = true;
             }
             else
             {
-                pub.presentedAt = pub_2.presentedAt;
+                pub.PresentedAt = pub_2.PresentedAt;
                 pub2 = true;
             }
 
-            if (pub_1.conferencia != null)
+            if (pub_1.Conferencia != null)
             {
-                pub.conferencia = pub_1.conferencia;
+                pub.Conferencia = pub_1.Conferencia;
                 pub1 = true;
             }
             else
             {
-                pub.conferencia = pub_2.conferencia;
+                pub.Conferencia = pub_2.Conferencia;
                 pub2 = true;
             }
 
-            Dictionary<string, Models.PublicationMetric> dicMetricas = new Dictionary<string, Models.PublicationMetric>();
+            Dictionary<string, Models.PublicationMetric> dicMetricas = new();
 
-            if (pub_1.hasMetric != null && pub_1.hasMetric.Any())
+            if (pub_1.HasMetric != null && pub_1.HasMetric.Any())
             {
-                foreach (Models.PublicationMetric metrica in pub_1.hasMetric)
+                foreach (Models.PublicationMetric metrica in pub_1.HasMetric)
                 {
-                    if (!dicMetricas.ContainsKey(metrica.metricName))
+                    if (!dicMetricas.ContainsKey(metrica.MetricName))
                     {
-                        dicMetricas.Add(metrica.metricName, metrica);
+                        dicMetricas.Add(metrica.MetricName, metrica);
                         pub1 = true;
                     }
                 }
             }
-            if (pub_2.hasMetric != null && pub_2.hasMetric.Any())
+            if (pub_2.HasMetric != null && pub_2.HasMetric.Any())
             {
-                foreach (Models.PublicationMetric metrica in pub_2.hasMetric)
+                foreach (Models.PublicationMetric metrica in pub_2.HasMetric)
                 {
-                    if (!dicMetricas.ContainsKey(metrica.metricName))
+                    if (!dicMetricas.ContainsKey(metrica.MetricName))
                     {
-                        dicMetricas.Add(metrica.metricName, metrica);
+                        dicMetricas.Add(metrica.MetricName, metrica);
                         pub2 = true;
                     }
                 }
             }
 
-            pub.hasMetric = new List<Models.PublicationMetric>();
+            pub.HasMetric = new List<Models.PublicationMetric>();
             foreach (KeyValuePair<string, Models.PublicationMetric> metrica in dicMetricas)
             {
-                pub.hasMetric.Add(metrica.Value);
+                pub.HasMetric.Add(metrica.Value);
             }
 
-            pub.hasPublicationVenue = new Models.Source();
-            HashSet<string> listaIssn = new HashSet<string>();
+            pub.HasPublicationVenue = new Models.Source();
+            HashSet<string> listaIssn = new();
 
-            if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.type))
+            if (pub_1.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.HasPublicationVenue.Type))
             {
-                pub.hasPublicationVenue.type = pub_1.hasPublicationVenue.type;
+                pub.HasPublicationVenue.Type = pub_1.HasPublicationVenue.Type;
                 pub1 = true;
             }
-            else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.type))
+            else if (pub_2.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.HasPublicationVenue.Type))
             {
-                pub.hasPublicationVenue.type = pub_2.hasPublicationVenue.type;
+                pub.HasPublicationVenue.Type = pub_2.HasPublicationVenue.Type;
                 pub2 = true;
             }
 
-            if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.eissn))
+            if (pub_1.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.HasPublicationVenue.Eissn))
             {
-                pub.hasPublicationVenue.eissn = pub_1.hasPublicationVenue.eissn;
+                pub.HasPublicationVenue.Eissn = pub_1.HasPublicationVenue.Eissn;
                 pub1 = true;
             }
-            else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.eissn))
+            else if (pub_2.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.HasPublicationVenue.Eissn))
             {
-                pub.hasPublicationVenue.eissn = pub_2.hasPublicationVenue.eissn;
+                pub.HasPublicationVenue.Eissn = pub_2.HasPublicationVenue.Eissn;
                 pub2 = true;
             }
 
-            if (pub_1.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.hasPublicationVenue.name))
+            if (pub_1.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_1.HasPublicationVenue.Name))
             {
-                pub.hasPublicationVenue.name = pub_1.hasPublicationVenue.name;
+                pub.HasPublicationVenue.Name = pub_1.HasPublicationVenue.Name;
                 pub1 = true;
             }
-            else if (pub_2.hasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.hasPublicationVenue.name))
+            else if (pub_2.HasPublicationVenue != null && !string.IsNullOrEmpty(pub_2.HasPublicationVenue.Name))
             {
-                pub.hasPublicationVenue.name = pub_2.hasPublicationVenue.name;
+                pub.HasPublicationVenue.Name = pub_2.HasPublicationVenue.Name;
                 pub2 = true;
             }
 
-            if (pub_1.hasPublicationVenue != null && pub_1.hasPublicationVenue.issn != null && pub_1.hasPublicationVenue.issn.Count > 0)
+            if (pub_1.HasPublicationVenue != null && pub_1.HasPublicationVenue.Issn != null && pub_1.HasPublicationVenue.Issn.Count > 0)
             {
-                foreach (string item in pub_1.hasPublicationVenue.issn)
+                foreach (string item in pub_1.HasPublicationVenue.Issn)
                 {
-                    if (item != pub.hasPublicationVenue.eissn)
+                    if (item != pub.HasPublicationVenue.Eissn)
                     {
                         listaIssn.Add(item);
                         pub1 = true;
@@ -928,11 +931,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            if (pub_2.hasPublicationVenue != null && pub_2.hasPublicationVenue.issn != null && pub_2.hasPublicationVenue.issn.Count > 0)
+            if (pub_2.HasPublicationVenue != null && pub_2.HasPublicationVenue.Issn != null && pub_2.HasPublicationVenue.Issn.Count > 0)
             {
-                foreach (string item in pub_2.hasPublicationVenue.issn)
+                foreach (string item in pub_2.HasPublicationVenue.Issn)
                 {
-                    if (item != pub.hasPublicationVenue.eissn)
+                    if (item != pub.HasPublicationVenue.Eissn)
                     {
                         listaIssn.Add(item);
                         pub2 = true;
@@ -940,60 +943,60 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
-            pub.hasPublicationVenue.issn = listaIssn.ToList();
+            pub.HasPublicationVenue.Issn = listaIssn.ToList();
 
-            if (!string.IsNullOrEmpty(pub_1.pdf))
+            if (!string.IsNullOrEmpty(pub_1.Pdf))
             {
-                pub.pdf = pub_1.pdf;
+                pub.Pdf = pub_1.Pdf;
                 pub1 = true;
             }
             else
             {
-                pub.pdf = pub_2.pdf;
+                pub.Pdf = pub_2.Pdf;
                 pub2 = true;
             }
 
-            if (pub_1.topics_enriquecidos != null && pub_1.topics_enriquecidos.Any())
+            if (pub_1.Topics_enriquecidos != null && pub_1.Topics_enriquecidos.Any())
             {
-                pub.topics_enriquecidos = pub_1.topics_enriquecidos;
+                pub.Topics_enriquecidos = pub_1.Topics_enriquecidos;
                 pub1 = true;
             }
             else
             {
-                pub.topics_enriquecidos = pub_2.topics_enriquecidos;
+                pub.Topics_enriquecidos = pub_2.Topics_enriquecidos;
                 pub2 = true;
             }
 
 
-            if (pub_1.freetextKeyword_enriquecidas != null && pub_1.freetextKeyword_enriquecidas.Any())
+            if (pub_1.FreetextKeyword_enriquecidas != null && pub_1.FreetextKeyword_enriquecidas.Any())
             {
-                pub.freetextKeyword_enriquecidas = pub_1.freetextKeyword_enriquecidas;
+                pub.FreetextKeyword_enriquecidas = pub_1.FreetextKeyword_enriquecidas;
                 pub1 = true;
             }
             else
             {
-                pub.freetextKeyword_enriquecidas = pub_2.freetextKeyword_enriquecidas;
+                pub.FreetextKeyword_enriquecidas = pub_2.FreetextKeyword_enriquecidas;
                 pub2 = true;
             }
 
-            if (pub_1.bibliografia != null && pub_1.bibliografia.Any())
+            if (pub_1.Bibliografia != null && pub_1.Bibliografia.Any())
             {
-                pub.bibliografia = pub_1.bibliografia;
+                pub.Bibliografia = pub_1.Bibliografia;
                 pub1 = true;
             }
             else
             {
-                pub.bibliografia = pub_2.bibliografia;
+                pub.Bibliografia = pub_2.Bibliografia;
                 pub2 = true;
             }
 
-            if (pub1 && pub_1.dataOrigin != null)
+            if (pub1 && pub_1.DataOrigin != null)
             {
-                pub.dataOriginList.Add(pub_1.dataOrigin);
+                pub.DataOriginList.Add(pub_1.DataOrigin);
             }
             if (pub2)
             {
-                pub.dataOriginList.Add(pub_2.dataOrigin);
+                pub.DataOriginList.Add(pub_2.DataOrigin);
             }
 
             return pub;
@@ -1013,7 +1016,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 if (!string.IsNullOrEmpty(pDoi))
                 {
                     // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
+                    Uri url = new(string.Format(_Configuracion.GetUrlSemanticScholar() + "SemanticScholar/GetReferences?pDoi={0}", pDoi));
 
                     string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
                     objInicial_SemanticScholar = JsonConvert.DeserializeObject<Tuple<Publication, List<PubReferencias>>>(info_publication);
@@ -1036,7 +1039,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<PublicacionScopus> LlamadaScopus(string pOrcid, string date)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", pOrcid, date));
+            Uri url = new(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetROs?orcid={0}&date={1}", pOrcid, date));
             string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<PublicacionScopus> objInicial_Scopus = null;
             try
@@ -1058,7 +1061,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<PublicacionScopus> LlamadaScopusDoi(string pDoi)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetPublicationByDOI?pDoi={0}", pDoi));
+            Uri url = new(string.Format(_Configuracion.GetUrlScopus() + "Scopus/GetPublicationByDOI?pDoi={0}", pDoi));
             string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<PublicacionScopus> objInicial_Scopus = null;
             try
@@ -1082,10 +1085,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> LlamadaWoS(string pOrcid, string date)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
+            Uri url = new(string.Format(_Configuracion.GetUrlWos() + "WoS/GetROs?orcid={0}&date={1}", pOrcid, date));
 
             int contadorVeces = 0;
-            string info_publication = string.Empty;
+            string info_publication;
             while (true)
             {
                 info_publication = HttpCall(url.ToString(), "GET", headers).Result;
@@ -1117,7 +1120,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> LlamadaWoSDoi(string pDoi)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlWos() + "WoS/GetRoByDoi?pDoi={0}", pDoi));
+            Uri url = new(string.Format(_Configuracion.GetUrlWos() + "WoS/GetRoByDoi?pDoi={0}", pDoi));
             string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_woS = null;
             try
@@ -1144,7 +1147,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> LlamadaOpenAire(string pOrcid, string date)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetROs?orcid={0}&date={1}", pOrcid, date));
+            Uri url = new(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetROs?orcid={0}&date={1}", pOrcid, date));
             string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_openAire = null;
             try
@@ -1166,7 +1169,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Publicación(es) con los datos obtenidos.</returns>
         public List<Publication> LlamadaOpenAireDoi(string pDoi)
         {
-            Uri url = new Uri(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetRoByDoi?pDoi={0}", pDoi));
+            Uri url = new(string.Format(_Configuracion.GetUrlOpenAire() + "OpenAire/GetRoByDoi?pDoi={0}", pDoi));
             string info_publication = HttpCall(url.ToString(), "GET", headers).Result;
             List<Publication> objInicial_openAire = null;
             try
@@ -1200,7 +1203,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 if (!string.IsNullOrEmpty(pDoi))
                 {
                     // URL a la petición.
-                    Uri url = new Uri(string.Format(_Configuracion.GetUrlZenodo() + "Zenodo/GetROs?ID={0}", pDoi));
+                    Uri url = new(string.Format(_Configuracion.GetUrlZenodo() + "Zenodo/GetROs?ID={0}", pDoi));
 
                     // Comprobación de la petición.
                     if (!pDic.ContainsKey(pDoi))
@@ -1229,13 +1232,14 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         /// <summary>
         /// Mediante una publicación, compara todos sus autores entre ellos para quitar duplicados y fusionar la información.
+        /// En Scopus, no nos vienen los autores.
         /// </summary>
         /// <param name="pPublicacion">Publicación a fusionar autores.</param>
         /// <returns>Publicación con los autores fusionados.</returns>
         public Publication CompararAutores(Publication pPublicacion)
         {
             // Prioridad: WOS > OpenAire > SemanticScholar
-            Dictionary<string, List<Person>> dicPersonas = new Dictionary<string, List<Person>>();
+            Dictionary<string, List<Person>> dicPersonas = new();
             dicPersonas.Add("WoS", new List<Person>());
             dicPersonas.Add("OpenAire", new List<Person>());
             dicPersonas.Add("SemanticScholar", new List<Person>());
@@ -1243,15 +1247,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
             // Peso.
             double umbral = 0.7;
 
-            foreach (Person persona in pPublicacion.seqOfAuthors)
+            foreach (Person persona in pPublicacion.SeqOfAuthors)
             {
-                if (persona.name != null)
+                if (persona.Name != null)
                 {
-                    dicPersonas[persona.fuente].Add(persona);
+                    dicPersonas[persona.Fuente].Add(persona);
                 }
             }
 
-            List<Person> listaPersonasDefinitivas = new List<Person>();
+            List<Person> listaPersonasDefinitivas = new();
 
             // Unir personas 
             foreach (Person persona in dicPersonas["WoS"])
@@ -1268,31 +1272,31 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
 
                     // Comprobración por nombre completo
-                    ComprobarNombreCompleto1(personaFinal);
+                    ComprobarNombreCompleto(personaFinal);
 
                     string nombreCompleto2 = string.Empty;
-                    if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
+                    if (personaCrossRef.Name.Given != null && personaCrossRef.Name.Given.Any())
                     {
-                        nombreCompleto2 += personaCrossRef.name.given[0] + " ";
+                        nombreCompleto2 += personaCrossRef.Name.Given[0] + " ";
                     }
-                    if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
+                    if (personaCrossRef.Name.Familia != null && personaCrossRef.Name.Familia.Any())
                     {
-                        nombreCompleto2 += personaCrossRef.name.familia[0];
+                        nombreCompleto2 += personaCrossRef.Name.Familia[0];
                     }
                     if (!string.IsNullOrEmpty(nombreCompleto2))
                     {
-                        personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
+                        personaCrossRef.Name.Nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                     }
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
+                    if (personaFinal.Name.Nombre_completo != null && personaFinal.Name.Nombre_completo.Any() && personaCrossRef.Name.Nombre_completo != null && personaCrossRef.Name.Nombre_completo.Any() && GetNameSimilarity(personaFinal.Name.Nombre_completo[0], personaCrossRef.Name.Nombre_completo[0]) >= umbral)
                     {
                         personaFinal = UnirPersonas(personaFinal, personaCrossRef);
                         break;
                     }
 
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                    if (personaFinal.Name.Given != null && personaFinal.Name.Given.Any() && !string.IsNullOrEmpty(personaFinal.Name.Given[0]) && personaFinal.Name.Familia != null && personaFinal.Name.Familia.Any() && !string.IsNullOrEmpty(personaFinal.Name.Familia[0]))
                     {
-                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                        personaFinal.Name.Nombre_completo[0] = $@"{personaFinal.Name.Given[0]} {personaFinal.Name.Familia[0]}";
                     }
                 }
 
@@ -1307,40 +1311,40 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                     // Comprobración por nombre completo
                     string nombreCompleto1 = string.Empty;
-                    if (personaSemantic.name.given != null && personaFinal.name.given != null && personaFinal.name.given.Any())
+                    if (personaSemantic.Name.Given != null && personaFinal.Name.Given != null && personaFinal.Name.Given.Any())
                     {
-                        nombreCompleto1 += personaFinal.name.given[0] + " ";
+                        nombreCompleto1 += personaFinal.Name.Given[0] + " ";
                     }
-                    if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
+                    if (personaFinal.Name.Familia != null && personaFinal.Name.Familia.Any())
                     {
-                        nombreCompleto1 += personaFinal.name.familia[0];
+                        nombreCompleto1 += personaFinal.Name.Familia[0];
                     }
                     if (!string.IsNullOrEmpty(nombreCompleto1))
                     {
-                        personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
+                        personaFinal.Name.Nombre_completo = new List<string>() { nombreCompleto1.Trim() };
                     }
 
                     string nombreCompleto2 = string.Empty;
-                    if (personaSemantic.name.given != null && personaSemantic.name.given.Any())
+                    if (personaSemantic.Name.Given != null && personaSemantic.Name.Given.Any())
                     {
-                        nombreCompleto2 += personaSemantic.name.given[0] + " ";
+                        nombreCompleto2 += personaSemantic.Name.Given[0] + " ";
                     }
-                    if (personaSemantic.name.familia != null && personaSemantic.name.familia.Any())
+                    if (personaSemantic.Name.Familia != null && personaSemantic.Name.Familia.Any())
                     {
-                        nombreCompleto2 += personaSemantic.name.familia[0];
+                        nombreCompleto2 += personaSemantic.Name.Familia[0];
                     }
                     if (!string.IsNullOrEmpty(nombreCompleto2))
                     {
-                        personaSemantic.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
+                        personaSemantic.Name.Nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                     }
 
-                    if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && personaSemantic.name.nombre_completo != null && personaSemantic.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], personaSemantic.name.nombre_completo[0]) >= umbral)
+                    if (personaFinal.Name.Nombre_completo != null && personaFinal.Name.Nombre_completo.Any() && personaSemantic.Name.Nombre_completo != null && personaSemantic.Name.Nombre_completo.Any() && GetNameSimilarity(personaFinal.Name.Nombre_completo[0], personaSemantic.Name.Nombre_completo[0]) >= umbral)
                     {
                         personaFinal = UnirPersonas(personaFinal, personaSemantic);
                         break;
                     }
 
-                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    personaFinal.Name.Nombre_completo[0] = $@"{personaFinal.Name.Given[0]} {personaFinal.Name.Familia[0]}";
                 }
 
                 listaPersonasDefinitivas.Add(personaFinal);
@@ -1352,275 +1356,68 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 Models.Person personaFinal = persona;
 
                 // Comprobación por ORCID
-                if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
+                if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.CorrespondingAuthor.ORCID)
                 {
-                    pPublicacion.correspondingAuthor = personaFinal;
+                    pPublicacion.CorrespondingAuthor = personaFinal;
                     break;
                 }
 
                 // Comprobración por nombre completo
-                ComprobarNombreCompleto1(personaFinal);
+                ComprobarNombreCompleto(personaFinal);
 
                 string nombreCompleto2 = string.Empty;
-                if (pPublicacion.correspondingAuthor.name.given != null && pPublicacion.correspondingAuthor.name.given.Any())
+                if (pPublicacion.CorrespondingAuthor.Name.Given != null && pPublicacion.CorrespondingAuthor.Name.Given.Any())
                 {
-                    nombreCompleto2 += pPublicacion.correspondingAuthor.name.given[0] + " ";
+                    nombreCompleto2 += pPublicacion.CorrespondingAuthor.Name.Given[0] + " ";
                 }
-                if (pPublicacion.correspondingAuthor.name.familia != null && pPublicacion.correspondingAuthor.name.familia.Any())
+                if (pPublicacion.CorrespondingAuthor.Name.Familia != null && pPublicacion.CorrespondingAuthor.Name.Familia.Any())
                 {
-                    nombreCompleto2 += pPublicacion.correspondingAuthor.name.familia[0];
+                    nombreCompleto2 += pPublicacion.CorrespondingAuthor.Name.Familia[0];
                 }
                 if (!string.IsNullOrEmpty(nombreCompleto2))
                 {
-                    pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
+                    pPublicacion.CorrespondingAuthor.Name.Nombre_completo = new List<string>() { nombreCompleto2.Trim() };
                 }
 
-                if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() && pPublicacion.correspondingAuthor.name.nombre_completo != null && pPublicacion.correspondingAuthor.name.nombre_completo.Any() && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.name.nombre_completo[0]) >= umbral)
+                if (personaFinal.Name.Nombre_completo != null && personaFinal.Name.Nombre_completo.Any() && pPublicacion.CorrespondingAuthor.Name.Nombre_completo != null && pPublicacion.CorrespondingAuthor.Name.Nombre_completo.Any() && GetNameSimilarity(personaFinal.Name.Nombre_completo[0], pPublicacion.CorrespondingAuthor.Name.Nombre_completo[0]) >= umbral)
                 {
-                    pPublicacion.correspondingAuthor = personaFinal;
+                    pPublicacion.CorrespondingAuthor = personaFinal;
                     break;
                 }
 
-                if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick) && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
+                if (!string.IsNullOrEmpty(pPublicacion.CorrespondingAuthor.Nick) && GetNameSimilarity(personaFinal.Name.Nombre_completo[0], pPublicacion.CorrespondingAuthor.Nick) >= 0.01)
                 {
-                    pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
+                    pPublicacion.CorrespondingAuthor = UnirPersonas(personaFinal, pPublicacion.CorrespondingAuthor);
                     break;
                 }
-                if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
+                if (personaFinal.Name.Given != null && personaFinal.Name.Given.Any() && !string.IsNullOrEmpty(personaFinal.Name.Given[0]) && personaFinal.Name.Familia != null && personaFinal.Name.Familia.Any() && !string.IsNullOrEmpty(personaFinal.Name.Familia[0]))
                 {
-                    personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
+                    personaFinal.Name.Nombre_completo[0] = $@"{personaFinal.Name.Given[0]} {personaFinal.Name.Familia[0]}";
                 }
             }
 
-            pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
+            pPublicacion.SeqOfAuthors = listaPersonasDefinitivas;
             return pPublicacion;
         }
 
         /// <summary>
-        /// Mediante una publicación (cita o referencia), compara todos sus autores entre ellos para quitar duplicados y fusionar la información.
+        /// Comprueba el nombre completo de la primera persona.
         /// </summary>
-        /// <param name="pPublicacion">Publicación a fusionar autores.</param>
-        /// <returns>Publicación con los autores fusionados.</returns>
-        public Publication CompararAutoresCitasReferencias(Publication pPublicacion)
-        {
-            // Prioridad --> SemanticScholar > OpenAire > CrossRef
-            Dictionary<string, List<Models.Person>> dicPersonas = new Dictionary<string, List<Models.Person>>();
-            dicPersonas.Add("WoS", new List<Models.Person>());
-            dicPersonas.Add("OpenAire", new List<Models.Person>());
-            dicPersonas.Add("SemanticScholar", new List<Models.Person>());
-            dicPersonas.Add("CrossRef", new List<Models.Person>());
-
-            double umbral = 0.7;
-
-            if (pPublicacion.seqOfAuthors != null && pPublicacion.seqOfAuthors.Any())
-            {
-                foreach (Models.Person persona in pPublicacion.seqOfAuthors)
-                {
-                    dicPersonas[persona.fuente].Add(persona);
-                }
-
-                List<Models.Person> listaPersonasDefinitivas = new List<Models.Person>();
-
-                // Unir personas 
-                foreach (Models.Person persona in dicPersonas["SemanticScholar"])
-                {
-                    Models.Person personaFinal = persona;
-
-                    foreach (Models.Person personaCrossRef in dicPersonas["OpenAire"])
-                    {
-                        // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaCrossRef.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-
-                        // Comprobración por nombre completo
-                        string nombreCompleto1 = string.Empty;
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.given[0] + " ";
-                        }
-                        if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
-                        {
-                            nombreCompleto1 += personaFinal.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto1))
-                        {
-                            personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
-                        }
-
-                        string nombreCompleto2 = string.Empty;
-                        if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
-                        {
-                            nombreCompleto2 += personaCrossRef.name.given[0] + " ";
-                        }
-                        if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
-                        {
-                            nombreCompleto2 += personaCrossRef.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto2))
-                        {
-                            personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                        }
-
-                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() &&
-                            personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() &&
-                            GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
-                        {
-                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
-                        }
-                    }
-
-                    foreach (Models.Person personaCrossRef in dicPersonas["CrossRef"])
-                    {
-                        // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaCrossRef.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-
-                        // Comprobración por nombre completo
-                        ComprobarNombreCompleto1(personaFinal);
-
-                        string nombreCompleto2 = string.Empty;
-                        if (personaCrossRef.name.given != null && personaCrossRef.name.given.Any())
-                        {
-                            nombreCompleto2 += personaCrossRef.name.given[0] + " ";
-                        }
-                        if (personaCrossRef.name.familia != null && personaCrossRef.name.familia.Any())
-                        {
-                            nombreCompleto2 += personaCrossRef.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto2))
-                        {
-                            personaCrossRef.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                        }
-
-                        if (personaFinal.name.nombre_completo != null && personaFinal.name.nombre_completo.Any() &&
-                            personaCrossRef.name.nombre_completo != null && personaCrossRef.name.nombre_completo.Any() &&
-                            GetNameSimilarity(personaFinal.name.nombre_completo[0], personaCrossRef.name.nombre_completo[0]) >= umbral)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaCrossRef);
-                            break;
-                        }
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
-                        {
-                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
-                        }
-                    }
-
-                    listaPersonasDefinitivas.Add(personaFinal);
-                }
-
-                // ÑAPA
-                if (!dicPersonas["SemanticScholar"].Any())
-                {
-                    foreach (Person personaOpenAire in dicPersonas["OpenAire"])
-                    {
-                        Person personaFinal = personaOpenAire;
-
-                        // Comprobación por ORCID
-                        if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == personaOpenAire.ORCID)
-                        {
-                            personaFinal = UnirPersonas(personaFinal, personaOpenAire);
-                            break;
-                        }
-
-                        // Comprobración por nombre completo
-                        ComprobarNombreCompleto1(personaFinal);
-
-                        string nombreCompleto2 = string.Empty;
-                        if (personaOpenAire.name.given != null && personaOpenAire.name.given.Any())
-                        {
-                            nombreCompleto2 += personaOpenAire.name.given[0] + " ";
-                        }
-                        if (personaOpenAire.name.familia != null && personaOpenAire.name.familia.Any())
-                        {
-                            nombreCompleto2 += personaOpenAire.name.familia[0];
-                        }
-                        if (!string.IsNullOrEmpty(nombreCompleto2))
-                        {
-                            personaOpenAire.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                        }
-
-                        if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
-                        {
-                            personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
-                        }
-
-                        listaPersonasDefinitivas.Add(personaFinal);
-                    }
-                }
-
-                // Encontrar el autor
-                foreach (Person persona in listaPersonasDefinitivas)
-                {
-                    Person personaFinal = persona;
-
-                    // Comprobación por ORCID
-                    if (!string.IsNullOrEmpty(personaFinal.ORCID) && personaFinal.ORCID == pPublicacion.correspondingAuthor.ORCID)
-                    {
-                        pPublicacion.correspondingAuthor = personaFinal;
-                        break;
-                    }
-
-                    // Comprobración por nombre completo
-                    ComprobarNombreCompleto1(personaFinal);
-
-                    string nombreCompleto2 = string.Empty;
-                    if (pPublicacion.correspondingAuthor != null && pPublicacion.correspondingAuthor.name != null && pPublicacion.correspondingAuthor.name.given != null && pPublicacion.correspondingAuthor.name.given.Any())
-                    {
-                        nombreCompleto2 += pPublicacion.correspondingAuthor.name.given[0] + " ";
-                    }
-                    if (pPublicacion.correspondingAuthor != null && pPublicacion.correspondingAuthor.name != null && pPublicacion.correspondingAuthor.name.familia != null && pPublicacion.correspondingAuthor.name.familia.Any())
-                    {
-                        nombreCompleto2 += pPublicacion.correspondingAuthor.name.familia[0];
-                    }
-                    if (!string.IsNullOrEmpty(nombreCompleto2))
-                    {
-                        pPublicacion.correspondingAuthor.name.nombre_completo = new List<string>() { nombreCompleto2.Trim() };
-                    }
-
-                    if (!string.IsNullOrEmpty(pPublicacion.correspondingAuthor.nick) && GetNameSimilarity(personaFinal.name.nombre_completo[0], pPublicacion.correspondingAuthor.nick) >= 0.01)
-                    {
-                        pPublicacion.correspondingAuthor = UnirPersonas(personaFinal, pPublicacion.correspondingAuthor);
-                        break;
-                    }
-
-                    if (personaFinal.name.given != null && personaFinal.name.given.Any() && !string.IsNullOrEmpty(personaFinal.name.given[0]) && personaFinal.name.familia != null && personaFinal.name.familia.Any() && !string.IsNullOrEmpty(personaFinal.name.familia[0]))
-                    {
-                        personaFinal.name.nombre_completo[0] = $@"{personaFinal.name.given[0]} {personaFinal.name.familia[0]}";
-                    }
-                }
-
-                pPublicacion.seqOfAuthors = listaPersonasDefinitivas;
-            }
-
-            return pPublicacion;
-        }
-
-        private static void ComprobarNombreCompleto1(Person personaFinal)
+        /// <param name="personaFinal">Persona.</param>
+        private static void ComprobarNombreCompleto(Person personaFinal)
         {
             string nombreCompleto1 = "";
-            if (personaFinal.name.given != null && personaFinal.name.given.Any())
+            if (personaFinal.Name.Given != null && personaFinal.Name.Given.Any())
             {
-                nombreCompleto1 += personaFinal.name.given[0] + " ";
+                nombreCompleto1 += personaFinal.Name.Given[0] + " ";
             }
-            if (personaFinal.name.familia != null && personaFinal.name.familia.Any())
+            if (personaFinal.Name.Familia != null && personaFinal.Name.Familia.Any())
             {
-                nombreCompleto1 += personaFinal.name.familia[0];
+                nombreCompleto1 += personaFinal.Name.Familia[0];
             }
             if (!string.IsNullOrEmpty(nombreCompleto1))
             {
-                personaFinal.name.nombre_completo = new List<string>() { nombreCompleto1.Trim() };
+                personaFinal.Name.Nombre_completo = new List<string>() { nombreCompleto1.Trim() };
             }
         }
 
@@ -1639,19 +1436,19 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             // Orden
-            if (pPersonaFinal.orden == null)
+            if (pPersonaFinal.Orden == null)
             {
-                pPersonaFinal.orden = pPersonaAUnir.orden;
+                pPersonaFinal.Orden = pPersonaAUnir.Orden;
             }
 
             // Firma
-            if (string.IsNullOrEmpty(pPersonaFinal.nick))
+            if (string.IsNullOrEmpty(pPersonaFinal.Nick))
             {
-                pPersonaFinal.nick = pPersonaAUnir.nick;
+                pPersonaFinal.Nick = pPersonaAUnir.Nick;
             }
 
             // IDs
-            HashSet<string> listaIds = new HashSet<string>();
+            HashSet<string> listaIds = new();
             if (pPersonaFinal.IDs != null && pPersonaFinal.IDs.Any())
             {
                 foreach (string item in pPersonaFinal.IDs)
@@ -1672,58 +1469,58 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
 
             // Enlaces
-            HashSet<string> listaLinks = new HashSet<string>();
-            if (pPersonaFinal.links != null && pPersonaFinal.links.Any())
+            HashSet<string> listaLinks = new();
+            if (pPersonaFinal.Links != null && pPersonaFinal.Links.Any())
             {
-                foreach (string item in pPersonaFinal.links)
+                foreach (string item in pPersonaFinal.Links)
                 {
                     listaLinks.Add(item);
                 }
             }
-            if (pPersonaAUnir.links != null && pPersonaAUnir.links.Any())
+            if (pPersonaAUnir.Links != null && pPersonaAUnir.Links.Any())
             {
-                foreach (string item in pPersonaAUnir.links)
+                foreach (string item in pPersonaAUnir.Links)
                 {
                     listaLinks.Add(item);
                 }
             }
             if (listaLinks.Any())
             {
-                pPersonaFinal.links = listaLinks.ToList();
+                pPersonaFinal.Links = listaLinks.ToList();
             }
 
             // Nombre            
-            if (pPersonaFinal.name.given == null || !pPersonaFinal.name.given.Any())
+            if (pPersonaFinal.Name.Given == null || !pPersonaFinal.Name.Given.Any())
             {
-                if (pPersonaAUnir.name != null && pPersonaAUnir.name.given != null && pPersonaAUnir.name.given.Any())
+                if (pPersonaAUnir.Name != null && pPersonaAUnir.Name.Given != null && pPersonaAUnir.Name.Given.Any())
                 {
-                    pPersonaFinal.name.given = pPersonaAUnir.name.given;
+                    pPersonaFinal.Name.Given = pPersonaAUnir.Name.Given;
                 }
-                else if (pPersonaAUnir.name != null && pPersonaAUnir.name.given == null && pPersonaAUnir.name.nombre_completo != null && pPersonaAUnir.name.nombre_completo.Any())
+                else if (pPersonaAUnir.Name != null && pPersonaAUnir.Name.Given == null && pPersonaAUnir.Name.Nombre_completo != null && pPersonaAUnir.Name.Nombre_completo.Any())
                 {
-                    pPersonaFinal.name.given = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[0] };
+                    pPersonaFinal.Name.Given = new List<string>() { pPersonaAUnir.Name.Nombre_completo[0].Split(" ")[0] };
                 }
             }
-            if (pPersonaFinal.name.familia == null || !pPersonaFinal.name.familia.Any())
+            if (pPersonaFinal.Name.Familia == null || !pPersonaFinal.Name.Familia.Any())
             {
-                if (pPersonaAUnir.name != null && pPersonaAUnir.name.familia != null && pPersonaAUnir.name.familia.Any())
+                if (pPersonaAUnir.Name != null && pPersonaAUnir.Name.Familia != null && pPersonaAUnir.Name.Familia.Any())
                 {
-                    pPersonaFinal.name.familia = pPersonaAUnir.name.familia;
+                    pPersonaFinal.Name.Familia = pPersonaAUnir.Name.Familia;
                 }
-                else if (pPersonaAUnir.name != null && pPersonaAUnir.name.familia == null && pPersonaAUnir.name.nombre_completo != null && pPersonaAUnir.name.nombre_completo.Any())
+                else if (pPersonaAUnir.Name != null && pPersonaAUnir.Name.Familia == null && pPersonaAUnir.Name.Nombre_completo != null && pPersonaAUnir.Name.Nombre_completo.Any())
                 {
-                    pPersonaFinal.name.familia = new List<string>() { pPersonaAUnir.name.nombre_completo[0].Split(" ")[1] };
+                    pPersonaFinal.Name.Familia = new List<string>() { pPersonaAUnir.Name.Nombre_completo[0].Split(" ")[1] };
                 }
             }
-            if (pPersonaFinal.name.given != null && pPersonaFinal.name.given.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.given[0]) && pPersonaFinal.name.familia != null && pPersonaFinal.name.familia.Any() && !string.IsNullOrEmpty(pPersonaFinal.name.familia[0]))
+            if (pPersonaFinal.Name.Given != null && pPersonaFinal.Name.Given.Any() && !string.IsNullOrEmpty(pPersonaFinal.Name.Given[0]) && pPersonaFinal.Name.Familia != null && pPersonaFinal.Name.Familia.Any() && !string.IsNullOrEmpty(pPersonaFinal.Name.Familia[0]))
             {
-                pPersonaFinal.name.nombre_completo[0] = $@"{pPersonaFinal.name.given[0]} {pPersonaFinal.name.familia[0]}";
+                pPersonaFinal.Name.Nombre_completo[0] = $@"{pPersonaFinal.Name.Given[0]} {pPersonaFinal.Name.Familia[0]}";
             }
 
             // Nick
-            if (string.IsNullOrEmpty(pPersonaFinal.nick) && !string.IsNullOrEmpty(pPersonaAUnir.nick))
+            if (string.IsNullOrEmpty(pPersonaFinal.Nick) && !string.IsNullOrEmpty(pPersonaAUnir.Nick))
             {
-                pPersonaFinal.nick = pPersonaAUnir.nick;
+                pPersonaFinal.Nick = pPersonaAUnir.Nick;
             }
 
             return pPersonaFinal;
@@ -1736,47 +1533,47 @@ namespace PublicationConnect.ROs.Publications.Controllers
         /// <returns>Objeto publicación.</returns>
         public Publication ObtenerPublicacionDeScopus(PublicacionScopus pPublicacionScopus)
         {
-            Publication publicacion = new Publication();
-            publicacion.typeOfPublication = pPublicacionScopus.typeOfPublication;
-            publicacion.title = pPublicacionScopus.title;
-            publicacion.doi = pPublicacionScopus.doi;
-            publicacion.dataIssued = new Models.DateTimeValue();
-            publicacion.dataIssued.datimeTime = pPublicacionScopus.datimeTime;
-            publicacion.url = new HashSet<string>();
+            Publication publicacion = new();
+            publicacion.TypeOfPublication = pPublicacionScopus.typeOfPublication;
+            publicacion.Title = pPublicacionScopus.title;
+            publicacion.Doi = pPublicacionScopus.doi;
+            publicacion.DataIssued = new();
+            publicacion.DataIssued.DatimeTime = pPublicacionScopus.datimeTime;
+            publicacion.Url = new HashSet<string>();
             foreach (string item in pPublicacionScopus.url)
             {
-                publicacion.url.Add(item);
+                publicacion.Url.Add(item);
             }
             if (pPublicacionScopus.correspondingAuthor != null)
             {
-                publicacion.correspondingAuthor = new Models.Person();
-                publicacion.correspondingAuthor.nick = pPublicacionScopus.correspondingAuthor.nick;
+                publicacion.CorrespondingAuthor = new();
+                publicacion.CorrespondingAuthor.Nick = pPublicacionScopus.correspondingAuthor.nick;
             }
-            publicacion.pageStart = pPublicacionScopus.pageStart;
-            publicacion.pageEnd = pPublicacionScopus.pageEnd;
-            publicacion.volume = pPublicacionScopus.volume;
-            publicacion.articleNumber = pPublicacionScopus.articleNumber;
-            publicacion.openAccess = pPublicacionScopus.openAccess;
-            publicacion.IDs = new List<string>();
+            publicacion.PageStart = pPublicacionScopus.pageStart;
+            publicacion.PageEnd = pPublicacionScopus.pageEnd;
+            publicacion.Volume = pPublicacionScopus.volume;
+            publicacion.ArticleNumber = pPublicacionScopus.articleNumber;
+            publicacion.OpenAccess = pPublicacionScopus.openAccess;
+            publicacion.IDs = new();
             publicacion.IDs.Add(pPublicacionScopus.scopusID);
-            publicacion.dataOrigin = "Scopus";
+            publicacion.DataOrigin = "Scopus";
             if (pPublicacionScopus.hasPublicationVenue != null)
             {
-                publicacion.hasPublicationVenue = new Models.Source();
-                publicacion.hasPublicationVenue.type = pPublicacionScopus.hasPublicationVenue.type;
-                publicacion.hasPublicationVenue.name = pPublicacionScopus.hasPublicationVenue.name;
-                publicacion.hasPublicationVenue.issn = pPublicacionScopus.hasPublicationVenue.issn;
-                publicacion.hasPublicationVenue.eissn = pPublicacionScopus.hasPublicationVenue.eissn;
+                publicacion.HasPublicationVenue = new();
+                publicacion.HasPublicationVenue.Type = pPublicacionScopus.hasPublicationVenue.type;
+                publicacion.HasPublicationVenue.Name = pPublicacionScopus.hasPublicationVenue.name;
+                publicacion.HasPublicationVenue.Issn = pPublicacionScopus.hasPublicationVenue.issn;
+                publicacion.HasPublicationVenue.Eissn = pPublicacionScopus.hasPublicationVenue.eissn;
             }
             if (pPublicacionScopus.hasMetric != null)
             {
-                publicacion.hasMetric = new List<Models.PublicationMetric>();
+                publicacion.HasMetric = new List<Models.PublicationMetric>();
                 foreach (PublicationAPI.ROs.Publication.Models.PublicationMetric item in pPublicacionScopus.hasMetric)
                 {
-                    Models.PublicationMetric metrica = new Models.PublicationMetric();
-                    metrica.citationCount = item.citationCount;
-                    metrica.metricName = item.metricName;
-                    publicacion.hasMetric.Add(metrica);
+                    Models.PublicationMetric metrica = new();
+                    metrica.CitationCount = item.citationCount;
+                    metrica.MetricName = item.metricName;
+                    publicacion.HasMetric.Add(metrica);
                 }
             }
 
@@ -1791,7 +1588,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             pTarget = ObtenerTextosFirmasNormalizadas(pTarget);
 
             //Almacenamos los scores de cada una de las palabras
-            List<float> scores = new List<float>();
+            List<float> scores = new();
 
             string[] pFirmaNormalizadoSplit = pFirma.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
             string[] pTargetNormalizadoSplit = pTarget.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
@@ -1848,7 +1645,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return 0;
         }
 
-        private string ObtenerTextosFirmasNormalizadas(string pText)
+        private static string ObtenerTextosFirmasNormalizadas(string pText)
         {
             pText = pText.ToLower();
             pText = pText.Trim();
@@ -1858,7 +1655,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             }
             pText = pText.Replace("-", " ");
             string textoNormalizado = pText.Normalize(NormalizationForm.FormD);
-            Regex reg = new Regex("[^a-zA-Z ]");
+            Regex reg = new("[^a-zA-Z ]");
             string textoSinAcentos = reg.Replace(textoNormalizado, "");
             while (textoSinAcentos.Contains(" del "))
             {
@@ -1880,7 +1677,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return textoSinAcentos.Trim();
         }
 
-        private float CompareSingleName(string pNameA, string pNameB)
+        private static float CompareSingleName(string pNameA, string pNameB)
         {
             HashSet<string> ngramsNameA = GetNGramas(pNameA, 2);
             HashSet<string> ngramsNameB = GetNGramas(pNameB, 2);
@@ -1890,9 +1687,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             return coeficiente_jackard;
         }
 
-        private HashSet<string> GetNGramas(string pText, int pNgramSize)
+        private static HashSet<string> GetNGramas(string pText, int pNgramSize)
         {
-            HashSet<string> ngramas = new HashSet<string>();
+            HashSet<string> ngramas = new();
             int textLength = pText.Length;
             if (pNgramSize == 1)
             {
@@ -1903,7 +1700,7 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 return ngramas;
             }
 
-            HashSet<string> ngramasaux = new HashSet<string>();
+            HashSet<string> ngramasaux = new();
             for (int i = 0; i < textLength; i++)
             {
                 foreach (string ngram in ngramasaux.ToList())
@@ -1945,16 +1742,16 @@ namespace PublicationConnect.ROs.Publications.Controllers
         #region --- Enriquecimiento
         public static ObjEnriquecimientoConPdf ObtenerObjEnriquecimientoPdf(Publication pPub)
         {
-            if (!string.IsNullOrEmpty(pPub.title) && !string.IsNullOrEmpty(pPub.Abstract))
+            if (!string.IsNullOrEmpty(pPub.Title) && !string.IsNullOrEmpty(pPub.Abstract))
             {
-                ObjEnriquecimientoConPdf objEnriquecimiento = new ObjEnriquecimientoConPdf();
+                ObjEnriquecimientoConPdf objEnriquecimiento = new();
                 objEnriquecimiento.rotype = "papers";
-                objEnriquecimiento.title = pPub.title;
+                objEnriquecimiento.title = pPub.Title;
                 objEnriquecimiento.abstract_ = pPub.Abstract;
 
-                if (!string.IsNullOrEmpty(pPub.pdf))
+                if (!string.IsNullOrEmpty(pPub.Pdf))
                 {
-                    objEnriquecimiento.pdfurl = pPub.pdf;
+                    objEnriquecimiento.pdfurl = pPub.Pdf;
                 }
 
                 return objEnriquecimiento;
@@ -1967,13 +1764,13 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
         public static ObjEnriquecimientoSinPdf ObtenerObjEnriquecimiento(Publication pPub)
         {
-            if (!string.IsNullOrEmpty(pPub.title))
+            if (!string.IsNullOrEmpty(pPub.Title))
             {
-                ObjEnriquecimientoSinPdf objEnriquecimiento = new ObjEnriquecimientoSinPdf("papers", pPub.title, pPub.Abstract);
+                ObjEnriquecimientoSinPdf objEnriquecimiento = new("papers", pPub.Title, pPub.Abstract);
 
                 if (string.IsNullOrEmpty(objEnriquecimiento.abstract_))
                 {
-                    objEnriquecimiento.abstract_ = pPub.title;
+                    objEnriquecimiento.abstract_ = pPub.Title;
                 }
 
                 return objEnriquecimiento;
@@ -1987,10 +1784,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
         public Dictionary<string, string> GetDescriptores(string pDataEnriquecimiento, string pTipo)
         {
             // Petición.
-            HttpResponseMessage response = null;
-            HttpClient client = new HttpClient();
+            HttpResponseMessage response;
+            HttpClient client = new();
             string result = string.Empty;
-            var contentData = new StringContent(pDataEnriquecimiento, System.Text.Encoding.UTF8, "application/json");
+            var contentData = new StringContent(pDataEnriquecimiento, Encoding.UTF8, "application/json");
 
             int intentos = 10;
             while (true)
@@ -2021,10 +1818,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
             if (!string.IsNullOrEmpty(result))
             {
-                Topics_enriquecidos data = null;
+                TopicsEnriquecidos data;
                 try
                 {
-                    data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
+                    data = JsonConvert.DeserializeObject<TopicsEnriquecidos>(result);
                 }
                 catch (Exception)
                 {
@@ -2033,12 +1830,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
 
                 if (data != null)
                 {
-                    Dictionary<string, string> dicTopics = new Dictionary<string, string>();
-                    foreach (Knowledge_enriquecidos item in data.topics)
+                    Dictionary<string, string> dicTopics = new();
+                    foreach (KnowledgeEnriquecidos item in data.Topics)
                     {
-                        if (!dicTopics.ContainsKey(item.word))
+                        if (!dicTopics.ContainsKey(item.Word))
                         {
-                            dicTopics.Add(item.word, item.porcentaje);
+                            dicTopics.Add(item.Word, item.Porcentaje);
                         }
                     }
                     return dicTopics;

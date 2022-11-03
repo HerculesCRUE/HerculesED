@@ -113,7 +113,7 @@ namespace PublicationConnect
             if (string.IsNullOrEmpty(_LogPath))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string logPath = string.Empty;
+                string logPath;
                 if (environmentVariables.Contains("LogPath"))
                 {
                     logPath = environmentVariables["LogPath"] as string;
