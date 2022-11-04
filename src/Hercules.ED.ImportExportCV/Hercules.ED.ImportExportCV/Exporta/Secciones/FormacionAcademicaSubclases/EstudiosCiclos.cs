@@ -1,9 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +9,12 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
     public class EstudiosCiclos : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications",
-            "http://w3id.org/roh/firstSecondCycles", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/qualifications",
+            "http://w3id.org/roh/firstSecondCycles",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "academicdegree";
 
         public EstudiosCiclos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// <param name="listaId"></param>
         public void ExportaEstudiosCiclos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresEstCic = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
             Dictionary<string, Entity> listaEntidadesEstCic = GetListLoadedEntity(listadoIdentificadoresEstCic, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesEstCic)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "020.010.010.000",
                     Items = new List<CVNObject>()

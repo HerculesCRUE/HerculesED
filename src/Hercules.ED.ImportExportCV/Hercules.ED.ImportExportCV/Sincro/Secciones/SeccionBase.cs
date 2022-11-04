@@ -1030,11 +1030,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 propertyIDs.RemoveAt(propertyIDs.Count - 1);
                 propertyIDs.Add(pPropertyCV);
                 List<string> entityIDs = new()
-                    {
-                        idTab,
-                        idEntity,
-                        entityCVID
-                    };
+                {
+                    idTab,
+                    idEntity,
+                    entityCVID
+                };
 
                 Entity entityToLoad = new();
                 entityToLoad.id = entityCVID;
@@ -1224,7 +1224,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new()
                 {
                     {
-                        mResourceApi.GetShortGuid(pCvID), listaTriples
+                        mResourceApi.GetShortGuid(pCvID),
+                        listaTriples
                     }
                 };
 
@@ -1618,7 +1619,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private OntologyEntity ProcesarEntidadAuxiliar(string pProperty, EntityRdf pEntidadAuxiliar)
         {
-            List<string> prefList = new ();
+            List<string> prefList = new();
             foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
                 prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");

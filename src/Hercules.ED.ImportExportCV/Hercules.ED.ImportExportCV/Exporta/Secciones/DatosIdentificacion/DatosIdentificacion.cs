@@ -3,14 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
 {
     public class DatosIdentificacion : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/personalData" };
+        private readonly List<string> propiedadesItem = new() { "http://w3id.org/roh/personalData" };
 
         public DatosIdentificacion(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
@@ -32,7 +31,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
                 return;
             }
 
-            CvnItemBean itemBean = new ()
+            CvnItemBean itemBean = new()
             {
                 Code = "000.010.000.000",
                 Items = new List<CVNObject>()
@@ -48,11 +47,13 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.dni), "000.010.000.100", entity);
 
             //Si no he insertado el DNI busco NIE
-            if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.100"))) {
+            if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.100")))
+            {
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.nie), "000.010.000.110", entity);
 
                 //Si no he insertado DNI o NIE busco el pasaporte
-                if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.110"))) {
+                if (!itemBean.Items.Any(x => x.Code.Equals("000.010.000.110")))
+                {
                     UtilityExportar.AddCvnItemBeanCvnString(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.DatosIdentificacion.pasaporte), "000.010.000.120", entity);
                 }
             }

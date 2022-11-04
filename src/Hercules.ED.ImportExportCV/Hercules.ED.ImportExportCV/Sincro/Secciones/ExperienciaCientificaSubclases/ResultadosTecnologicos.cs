@@ -20,8 +20,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionResTec,"descripcion",Descripcion),
-                new DisambiguationData(configFechaResTec,"fecha",Fecha)
+                new DisambiguationData(configDescripcionResTec, "descripcion", Descripcion),
+                new DisambiguationData(configFechaResTec, "fecha", Fecha)
             };
             return data;
         }
@@ -31,7 +31,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosResTec = new ();
+            Dictionary<string, DisambiguableEntity> resultadosResTec = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -48,7 +48,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ResultadosTecnologicos resultadosTecnologicos = new ()
+                    ResultadosTecnologicos resultadosTecnologicos = new()
                     {
                         ID = fila["item"].value,
                         Descripcion = fila["itemTitle"].value,

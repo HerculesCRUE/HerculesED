@@ -3,17 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class RedesCooperacion :SeccionBase
+    public class RedesCooperacion : SeccionBase
     {
 
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/networks", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/networks",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "network";
         public RedesCooperacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -25,9 +28,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// </summary>
         /// <param name="MultilangProp"></param>
         /// <param name="listaId"></param>
-        public void ExportaRedesCooperacion( Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
+        public void ExportaRedesCooperacion(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresRedCoop = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +42,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesRedCoop = GetListLoadedEntity(listadoIdentificadoresRedCoop, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesRedCoop)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "060.030.040.000",
                     Items = new List<CVNObject>()
@@ -75,7 +78,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.030.040.150", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopFechaInicio),
                     "060.030.040.160", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, 
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,
                     "060.030.040.170", keyValue.Value);
 
                 // Entidad Seleccion
@@ -87,7 +90,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.030.040.140", keyValue.Value);
 
                 // Entidades Participantes
-                List<Tuple<string, string, string>> dicCodigos = new ();
+                List<Tuple<string, string, string>> dicCodigos = new();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "060.030.040.070",
                     UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.redesCoopEntidadParticipanteNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "060.030.040.090",

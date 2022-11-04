@@ -85,7 +85,7 @@
         public const string formacionAcademicaFacultadEscuela = "http://w3id.org/roh/center";
         public const string formacionAcademicaFechaInicio = "http://vivoweb.org/ontology/core#start";
         public const string formacionAcademicaFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
-      
+
         /// <summary>
         /// Tutorias académicas de estudiantes - 030.050.000.000
         /// </summary>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Models
+﻿namespace Models
 {
     public class PetitionStatus
     {
@@ -23,7 +18,7 @@ namespace Models
             actualSubWorks = 0;
             actualSubTotalWorks = 0;
         }
-        
+
         public PetitionStatus(int actualWork, int totalWorks, string actualWorkTitle)
         {
             this.actualWork = actualWork;

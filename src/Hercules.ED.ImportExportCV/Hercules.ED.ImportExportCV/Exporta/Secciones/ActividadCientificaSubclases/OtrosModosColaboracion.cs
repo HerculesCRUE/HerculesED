@@ -1,18 +1,20 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class OtrosModosColaboracion:SeccionBase
+    public class OtrosModosColaboracion : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/otherCollaborations", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/otherCollaborations",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "collaboration";
         public OtrosModosColaboracion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -37,7 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesOtrModCol = GetListLoadedEntity(listadoIdentificadoresOtrModCol, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesOtrModCol)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "060.020.020.000",
                     Items = new List<CVNObject>()
@@ -56,23 +58,23 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabFechaInicio),
                     "060.020.020.120", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,
-                    "060.020.020.130" ,keyValue.Value);
+                    "060.020.020.130", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabDescripcionColaboracion),
                     "060.020.020.140", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabResultadosRelevantes),
                     "060.020.020.150", keyValue.Value);
 
                 // Autores
-                Dictionary<string, string> listadoPropiedadesAutor = new ();
+                Dictionary<string, string> listadoPropiedadesAutor = new();
                 listadoPropiedadesAutor.Add("Orden", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabOrdenInvestigador));
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabFirmaInvestigador));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabNombreInvestigador));
                 listadoPropiedadesAutor.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabPrimApellInvestigador));
                 listadoPropiedadesAutor.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabSegApellInvestigador));
-                UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean,listadoPropiedadesAutor, "060.020.020.070", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "060.020.020.070", keyValue.Value);
 
                 // Entidades Participantes
-                List<Tuple<string, string, string>> dicCodigos = new ();
+                List<Tuple<string, string, string>> dicCodigos = new();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "060.020.020.080",
                     UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasColabEntidadesParticipantesNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "060.020.020.170",

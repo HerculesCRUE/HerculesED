@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +10,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class PublicacionesDocentes : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new() { "http://w3id.org/roh/teachingExperience",
-            "http://w3id.org/roh/teachingPublications", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/teachingExperience",
+            "http://w3id.org/roh/teachingPublications",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "teachingpublication";
 
         public PublicacionesDocentes(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,9 +28,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// </summary>
         /// <param name="MultilangProp"></param>
         /// <param name="listaId"></param>
-        public void ExportaPublicacionesDocentes( Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
+        public void ExportaPublicacionesDocentes(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresPubDoc = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -40,7 +43,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesPubDoc = GetListLoadedEntity(listadoIdentificadoresPubDoc, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesPubDoc)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "030.070.000.000",
                     Items = new List<CVNObject>()
@@ -56,7 +59,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     : null;
                 if (!string.IsNullOrEmpty(posicionFirma))
                 {
-                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean,"030.070.000.040", posicionFirma);
+                    UtilityExportar.AddCvnItemBeanCvnDouble(itemBean, "030.070.000.040", posicionFirma);
                 }
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.publicacionDocenteFechaElaboracion),
                     "030.070.000.050", keyValue.Value);

@@ -3,15 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 
 namespace ImportadorWebCV.Exporta.Secciones
 {
     public class TextoLibre : SeccionBase
     {
-        readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/freeTextSummary",
-            "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
+        readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/freeTextSummary",
+            "http://w3id.org/roh/freeTextSummaryValues",
+            "http://w3id.org/roh/freeTextSummaryValuesCV"
+        };
 
         public TextoLibre(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
@@ -25,8 +28,8 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// <param name="listaId"></param>
         public void ExportaTextoLibre(Entity entity, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
-            List<string> opciones = new ();
+            List<CvnItemBean> listado = new();
+            List<string> opciones = new();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -46,7 +49,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             string propResumenTFG = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b1DescripcionTFG)).Select(x => x.prop).FirstOrDefault());
             string propResumenTFM = UtilityExportar.EliminarRDF(entity.properties.Where(x => x.prop.EndsWith(Variables.TextoLibre.b2DescripcionTFM)).Select(x => x.prop).FirstOrDefault());
 
-            CvnItemBean itemBean = new ()
+            CvnItemBean itemBean = new()
             {
                 Code = "070.010.000.000",
                 Items = new List<CVNObject>()
@@ -90,7 +93,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                         entity.properties.Where(x => UtilityExportar.EliminarRDF(x.prop).EndsWith(propResumenTFM)).Select(x => x.values).First().First().Split("@@@").Last()
                         : null;
                 }
-            }            
+            }
 
             //Separación de los diferentes apartados por los titulos del FECYT. 
             string resumen = resumenLibre

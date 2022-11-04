@@ -35,7 +35,7 @@
         public const string situacionProfesionalInteresDocencia = "http://purl.org/ontology/bibo/abstract";
         public const string situacionProfesionalAmbitoActividadGestion = "http://w3id.org/roh/scopeManagementActivity";
         public const string situacionProfesionalAmbitoActividadGestionOtros = "http://w3id.org/roh/scopeManagementActivityOther";
-        
+
         /// <summary>
         /// Cargos y actividades desempeñados con anterioridad - 010.020.000.000
         /// </summary>

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Models;
+﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace Hercules.ED.ImportExportCV.Models
 {

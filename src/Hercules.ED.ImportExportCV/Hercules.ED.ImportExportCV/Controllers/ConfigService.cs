@@ -21,7 +21,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private string DenormalizerQueueRabbit { get; set; }
 
 
-        
+
         public string GetVersion()
         {
             if (string.IsNullOrEmpty(Version))
@@ -93,7 +93,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
             return PSS_PDF;
         }
 
-        public string GetUrlEnriquecimiento() {
+        public string GetUrlEnriquecimiento()
+        {
             if (string.IsNullOrEmpty(UrlEnriquecimiento))
             {
                 string connectionString = string.Empty;
@@ -112,8 +113,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
             return UrlEnriquecimiento;
         }
-        
-        public string GetUrlServicioExterno() {
+
+        public string GetUrlServicioExterno()
+        {
             if (string.IsNullOrEmpty(UrlServicioExterno))
             {
                 string connectionString = string.Empty;

@@ -352,7 +352,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private List<Entity> GetCargosActividades(List<CvnItemBean> listadoDatos, [Optional] PetitionStatus petitionStatus)
         {
-            List<Entity> listado = new ();
+            List<Entity> listado = new();
 
             List<CvnItemBean> listadoCargosActividades = listadoDatos.Where(x => x.Code.Equals("010.020.000.000")).ToList();
             if (listadoCargosActividades.Count > 0)

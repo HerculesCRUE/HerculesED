@@ -22,9 +22,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionPropIndInt,"descripcion",Descripcion),
-                new DisambiguationData(configFechaPropIndInt,"fecha",Fecha),
-                new DisambiguationData(configEntTitPropIndInt,"entidadTitular",EntidadTitular)
+                new DisambiguationData(configDescripcionPropIndInt, "descripcion", Descripcion),
+                new DisambiguationData(configFechaPropIndInt, "fecha", Fecha),
+                new DisambiguationData(configEntTitPropIndInt, "entidadTitular", EntidadTitular)
             };
             return data;
         }
@@ -34,7 +34,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosPropIndInt = new ();
+            Dictionary<string, DisambiguableEntity> resultadosPropIndInt = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -51,7 +51,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ExperienciaCientificaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    PropiedadIndustrialIntelectual propII = new ()
+                    PropiedadIndustrialIntelectual propII = new()
                     {
                         ID = fila["item"].value,
                         Descripcion = fila["itemTitle"].value,

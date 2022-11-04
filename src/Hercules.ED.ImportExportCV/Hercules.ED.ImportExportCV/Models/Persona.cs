@@ -42,9 +42,10 @@ namespace Hercules.ED.ImportExportCV.Models
                     mDocumentos = value;
                 }
             }
-        }        
+        }
         private HashSet<string> mOrganizacion { get; set; }
-        public HashSet<string> organizacion {
+        public HashSet<string> organizacion
+        {
             get
             {
                 return mOrganizacion;
@@ -62,7 +63,8 @@ namespace Hercules.ED.ImportExportCV.Models
             }
         }
         private HashSet<string> mDepartamento { get; set; }
-        public HashSet<string> departamento {
+        public HashSet<string> departamento
+        {
             get
             {
                 return mDepartamento;
@@ -80,7 +82,8 @@ namespace Hercules.ED.ImportExportCV.Models
             }
         }
         private HashSet<string> mGrupos { get; set; }
-        public HashSet<string> grupos {
+        public HashSet<string> grupos
+        {
             get
             {
                 return mGrupos;
@@ -98,7 +101,8 @@ namespace Hercules.ED.ImportExportCV.Models
             }
         }
         private HashSet<string> mProyectos { get; set; }
-        public HashSet<string> proyectos{
+        public HashSet<string> proyectos
+        {
             get
             {
                 return mProyectos;
@@ -121,7 +125,7 @@ namespace Hercules.ED.ImportExportCV.Models
             type = DisambiguationDataConfigType.algoritmoNombres,
             score = 1f
         };
-        
+
         private static readonly DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
         {
             type = DisambiguationDataConfigType.equalsItemList,
@@ -247,7 +251,7 @@ namespace Hercules.ED.ImportExportCV.Models
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new ()
+            List<DisambiguationData> data = new()
             {
                 new DisambiguationData()
                 {

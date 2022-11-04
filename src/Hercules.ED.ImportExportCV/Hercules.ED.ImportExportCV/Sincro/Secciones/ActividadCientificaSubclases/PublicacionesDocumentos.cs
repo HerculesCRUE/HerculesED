@@ -3,11 +3,9 @@ using Gnoss.ApiWrapper.ApiModel;
 using Hercules.CommonsEDMA.DisambiguationEngine.Models;
 using Hercules.ED.ImportExportCV.Models;
 using Models;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -64,8 +62,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configTituloPubDoc,"descripcion",Title),
-                new DisambiguationData(configAutoresPubDoc,"autores",Autores)
+                new DisambiguationData(configTituloPubDoc, "descripcion", Title),
+                new DisambiguationData(configAutoresPubDoc, "autores", Autores)
             };
             return data;
         }
@@ -83,7 +81,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosPubDoc = new ();
+            Dictionary<string, DisambiguableEntity> resultadosPubDoc = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();

@@ -22,9 +22,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configNombreEventoCurSem,"nombreEvento",NombreEvento),
-                new DisambiguationData(configFechaCurSem,"fecha",Fecha),
-                new DisambiguationData(configEntOrgCurSem,"entidadOrganizadora",EntidadOrganizadora)
+                new DisambiguationData(configNombreEventoCurSem, "nombreEvento", NombreEvento),
+                new DisambiguationData(configFechaCurSem, "fecha", Fecha),
+                new DisambiguationData(configEntOrgCurSem, "entidadOrganizadora", EntidadOrganizadora)
             };
             return data;
         }
@@ -42,7 +42,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosCurSem = new ();
+            Dictionary<string, DisambiguableEntity> resultadosCurSem = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -59,7 +59,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    CursosSeminarios cursos = new ()
+                    CursosSeminarios cursos = new()
                     {
                         ID = fila["item"].value,
                         NombreEvento = fila["itemTitle"].value,

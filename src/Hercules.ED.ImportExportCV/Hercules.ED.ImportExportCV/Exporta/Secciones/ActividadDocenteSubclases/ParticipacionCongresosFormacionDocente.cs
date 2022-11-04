@@ -1,9 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +9,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class ParticipacionCongresosFormacionDocente : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience",
-            "http://w3id.org/roh/teachingCongress", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/teachingExperience",
+            "http://w3id.org/roh/teachingCongress",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "teachingcongress";
 
         public ParticipacionCongresosFormacionDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaParticipacionCongresos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresParCon = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesParCon = GetListLoadedEntity(listadoIdentificadoresParCon, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesParCon)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "030.090.000.000",
                     Items = new List<CVNObject>()

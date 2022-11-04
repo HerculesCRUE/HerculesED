@@ -13,7 +13,7 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
         public string Nombre { get; set; }
         public string Categoria { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombreSitProf = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configNombreSitProf = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
 
         private static readonly DisambiguationDataConfig configCategoriaSitProf = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
@@ -22,7 +22,7 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
             List<DisambiguationData> data = new()
             {
                 new DisambiguationData(configNombreSitProf, "nombre", Nombre),
-                new DisambiguationData(configCategoriaSitProf,"categoria",Categoria)
+                new DisambiguationData(configCategoriaSitProf, "categoria", Categoria)
             };
 
             return data;
@@ -41,7 +41,7 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosSitProf = new ();
+            Dictionary<string, DisambiguableEntity> resultadosSitProf = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -58,7 +58,7 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    SituacionProfesionalActual situacion = new ()
+                    SituacionProfesionalActual situacion = new()
                     {
                         ID = fila["item"].value,
                         Nombre = fila["itemTitle"].value,

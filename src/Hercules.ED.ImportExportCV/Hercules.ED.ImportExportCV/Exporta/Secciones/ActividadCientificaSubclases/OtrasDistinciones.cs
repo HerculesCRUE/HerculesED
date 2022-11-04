@@ -1,9 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +9,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class OtrasDistinciones : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity",
-            "http://w3id.org/roh/otherDistinctions", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/otherDistinctions",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "accreditation";
         public OtrasDistinciones(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -26,7 +28,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaOtrasDistinciones(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresOtrDis = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -38,7 +40,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesOtrDis = GetListLoadedEntity(listadoIdentificadoresOtrDis, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesOtrDis)
             {
-                CvnItemBean itemBean = new ();
+                CvnItemBean itemBean = new();
                 itemBean.Code = "060.030.060.000";
                 if (itemBean.Items == null)
                 {

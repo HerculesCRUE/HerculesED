@@ -3,16 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class ProduccionCientifica:SeccionBase
+    public class ProduccionCientifica : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/scientificProduction", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/scientificProduction",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "scientificproduction";
         public ProduccionCientifica(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -27,7 +30,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         {
             int contador = 0;
 
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresProdCie = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -40,12 +43,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesProdCie)
             {
                 //solo se permite 1 valor en la exportación de la version 1.4.0
-                if(versionExportacion.Equals("1_4_0") && contador > 0)
+                if (versionExportacion.Equals("1_4_0") && contador > 0)
                 {
                     break;
                 }
 
-                CvnItemBean itemBean = new ();
+                CvnItemBean itemBean = new();
                 itemBean.Code = "060.010.000.000";
                 if (itemBean.Items == null)
                 {
@@ -53,7 +56,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 }
 
                 //En la versión 1.4 no se envía, en la 1.4.3 sí.
-                if (!versionExportacion.Equals("1_4_0")) {
+                if (!versionExportacion.Equals("1_4_0"))
+                {
                     UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceH),
                         "060.010.000.030", keyValue.Value);
                     UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.prodCientificaFuenteIndiceHOtros),

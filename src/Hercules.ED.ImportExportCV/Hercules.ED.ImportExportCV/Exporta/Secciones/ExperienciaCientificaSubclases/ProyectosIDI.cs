@@ -3,17 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
-    public class ProyectosIDI:SeccionBase
+    public class ProyectosIDI : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience", 
-            "http://w3id.org/roh/competitiveProjects", "http://w3id.org/roh/relatedCompetitiveProjectCV",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificExperience",
+            "http://w3id.org/roh/competitiveProjects",
+            "http://w3id.org/roh/relatedCompetitiveProjectCV",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "project";
         public ProyectosIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -27,7 +30,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaProyectosIDI(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadoresProyIdi = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
@@ -43,7 +46,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
             Dictionary<string, Entity> listaEntidadesProyIdi = GetListLoadedEntityCV(listadoIdentificadoresProyIdi, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesProyIdi)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "050.020.010.000",
                     Items = new List<CVNObject>()
@@ -77,7 +80,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDINombreProgramaFinanciacion),
                     "050.020.010.250", keyValue.Value);
-               
+
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDICodEntidadFinanciacion),
                     "050.020.010.260", keyValue.Value);
 
@@ -93,7 +96,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 }
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIResultadosRelevantes),
                     "050.020.010.340", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion ,UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaFinalizacion),
+                UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, seccion, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIFechaFinalizacion),
                     "050.020.010.410", keyValue.Value);
 
                 // Properties_cv
@@ -168,7 +171,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoAutores, "050.020.010.140", keyValue.Value);
 
                 // Entidad financiadora
-                List<Tuple<string, string, string>> dicEntidad = new ();
+                List<Tuple<string, string, string>> dicEntidad = new();
                 dicEntidad.Add(new Tuple<string, string, string>("EntityBean", "050.020.010.190",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.proyectosIDIEntidadFinanciadoraNombre)));
                 dicEntidad.Add(new Tuple<string, string, string>("String", "050.020.010.210",

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +10,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class ParticipacionProyectosInnovacionDocente : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience",
-            "http://w3id.org/roh/teachingProjects", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/teachingExperience",
+            "http://w3id.org/roh/teachingProjects",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "teachingproject";
         public ParticipacionProyectosInnovacionDocente(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -25,7 +28,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaParticipacionProyectos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresParPro = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -37,7 +40,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesParPro = GetListLoadedEntity(listadoIdentificadoresParPro, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesParPro)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "030.080.000.000",
                     Items = new List<CVNObject>()
@@ -105,9 +108,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 List<Tuple<string, string, string>> dicCodigos = new();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "030.080.000.150",
                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaEntidadParticipanteNombre)));
-                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170", 
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.170",
                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipante)));
-                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.180", 
+                dicCodigos.Add(new Tuple<string, string, string>("String", "030.080.000.180",
                     UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaTipoEntidadParticipanteOtros)));
 
                 UtilityExportar.AddCvnItemBeanCvnCodeGroup(itemBean, dicCodigos,
@@ -123,7 +126,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 listadoIP.Add("SegundoApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.participacionInnovaSegundoApellidoIP));
 
                 UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoIP,
-                    "030.080.000.220",keyValue.Value);
+                    "030.080.000.220", keyValue.Value);
 
                 listado.Add(itemBean);
             }

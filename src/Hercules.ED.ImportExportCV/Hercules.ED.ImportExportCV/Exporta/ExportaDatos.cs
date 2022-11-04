@@ -10,7 +10,6 @@ using ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases;
 using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 

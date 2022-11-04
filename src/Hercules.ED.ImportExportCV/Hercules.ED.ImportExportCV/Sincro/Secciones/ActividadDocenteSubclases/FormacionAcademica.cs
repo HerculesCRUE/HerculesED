@@ -25,10 +25,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configTituloForAca,"titulo",Titulo),
-                new DisambiguationData(configNombreForAca,"nombreAsignatura",NombreAsignatura),
-                new DisambiguationData(configFechaForAca,"fecha",Fecha),
-                new DisambiguationData(configEntReaForAca,"entidadRealizacion",EntidadRealizacion)
+                new DisambiguationData(configTituloForAca, "titulo", Titulo),
+                new DisambiguationData(configNombreForAca, "nombreAsignatura", NombreAsignatura),
+                new DisambiguationData(configFechaForAca, "fecha", Fecha),
+                new DisambiguationData(configEntReaForAca, "entidadRealizacion", EntidadRealizacion)
             };
             return data;
         }
@@ -46,7 +46,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosForAca = new ();
+            Dictionary<string, DisambiguableEntity> resultadosForAca = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -64,7 +64,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    FormacionAcademica formacionAcademica = new ()
+                    FormacionAcademica formacionAcademica = new()
                     {
                         ID = fila["item"].value,
                         Titulo = fila["itemTitle"].value,

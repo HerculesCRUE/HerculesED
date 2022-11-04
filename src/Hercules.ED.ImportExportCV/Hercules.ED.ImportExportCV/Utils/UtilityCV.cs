@@ -1,10 +1,5 @@
-﻿using Gnoss.ApiWrapper;
-using Gnoss.ApiWrapper.Model;
-using Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Utils
 {
@@ -19,11 +14,11 @@ namespace Utils
         /// Propiedad para comprobar si no es editable, tiene que tener en alguna propiedad
         /// de las claves algún valor de los valores
         /// </summary>
-        private static Dictionary<string, List<string>> PropertyNotEditable = new ()
+        private static Dictionary<string, List<string>> PropertyNotEditable = new()
         {
             { "http://w3id.org/roh/crisIdentifier", new List<string>() },
-            { "http://w3id.org/roh/isValidated", new List<string>(){ "true"} },
-            { "http://w3id.org/roh/validationStatusPRC", new List<string>(){ "pendiente", "validado" } }
+            { "http://w3id.org/roh/isValidated", new List<string>() { "true" } },
+            { "http://w3id.org/roh/validationStatusPRC", new List<string>() { "pendiente", "validado" } }
         };
 
         public static Dictionary<string, List<string>> GetPropertyNotEditable()
@@ -31,20 +26,21 @@ namespace Utils
             return PropertyNotEditable;
         }
 
-        private static Dictionary<string, string> dicPrefix = new () {
+        private static Dictionary<string, string> dicPrefix = new()
+        {
             { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
-            {"rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
-            {"foaf", "http://xmlns.com/foaf/0.1/" },
-            {"vivo", "http://vivoweb.org/ontology/core#" },
-            {"owl", "http://www.w3.org/2002/07/owl#" },
-            {"bibo", "http://purl.org/ontology/bibo/" },
-            {"roh", "http://w3id.org/roh/" },
-            {"dct", "http://purl.org/dc/terms/" },
-            {"xsd", "http://www.w3.org/2001/XMLSchema#" },
-            {"obo", "http://purl.obolibrary.org/obo/" },
-            {"vcard", "https://www.w3.org/2006/vcard/ns#" },
-            {"dc", "http://purl.org/dc/elements/1.1/" },
-            {"gn", "http://www.geonames.org/ontology#" }
+            { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
+            { "foaf", "http://xmlns.com/foaf/0.1/" },
+            { "vivo", "http://vivoweb.org/ontology/core#" },
+            { "owl", "http://www.w3.org/2002/07/owl#" },
+            { "bibo", "http://purl.org/ontology/bibo/" },
+            { "roh", "http://w3id.org/roh/" },
+            { "dct", "http://purl.org/dc/terms/" },
+            { "xsd", "http://www.w3.org/2001/XMLSchema#" },
+            { "obo", "http://purl.obolibrary.org/obo/" },
+            { "vcard", "https://www.w3.org/2006/vcard/ns#" },
+            { "dc", "http://purl.org/dc/elements/1.1/" },
+            { "gn", "http://www.geonames.org/ontology#" }
         };
 
         public static Dictionary<string, string> GetDicPrefix()
@@ -89,6 +85,6 @@ namespace Utils
             }
             return null;
         }
-                
+
     }
 }

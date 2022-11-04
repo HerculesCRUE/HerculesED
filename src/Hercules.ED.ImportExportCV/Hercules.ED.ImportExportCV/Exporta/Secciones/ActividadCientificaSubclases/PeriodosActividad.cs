@@ -2,17 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class PeriodosActividad:SeccionBase
+    public class PeriodosActividad : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/researchActivityPeriods", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/researchActivityPeriods",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "accreditation";
         public PeriodosActividad(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -37,7 +39,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
             Dictionary<string, Entity> listaEntidadesPerAct = GetListLoadedEntity(listadoIdentificadoresPerAct, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesPerAct)
             {
-                CvnItemBean itemBean = new ();
+                CvnItemBean itemBean = new();
                 itemBean.Code = "060.030.070.000";
                 if (itemBean.Items == null)
                 {

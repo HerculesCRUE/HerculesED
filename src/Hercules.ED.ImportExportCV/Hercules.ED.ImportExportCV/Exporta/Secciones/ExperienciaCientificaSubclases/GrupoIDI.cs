@@ -3,17 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
-    public class GrupoIDI:SeccionBase
+    public class GrupoIDI : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience",
-            "http://w3id.org/roh/groups","http://w3id.org/roh/relatedGroupCV",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificExperience",
+            "http://w3id.org/roh/groups",
+            "http://w3id.org/roh/relatedGroupCV",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "group";
         public GrupoIDI(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -26,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaGrupoIDI(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
             List<Tuple<string, string, string>> listadoIdentificadoresGruIdi = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
@@ -39,9 +42,9 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 }
             }
             Dictionary<string, Entity> listaEntidadesGruIdi = GetListLoadedEntityCV(listadoIdentificadoresGruIdi, graph, MultilangProp);
-            foreach(KeyValuePair<string, Entity> keyValue in listaEntidadesGruIdi)
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesGruIdi)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "050.010.000.000",
                     Items = new List<CVNObject>()
@@ -53,7 +56,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.010.000.020", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDICodNormalizado),
                     "050.010.000.030", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIPaisRadicacion), 
+                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIPaisRadicacion),
                     "050.010.000.040", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDICCAARadicacion),
                     "050.010.000.050", keyValue.Value);
@@ -71,8 +74,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 
                 UtilityExportar.AddCvnItemBeanCvnDateDayMonthYear(itemBean, UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.grupoIDIFechaInicio),
                     "050.010.000.140", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean,"050.010.000.150", keyValue.Value);
-               
+                UtilityExportar.AddCvnItemBeanCvnDuration(itemBean, "050.010.000.150", keyValue.Value);
+
                 string numTesisDirigidas = UtilityExportar.Comprobar(keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.grupoIDINumTesisDirigidas))) ?
                     keyValue.Value.properties.Where(x => x.prop.Equals(Variables.ExperienciaCientificaTecnologica.grupoIDINumTesisDirigidas)).Select(x => x.values).FirstOrDefault().FirstOrDefault()
                     : null;

@@ -1,9 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +9,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
     public class DireccionTesis : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience",
-            "http://w3id.org/roh/thesisSupervisions", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/teachingExperience",
+            "http://w3id.org/roh/thesisSupervisions",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "thesissupervision";
 
         public DireccionTesis(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaDireccionTesis(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresDirTes = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesDirTes = GetListLoadedEntity(listadoIdentificadoresDirTes, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesDirTes)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "030.040.000.000",
                     Items = new List<CVNObject>()
@@ -83,7 +85,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.040.000.110", keyValue.Value);
 
                 //Alumno
-                Dictionary<string, string> listadoPropiedadesAlumno = new ();
+                Dictionary<string, string> listadoPropiedadesAlumno = new();
                 listadoPropiedadesAlumno.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisAlumnoFirma));
                 listadoPropiedadesAlumno.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisAlumnoNombre));
                 listadoPropiedadesAlumno.Add("PrimerApellido", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisAlumnoPrimerApellido));
@@ -92,7 +94,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedadesAlumno, "030.040.000.120", keyValue.Value);
 
                 //Codirectores
-                Dictionary<string, string> listadoPropiedadesCodirector = new ();
+                Dictionary<string, string> listadoPropiedadesCodirector = new();
                 listadoPropiedadesCodirector.Add("Orden", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisCodirectorTesisOrden));
                 listadoPropiedadesCodirector.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisCodirectorTesisFirma));
                 listadoPropiedadesCodirector.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadDocente.direccionTesisCodirectorTesisNombre));

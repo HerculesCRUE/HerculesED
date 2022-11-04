@@ -14,17 +14,17 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
         public string EntidadTitulacion { get; set; }
         public string Fecha { get; set; }
 
-        private static readonly DisambiguationDataConfig configDescripcionOtrFormPos = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configFechaOtrFormPos = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configEntTitOtrFormPos = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configDescripcionOtrFormPos = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configFechaOtrFormPos = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configEntTitOtrFormPos = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionOtrFormPos,"descripcion" , Descripcion),
-                new DisambiguationData(configFechaOtrFormPos, "fecha",Fecha),
-                new DisambiguationData(configEntTitOtrFormPos,"entidadTitulacion",EntidadTitulacion)
+                new DisambiguationData(configDescripcionOtrFormPos, "descripcion", Descripcion),
+                new DisambiguationData(configFechaOtrFormPos, "fecha", Fecha),
+                new DisambiguationData(configEntTitOtrFormPos, "entidadTitulacion", EntidadTitulacion)
             };
             return data;
         }
@@ -42,7 +42,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosOtrFormPos = new ();
+            Dictionary<string, DisambiguableEntity> resultadosOtrFormPos = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -60,7 +60,7 @@ namespace ImportadorWebCV.Sincro.Secciones.FormacionAcademicaSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    OtraFormacionPosgrado otraFormacion = new ()
+                    OtraFormacionPosgrado otraFormacion = new()
                     {
                         ID = fila["item"].value,
                         Descripcion = fila["itemTitle"].value,

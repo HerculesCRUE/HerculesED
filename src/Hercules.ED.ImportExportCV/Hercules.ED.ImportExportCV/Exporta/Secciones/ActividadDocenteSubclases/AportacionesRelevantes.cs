@@ -1,18 +1,20 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
 {
-    public class AportacionesRelevantes:SeccionBase
+    public class AportacionesRelevantes : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/teachingExperience", 
-            "http://w3id.org/roh/mostRelevantContributions", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/teachingExperience",
+            "http://w3id.org/roh/mostRelevantContributions",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "activity";
 
         public AportacionesRelevantes(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
         /// <param name="listaId"></param>
         public void ExportaAportacionesRelevantes(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresApoRel = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
             Dictionary<string, Entity> listaEntidadesApoRel = GetListLoadedEntity(listadoIdentificadoresApoRel, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesApoRel)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "030.110.000.000",
                     Items = new List<CVNObject>()
@@ -61,8 +63,8 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadDocenteSubclases
                     "030.110.000.020", keyValue.Value);
 
                 //Entidad organizadora
-                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean,UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre),
-                    "030.110.000.070",keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnEntityBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre),
+                    "030.110.000.070", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVTipoEntidadOrganizadora),
                     "030.110.000.090", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadDocente.aportacionesCVTipoEntidadOrganizadoraOtros),
