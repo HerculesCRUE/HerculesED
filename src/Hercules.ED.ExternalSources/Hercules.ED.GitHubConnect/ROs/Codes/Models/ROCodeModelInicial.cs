@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace GitHubAPI.ROs.Codes.Models.Inicial
-{
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
-    public class Owner
+{    public class Owner
     {
         public string login { get; set; }
         public int id { get; set; }
@@ -114,7 +112,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public Permissions permissions { get; set; }
     }
 
-//---------------------------------------------------------------//
     public class FullLicense
     {
         public string name { get; set; }
@@ -128,7 +125,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public string type { get; set; }
         public string content { get; set; }
         public string encoding { get; set; }
-        //public Links _links { get; set; }
         public License license { get; set; }
     }
 
@@ -142,7 +138,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public string html_url { get; set; }
     } 
 
-    //-----------------------------------------
     public class FileFolder
     {
         public string type { get; set; }
@@ -164,7 +159,7 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public string self { get; set; }
         public string html { get; set; }
     }
-    //--------------------------
+
     public class User
     {
         public string login { get; set; }
@@ -187,22 +182,15 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public bool site_admin { get; set; }
         public int contributions { get; set; }
     }
-    //----------------------
+  
     public class Commit
     {
-        // public User author { get; set; }
-        //public User committer { get; set; }
         public string message { get; set; }
-        // public Tree tree { get; set; }
         public string url { get; set; }
         public int? comment_count { get; set; }
-        // public Verification verification { get; set; }
-        //public string sha { get; set; }
-        //public string node_id { get; set; }
         public CommitInfo commit { get; set; }
         public string html_url { get; set; }
         public string comments_url { get; set; }
-        // public List<Parent> parents { get; set; }
     }
 
     public class CommitInfo{
@@ -213,7 +201,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
     public class AuthorCommit {
         public string date {get; set;}
     }
-    //--------------------
     
     public class Language
     {
@@ -221,7 +208,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public int? bytes { get; set; }
     }
 
-    //-------------------
     public class Tags
     {
         public string name { get; set; }
@@ -230,8 +216,6 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public Commit commit { get; set; }
         public string node_id { get; set; }
     }
-
-    //--------------------------------------
 
      public class Issue
     {
@@ -246,18 +230,14 @@ namespace GitHubAPI.ROs.Codes.Models.Inicial
         public string title { get; set; }
         public string body { get; set; }
         public User user { get; set; }
-        // public List<Label> labels { get; set; }
         public User assignee { get; set; }
         public List<User> assignees { get; set; }
-        // public Milestone milestone { get; set; }
         public bool locked { get; set; }
         public string active_lock_reason { get; set; }
         public int? comments { get; set; }
-        //public PullRequest pull_request { get; set; }
         public Object closed_at { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
         public string author_association { get; set; }
-
     }
 }
