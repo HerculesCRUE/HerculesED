@@ -86,7 +86,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
 
-                Utility.updateFechaImportacion(pCVID);
+                Utility.UpdateFechaImportacion(pCVID);
                 SincroDatos sincro = new (_Configuracion, pCVID, File);
 
                 List<string> listaDOI = new ();
@@ -100,7 +100,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.SincroTextoLibre(Secciones);
 
                 sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
-                Utility.updateFechaImportacion(pCVID, true);
+                Utility.UpdateFechaImportacion(pCVID, true);
                 return Ok();
             }
             catch (Exception ex)
@@ -216,7 +216,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
                 //Estado de la peticion
-                Utility.updateFechaImportacion(pCVID);
+                Utility.UpdateFechaImportacion(pCVID);
                 PetitionStatus estadoPostimport = new (0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
                 petitionStatus[petitionID] = estadoPostimport;
 
@@ -231,7 +231,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 AccionesImportacion accionesImportacion = new (_Configuracion, pCVID, stringFile);
                 accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
-                Utility.updateFechaImportacion(pCVID,true);
+                Utility.UpdateFechaImportacion(pCVID,true);
                 return Ok();
             }
             catch (Exception ex)
@@ -242,14 +242,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
         [HttpPost("fechaCheck")]
         public ActionResult fechaCheck([FromForm][Required] string pCVID)
         {
-            bool isToday = Utility.checkFecha(pCVID);
+            bool isToday = Utility.CheckFecha(pCVID);
 
             return Ok(isToday);
         }
         [HttpPost("fecha")]
         public ActionResult fecha(string pCVID)
         {
-            Utility.updateFechaImportacion(pCVID);
+            Utility.UpdateFechaImportacion(pCVID);
             return Ok();
         }
     }

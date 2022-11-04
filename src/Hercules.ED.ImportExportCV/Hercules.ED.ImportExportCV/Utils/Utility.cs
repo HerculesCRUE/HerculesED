@@ -34,56 +34,59 @@ namespace Utils
         /// <returns>Identificador de la persona</returns>
         public static string PersonaCV(string pCVID)
         {
-            string select = $@"select distinct ?person ";
-            string where = $@" where {{
+            string selectPersona = $@"select distinct ?person ";
+            string wherePersona = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
                                     ?person a <http://xmlns.com/foaf/0.1/Person> .
                                     FILTER(?s=<{pCVID}>)
                                 }}";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new List<string> { "curriculumvitae", "person" });
-            if (resultData == null || resultData.results == null || resultData.results.bindings == null || !resultData.results.bindings.Any())
+            SparqlObject resultDataPersona = mResourceApi.VirtuosoQueryMultipleGraph(selectPersona, wherePersona, new List<string> { "curriculumvitae", "person" });
+            if (resultDataPersona == null || resultDataPersona.results == null || resultDataPersona.results.bindings == null || !resultDataPersona.results.bindings.Any())
             {
                 return null;
             }
 
-            Dictionary<string, Data> fila = resultData.results.bindings.First();
+            Dictionary<string, Data> fila = resultDataPersona.results.bindings.First();
             return fila["person"].value;
 
         }
+
         /// <summary>
         /// Funcion que devuelve la fecha de la ultima importacion realizada en un cv.
         /// </summary>
-        /// <param name="pCVID"></param>
-        /// <returns></returns>
-        public static DateTime getFechaImportacion(string pCVID)
+        /// <param name="pCVID">Identificador del curriculum vitae</param>
+        /// <returns>Fecha última importación</returns>
+        public static DateTime GetFechaImportacion(string pCVID)
         {
 
             string valorActual = "";
-            string select = "select distinct ?fecha ";
-            string where = @$"
+            string selectFecha = "select distinct ?fecha ";
+            string whereFecha = @$"
                 where {{
                     <http://gnoss.com/{mResourceApi.GetShortGuid(pCVID)}><http://gnoss/hasEntidad> ?s. 
                     ?s ?p <http://w3id.org/roh/CV>.
                     ?s <http://w3id.org/roh/importDate> ?fecha
                 }} LIMIT 100";
-            SparqlObject resultData = mResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
-            foreach (Dictionary<string, Data> fila in resultData.results.bindings)
+            SparqlObject resultData = mResourceApi.VirtuosoQuery(selectFecha, whereFecha, "curriculumvitae");
+            foreach (var fila in resultData.results.bindings.Where(fila => fila.ContainsKey("fecha")))
             {
-                if (fila.ContainsKey("fecha"))
-                {
-                    valorActual = fila["fecha"].value;
-                }
+                valorActual = fila["fecha"].value;
             }
+
             DateTime fecha;
             DateTime.TryParse(valorActual, out fecha);
 
             return fecha;
         }
 
-        public static bool checkFecha(string pCVID)
+        /// <summary>
+        /// Si la fecha es posterior a ayer devuelve true, false en caso contrario.
+        /// </summary>
+        /// <param name="pCVID">Identificador del curriculum vitae</param>
+        /// <returns>True si la fecha es posterior a ayer</returns>
+        public static bool CheckFecha(string pCVID)
         {
-
-            return getFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
+            return GetFechaImportacion(pCVID) > DateTime.Now.AddDays(-1);
         }
 
         /// <summary>
@@ -91,32 +94,42 @@ namespace Utils
         /// </summary>
         /// <param name="pCVID">CVID del cv en el que se ha realizado la importacion.</param>
         /// <param name="revertir">En caso de que la importacion este completa ""elimina"" la fecha para que no se bloqueé el editor.</param>
-        public static void updateFechaImportacion(string pCVID, bool revertir = false)
+        public static void UpdateFechaImportacion(string pCVID, bool revertir = false)
         {
-
-
-            DateTime fecha = getFechaImportacion(pCVID);
+            DateTime fecha = GetFechaImportacion(pCVID);
 
             if (fecha != DateTime.MinValue)
             {
-                List<TriplesToModify> listaTriplesModificacion = new ();
-                TriplesToModify triple = new ();
-                triple.Predicate = $@"http://w3id.org/roh/importDate";
-                triple.OldValue = fecha.ToString();
-                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
-                listaTriplesModificacion.Add(triple);
-                Dictionary<Guid, List<TriplesToModify>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToModify>>();
+                TriplesToModify triple = new()
+                {
+                    Predicate = $@"http://w3id.org/roh/importDate",
+                    OldValue = fecha.ToString(),
+                    NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString()
+                };
+
+                List<TriplesToModify> listaTriplesModificacion = new()
+                {
+                    triple
+                };
+
+                Dictionary<Guid, List<TriplesToModify>> dicTriplesInsertar = new();
                 dicTriplesInsertar.Add(mResourceApi.GetShortGuid(pCVID), listaTriplesModificacion);
                 mResourceApi.ModifyPropertiesLoadedResources(dicTriplesInsertar);
             }
             else
             {
-                List<TriplesToInclude> listaTriplesModificacion = new ();
-                TriplesToInclude triple = new ();
-                triple.Predicate = $@"http://w3id.org/roh/importDate";
-                triple.NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString();
-                listaTriplesModificacion.Add(triple);
-                Dictionary<Guid, List<TriplesToInclude>> dicTriplesInsertar = new Dictionary<Guid, List<TriplesToInclude>>();
+                TriplesToInclude triple = new()
+                {
+                    Predicate = $@"http://w3id.org/roh/importDate",
+                    NewValue = revertir ? "01/01/1500 00:00:00" : DateTime.Now.ToString()
+                };
+
+                List<TriplesToInclude> listaTriplesModificacion = new()
+                {
+                    triple
+                };
+
+                Dictionary<Guid, List<TriplesToInclude>> dicTriplesInsertar = new();
                 dicTriplesInsertar.Add(mResourceApi.GetShortGuid(pCVID), listaTriplesModificacion);
                 mResourceApi.InsertPropertiesLoadedResources(dicTriplesInsertar);
             }
@@ -125,13 +138,13 @@ namespace Utils
         /// <summary>
         ///  Funcion que borra la fecha de la ultima importacion realizada en un cv con pCVID.
         /// </summary>
-        /// <param name="pCVID"></param>
-        public static void quitarFechaImportacion(string pCVID)
+        /// <param name="pCVID">Identificador del curriculum vitae</param>
+        public static void QuitarFechaImportacion(string pCVID)
         {
-            DateTime fecha = getFechaImportacion(pCVID);
-            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new ();
-            List<RemoveTriples> listaTriplesBorrado = new ();
-            RemoveTriples triple = new ();
+            DateTime fecha = GetFechaImportacion(pCVID);
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new();
+            List<RemoveTriples> listaTriplesBorrado = new();
+            RemoveTriples triple = new();
             triple.Predicate = $@"http://w3id.org/roh/importDate";
             triple.Value = fecha.ToString();
             triple.Title = false;
@@ -779,10 +792,10 @@ namespace Utils
                 {
                     #region Buscamos en nombres
                     {
-                        List<string> unions = new ();
+                        List<string> unions = new();
                         foreach (string wordOut in wordsTexto)
                         {
-                            List<string> words = new ();
+                            List<string> words = new();
                             if (wordOut.Length == 2)
                             {
                                 words.Add(wordOut[0].ToString());
@@ -2890,7 +2903,7 @@ namespace Utils
         {
             if (item.Value.Length != 6) { return null; }
 
-            List<string> listadoCodigos = new ();
+            List<string> listadoCodigos = new();
             string codigo = item.Value;
 
             if (Regex.Match(codigo, "^\\d{2}0000$").Success)
@@ -2926,7 +2939,7 @@ namespace Utils
             if (item.Value.Length != 24) { return null; }
 
             Dictionary<string, string> palabrasClave = UtilitySecciones.PalabrasClave(mResourceApi);
-            List<string> listadoCodigos = new ();
+            List<string> listadoCodigos = new();
             string codigo = item.Value;
 
             string padre = palabrasClave[codigo];
