@@ -72,7 +72,7 @@ namespace Utils
                 valorActual = fila["fecha"].value;
             }
 
-            DateTime.TryParse(valorActual, out DateTime fecha);
+            _ = DateTime.TryParse(valorActual, out DateTime fecha);
 
             return fecha;
         }
