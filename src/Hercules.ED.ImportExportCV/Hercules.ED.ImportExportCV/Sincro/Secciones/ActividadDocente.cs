@@ -45,9 +45,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ImpartedAcademicTraining";
             string rdfTypePrefix = "RelatedImpartedAcademicTrainings";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlFormAca = new();
+            Dictionary<string, string> equivalenciasFormAca = new ();
+            List<bool> listadoBloqueadosFormAca = new ();
 
             if (petitionStatus != null)
             {
@@ -67,7 +67,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     formacionAcademica.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaFechaInicio)?.values.FirstOrDefault();
                     formacionAcademica.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.formacionAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
                     formacionAcademica.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(formacionAcademica.ID, formacionAcademica);
+                    entidadesXmlFormAca.Add(formacionAcademica.ID, formacionAcademica);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -75,17 +75,16 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
-              
-                foreach (var item in equivalencias.Values)
+                equivalenciasFormAca = Disambiguation.SimilarityBBDD(entidadesXmlFormAca.Values.ToList(), entidadesBBDD.Values.ToList());              
+                foreach (var item in equivalenciasFormAca.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosFormAca.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlFormAca, equivalenciasFormAca, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosFormAca, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -107,9 +106,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ThesisSupervision";
             string rdfTypePrefix = "RelatedThesisSupervisions";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlDirTes = new ();
+            Dictionary<string, string> equivalenciasDirTes = new ();
+            List<bool> listadoBloqueadosDirTes = new ();
 
             if (petitionStatus != null)
             {
@@ -128,7 +127,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     direccionTesis.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisFechaDefensa)?.values.FirstOrDefault();
                     direccionTesis.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.direccionTesisEntidadRealizacionNombre)?.values.FirstOrDefault();
                     direccionTesis.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(direccionTesis.ID, direccionTesis);
+                    entidadesXmlDirTes.Add(direccionTesis.ID, direccionTesis);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -136,17 +135,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasDirTes = Disambiguation.SimilarityBBDD(entidadesXmlDirTes.Values.ToList(), entidadesBBDD.Values.ToList());
               
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasDirTes.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosDirTes.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlDirTes, equivalenciasDirTes, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosDirTes, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -168,9 +167,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Tutorship";
             string rdfTypePrefix = "RelatedAcademicTutorials";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlTutAca = new ();
+            Dictionary<string, string> equivalenciasTutAca = new ();
+            List<bool> listadoBloqueadosTutAca = new ();
 
             if (petitionStatus != null)
             {
@@ -189,7 +188,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     tutoriasAcademicas.NombreOtros = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaNombreProgramaOtros)?.values.FirstOrDefault();
                     tutoriasAcademicas.EntidadRealizacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.tutoAcademicaEntidadRealizacionNombre)?.values.FirstOrDefault();
                     tutoriasAcademicas.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
+                    entidadesXmlTutAca.Add(tutoriasAcademicas.ID, tutoriasAcademicas);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
@@ -197,17 +196,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasTutAca = Disambiguation.SimilarityBBDD(entidadesXmlTutAca.Values.ToList(), entidadesBBDD.Values.ToList());
               
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasTutAca.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosTutAca.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlTutAca, equivalenciasTutAca, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosTutAca, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -229,9 +228,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/ImpartedCoursesSeminars";
             string rdfTypePrefix = "RelatedImpartedCoursesSeminars";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlCurSem = new ();
+            Dictionary<string, string> equivalenciasCurSem = new ();
+            List<bool> listadoBloqueadosCurSem = new ();
 
             if (petitionStatus != null)
             {
@@ -250,7 +249,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     cursosSeminarios.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosFechaImparticion)?.values.FirstOrDefault();
                     cursosSeminarios.EntidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.cursosSeminariosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                     cursosSeminarios.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(cursosSeminarios.ID, cursosSeminarios);
+                    entidadesXmlCurSem.Add(cursosSeminarios.ID, cursosSeminarios);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -258,17 +257,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasCurSem = Disambiguation.SimilarityBBDD(entidadesXmlCurSem.Values.ToList(), entidadesBBDD.Values.ToList());
               
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasCurSem.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosCurSem.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlCurSem, equivalenciasCurSem, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosCurSem, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -290,9 +289,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingPublication";
             string rdfTypePrefix = "RelatedTeachingPublications";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlPubDoc = new ();
+            Dictionary<string, string> equivalenciasPubDoc = new ();
+            List<bool> listadoBloqueadosPubDoc = new ();
 
             if (petitionStatus != null)
             {
@@ -311,7 +310,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     publicacionDocentes.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteFechaElaboracion)?.values.FirstOrDefault();
                     publicacionDocentes.TituloPublicacion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.publicacionDocenteTituloPublicacion)?.values.FirstOrDefault();
                     publicacionDocentes.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(publicacionDocentes.ID, publicacionDocentes);
+                    entidadesXmlPubDoc.Add(publicacionDocentes.ID, publicacionDocentes);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -319,17 +318,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasPubDoc = Disambiguation.SimilarityBBDD(entidadesXmlPubDoc.Values.ToList(), entidadesBBDD.Values.ToList());
               
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasPubDoc.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosPubDoc.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlPubDoc, equivalenciasPubDoc, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosPubDoc, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -351,9 +350,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingProject";
             string rdfTypePrefix = "RelatedTeachingProjects";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlParProInnDoc = new ();
+            Dictionary<string, string> equivalenciasParProInnDoc = new ();
+            List<bool> listadoBloqueadosParProInnDoc = new ();
 
             if (petitionStatus != null)
             {
@@ -372,7 +371,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     participacionProyectosInnovacion.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaFechaInicio)?.values.FirstOrDefault();
                     participacionProyectosInnovacion.EntidadFinanciadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participacionInnovaEntidadFinanciadoraNombre)?.values.FirstOrDefault();
                     participacionProyectosInnovacion.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(participacionProyectosInnovacion.ID, participacionProyectosInnovacion);
+                    entidadesXmlParProInnDoc.Add(participacionProyectosInnovacion.ID, participacionProyectosInnovacion);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -380,17 +379,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasParProInnDoc = Disambiguation.SimilarityBBDD(entidadesXmlParProInnDoc.Values.ToList(), entidadesBBDD.Values.ToList());
               
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasParProInnDoc.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosParProInnDoc.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlParProInnDoc, equivalenciasParProInnDoc, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosParProInnDoc, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -412,9 +411,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/TeachingCongress";
             string rdfTypePrefix = "RelatedTeachingCongress";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlParConForDoc = new ();
+            Dictionary<string, string> equivalenciasParConForDoc = new ();
+            List<bool> listadoBloqueadosParConForDoc = new ();
 
             if (petitionStatus != null)
             {
@@ -433,7 +432,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     participacionCongresos.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosFechaPresentacion)?.values.FirstOrDefault();
                     participacionCongresos.EntidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.participaCongresosEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                     participacionCongresos.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(participacionCongresos.ID, participacionCongresos);
+                    entidadesXmlParConForDoc.Add(participacionCongresos.ID, participacionCongresos);
                 }
 
                 //2º Obtenemos las entidades de la BBDD.
@@ -441,17 +440,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasParConForDoc = Disambiguation.SimilarityBBDD(entidadesXmlParConForDoc.Values.ToList(), entidadesBBDD.Values.ToList());
 
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasParConForDoc.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosParConForDoc.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades.
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlParConForDoc, equivalenciasParConForDoc, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosParConForDoc, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -473,9 +472,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Accreditation";
             string rdfTypePrefix = "RelatedTeachingInnovationAwardsReceived";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlPreInoDoc = new ();
+            Dictionary<string, string> equivalenciasPreInoDoc = new ();
+            List<bool> listadoBloqueadosPreInoDoc = new ();
 
             if (petitionStatus != null)
             {
@@ -494,7 +493,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     premiosInnovacion.EntidadConcesion = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaEntidadConcesionariaNombre)?.values.FirstOrDefault();
                     premiosInnovacion.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.premiosInnovaFechaConcesion)?.values.FirstOrDefault();
                     premiosInnovacion.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(premiosInnovacion.ID, premiosInnovacion);
+                    entidadesXmlPreInoDoc.Add(premiosInnovacion.ID, premiosInnovacion);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
@@ -502,17 +501,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasPreInoDoc = Disambiguation.SimilarityBBDD(entidadesXmlPreInoDoc.Values.ToList(), entidadesBBDD.Values.ToList());
 
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasPreInoDoc.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosPreInoDoc.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlPreInoDoc, equivalenciasPreInoDoc, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosPreInoDoc, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -534,9 +533,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedOtherActivities";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlOtrAct = new ();
+            Dictionary<string, string> equivalenciasOtrAct = new ();
+            List<bool> listadoBloqueadosOtrAct = new ();
 
             if (petitionStatus != null)
             {
@@ -555,7 +554,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     otrasActividades.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesFechaFinalizacion)?.values.FirstOrDefault();
                     otrasActividades.EntidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.otrasActividadesEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                     otrasActividades.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(otrasActividades.ID, otrasActividades);
+                    entidadesXmlOtrAct.Add(otrasActividades.ID, otrasActividades);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
@@ -563,17 +562,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasOtrAct = Disambiguation.SimilarityBBDD(entidadesXmlOtrAct.Values.ToList(), entidadesBBDD.Values.ToList());
 
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasOtrAct.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosOtrAct.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlOtrAct, equivalenciasOtrAct, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosOtrAct, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
 
         /// <summary>
@@ -595,9 +594,9 @@ namespace ImportadorWebCV.Sincro.Secciones
             string rdfType = "http://w3id.org/roh/Activity";
             string rdfTypePrefix = "RelatedMostRelevantContributions";
 
-            Dictionary<string, DisambiguableEntity> entidadesXML = new ();
-            Dictionary<string, string> equivalencias = new ();
-            List<bool> listadoBloqueados = new ();
+            Dictionary<string, DisambiguableEntity> entidadesXmlApoRel = new ();
+            Dictionary<string, string> equivalenciasApoRel = new ();
+            List<bool> listadoBloqueadosApoRel = new ();
 
             if (petitionStatus != null)
             {
@@ -616,7 +615,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     aportacionesRelevantes.Fecha = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVFechaFinalizacion)?.values.FirstOrDefault();
                     aportacionesRelevantes.EntidadOrganizadora = entityXML.properties.FirstOrDefault(x => x.prop == Variables.ActividadDocente.aportacionesCVEntidadOrganizadoraNombre)?.values.FirstOrDefault();
                     aportacionesRelevantes.ID = Guid.NewGuid().ToString();
-                    entidadesXML.Add(aportacionesRelevantes.ID, aportacionesRelevantes);
+                    entidadesXmlApoRel.Add(aportacionesRelevantes.ID, aportacionesRelevantes);
                 }
 
                 //2º Obtenemos las entidades de la BBDD
@@ -624,19 +623,18 @@ namespace ImportadorWebCV.Sincro.Secciones
                 var entidadesBBDDOpciones = entidadesBBDD.Select(x => new { x.Value.ID, x.Value.block }).ToList();
 
                 //3º Comparamos las equivalentes
-                equivalencias = Disambiguation.SimilarityBBDD(entidadesXML.Values.ToList(), entidadesBBDD.Values.ToList());
+                equivalenciasApoRel = Disambiguation.SimilarityBBDD(entidadesXmlApoRel.Values.ToList(), entidadesBBDD.Values.ToList());
 
-                foreach (var item in equivalencias.Values)
+                foreach (var item in equivalenciasApoRel.Values)
                 {
-                    listadoBloqueados.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
+                    listadoBloqueadosApoRel.Add(entidadesBBDDOpciones.Where(x => x.ID.Equals(item)).Select(x => x.block).FirstOrDefault());
                 }
             }
 
             //Comparamos si queremos Preimportar o actualizar las entidades
-            return CheckPreimportar(preimportar, listadoAux, entidadesXML, equivalencias, propTitle, graph, rdfType, rdfTypePrefix,
-                propiedadesItem, RdfTypeTab, listadoBloqueados, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
+            return CheckPreimportar(preimportar, listadoAux, entidadesXmlApoRel, equivalenciasApoRel, propTitle, graph, rdfType, rdfTypePrefix,
+                propiedadesItem, RdfTypeTab, listadoBloqueadosApoRel, listadoIdBBDD: listadoIdBBDD, petitionStatus: petitionStatus);
         }
-
 
 
 
