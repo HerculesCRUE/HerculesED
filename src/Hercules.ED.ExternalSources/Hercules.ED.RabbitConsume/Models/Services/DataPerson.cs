@@ -15,6 +15,11 @@ namespace Hercules.ED.RabbitConsume.Models.Services
         private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected DataPerson() { }
+
+        /// <summary>
         /// Modifica la última fecha de moficiación del usuario.
         /// </summary>
         /// <param name="pIdGnoss">ID del recurso de la persona.</param>

@@ -13,7 +13,6 @@ namespace Hercules.ED.RabbitConsume
         /// <summary>
         /// Contructor.
         /// </summary>
-        /// <param name="logger"></param>
         /// <param name="serviceScopeFactory"></param>
         public Worker(IServiceScopeFactory serviceScopeFactory)
         {
@@ -23,7 +22,7 @@ namespace Hercules.ED.RabbitConsume
         /// <summary>
         /// Tarea asincrona.
         /// </summary>
-        /// <param name="stoppingToken"></param>
+        /// <param name="stoppingToken">Cancellation Token.</param>
         /// <returns></returns>
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
