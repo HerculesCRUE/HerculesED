@@ -58,7 +58,6 @@ namespace Utils
         /// <returns>Fecha última importación</returns>
         public static DateTime GetFechaImportacion(string pCVID)
         {
-
             string valorActual = "";
             string selectFecha = "select distinct ?fecha ";
             string whereFecha = @$"
@@ -73,8 +72,7 @@ namespace Utils
                 valorActual = fila["fecha"].value;
             }
 
-            DateTime fecha;
-            DateTime.TryParse(valorActual, out fecha);
+            DateTime.TryParse(valorActual, out DateTime fecha);
 
             return fecha;
         }
@@ -142,15 +140,24 @@ namespace Utils
         public static void QuitarFechaImportacion(string pCVID)
         {
             DateTime fecha = GetFechaImportacion(pCVID);
-            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new();
-            List<RemoveTriples> listaTriplesBorrado = new();
-            RemoveTriples triple = new();
-            triple.Predicate = $@"http://w3id.org/roh/importDate";
-            triple.Value = fecha.ToString();
-            triple.Title = false;
-            triple.Description = false;
-            listaTriplesBorrado.Add(triple);
-            dicBorrado.Add(new Guid(pCVID), listaTriplesBorrado);
+
+            RemoveTriples triple = new()
+            {
+                Predicate = $@"http://w3id.org/roh/importDate",
+                Value = fecha.ToString(),
+                Title = false,
+                Description = false
+            };
+
+            List<RemoveTriples> listaTriplesBorrado = new()
+            {
+                triple
+            };
+
+            Dictionary<Guid, List<RemoveTriples>> dicBorrado = new()
+            {
+                { new Guid(pCVID), listaTriplesBorrado }
+            };
             mResourceApi.DeletePropertiesLoadedResources(dicBorrado);
 
         }
