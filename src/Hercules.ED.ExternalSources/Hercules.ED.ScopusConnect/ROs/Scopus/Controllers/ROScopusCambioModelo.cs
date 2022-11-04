@@ -16,7 +16,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<Publication> GetListPublications(Root objInicial)
         {
-            List<Publication> listaResultados = new ();
+            List<Publication> listaResultados = new();
             if (objInicial != null && objInicial.SearchResults != null && objInicial.SearchResults.entry != null)
             {
                 foreach (PublicacionInicial rec in objInicial.SearchResults.entry)
@@ -35,7 +35,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public Publication CambioDeModeloPublicacion(PublicacionInicial objInicial)
         {
-            Publication publicacion = new ();
+            Publication publicacion = new();
 
             if (objInicial != null)
             {
@@ -140,7 +140,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         }
         public HashSet<string> GetLinks(PublicacionInicial objInicial)
         {
-            HashSet<string> links = new ();
+            HashSet<string> links = new();
             if (objInicial.link != null)
             {
                 foreach (Link link in objInicial.link)
@@ -229,7 +229,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (!string.IsNullOrEmpty(objInicial.DcCreator))
             {
-                Person autor = new ();
+                Person autor = new();
                 autor.nick = objInicial.DcCreator;
                 autor.fuente = "Scopus";
                 return autor;
@@ -241,7 +241,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
         {
             if (objInicial.PrismPublicationName != null || objInicial.PrismIssn != null)
             {
-                Source revista = new ();
+                Source revista = new();
 
                 // Nombre publicación
                 if (!string.IsNullOrEmpty(objInicial.PrismPublicationName))
@@ -254,7 +254,7 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                 {
                     string issnFormado = $@"{objInicial.PrismIssn.Substring(0, 4)}-{objInicial.PrismIssn.Substring(4)}";
 
-                    List<string> issn = new ();
+                    List<string> issn = new();
                     issn.Add(issnFormado);
                     revista.issn = issn;
                 }
@@ -288,8 +288,8 @@ namespace ScopusConnect.ROs.Scopus.Controllers
 
         public List<PublicationMetric> GetPublicationMetric(PublicacionInicial objInicial)
         {
-            List<PublicationMetric> metricList = new ();
-            PublicationMetric metricPublicacion = new ();
+            List<PublicationMetric> metricList = new();
+            PublicationMetric metricPublicacion = new();
             if (objInicial.CitedbyCount != null)
             {
                 metricPublicacion.citationCount = objInicial.CitedbyCount;

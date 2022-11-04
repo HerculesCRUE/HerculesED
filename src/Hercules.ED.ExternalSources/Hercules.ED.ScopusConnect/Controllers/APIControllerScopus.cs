@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +10,7 @@ namespace ScopusConnect.Controllers
     [Produces("application/json")]
     [ApiController]
     [Route("Scopus/[action]")]
-    public class APIController : ControllerBase
+    public class ApiController : ControllerBase
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -19,7 +18,7 @@ namespace ScopusConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            ROScopusLogic ScopusObject = new ();
+            ROScopusLogic ScopusObject = new();
             List<Publication> publication = ScopusObject.GetPublications(orcid, date);
             return publication;
         }
@@ -32,10 +31,10 @@ namespace ScopusConnect.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]        
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public Publication GetPublicationByDOI([FromQuery][Required] string pDoi)
         {
-            ROScopusLogic ScopusObject = new ();
+            ROScopusLogic ScopusObject = new();
             Publication publication = ScopusObject.GetPublicationDoi(pDoi);
             return publication;
         }
