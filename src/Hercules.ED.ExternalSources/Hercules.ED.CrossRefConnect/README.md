@@ -29,7 +29,7 @@ Servicio encargado de obtener la información de CrossRef. Documentación del AP
 [GET] GetROs
 - Resumen: Obiene los datos de una publicación
 - Parámetros: 
-- -**DOI**: El identificador DOI de la publicación a obtener sus datos
+	- **DOI**: El identificador DOI de la publicación a obtener sus datos
 - Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.CrossRefConnect/ROs/CrossRef/Models/ROPublicationModel.cs)
 
 ## Configuración en el appsetting.json
