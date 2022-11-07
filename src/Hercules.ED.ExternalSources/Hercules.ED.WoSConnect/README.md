@@ -26,10 +26,23 @@ Servicio encargado de obtener la información de WoS. Documentación del API de 
 ## Controladores
 
 **APIController**  
+
 [GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
+orcid: Código ORCID del autor a buscar las publicaciones.  
+date: Fecha a partir de la búsqueda de publicaciones.  
+Resultado: Lista de objetos [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.WoSConnect/ROs/WoS/Models/ROPublicationModel.cs).  
+
 [GET] GetRoByWosId -> Obtiene los datos de una publicación mediante el ID de WoS.  
+pIdWos: Código WoS de la publicación.  
+Resultado: Objeto [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.WoSConnect/ROs/WoS/Models/ROPublicationModel.cs).  
+
 [GET] GetRoByDoi -> Obtiene los datos de una publicación.  
-[GET] GetCitesByWosId -> Obtiene las citas mediante el ID de WoS.
+pDoi: Código DOI de la publicación.  
+Resultado: Objeto [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.WoSConnect/ROs/WoS/Models/ROPublicationModel.cs).  
+
+[GET] GetCitesByWosId -> Obtiene las citas mediante el ID de WoS.  
+pWosId: Código WoS de la publicación.  
+Resultado: Lista de objetos [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.WoSConnect/ROs/WoS/Models/ROPublicationModel.cs).    
 
 ## Configuración en el appsetting.json
 ```json{

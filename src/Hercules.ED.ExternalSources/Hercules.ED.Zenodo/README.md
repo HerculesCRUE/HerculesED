@@ -26,8 +26,14 @@ Servicio encargado de obtener la información de Zenodo. Documentación del API 
 ## Controladores
 
 **APIController**  
+
 [GET] GetROsByOrcid -> Obtiene los datos de una publicación.  
-[GET] GetOntologyData -> Obtiene los datos necesarios para la carga en BBDD.
+pOrcid: Código ORCID de la publicación.  
+Resultado: Lista de objetos [ResearchObject](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.Zenodo/Models/Data/ResearchObject.cs).
+
+[GET] GetOntologyData -> Obtiene los datos necesarios para la carga en BBDD.  
+pOrcid: Código ORCID de la publicación.  
+Resultado: Lista de objetos [OntologyRO](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.Zenodo/Models/Data/OntologyRO.cs).
 
 ## Configuración en el appsetting.json
 ```json{

@@ -26,8 +26,15 @@ Servicio encargado de obtener la información de Scopus. Documentación del API 
 ## Controladores
 
 **APIControllerScopus**  
+
 [GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
-[GET] GetPublicationByDOI -> Obtiene los datos de una publicación.
+orcid: Código ORCID de la persona.  
+date: A partir de que fecha va a buscar las publicaciones.  
+Resultado: Lista de objetos [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.ScopusConnect/ROs/Scopus/Models/ROPublicationModel.cs). 
+
+[GET] GetPublicationByDOI -> Obtiene los datos de una publicación.  
+pDoi: Código DOI de la publicación a buscar.  
+Resultado: Objeto [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.ScopusConnect/ROs/Scopus/Models/ROPublicationModel.cs). 
 
 ## Configuración en el appsetting.json
 ```json{

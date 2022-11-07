@@ -20,6 +20,16 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.OpenCitations&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.OpenCitations)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Hercules.ED.OpenCitations&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Hercules.ED.OpenCitations)
 
+## Controladores
+
+### APIController
+
+**[GET] GetROs**
+- Resumen: Obtiene los datos de una publicación
+- Parámetros: 
+	- DOI: El identificador DOI de la publicación a obtener sus datos
+- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.OpenCitations/ROs/OpenCitations/Models/ROPublicationModel.cs)
+
 ## Configuración en el appsetting.json
 ```json{
 {

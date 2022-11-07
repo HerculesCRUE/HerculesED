@@ -28,22 +28,13 @@ namespace CrossRefConnect.Controllers
         {
             _logger = logger;
         }
-     
+
 
         /// <summary>
-        /// Get all repositories from a specified user account and RO
+        /// Obiene los datos de una publicación
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /scopus/GetROs?author_id=SCOPUS_ID&amp;year=2020
-        /// </remarks>
-        /// <param name="doi">Orcid</param>
+        /// <param name="DOI">El identificador DOI de la publicación a obtener sus datos</param>
         /// <returns></returns>
-        /// <response code="200">Ok</response>
-        /// <response code="400">Invalid app</response> 
-        /// <response code="500">Oops! Something went wrong</response> 
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
