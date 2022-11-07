@@ -1,21 +1,17 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
-using Gnoss.ApiWrapper.Model;
-using ImportadorWebCV;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones
 {
     public class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new ($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = new($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
@@ -39,13 +35,12 @@ namespace ImportadorWebCV.Exporta.Secciones
         /// <returns>Entidad completa</returns>
         public Entity GetLoadedEntity(string pId, string pGraph)
         {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new();
             try
             {
                 int numLimit = 10000;
                 int offset = 0;
-                bool cargar = true;
-                while (cargar)
+                while (true)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o";
                     string whereID = $"where{{?x <http://gnoss/hasEntidad> <{pId}> . ?x <http://gnoss/hasEntidad> ?s . ?s ?p ?o }}order by desc(?s) desc(?p) desc(?o)}} limit {numLimit} offset {offset}";
@@ -65,7 +60,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
                     {
-                        cargar = false;
+                        break;
                     }
                 }
             }
@@ -75,7 +70,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             }
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
             {
-                Entity entity = new ()
+                Entity entity = new()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -91,9 +86,9 @@ namespace ImportadorWebCV.Exporta.Secciones
         public Dictionary<string, Entity> GetListLoadedEntityCV(List<Tuple<string, string, string>> listadoId, string pGraph,
             Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null, List<string> listadoFrom = null)
         {
-            Dictionary<string, Entity> listaEntidades = new ();
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
-            Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new ();
+            Dictionary<string, Entity> listaEntidades = new();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new();
+            Dictionary<string, List<Dictionary<string, Data>>> listResultCV = new();
 
             //Si no envio un listado devuelvo un diccionario vacio
             if (listadoId == null || !listadoId.Any())
@@ -113,26 +108,26 @@ namespace ImportadorWebCV.Exporta.Secciones
                 listadoFrom.Add(pGraph);
                 while (cargar)
                 {
-                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
+                    string selectID = "select * where{ select distinct ?entity ?p ?o ?q ?w";
                     string whereID = $@"where{{
-        ?x <http://gnoss/hasEntidad> ?s . 
-        ?s ?p ?o .
+        ?x <http://gnoss/hasEntidad> ?entity . 
+        ?entity ?p ?o .
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
+        FILTER(?entity in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
     }}
-    order by desc(?s) desc(?p) desc(?o)
+    order by desc(?entity) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
 
                     SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(selectID, whereID, listadoFrom);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
-                        if (!listResult.ContainsKey(fila["s"].value))
+                        if (!listResult.ContainsKey(fila["entity"].value))
                         {
-                            listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
+                            listResult.Add(fila["entity"].value, new List<Dictionary<string, Data>>());
                         }
-                        listResult[fila["s"].value].Add(fila);
+                        listResult[fila["entity"].value].Add(fila);
                     }
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
@@ -193,7 +188,7 @@ namespace ImportadorWebCV.Exporta.Secciones
                 {
                     continue;
                 }
-                Entity entity = new ()
+                Entity entity = new()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -214,8 +209,8 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         public Dictionary<string, Entity> GetListLoadedEntity(List<Tuple<string, string>> listadoId, string pGraph, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp = null)
         {
-            Dictionary<string, Entity> listaEntidades = new ();
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
+            Dictionary<string, Entity> listaEntidades = new();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new();
 
             //Si no envio un listado devuelvo un diccionario vacio
             if (listadoId == null || !listadoId.Any())
@@ -230,25 +225,25 @@ namespace ImportadorWebCV.Exporta.Secciones
                 bool cargar = true;
                 while (cargar)
                 {
-                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
+                    string selectID = "select * where{ select distinct ?lEntity ?p ?o ?q ?w";
                     string whereID = $@"where{{
-        ?x <http://gnoss/hasEntidad> ?s . 
-        ?s ?p ?o .
+        ?x <http://gnoss/hasEntidad> ?lEntity . 
+        ?lEntity ?p ?o .
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
+        FILTER(?lEntity in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
     }}
-    order by desc(?s) desc(?p) desc(?o)
+    order by desc(?lEntity) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
                     SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
-                        if (!listResult.ContainsKey(fila["s"].value))
+                        if (!listResult.ContainsKey(fila["lEntity"].value))
                         {
-                            listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
+                            listResult.Add(fila["lEntity"].value, new List<Dictionary<string, Data>>());
                         }
-                        listResult[fila["s"].value].Add(fila);
+                        listResult[fila["lEntity"].value].Add(fila);
                     }
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
@@ -263,7 +258,7 @@ namespace ImportadorWebCV.Exporta.Secciones
             }
             foreach (string pId in listadoId.Select(x => x.Item1))
             {
-                Entity entity = new ()
+                Entity entity = new()
                 {
                     id = pId,
                     ontology = pGraph,
@@ -279,7 +274,7 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         protected Dictionary<string, List<Dictionary<string, Data>>> GetMultilangProperties(string pCVID, string pIdioma)
         {
-            Dictionary<string, List<Dictionary<string, Data>>> listResult = new ();
+            Dictionary<string, List<Dictionary<string, Data>>> listResult = new();
 
             string select = $@"select distinct ?entity ?multilangProperties ?prop ?lang ?value";
             string where = $@"where{{
@@ -423,48 +418,48 @@ namespace ImportadorWebCV.Exporta.Secciones
 
         private void GetLoadedEntityCV(string pId, string pPropAcumulado, string pObjAcumulado, ref Entity pEntity, Dictionary<string, List<Dictionary<string, Data>>> pListResult)
         {
-            foreach (Dictionary<string, Data> prop in pListResult[pId])
+            foreach (Dictionary<string, Data> propCV in pListResult[pId])
             {
-                string s = prop["s"].value;
-                string p = prop["p"].value;
-                string o = prop["o"].value;
-                string q = "";
-                string w = "";
-                if (prop.ContainsKey("q") && prop.ContainsKey("w"))
+                string sCV = propCV["s"].value;
+                string pCV = propCV["p"].value;
+                string oCV = propCV["o"].value;
+                string qCV = "";
+                string wCV = "";
+                if (propCV.ContainsKey("q") && propCV.ContainsKey("w"))
                 {
-                    q = prop["q"].value;
-                    w = prop["w"].value;
+                    qCV = propCV["q"].value;
+                    wCV = propCV["w"].value;
                 }
 
                 string rdfType = pListResult[pId].First(x => x["p"].value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")["o"].value;
-                if (s == pId && p != "http://www.w3.org/2000/01/rdf-schema#label" && p != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                if (sCV == pId && pCV != "http://www.w3.org/2000/01/rdf-schema#label" && pCV != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
                 {
                     string qPropAcumuladoAux = "";
                     string wObjAcumuladoAux = "";
-                    if (!string.IsNullOrEmpty(q) && q != "http://www.w3.org/2000/01/rdf-schema#label"
-                        && q != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+                    if (!string.IsNullOrEmpty(qCV) && qCV != "http://www.w3.org/2000/01/rdf-schema#label"
+                        && qCV != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
                     {
                         qPropAcumuladoAux = pPropAcumulado;
                         if (string.IsNullOrEmpty(pPropAcumulado))
                         {
-                            qPropAcumuladoAux += p;
+                            qPropAcumuladoAux += pCV;
                         }
                         if (!string.IsNullOrEmpty(qPropAcumuladoAux))
                         {
                             qPropAcumuladoAux += "@@@" + rdfType + "|";
                         }
-                        qPropAcumuladoAux += q;
+                        qPropAcumuladoAux += qCV;
 
                         wObjAcumuladoAux = pObjAcumulado;
                         if (string.IsNullOrEmpty(pObjAcumulado))
                         {
-                            wObjAcumuladoAux += o;
+                            wObjAcumuladoAux += oCV;
                         }
                         if (!string.IsNullOrEmpty(wObjAcumuladoAux))
                         {
                             wObjAcumuladoAux += "@@@";
                         }
-                        wObjAcumuladoAux += w;
+                        wObjAcumuladoAux += wCV;
                     }
 
                     string pPropAcumuladoAux = pPropAcumulado;
@@ -472,16 +467,16 @@ namespace ImportadorWebCV.Exporta.Secciones
                     {
                         pPropAcumuladoAux += "@@@" + rdfType + "|";
                     }
-                    pPropAcumuladoAux += p;
+                    pPropAcumuladoAux += pCV;
                     string pObjAcumuladoAux = pObjAcumulado;
                     if (!string.IsNullOrEmpty(pObjAcumulado))
                     {
                         pObjAcumuladoAux += "@@@";
                     }
-                    pObjAcumuladoAux += o;
-                    if (pListResult.ContainsKey(o))
+                    pObjAcumuladoAux += oCV;
+                    if (pListResult.ContainsKey(oCV))
                     {
-                        GetLoadedEntity(o, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult);
+                        GetLoadedEntity(oCV, pPropAcumuladoAux, pObjAcumuladoAux, ref pEntity, pListResult);
                     }
                     else
                     {

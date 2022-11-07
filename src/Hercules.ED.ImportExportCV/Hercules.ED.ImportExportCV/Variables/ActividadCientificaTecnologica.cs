@@ -34,7 +34,7 @@
         public const string pubDocumentosPubFecha = "http://purl.org/dc/terms/issued";
         public const string pubDocumentosPubURL = "https://www.w3.org/2006/vcard/ns#url";
         public const string pubDocumentosPubISBN = "http://w3id.org/roh/isbn";
-        public const string pubDocumentosPubDepositoLegal = "http://w3id.org/roh/legalDeposit";        
+        public const string pubDocumentosPubDepositoLegal = "http://w3id.org/roh/legalDeposit";
         public const string pubDocumentosPubCiudad = "https://www.w3.org/2006/vcard/ns#locality";
         public const string pubDocumentosColeccion = "http://w3id.org/roh/collection";
         public const string pubDocumentosResultadosDestacados = "http://w3id.org/roh/relevantResults";
@@ -98,9 +98,9 @@
         public const string trabajosCongresosEntidadOrganizadoraNombre = "http://w3id.org/roh/presentedAtOrganizerTitle";
         public const string trabajosCongresosTipoEntidadOrganizadora = "http://w3id.org/roh/presentedAtOrganizerType";
         public const string trabajosCongresosTipoEntidadOrganizadoraOtros = "http://w3id.org/roh/presentedAtOrganizerTypeOther";
-        public const string trabajosCongresosCiudadEntidadOrganizadora= "http://w3id.org/roh/presentedAtOrganizerLocality";
-        public const string trabajosCongresosCCAAEntidadOrganizadora= "http://w3id.org/roh/presentedAtOrganizerHasRegion";
-        public const string trabajosCongresosPaisEntidadOrganizadora= "http://w3id.org/roh/presentedAtOrganizerHasCountryName";
+        public const string trabajosCongresosCiudadEntidadOrganizadora = "http://w3id.org/roh/presentedAtOrganizerLocality";
+        public const string trabajosCongresosCCAAEntidadOrganizadora = "http://w3id.org/roh/presentedAtOrganizerHasRegion";
+        public const string trabajosCongresosPaisEntidadOrganizadora = "http://w3id.org/roh/presentedAtOrganizerHasCountryName";
         public const string trabajosCongresosPaisCelebracion = "http://w3id.org/roh/presentedAtHasCountryName";
         public const string trabajosCongresosCCAACelebracion = "http://w3id.org/roh/presentedAtHasRegion";
         public const string trabajosCongresosCiudadCelebracion = "http://w3id.org/roh/presentedAtLocality";
@@ -278,7 +278,7 @@
         public const string comitesCTACodUnescoTerciaria = "http://w3id.org/roh/unescoTertiary@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";
         public const string comitesCTAFechaInicio = "http://vivoweb.org/ontology/core#start";
         public const string comitesCTAFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
-        
+
         /// <summary>
         /// Organización de actividades de I+D+i - 060.020.030.000
         /// <summary>
@@ -304,7 +304,7 @@
         public const string orgIDIDuracionMes = "http://w3id.org/roh/durationMonths";
         public const string orgIDIDuracionDia = "http://w3id.org/roh/durationDays";
         public const string orgIDIFechaFinalizacion = "http://vivoweb.org/ontology/core#end";
-        
+
         /// <summary>
         /// Gestión de actividades de I+D+i - 060.020.040.000
         /// <summary>
@@ -370,7 +370,7 @@
         public const string evalRevIDIPaisEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasCountryName";
         public const string evalRevIDICCAAEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#hasRegion";
         public const string evalRevIDICiudadEntidadRealizacion = "https://www.w3.org/2006/vcard/ns#locality";
-        public const string evalRevIDIModalidadActividad = "http://w3id.org/roh/activityModality"; 
+        public const string evalRevIDIModalidadActividad = "http://w3id.org/roh/activityModality";
         public const string evalRevIDIModalidadActividadOtros = "http://w3id.org/roh/activityModalityOther";
         public const string evalRevIDITipoEntidad = "http://w3id.org/roh/conductedByType";
         public const string evalRevIDITipoEntidadOtros = "http://w3id.org/roh/conductedByTypeOther";

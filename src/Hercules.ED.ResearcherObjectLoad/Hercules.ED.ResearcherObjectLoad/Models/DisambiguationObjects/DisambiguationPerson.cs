@@ -1,9 +1,5 @@
 ﻿using Hercules.CommonsEDMA.DisambiguationEngine.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 {
@@ -266,68 +262,68 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
             mProyectos = new HashSet<string>();
         }
 
-        private static readonly DisambiguationDataConfig configCompleteName = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configCompleteName = new()
         {
             type = DisambiguationDataConfigType.algoritmoNombres,
             score = 1f
         };
 
-        private static readonly DisambiguationDataConfig configORCID = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configORCID = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configFigshare = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configFigshare = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configGithub = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configGithub = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configZenodo = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configZenodo = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configIdGnoss = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configIdGnoss = new()
         {
             type = DisambiguationDataConfigType.equalsIdentifiers
         };
 
-        private static readonly DisambiguationDataConfig configCoautores = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configCoautores = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configDocumentos = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDocumentos = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configOrganizacion = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configOrganizacion = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configDepartamento = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configDepartamento = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configGrupos = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configGrupos = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
         };
 
-        private static readonly DisambiguationDataConfig configProyectos = new DisambiguationDataConfig()
+        private static readonly DisambiguationDataConfig configProyectos = new()
         {
             type = DisambiguationDataConfigType.equalsItemList,
             score = 0.5f
@@ -335,7 +331,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models.DisambiguationObjects
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new List<DisambiguationData>();
+            List<DisambiguationData> data = new();
 
             data.Add(new DisambiguationData()
             {

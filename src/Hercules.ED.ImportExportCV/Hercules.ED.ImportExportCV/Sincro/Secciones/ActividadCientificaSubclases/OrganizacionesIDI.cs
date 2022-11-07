@@ -24,10 +24,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionOrgIdi, "descripcion",Descripcion),
-                new DisambiguationData(configFechaOrgIdi,"fecha",Fecha),
-                new DisambiguationData(configTipoActividadOrgIdi,"tipoActividad",TipoActividad),
-                new DisambiguationData(configEntConOrgIdi,"entidadConvocante",EntidadConvocante)
+                new DisambiguationData(configDescripcionOrgIdi, "descripcion", Descripcion),
+                new DisambiguationData(configFechaOrgIdi, "fecha", Fecha),
+                new DisambiguationData(configTipoActividadOrgIdi, "tipoActividad", TipoActividad),
+                new DisambiguationData(configEntConOrgIdi, "entidadConvocante", EntidadConvocante)
             };
             return data;
         }

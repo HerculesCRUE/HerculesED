@@ -20,7 +20,7 @@ namespace EditorCV.Models.Acreditacion
         /// <summary>
         /// Objeto que tiene los parámetros generales y específicos del proceso
         /// </summary>
-        public Process? process { get; set; }
+        public Process process { get; set; }
 
         public ParameterAcreditacion()
         {
@@ -46,11 +46,11 @@ namespace EditorCV.Models.Acreditacion
         /// <summary>
         /// Robot que queremos que ejecute el proceso, en este caso como nos dará igual que robot lo ejecute, lo dejaremos a null
         /// </summary>
-        public string? id_robot { get; set; }
+        public string id_robot { get; set; }
         /// <summary>
         /// Objeto que tendrá los parámetros específicos del proceso
         /// </summary>
-        public Parameters? parameters { get; set; }
+        public Parameters parameters { get; set; }
 
         public Process()
         {
@@ -70,22 +70,22 @@ namespace EditorCV.Models.Acreditacion
         /// <summary>
         /// ID de la comisión evaluadora de la acreditación
         /// </summary>
-        public string? comision { get; set; }
+        public string comision { get; set; }
         /// <summary>
         /// ID de la acreditación
         /// </summary>
-        public string? tipo_acreditacion { get; set; }
+        public string tipo_acreditacion { get; set; }
         /// <summary>
         /// ID de la categoría de acreditación, solo será necesario cuando el id de la comisión tenga el valor "21".
         /// </summary>
-        public string? categoria_acreditacion { get; set; }
+        public string categoria_acreditacion { get; set; }
         /// <summary>
         ///  identificador escogido. Puede ser:
         ///  - PersonaRef
         ///  - Email
         ///  - ORCID
         /// </summary>
-        public string? investigador { get; set; }
+        public string investigador { get; set; }
 
         public Parameters()
         {

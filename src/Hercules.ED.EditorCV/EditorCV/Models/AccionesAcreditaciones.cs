@@ -43,7 +43,7 @@ namespace EditorCV.Models
             //Si no consigo ningún identificador del usuario.
             if (string.IsNullOrEmpty(investigador))
             {
-                throw new Exception("El usuario no se ha encontrado, id: " + idInvestigador);
+                throw new ArgumentException("El usuario no se ha encontrado, id: " + idInvestigador);
             }
 
             ParameterAcreditacion acreditacion = new ParameterAcreditacion(comision, tipo_acreditacion, categoria_acreditacion, investigador);

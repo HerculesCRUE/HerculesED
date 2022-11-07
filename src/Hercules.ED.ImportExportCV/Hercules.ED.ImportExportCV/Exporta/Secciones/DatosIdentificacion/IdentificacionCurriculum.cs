@@ -1,11 +1,4 @@
-﻿using ImportadorWebCV;
-using ImportadorWebCV.Exporta.Secciones;
-using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -15,7 +8,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
     {
         public IdentificacionCurriculum(cvnRootResultBean mCvn, string cvID) : base(mCvn, cvID)
         {
-            
+
         }
 
         /// <summary>
@@ -25,7 +18,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
         /// <param name="version"></param>
         public void ExportaIdentificacionCurriculum(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, string version)
         {
-            CvnItemBean itemBean = new ()
+            CvnItemBean itemBean = new()
             {
                 Code = "000.020.000.000",
                 Items = new List<CVNObject>()
@@ -34,7 +27,7 @@ namespace ImportadorWebCV.Exporta.Secciones.DatosIdentificacion
             //Idioma del curriculum
             UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.070", "spa");
             //Version
-            UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.080", version.Replace("_","."));
+            UtilityExportar.AddCvnItemBeanCvnStringSimple(itemBean, "000.020.000.080", version.Replace("_", "."));
         }
     }
 }

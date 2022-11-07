@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Hercules.ED.RabbitConsume.Models.Services
 {
@@ -15,6 +14,16 @@ namespace Hercules.ED.RabbitConsume.Models.Services
         private static readonly string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}configJson{Path.DirectorySeparatorChar}prefijos.json")));
         private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected DataPerson() { }
+
+        /// <summary>
+        /// Modifica la última fecha de moficiación del usuario.
+        /// </summary>
+        /// <param name="pIdGnoss">ID del recurso de la persona.</param>
+        /// <param name="pDate">Fecha a guardar.</param>
         public static void ModifyDate(string pIdGnoss, DateTime pDate)
         {
             // Obtención de datos antiguos.
@@ -22,16 +31,15 @@ namespace Hercules.ED.RabbitConsume.Models.Services
             string idRecurso = string.Empty;
 
             SparqlObject resultadoQuery;
-            StringBuilder select = new(), where = new();
 
             // Consulta sparql.
-            select.Append(mPrefijos);
-            select.Append("SELECT DISTINCT ?s ?fecha ");
-            where.Append("WHERE { ");
-            where.Append($@"FILTER(?s = <{pIdGnoss}>)");
-            where.Append("OPTIONAL {?s roh:lastUpdatedDate ?fecha. } ");
-            where.Append("} ");
-            resultadoQuery = mResourceApi.VirtuosoQuery(select.ToString(), where.ToString(), "person");
+            string select = $@"{mPrefijos} SELECT DISTINCT ?s ?fecha ";
+            string where = $@"WHERE {{
+                                FILTER(?s = <{pIdGnoss}>) 
+                                OPTIONAL {{?s roh:lastUpdatedDate ?fecha. }} 
+                            }}";
+
+            resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
             if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
             {
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)

@@ -9,6 +9,11 @@ namespace Hercules.ED.RabbitConsume
     public class Program
     {
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        protected Program() { }
+
+        /// <summary>
         /// Contructor.
         /// </summary>
         /// <param name="args"></param>

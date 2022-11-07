@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson
 {
     public class RO_JSON
     {
         public string ID { get; set; }
-        public int? id { get; set; }
-        public string titulo { get; set; }
-        public string tipo { get; set; }
-        public string descripcion { get; set; }
-        public string url { get; set; }
-        public string licencia { get; set; }
-        public List<string> etiquetasEnriquecidas { get; set; }
-        public List<string> categoriasEnriquecidas { get; set; }
+        public int? Id { get; set; }
+        public string Titulo { get; set; }
+        public string Tipo { get; set; }
+        public string Descripcion { get; set; }
+        public string Url { get; set; }
+        public string Licencia { get; set; }
+        public List<string> EtiquetasEnriquecidas { get; set; }
+        public List<string> CategoriasEnriquecidas { get; set; }
     }
 }

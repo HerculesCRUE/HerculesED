@@ -31,8 +31,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return new List<SubseccionItem>();
             }
 
-            List<string> propiedadesItem = new () { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
-            List<string> rdfTypeItem = new () { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
+            List<string> propiedadesItem = new() { "http://w3id.org/roh/freeTextSummary", "http://w3id.org/roh/freeTextSummaryValues", "http://w3id.org/roh/freeTextSummaryValuesCV" };
+            List<string> rdfTypeItem = new() { "http://w3id.org/roh/FreeTextSummaryValues", "http://w3id.org/roh/FreeTextSummaryValuesCV" };
 
             //1º Obtenemos la entidad de BBDD.
             Tuple<string, string, string> identificadores = GetIdentificadoresItemPresentation(mCvID, propiedadesItem, rdfTypeItem);
@@ -61,7 +61,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 if (listadoIdBBDD != null && listadoIdBBDD.Count > 0 && listadoIdBBDD.Any(x => x.StartsWith("http://gnoss.com/items/FreeTextSummaryValuesCV_")))
                 {
-                    List<string> listadoEliminacion = new () { "0", "1", "2" };
+                    List<string> listadoEliminacion = new() { "0", "1", "2" };
                     string numero;
                     for (int i = 0; i < listadoIdBBDD.Count; i++)
                     {
@@ -100,10 +100,10 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             try
             {
-                Entity entity = new ();
+                Entity entity = new();
                 entity.properties = new List<Property>();
                 List<(string, string)> resumen = GetResumen(listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnRichText>("070.010.000.010"));
-                if (!resumen.Any()) 
+                if (!resumen.Any())
                 {
                     return entity;
                 }
@@ -132,8 +132,8 @@ namespace ImportadorWebCV.Sincro.Secciones
 
         private List<(string, string)> GetResumen(CvnItemBeanCvnRichText item)
         {
-            if (item == null) 
-            { 
+            if (item == null)
+            {
                 return new List<(string, string)>();
             }
 
@@ -166,7 +166,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                 resumenLibre = resumen;
             }
 
-            List<(string, string)> listadoResumen = new () { ("resumenLibre", resumenLibre.Trim()), ("TFG", TFG.Trim()), ("TFM", TFM.Trim()) };
+            List<(string, string)> listadoResumen = new() { ("resumenLibre", resumenLibre.Trim()), ("TFG", TFG.Trim()), ("TFM", TFM.Trim()) };
 
             return listadoResumen;
         }

@@ -21,6 +21,15 @@ namespace EditorCV.Controllers
             _Configuracion = pConfig;
         }
 
+        /// <summary>
+        /// Servicio encargado de hacer la petición de sexenios.
+        /// </summary>
+        /// <param name="comite">Comité</param>
+        /// <param name="periodo">Periodo</param>
+        /// <param name="perfil_tecnologico">Perfil tecnológico</param>
+        /// <param name="subcomite">Subcomité</param>
+        /// <param name="idInvestigador">Identificador del investigador</param>
+        /// <returns>OK si se realiza la petición con </returns>
         [HttpPost("ConseguirSexenios")]
         public IActionResult ConseguirSexenios([FromForm] string comite, [FromForm] string periodo, [FromForm][Optional] string perfil_tecnologico, [FromForm][Optional] string subcomite, [FromForm] string idInvestigador)
         {
@@ -36,6 +45,12 @@ namespace EditorCV.Controllers
             }
         }
 
+        /// <summary>
+        /// Servicio encargado de la recepción de la respuesta de la petición de sexenios
+        /// </summary>
+        /// <param name="url_cdn">Dirección url</param>
+        /// <param name="idUsuario">Identificador del usuario</param>
+        /// <returns>OK si se inserta el triple</returns>
         [HttpPost("Notify")]
         public IActionResult NotifySexenios([Required]string url_cdn, [Required] string idUsuario)
         {

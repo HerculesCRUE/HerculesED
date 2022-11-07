@@ -12,11 +12,7 @@ using System.Runtime.InteropServices;
 using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
-using Gnoss.ApiWrapper.Model;
 using Models;
-using ImportadorWebCV.Exporta.Secciones;
-using Gnoss.ApiWrapper;
-using ImportadorWebCV;
 using Utils;
 
 namespace Hercules.ED.ImportExportCV.Controllers
@@ -28,7 +24,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
         private readonly ILogger<ImportadorCVController> _logger;
         readonly ConfigService _Configuracion;
 
-        private static Dictionary<string, PetitionStatus> petitionStatus = new ();
+        private static Dictionary<string, PetitionStatus> petitionStatus = new();
         public const int elementosTratados = 0;
 
         public ImportadorCVController(ILogger<ImportadorCVController> logger, ConfigService pConfig)
@@ -50,7 +46,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
             {
                 string crisArchivo = File.FileName.Split(".").First().Substring(0, File.FileName.Split(".").First().Length - 1);
 
-                SincroDatos sincro = new (_Configuracion, File);
+                SincroDatos sincro = new(_Configuracion, File);
                 if (sincro.getCVN() == null || sincro.getCVN().numElementos == 0 || sincro.getCVN().errorCode != 0)
                 {
                     if (sincro.getCVN() != null)
@@ -86,10 +82,10 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
 
-                Utility.updateFechaImportacion(pCVID);
-                SincroDatos sincro = new (_Configuracion, pCVID, File);
+                Utility.UpdateFechaImportacion(pCVID);
+                SincroDatos sincro = new(_Configuracion, pCVID, File);
 
-                List<string> listaDOI = new ();
+                List<string> listaDOI = new();
 
                 sincro.SincroDatosIdentificacion(Secciones);
                 sincro.SincroDatosSituacionProfesional(Secciones);
@@ -100,7 +96,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.SincroTextoLibre(Secciones);
 
                 sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
-                Utility.updateFechaImportacion(pCVID, true);
+                Utility.UpdateFechaImportacion(pCVID, true);
                 return Ok();
             }
             catch (Exception ex)
@@ -151,13 +147,13 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
                 //Estado de la peticion
-                PetitionStatus estadoPreimport = new (0, 0, "ESTADO_PREIMPORTAR_LECTURA");
+                PetitionStatus estadoPreimport = new(0, 0, "ESTADO_PREIMPORTAR_LECTURA");
                 petitionStatus[petitionID] = estadoPreimport;
 
-                SincroDatos sincro = new (_Configuracion, pCVID, File);
-                Preimport preimportar = new ();
+                SincroDatos sincro = new(_Configuracion, pCVID, File);
+                Preimport preimportar = new();
 
-                List<string> listaDOI = new ();
+                List<string> listaDOI = new();
 
                 sincro.ComprobarSecciones();
                 petitionStatus[petitionID].totalWorks = sincro.GetNumItems();
@@ -176,7 +172,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 sincro.GuardarXMLFiltrado();
 
                 string xmlPreimporta = "";
-                XmlSerializer serializer = new (typeof(Preimport));
+                XmlSerializer serializer = new(typeof(Preimport));
                 using (var sww = new StringWriter())
                 {
                     using (XmlWriter writer = XmlWriter.Create(sww))
@@ -216,8 +212,8 @@ namespace Hercules.ED.ImportExportCV.Controllers
             try
             {
                 //Estado de la peticion
-                Utility.updateFechaImportacion(pCVID);
-                PetitionStatus estadoPostimport = new (0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
+                Utility.UpdateFechaImportacion(pCVID);
+                PetitionStatus estadoPostimport = new(0, 0, "ESTADO_POSTIMPORTAR_LECTURA");
                 petitionStatus[petitionID] = estadoPostimport;
 
                 string stringFile;
@@ -229,9 +225,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
                     }
                 }
 
-                AccionesImportacion accionesImportacion = new (_Configuracion, pCVID, stringFile);
+                AccionesImportacion accionesImportacion = new(_Configuracion, pCVID, stringFile);
                 accionesImportacion.ImportacionTriples(pCVID, filePreimport, listaId, listaOpciones, petitionStatus[petitionID]);
-                Utility.updateFechaImportacion(pCVID,true);
+                Utility.UpdateFechaImportacion(pCVID, true);
                 return Ok();
             }
             catch (Exception ex)
@@ -242,14 +238,14 @@ namespace Hercules.ED.ImportExportCV.Controllers
         [HttpPost("fechaCheck")]
         public ActionResult fechaCheck([FromForm][Required] string pCVID)
         {
-            bool isToday = Utility.checkFecha(pCVID);
+            bool isToday = Utility.CheckFecha(pCVID);
 
             return Ok(isToday);
         }
         [HttpPost("fecha")]
         public ActionResult fecha(string pCVID)
         {
-            Utility.updateFechaImportacion(pCVID);
+            Utility.UpdateFechaImportacion(pCVID);
             return Ok();
         }
     }

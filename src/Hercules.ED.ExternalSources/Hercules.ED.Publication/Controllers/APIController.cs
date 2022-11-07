@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PublicationConnect.ROs.Publications.Controllers;
 using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
 using PublicationAPI.Controllers;
-using Serilog;
+using System;
 
 namespace PublicationConnect.Controllers
 {
@@ -24,43 +23,40 @@ namespace PublicationConnect.Controllers
         }
 
         /// <summary>
-        /// Get all repositories from a specified user account and RO
+        /// Obtiene los datos de las publicaciones por el ORCID del usuario.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /scopus/GetROs?orcid=XXXX-XXXX-XXXX-XXXX&amp;date=year-month-day
-        /// </remarks>
-        /// <param orcid="orcid">Orcid</param>
-        /// <param year-month-day="year-month-day">Year-month-day</param>
-        /// <returns></returns>
-        /// <response code="200">Ok</response>
-        /// <response code="400">Invalid app</response> 
-        /// <response code="500">Oops! Something went wrong</response> 
-
+        /// <param name="orcid">ORCID del usuario.</param>
+        /// <param name="date">Fecha de obtención de publicaciones.</param>
+        /// <returns>Listado de objetos con los datos de las publicaciones.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetROs([FromQuery][Required] string orcid, string date = "1500-01-01")
         {
-            Log.Information("Leyendo Configuración...");
-            ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
-            Log.Information("Obteniendo datos de publicación...");
-            List<Publication> publication = PublicationObject.getPublications(orcid, date);
+            Console.WriteLine("Leyendo Configuración...");
+            ROPublicationLogic PublicationObject = new(_Configuracion);
+            Console.WriteLine("Obteniendo datos de publicación...");
+            List<Publication> publication = PublicationObject.GetPublications(orcid, date);
             return publication;
         }
 
+        /// <summary>
+        /// Obtiene los datos de la publicación por DOI.
+        /// </summary>
+        /// <param name="pDoi">DOI de la publicación a obtener los datos.</param>
+        /// <param name="pNombreCompletoAutor">Nombre completo del autor.</param>
+        /// <returns>Lista con una única publicación.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public List<Publication> GetRoPublication([FromQuery][Required] string pDoi, string pNombreCompletoAutor = null)
         {
-            Log.Information("Leyendo Configuración...");
-            ROPublicationLogic PublicationObject = new ROPublicationLogic(_Configuracion);//,almacenamiento.metricas_scopus, almacenamiento.metricas_WoS);
-            Log.Information("Obteniendo datos de publicación...");
-            List<Publication> publication = PublicationObject.getPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
+            Console.WriteLine("Leyendo Configuración...");
+            ROPublicationLogic PublicationObject = new(_Configuracion);
+            Console.WriteLine("Obteniendo datos de publicación...");
+            List<Publication> publication = PublicationObject.GetPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
             return publication;
         }
     }

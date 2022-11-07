@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,9 +10,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
     public class Contratos : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience",
-            "http://w3id.org/roh/nonCompetitiveProjects", "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificExperience",
+            "http://w3id.org/roh/nonCompetitiveProjects",
+            "http://w3id.org/roh/relatedNonCompetitiveProjectCV",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "project";
         public Contratos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -26,22 +29,22 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaContratos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
-            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            List<Tuple<string, string, string>> listadoIdentificadoresCon = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadoresCon != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0)
+                listadoIdentificadoresCon = listadoIdentificadoresCon.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadoresCon.Count == 0)
                 {
                     return;
                 }
             }
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesCon = GetListLoadedEntityCV(listadoIdentificadoresCon, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesCon)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "050.020.020.000",
                     Items = new List<CVNObject>()
@@ -151,7 +154,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                     "050.020.020.320", keyValue.Value);
 
                 // Autores
-                Dictionary<string, string> listadoPropiedadesAutor = new ();
+                Dictionary<string, string> listadoPropiedadesAutor = new();
                 listadoPropiedadesAutor.Add("Orden", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosIPOrden));
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosIPFirma));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosIPNombre));
@@ -160,7 +163,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBeanList(itemBean, listadoPropiedadesAutor, "050.020.020.250", keyValue.Value);
 
                 // Entidad Financiadora
-                List<Tuple<string, string, string>> dicCodigos = new ();
+                List<Tuple<string, string, string>> dicCodigos = new();
                 dicCodigos.Add(new Tuple<string, string, string>("EntityBean", "050.020.020.120",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.contratosEntidadFinanciadoraNombre)));
                 dicCodigos.Add(new Tuple<string, string, string>("String", "050.020.020.140",

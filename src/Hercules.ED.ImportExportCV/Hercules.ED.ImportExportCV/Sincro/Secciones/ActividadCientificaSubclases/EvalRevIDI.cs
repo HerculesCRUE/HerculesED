@@ -24,10 +24,10 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionEvalRev,"descripcion",Descripcion),
-                new DisambiguationData(configNomActEvalRev,"nombreActividad",NombreActividad),
-                new DisambiguationData(configFechaIniEvalRev,"fechaInicio",FechaInicio),
-                new DisambiguationData(configEntReaEvalRev,"entidadRealizacion",EntidadRealizacion)
+                new DisambiguationData(configDescripcionEvalRev, "descripcion", Descripcion),
+                new DisambiguationData(configNomActEvalRev, "nombreActividad", NombreActividad),
+                new DisambiguationData(configFechaIniEvalRev, "fechaInicio", FechaInicio),
+                new DisambiguationData(configEntReaEvalRev, "entidadRealizacion", EntidadRealizacion)
             };
             return data;
         }
@@ -45,7 +45,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosEvalRev = new ();
+            Dictionary<string, DisambiguableEntity> resultadosEvalRev = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();

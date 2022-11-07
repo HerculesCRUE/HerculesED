@@ -1,18 +1,20 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
 {
-    public class ResultadosTecnologicos:SeccionBase
+    public class ResultadosTecnologicos : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificExperience",
-            "http://w3id.org/roh/technologicalResults", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificExperience",
+            "http://w3id.org/roh/technologicalResults",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "technologicalresult";
         public ResultadosTecnologicos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -25,19 +27,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaResultadosTecnologicos(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<Tuple<string, string>> listadoIdentificadoresResTec = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadoresResTec, listaId))
             {
                 return;
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesResTec = GetListLoadedEntity(listadoIdentificadoresResTec, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesResTec)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "050.030.020.000",
                     Items = new List<CVNObject>()
@@ -90,7 +92,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnAuthorBean(itemBean, listadoPropiedadesCorresponsable, "050.030.020.060", keyValue.Value);
 
                 // Entidad colaboradora 
-                List<Tuple<string, string, string>> dicColaboradora = new ();
+                List<Tuple<string, string, string>> dicColaboradora = new();
                 dicColaboradora.Add(new Tuple<string, string, string>("EntityBean", "050.030.020.170",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadColaboradoraNombre)));
                 dicColaboradora.Add(new Tuple<string, string, string>("String", "050.030.020.190",
@@ -108,7 +110,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ExperienciaCientificaSubclases
                    "050.030.020.170", keyValue.Value);
 
                 // Entidad destinataria
-                List<Tuple<string, string, string>> dicDestinataria = new ();
+                List<Tuple<string, string, string>> dicDestinataria = new();
                 dicDestinataria.Add(new Tuple<string, string, string>("EntityBean", "050.030.020.210",
                     UtilityExportar.EliminarRDF(Variables.ExperienciaCientificaTecnologica.resultadosTecnologicosEntidadDestinatariaNombre)));
                 dicDestinataria.Add(new Tuple<string, string, string>("String", "050.030.020.230",

@@ -19,17 +19,17 @@ namespace Models
             /// URL
             /// </summary>
             public string prop { get; set; }
-            
+
             /// <summary>
             /// Valores
             /// </summary>
             public List<string> values { get; set; }
-            
+
             /// <summary>
             /// Constructor sin parametros
             /// </summary>
             public Property() => (prop, values) = (null, new List<string>());
-            
+
             /// <summary>
             /// Constructor para que en caso de no pasarle valor, la propiedad también sea nula.
             /// </summary>
@@ -42,7 +42,7 @@ namespace Models
             /// <param name="propiedad"></param>
             /// <param name="lista"></param>
             public Property(string propiedad, List<string> lista) => (prop, values) = (propiedad, lista);
-            
+
             /// <summary>
             /// Constructor para que dada la propiedad y un valor este se asigne dentro de un listado.
             /// </summary>

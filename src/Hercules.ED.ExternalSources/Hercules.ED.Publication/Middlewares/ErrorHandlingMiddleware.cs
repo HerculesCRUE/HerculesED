@@ -3,10 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,7 +14,7 @@ namespace PublicationAPI.Middlewares
         private readonly RequestDelegate _next;
         private IConfiguration _configuration { get; set; }
         private string _timeStamp;
-        
+
         public ErrorHandlingMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
@@ -39,12 +36,6 @@ namespace PublicationAPI.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            //if (string.IsNullOrEmpty(_timeStamp) || !_timeStamp.Equals(CreateTimeStamp()))
-            //{
-            //    _timeStamp = CreateTimeStamp();
-            //    CreateLoggin(_timeStamp);
-            //}
-
             var code = HttpStatusCode.InternalServerError;
 
             var result = JsonConvert.SerializeObject(new { error = "Internal server error" });
@@ -63,10 +54,5 @@ namespace PublicationAPI.Middlewares
             return context.Response.WriteAsync(result);
         }
 
-       
-
-        
-
-        
     }
 }

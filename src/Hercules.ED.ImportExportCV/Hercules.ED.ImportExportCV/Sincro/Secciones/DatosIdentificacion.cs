@@ -5,7 +5,6 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 using System.Runtime.InteropServices;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
@@ -54,7 +53,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 
             if (preimportar)
             {
-                List<SubseccionItem> listaAux = new ();
+                List<SubseccionItem> listaAux = new();
                 listaAux.Add(new SubseccionItem(0, entityBBDD.id, entityXML.properties));
 
                 return listaAux;
@@ -114,8 +113,8 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             try
             {
-                Entity entity = new ();
-                entity.auxEntityRemove = new ();
+                Entity entity = new();
+                entity.auxEntityRemove = new();
                 entity.properties = UtilitySecciones.AddProperty(
                     new Property(Variables.DatosIdentificacion.nombre, listadoDatosIdentificacion.GetStringPorIDCampo("000.010.000.020")),
                     new Property(Variables.DatosIdentificacion.primerApellido, listadoDatosIdentificacion.GetElementoPorIDCampo<CvnItemBeanCvnFamilyNameBean>("000.010.000.010")?.FirstFamilyName),

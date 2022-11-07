@@ -1474,7 +1474,7 @@ namespace EditorCV.Models
                             }
                             break;
                         default:
-                            throw new Exception("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
+                            throw new NotImplementedException("No está implementado el código para el tipo " + templateSection.presentation.type.ToString());
                     }
                 }
             }
@@ -1496,7 +1496,7 @@ namespace EditorCV.Models
         /// <param name="pPropiedadesMultiidiomaCargadas">Listado con las propiedades cargadas multiidioma del item junto con su idioma</param>
         /// <param name="pListaPropiedadesMultiidiomaConfiguradas">Lista de propiedades que tienen el multiidioma configurado</param>
         /// <returns></returns>
-        private TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
+        private static TabSectionItem GetItem(ConfigService pConfig, string pId, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>> pData,
             TabSectionPresentationListItems pListItemConfig, string pLang, Dictionary<string, HashSet<string>> pPropiedadesMultiidiomaCargadas,
             List<ItemEditSectionRowProperty> pListaPropiedadesMultiidiomaConfiguradas, [Optional] Last5Years last5Years)
         {
@@ -1534,7 +1534,7 @@ namespace EditorCV.Models
             item.iserasable = true;
             if (!string.IsNullOrEmpty(pId))
             {
-                foreach (string propEditabilidad in Utils.UtilityCV.PropertyNotEditable.Keys)
+                foreach (string propEditabilidad in UtilityCV.PropertyNotEditable.Keys)
                 {
                     string valorPropiedadEditabilidad = GetPropValues(pId, pListItemConfig.property + "@@@" + propEditabilidad, pData).FirstOrDefault();
                     if (propEditabilidad.Equals("http://w3id.org/roh/validationStatusPRC"))
@@ -1548,7 +1548,7 @@ namespace EditorCV.Models
                             item.sendPRC = false;
                         }
                     }
-                    if ((Utils.UtilityCV.PropertyNotEditable[propEditabilidad] == null || Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
+                    if ((UtilityCV.PropertyNotEditable[propEditabilidad] == null || UtilityCV.PropertyNotEditable[propEditabilidad].Count == 0) && !string.IsNullOrEmpty(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
                         if (propEditabilidad != "http://w3id.org/roh/isValidated")
@@ -1556,7 +1556,7 @@ namespace EditorCV.Models
                             item.iserasable = false;
                         }
                     }
-                    else if (Utils.UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
+                    else if (UtilityCV.PropertyNotEditable[propEditabilidad].Contains(valorPropiedadEditabilidad))
                     {
                         item.iseditable = false;
                         if (propEditabilidad != "http://w3id.org/roh/isValidated")
@@ -1630,7 +1630,7 @@ namespace EditorCV.Models
                     }
                     if (listadoPropiedades.Select(x => x.Split("@@@").Last()).Contains(last5Years.end))
                     {
-                        propEnd = listadoPropiedades.Where(x => x.Split("@@@").Last().Equals(last5Years.end)).First();
+                        propEnd = listadoPropiedades.First(x => x.Split("@@@").Last().Equals(last5Years.end));
                         if (!string.IsNullOrEmpty(propEnd))
                         {
                             List<string> value = GetPropValues(pId, propEnd, pData);

@@ -25,16 +25,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             //Selecciono el nombre completo o la firma.
             foreach (ResearchObjectZenodo item in listadoAux)
             {
-                for (int i = 0; i < item.autores.Count; i++)
+                for (int i = 0; i < item.Autores.Count; i++)
                 {
-                    if (!string.IsNullOrEmpty(item.autores[i].orcid))
+                    if (!string.IsNullOrEmpty(item.Autores[i].orcid))
                     {
-                        listaORCID.Add(item.autores[i].orcid);
+                        listaORCID.Add(item.Autores[i].orcid);
                     }
-                    if (!string.IsNullOrEmpty(item.autores[i].nombreCompleto))
+                    if (!string.IsNullOrEmpty(item.Autores[i].nombreCompleto))
                     {
-                        listaNombres.Add(item.autores[i].nombreCompleto);
-                    };
+                        listaNombres.Add(item.Autores[i].nombreCompleto);
+                    }
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Dictionary<string, string> pDicAreasNombre)
         {
             ResearchObjectZenodo roA = pDicIdRo[idRo];
-            ResearchObject roCreado = new ResearchObject();
+            ResearchObject roCreado = new();
 
             foreach (string idSimilar in pListaIds)
             {
@@ -61,12 +61,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             pResearchObject.ID = Guid.NewGuid().ToString();
 
-            DisambiguationRO ro = new DisambiguationRO()
+            DisambiguationRO ro = new()
             {
                 ID = pResearchObject.ID,
-                doi = pResearchObject.doi,
-                title = pResearchObject.titulo,
-                idFigshare = pResearchObject.id.ToString()
+                doi = pResearchObject.Doi,
+                title = pResearchObject.Titulo,
+                idFigshare = pResearchObject.Id.ToString()
             };
 
             return ro;
@@ -77,32 +77,31 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Dictionary<string, string> pDicAreasBroader, Dictionary<string, string> pDicAreasNombre, ResearchObjectZenodo pZenodoObjB = null)
         {
             // ID
-            if (pZenodoObj.id.HasValue)
+            if (pZenodoObj.Id.HasValue)
             {
-                // TODO.
-                ro.Roh_idZenodo = pZenodoObj.id.Value.ToString();
+                ro.Roh_idZenodo = pZenodoObj.Id.Value.ToString();
 
-                if (pZenodoObjB != null && pZenodoObjB.id.HasValue && string.IsNullOrEmpty(ro.Roh_idZenodo))
+                if (pZenodoObjB != null && pZenodoObjB.Id.HasValue && string.IsNullOrEmpty(ro.Roh_idZenodo))
                 {
-                    ro.Roh_idZenodo = pZenodoObjB.id.Value.ToString();
+                    ro.Roh_idZenodo = pZenodoObjB.Id.Value.ToString();
                 }
             }
 
             // DOI
-            if (!string.IsNullOrEmpty(pZenodoObj.doi))
+            if (!string.IsNullOrEmpty(pZenodoObj.Doi))
             {
-                ro.Bibo_doi = pZenodoObj.doi;
+                ro.Bibo_doi = pZenodoObj.Doi;
 
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.doi) && string.IsNullOrEmpty(ro.Bibo_doi))
+                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.Doi) && string.IsNullOrEmpty(ro.Bibo_doi))
                 {
-                    ro.Bibo_doi = pZenodoObjB.doi;
+                    ro.Bibo_doi = pZenodoObjB.Doi;
                 }
             }
 
             // ResearchObject Type
-            if (!string.IsNullOrEmpty(pZenodoObj.tipo))
+            if (!string.IsNullOrEmpty(pZenodoObj.Tipo))
             {
-                switch (pZenodoObj.tipo)
+                switch (pZenodoObj.Tipo)
                 {
                     case "dataset":
                         ro.IdDc_type = $"{mResourceApi.GraphsUrl}items/researchobjecttype_1";
@@ -127,9 +126,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         break;
                 }
 
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.tipo) && string.IsNullOrEmpty(ro.IdDc_type))
+                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.Tipo) && string.IsNullOrEmpty(ro.IdDc_type))
                 {
-                    switch (pZenodoObjB.tipo)
+                    switch (pZenodoObjB.Tipo)
                     {
                         case "dataset":
                             ro.IdDc_type = $"{mResourceApi.GraphsUrl}items/researchobjecttype_1";
@@ -166,19 +165,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Utility.URL(pZenodoObj, pZenodoObjB, ro);
 
             // Fecha Publicación
-            if (!string.IsNullOrEmpty(pZenodoObj.fechaPublicacion))
+            if (!string.IsNullOrEmpty(pZenodoObj.FechaPublicacion))
             {
-                int dia = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[2]);
-                int mes = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[1]);
-                int anyo = int.Parse(pZenodoObj.fechaPublicacion.Split("-")[0]);
+                int dia = int.Parse(pZenodoObj.FechaPublicacion.Split("-")[2]);
+                int mes = int.Parse(pZenodoObj.FechaPublicacion.Split("-")[1]);
+                int anyo = int.Parse(pZenodoObj.FechaPublicacion.Split("-")[0]);
 
                 ro.Dct_issued = new DateTime(anyo, mes, dia);
 
-                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.fechaPublicacion) && ro.Dct_issued == null)
+                if (pZenodoObjB != null && !string.IsNullOrEmpty(pZenodoObjB.FechaPublicacion) && ro.Dct_issued == null)
                 {
-                    dia = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[2]);
-                    mes = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[1]);
-                    anyo = int.Parse(pZenodoObjB.fechaPublicacion.Split("-")[0]);
+                    dia = int.Parse(pZenodoObjB.FechaPublicacion.Split("-")[2]);
+                    mes = int.Parse(pZenodoObjB.FechaPublicacion.Split("-")[1]);
+                    anyo = int.Parse(pZenodoObjB.FechaPublicacion.Split("-")[0]);
 
                     ro.Dct_issued = new DateTime(anyo, mes, dia);
                 }
@@ -194,13 +193,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             Utility.Licencia(pZenodoObj, pZenodoObjB, ro);
 
             // Autores
-            if (pZenodoObj.autores != null && pZenodoObj.autores.Any())
+            if (pZenodoObj.Autores != null && pZenodoObj.Autores.Any())
             {
-                ro.Bibo_authorList = new List<BFO_0000023>();
+                ro.Bibo_authorList = new();
                 int orden = 1;
-                foreach (Person_JSON personaRO in pZenodoObj.autores)
+                foreach (Person_JSON personaRO in pZenodoObj.Autores)
                 {
-                    BFO_0000023 bfo_0000023 = new BFO_0000023();
+                    BFO_0000023 bfo_0000023 = new();
                     bfo_0000023.Rdf_comment = orden;
                     bfo_0000023.IdRdf_member = personaRO.ID;
                     ro.Bibo_authorList.Add(bfo_0000023);

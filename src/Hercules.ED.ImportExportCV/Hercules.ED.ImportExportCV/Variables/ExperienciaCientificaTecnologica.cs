@@ -17,7 +17,7 @@
         public const string proyectosIDIEntidadRealizacionNombre = "http://w3id.org/roh/conductedByTitle";
         public const string proyectosIDITipoEntidadRealizacion = "http://w3id.org/roh/conductedByType";
         public const string proyectosIDITipoEntidadRealizacionOtros = "http://w3id.org/roh/conductedByTypeOther";
-        public const string proyectosIDINombreIP = "http://w3id.org/roh/mainResearchers@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";  
+        public const string proyectosIDINombreIP = "http://w3id.org/roh/mainResearchers@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/firstName";
         public const string proyectosIDIPrimerApellidoIP = "http://w3id.org/roh/mainResearchers@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/familyName";
         public const string proyectosIDISegundoApellidoIP = "http://w3id.org/roh/mainResearchers@@@http://w3id.org/roh/PersonAux|http://w3id.org/roh/secondFamilyName";
         public const string proyectosIDIFirmaIP = "http://w3id.org/roh/mainResearchers@@@http://w3id.org/roh/PersonAux|http://xmlns.com/foaf/0.1/nick";
@@ -171,7 +171,7 @@
         public const string grupoIDIResultadosOtros = "http://w3id.org/roh/otherRelevantResults";
         public const string grupoIDIResultadosRelevantes = "http://w3id.org/roh/relevantResults";
         //public const string grupoIDIPalabrasClave = "http://w3id.org/roh/hasKnowledgeArea@@@http://w3id.org/roh/CategoryPath|http://w3id.org/roh/categoryNode";*
-                
+
         /// <summary>
         /// Obras artísticas dirigidas - 050.020.030.000
         /// </summary>

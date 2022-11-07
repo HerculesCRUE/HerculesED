@@ -74,7 +74,7 @@ namespace EditorCV.Models
         /// <param name="PDFFilePDF">nombre del fichero</param>
         /// <param name="guidCortoCVID">GUID corto del CV</param>
         /// <param name="filePredicateEstado">Predicado estado de la entidad</param>
-        void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux, string PDFFilePDF,
+        static void AddPDFFile(ConfigService _Configuracion, string pCVID, string lang, string idEntityAux, string PDFFilePDF,
             Guid guidCortoCVID, string filePredicateEstado, List<string> listaId, string tipoCVNExportacion, string versionExportacion)
         {
             try
@@ -412,7 +412,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="tab"></param>
         /// <returns></returns>
-        private bool IsValidTab(string tab)
+        private static bool IsValidTab(string tab)
         {
             List<string> validTabs = new List<string>()
             {
@@ -433,7 +433,7 @@ namespace EditorCV.Models
         /// <param name="uri"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private string FirstLetterUpper(string uri, string property)
+        private static string FirstLetterUpper(string uri, string property)
         {
             if (property.Length == 0 || property.Length == 1)
             {

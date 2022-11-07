@@ -59,7 +59,7 @@
         public const string doctoradosFechaObtencion = "http://w3id.org/roh/doctorExtraordinaryAwardDate";
         public const string doctoradosTituloHomologado = "http://w3id.org/roh/approvedDegree";
         public const string doctoradosFechaHomologacion = "http://w3id.org/roh/approvedDate";
-        
+
         /// <summary>
         /// Otra formación de posgrado - 020.010.030.000
         /// </summary>

@@ -37,11 +37,14 @@
 ## Controladores
 El servicio de editor de CV cuenta con varios controladores:
 
+- AcreditacionesController - Controlador encargador de la petición de acreditaciones y la obtención de la respuesta.
 - EdicionCVController - Controlador encargado de las tareas de edición y presentación del CV correspondientes a la obtención de datos.
-- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion items.
+- EnvioDSpaceController - Controlador encargado del proceso de envío a la biblioteca DSpace.
 - EnvioValidacionController - Controlador encargado del envío de datos a producción cientifica (PRC) y a validación. También es el encargado de obtener todos los proyectos de una persona pasada como parametro, junto a su titulo, fecha de inicio, fecha de fin y organización.
 - ExportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la exportación de CV, además de la creación, modificación y eliminacion de perfiles de exportación.
+- GuardadoCVController - Controlador encargado de la creación, modificación y eliminacion items.
 - ImportadoCVController - Controlador encargado de la carga de datos y presentación de los mismos para la importación de CV.
+- SexeniosController - Controlador encargado de la petición de sexenios y la obtención de la respuesta.
 
 
 ## Hércules ED. Configuración del Editor de CV

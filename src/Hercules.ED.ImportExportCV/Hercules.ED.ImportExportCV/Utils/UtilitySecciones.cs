@@ -1,17 +1,14 @@
 ﻿using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Hercules.ED.ImportExportCV.Controllers;
-using Hercules.ED.ImportExportCV.Models.FuentesExternas;
 using ImportadorWebCV;
 using Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 using static Models.Entity;
@@ -28,11 +25,11 @@ namespace Utils
         private static readonly Dictionary<string, string> dicDOI = new();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
-        private static readonly ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
 
         public static Dictionary<string, string> GetIDPersona(string crisID)
         {
-            Dictionary<string, string> PersonaORCID = new ();
+            Dictionary<string, string> PersonaORCID = new();
             string persona = "";
             string ORCID = "";
 
@@ -137,7 +134,7 @@ where{{
         /// <returns>HashSet<string></returns>
         public static HashSet<string> GetIDS(ResourceApi pResourceApi, string pCVID, List<string> propiedadesItem)
         {
-            HashSet<string> ids = new ();
+            HashSet<string> ids = new();
             int offsetInt = 0;
             int limit = 10000;
 
@@ -202,7 +199,7 @@ where{{
 
             if (mListaRevistas.Count == 0)
             {
-                Dictionary<string, string> listaRevistasAux = new ();
+                Dictionary<string, string> listaRevistasAux = new();
                 while (true)
                 {
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
@@ -252,7 +249,7 @@ where{{
             //Recalculamos cada 60 minutos
             if (mDateOrgsNombreIds.AddMinutes(60) < DateTime.Now)
             {
-                Dictionary<string, string> aux = new ();
+                Dictionary<string, string> aux = new();
                 int offset = 0;
                 int limit = 10000;
                 while (true)
@@ -309,7 +306,7 @@ where{{
         /// <param name="list"></param>
         public static List<Property> AddProperty(params Property[] list)
         {
-            List<Property> listado = new ();
+            List<Property> listado = new();
             for (int i = 0; i < list.Length; i++)
             {
                 if (!string.IsNullOrEmpty(list[i].values[0]))
@@ -480,7 +477,7 @@ where{{
             try
             {
                 string urlEstado = mConfiguracion.GetUrlServicioExterno() + "/FuentesExternas/InsertDoiToQueue?pIdentificador=doi&pDoi=" + doi + "&pIdPersona=" + idPersona + "&pNombreCompletoAutor=" + nombreCompletoAutor;
-                HttpClient httpClientEstado = new ();
+                HttpClient httpClientEstado = new();
                 HttpResponseMessage responseEstado = httpClientEstado.GetAsync($"{urlEstado}").Result;
 
                 bool status = responseEstado.IsSuccessStatusCode;
@@ -686,7 +683,7 @@ where{{
         /// <returns></returns>
         public static Dictionary<string, string> ObtenerIdPersona(ResourceApi resourceApi, string CVID)
         {
-            Dictionary<string, string> resultado = new ();
+            Dictionary<string, string> resultado = new();
             string select = $@"SELECT distinct ?idPersona ?nombreCompleto ";
             string where = $@"where {{
                                 <{CVID}> <http://w3id.org/roh/cvOf> ?idPersona . 
@@ -952,7 +949,7 @@ where{{
         {
             try
             {
-                MailAddress mail = new (emailAddress);
+                MailAddress mail = new(emailAddress);
 
                 return true;
             }

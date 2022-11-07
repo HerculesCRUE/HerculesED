@@ -166,7 +166,7 @@ namespace EditorCV.Models
                     //Otros identificadores
                     Entity.Property nombreIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://xmlns.com/foaf/0.1/topic");
                     Entity.Property valorIdentificador = entityBBDD.properties.FirstOrDefault(x => x.prop == "http://purl.org/ontology/bibo/identifier@@@http://xmlns.com/foaf/0.1/Document|http://purl.org/dc/elements/1.1/title");
-                    if (nombreIdentificador != null & valorIdentificador != null && nombreIdentificador.values != null && valorIdentificador.values != null)
+                    if (nombreIdentificador != null && valorIdentificador != null && nombreIdentificador.values != null && valorIdentificador.values != null)
                     {
                         foreach (string identificador in nombreIdentificador.values)
                         {
@@ -228,7 +228,7 @@ namespace EditorCV.Models
                 }
                 catch (Exception)
                 {
-
+                    //
                 }
             }
 
@@ -238,7 +238,7 @@ namespace EditorCV.Models
             tiposDesnormalizar.Add("ResearchObject_", DenormalizerItemQueue.ItemType.researchobject);
             tiposDesnormalizar.Add("Group_", DenormalizerItemQueue.ItemType.group);
             tiposDesnormalizar.Add("Project_", DenormalizerItemQueue.ItemType.project);
-            string claveDiccionario = tiposDesnormalizar.Keys.Where(x => entityDestino.Contains(x)).FirstOrDefault();
+            string claveDiccionario = tiposDesnormalizar.Keys.FirstOrDefault(x => entityDestino.Contains(x));
             if (claveDiccionario != null && tiposDesnormalizar.ContainsKey(claveDiccionario))
             {
                 rabbitServiceWriterDenormalizer.PublishMessage(new DenormalizerItemQueue(tiposDesnormalizar[claveDiccionario], new HashSet<string> { entityDestino }));
@@ -265,7 +265,7 @@ namespace EditorCV.Models
             API.Templates.Tab template = UtilityCV.TabTemplates.First(x => x.rdftype == pRdfTypeTab);
 
             //Comprobamos campos con expresiones regulares            
-            JsonResult error = ComprobarErrores(template, pEntity, pSectionID, pRdfTypeTab,pLang);
+            JsonResult error = ComprobarErrores(template, pEntity, pSectionID, pRdfTypeTab, pLang);
             if (error != null)
             {
                 return error;
@@ -733,7 +733,7 @@ namespace EditorCV.Models
         {
             ItemEdit itemEdit = null;
             List<ItemEditSectionRowProperty> validar = new();
-            
+
             if (pRdfTypeTab == "http://w3id.org/roh/PersonalData")
             {
                 itemEdit = pTemplate.personalDataSections;
@@ -744,16 +744,16 @@ namespace EditorCV.Models
                 itemEdit = templateSection.presentation.listItemsPresentation.listItemEdit;
             }
             itemEdit.sections.ForEach(section => section.rows.ForEach(x => validar.AddRange(x.properties.FindAll(x => x.validation != null))));
-            
-            foreach(ItemEditSectionRowProperty item in validar)
+
+            foreach (ItemEditSectionRowProperty item in validar)
             {
                 Regex rx = new(item.validation.regex);
-                Entity.Property p = pEntity.properties.First(x =>x.prop == item.property);
+                Entity.Property p = pEntity.properties.First(x => x.prop == item.property);
                 if (p.values != null)
                 {
                     foreach (string value in p.values)
                     {
-                        
+
                         if (!string.IsNullOrEmpty(value) && !rx.IsMatch(value))
                         {
                             return new JsonResult() { ok = false, error = item.validation.error[pLang] };
@@ -994,13 +994,22 @@ namespace EditorCV.Models
             }
             if (string.IsNullOrEmpty(idPerson))
             {
-                //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
-                try
+                if (pORCID.Length == 19)
                 {
-                    WebClient webClient = new WebClient();
-                    webClient.Headers.Add(HttpRequestHeader.Accept, "application/json");
-                    string jsonRespuestaOrcidPerson = webClient.DownloadString("https://pub.orcid.org/v3.0/" + pORCID + "/person");
-                    webClient.Dispose();
+                    //2º Si no existe recuperamos la persona de ORCID, la creamos y la devolvemos
+                    HttpClient client = new HttpClient();
+                    client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                    Uri url = new Uri($@"https://pub.orcid.org/v3.0/{pORCID}/person");
+                    HttpResponseMessage response = client.GetAsync(url.Host).Result;
+
+                    string jsonRespuestaOrcidPerson = "";
+                    if (response.IsSuccessStatusCode)
+                    {
+                        jsonRespuestaOrcidPerson = response.Content.ReadAsStringAsync().Result;
+                    }
+                    client.Dispose();
+
                     ORCIDPerson person = JsonConvert.DeserializeObject<ORCIDPerson>(jsonRespuestaOrcidPerson);
 
                     if (person != null)
@@ -1054,10 +1063,6 @@ namespace EditorCV.Models
                             idPerson = result;
                         }
                     }
-                }
-                catch (Exception)
-                {
-
                 }
             }
             if (!string.IsNullOrEmpty(idPerson))
@@ -1274,7 +1279,7 @@ namespace EditorCV.Models
             while (true)
             {
                 SparqlObject resultData = mResourceApi.VirtuosoQuery("select *", "where{?s a ?rdftype. ?s ?p <" + pEntity + ">. }", "curriculumvitae");
-                if(resultData.results.bindings.Count==0 || !resultData.results.bindings.Any(x=> x["p"].value != "http://gnoss/hasEntidad"))
+                if (resultData.results.bindings.Count == 0 || !resultData.results.bindings.Any(x => x["p"].value != "http://gnoss/hasEntidad"))
                 {
                     break;
                 }
@@ -1969,7 +1974,7 @@ namespace EditorCV.Models
                         listResult[fila["s"].value].Add(fila);
                     }
                     offset += numLimit;
-                    if (resultData.results.bindings.Count() < numLimit)
+                    if (resultData.results.bindings.Count < numLimit)
                     {
                         cargar = false;
                     }

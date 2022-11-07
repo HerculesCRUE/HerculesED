@@ -22,7 +22,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         public static DisambiguationPerson ObtenerDatosBasicosPersona(List<string> listaDatos)
         {
-            DisambiguationPerson persona = new DisambiguationPerson();
+            DisambiguationPerson persona = new();
             persona.ID = listaDatos.First();
             persona.departamento = DatosDepartamentoPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
             persona.organizacion = DatosOrganizacionPersona(listaDatos).Select(x => x.Value).FirstOrDefault();
@@ -43,68 +43,68 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             if (pPersona != null)
             {
-                Person person = new Person();
+                Person person = new();
 
-                if (pPersona.name != null && pPersona.name.given != null && pPersona.name.given.Any() && pPersona.name.given[0] != null && pPersona.name.familia != null && pPersona.name.familia.Any() && pPersona.name.familia[0] != null)
+                if (pPersona.Name != null && pPersona.Name.Given != null && pPersona.Name.Given.Any() && pPersona.Name.Given[0] != null && pPersona.Name.Familia != null && pPersona.Name.Familia.Any() && pPersona.Name.Familia[0] != null)
                 {
-                    person.Foaf_name = pPersona.name.given[0].Trim() + " " + pPersona.name.familia[0].Trim();
-                    person.Foaf_firstName = pPersona.name.given[0].Trim();
-                    person.Foaf_lastName = pPersona.name.familia[0].Trim();
+                    person.Foaf_name = pPersona.Name.Given[0].Trim() + " " + pPersona.Name.Familia[0].Trim();
+                    person.Foaf_firstName = pPersona.Name.Given[0].Trim();
+                    person.Foaf_lastName = pPersona.Name.Familia[0].Trim();
                 }
-                else if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
+                else if (pPersona.Name != null && pPersona.Name.Nombre_completo != null && pPersona.Name.Nombre_completo.Any())
                 {
-                    person.Foaf_name = pPersona.name.nombre_completo[0].Trim();
-                    if (person.Foaf_name.Contains(","))
+                    person.Foaf_name = pPersona.Name.Nombre_completo[0].Trim();
+                    if (person.Foaf_name.Contains(','))
                     {
-                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Split(',')[1].Trim();
-                        person.Foaf_lastName = pPersona.name.nombre_completo[0].Split(',')[0].Trim();
+                        person.Foaf_firstName = pPersona.Name.Nombre_completo[0].Split(',')[1].Trim();
+                        person.Foaf_lastName = pPersona.Name.Nombre_completo[0].Split(',')[0].Trim();
                     }
-                    else if (person.Foaf_name.Contains(" "))
+                    else if (person.Foaf_name.Contains(' '))
                     {
-                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim().Split(' ')[0].Trim();
-                        person.Foaf_lastName = pPersona.name.nombre_completo[0].Trim().Substring(pPersona.name.nombre_completo[0].Trim().IndexOf(' ')).Trim();
+                        person.Foaf_firstName = pPersona.Name.Nombre_completo[0].Trim().Split(' ')[0].Trim();
+                        person.Foaf_lastName = pPersona.Name.Nombre_completo[0].Trim().Substring(pPersona.Name.Nombre_completo[0].Trim().IndexOf(' ')).Trim();
                     }
                     else
                     {
-                        person.Foaf_firstName = pPersona.name.nombre_completo[0].Trim();
+                        person.Foaf_firstName = pPersona.Name.Nombre_completo[0].Trim();
                     }
                 }
                 else
                 {
-                    if (pPersona.nick.Contains(","))
+                    if (pPersona.Nick.Contains(','))
                     {
-                        person.Foaf_firstName = pPersona.nick.Split(',')[1].Trim();
-                        person.Foaf_lastName = pPersona.nick.Split(',')[0].Trim();
+                        person.Foaf_firstName = pPersona.Nick.Split(',')[1].Trim();
+                        person.Foaf_lastName = pPersona.Nick.Split(',')[0].Trim();
                     }
-                    else if (pPersona.nick.Contains(" "))
+                    else if (pPersona.Nick.Contains(' '))
                     {
-                        person.Foaf_firstName = pPersona.nick.Trim().Split(' ')[1].Trim();
-                        person.Foaf_lastName = pPersona.nick.Trim().Split(' ')[0].Trim();
+                        person.Foaf_firstName = pPersona.Nick.Trim().Split(' ')[1].Trim();
+                        person.Foaf_lastName = pPersona.Nick.Trim().Split(' ')[0].Trim();
                     }
                     else
                     {
-                        person.Foaf_firstName = pPersona.nick.Trim();
+                        person.Foaf_firstName = pPersona.Nick.Trim();
                     }
                     person.Foaf_name = person.Foaf_firstName + " " + person.Foaf_lastName;
                 }
 
-                if (!string.IsNullOrEmpty(pPersona.orcid))
+                if (!string.IsNullOrEmpty(pPersona.Orcid))
                 {
-                    person.Roh_ORCID = pPersona.orcid;
+                    person.Roh_ORCID = pPersona.Orcid;
                 }
 
-                if (!string.IsNullOrEmpty(pPersona.researcherID))
+                if (!string.IsNullOrEmpty(pPersona.ResearcherID))
                 {
-                    person.Vivo_researcherId = pPersona.researcherID;
+                    person.Vivo_researcherId = pPersona.ResearcherID;
                 }
 
-                if (pPersona.iDs != null && pPersona.iDs.Any())
+                if (pPersona.IDs != null && pPersona.IDs.Any())
                 {
-                    foreach (string item in pPersona.iDs)
+                    foreach (string item in pPersona.IDs)
                     {
                         if (item.ToLower().Contains("semanticscholar"))
                         {
-                            person.Roh_semanticScholarId = item.Split(":")[1].Trim();
+                            person.Roh_semanticScholarId = item.Split(':')[1].Trim();
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
             if (pPersonaRO != null)
             {
-                Person person = new Person();
+                Person person = new();
 
                 if (!string.IsNullOrEmpty(pPersonaRO.orcid))
                 {
@@ -150,17 +150,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 pPersona.ID = Guid.NewGuid().ToString();
                 string nombreCompleto = string.Empty;
 
-                if (pPersona.name != null && pPersona.name.nombre_completo != null && pPersona.name.nombre_completo.Any())
+                if (pPersona.Name != null && pPersona.Name.Nombre_completo != null && pPersona.Name.Nombre_completo.Any())
                 {
-                    nombreCompleto = pPersona.name.nombre_completo[0];
+                    nombreCompleto = pPersona.Name.Nombre_completo[0];
                 }
 
-                DisambiguationPerson persona = new DisambiguationPerson()
+                DisambiguationPerson persona = new()
                 {
                     ID = pPersona.ID,
-                    orcid = pPersona.orcid,
+                    orcid = pPersona.Orcid,
                     completeName = nombreCompleto,
-                    idGnoss = pPersona.idGnoss
+                    idGnoss = pPersona.IdGnoss
                 };
 
                 return persona;
@@ -169,7 +169,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             if (pPersonaRo != null)
             {
                 pPersonaRo.ID = Guid.NewGuid().ToString();
-                DisambiguationPerson persona = new DisambiguationPerson()
+                DisambiguationPerson persona = new()
                 {
                     ID = pPersonaRo.ID,
                     orcid = pPersonaRo.orcid,
@@ -182,7 +182,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
             if (pPersonaGit != null)
             {
-                DisambiguationPerson persona = new DisambiguationPerson()
+                DisambiguationPerson persona = new()
                 {
                     ID = Guid.NewGuid().ToString(),
                     gitHubId = pPersonaGit
@@ -197,9 +197,9 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         public static DocumentoBBDD ObtenerDatosDocumento(string pIdDocumento)
         {
-            DocumentoBBDD documento = new DocumentoBBDD();
-            documento.categorias = new HashSet<string>();
-            documento.etiquetas = new HashSet<string>();
+            DocumentoBBDD documento = new();
+            documento.categorias = new();
+            documento.etiquetas = new();
 
             string select = $@"SELECT DISTINCT ?urlPdf ?label ?etiquetas";
             string where = $@"WHERE {{
@@ -244,7 +244,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         public static List<Tuple<string, string, string, string, string, string>> ObtenerPersonas(HashSet<string> pIdsPersonas)
         {
-            List<Tuple<string, string, string, string, string, string>> listaResultados = new List<Tuple<string, string, string, string, string, string>>();
+            List<Tuple<string, string, string, string, string, string>> listaResultados = new();
 
             List<List<string>> listaListas = Utility.SplitList(pIdsPersonas.ToList(), 500).ToList();
 
@@ -324,7 +324,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         public static Dictionary<string, DisambiguationPerson> ObtenerPersonasNombre(List<string> listado)
         {
-            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
+            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new();
             string nameInput = "";
 
             string selectOut = "SELECT DISTINCT ?personID ?name ?num ?nameInput ";
@@ -342,10 +342,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 {
                     #region Buscamos en nombres
                     {
-                        List<string> unions = new List<string>();
+                        List<string> unions = new();
                         foreach (string wordOut in wordsTexto)
                         {
-                            List<string> words = new List<string>();
+                            List<string> words = new();
                             if (wordOut.Length == 2)
                             {
                                 words.Add(wordOut[0].ToString());
@@ -365,14 +365,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 }
                                 if (score == 1)
                                 {
-                                    StringBuilder sbUnion = new StringBuilder();
+                                    StringBuilder sbUnion = new();
                                     sbUnion.AppendLine("\t?personID <http://xmlns.com/foaf/0.1/name> ?name.");
                                     sbUnion.AppendLine($@"				{{  FILTER(lcase(?name) like'{word}%').}} UNION  {{  FILTER(lcase(?name) like'% {word}%').}}  BIND({score} as ?num)  ");
                                     unions.Add(sbUnion.ToString());
                                 }
                                 else
                                 {
-                                    StringBuilder sbUnion = new StringBuilder();
+                                    StringBuilder sbUnion = new();
                                     sbUnion.AppendLine("\t?personID <http://xmlns.com/foaf/0.1/name> ?name.");
                                     sbUnion.AppendLine($@"				{FilterWordComplete(word, "name")} BIND({score} as ?num) ");
                                     unions.Add(sbUnion.ToString());
@@ -401,13 +401,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
             foreach (string firma in listado)
             {
-                HashSet<int> scores = new HashSet<int>();
+                HashSet<int> scores = new();
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["nameInput"].value == Disambiguation.ObtenerTextosNombresNormalizados(firma)))
                 {
                     string personID = fila["personID"].value;
                     if (!diccionarioPersonas.ContainsKey(nameInput))
                     {
-                        diccionarioPersonas[personID] = new DisambiguationPerson();
+                        diccionarioPersonas[personID] = new();
                     }
                     string name = fila["name"].value;
                     int score = int.Parse(fila["num"].value);
@@ -416,7 +416,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     {
                         break;
                     }
-                    DisambiguationPerson persona = new DisambiguationPerson
+                    DisambiguationPerson persona = new()
                     {
                         completeName = name,
                         ID = personID
@@ -430,7 +430,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
         public static string FilterWordComplete(string pWord, string pVar)
         {
-            Dictionary<string, string> listaReemplazos = new Dictionary<string, string>();
+            Dictionary<string, string> listaReemplazos = new();
             listaReemplazos["a"] = "aáàä";
             listaReemplazos["e"] = "eéèë";
             listaReemplazos["i"] = "iíìï";
@@ -456,7 +456,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         {
             string personID = "";
 
-            // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
             string selectOut = "SELECT DISTINCT ?personID";
             string whereOut = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
@@ -479,24 +478,24 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, DisambiguationPerson> ObtenerPersonasORCID(List<string> listado)
         {
-            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new Dictionary<string, DisambiguationPerson>();
+            Dictionary<string, DisambiguationPerson> diccionarioPersonas = new();
 
-            List<List<string>> listadoLista= Utility.SplitList(listado.Distinct().ToList(), 1000).ToList();
+            List<List<string>> listadoLista = Utility.SplitList(listado.Distinct().ToList(), 1000).ToList();
             foreach (List<string> listaIn in listadoLista)
             {
-                string selectOut = "SELECT DISTINCT ?personID ?orcid ?name";
-                string whereOut = $@"where{{
+                string selectOutPersona = "SELECT DISTINCT ?personID ?orcid ?name";
+                string whereOutPersona = $@"where{{
                                     ?personID a <http://xmlns.com/foaf/0.1/Person> .
                                     ?personID <http://w3id.org/roh/ORCID> ?orcid .
                                     ?personID <http://xmlns.com/foaf/0.1/name> ?name .
                                     FILTER(?orcid in ('{string.Join("','", listaIn)}'))
                                     }}";
 
-                SparqlObject sparqlObject = mResourceApi.VirtuosoQuery(selectOut, whereOut, "person");
+                SparqlObject sparqlObjectPersona = mResourceApi.VirtuosoQuery(selectOutPersona, whereOutPersona, "person");
 
                 foreach (string firma in listado)
                 {
-                    foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["orcid"].value == firma))
+                    foreach (Dictionary<string, Data> fila in sparqlObjectPersona.results.bindings.Where(x => x["orcid"].value == firma))
                     {
                         string personID = fila["personID"].value;
                         if (!diccionarioPersonas.ContainsKey(personID))
@@ -506,7 +505,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
 
                         string orcid = fila["orcid"].value;
                         string name = fila["name"].value;
-                        DisambiguationPerson persona = new DisambiguationPerson
+                        DisambiguationPerson persona = new()
                         {
                             orcid = orcid,
                             ID = personID,
@@ -527,14 +526,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns>Diccionario con el ID del recurso cargado como clave, y el objeto desambiguable como valor.</returns>
         public static ConcurrentDictionary<string, DisambiguationPerson> ObtenerPersonasRelacionaBBDD(List<Publication> listadoAux, string pGnossId)
         {
-            HashSet<string> listaNombres = new HashSet<string>();
-            HashSet<string> listaORCID = new HashSet<string>();
-            ConcurrentDictionary<string, DisambiguationPerson> listaPersonasAux = new ConcurrentDictionary<string, DisambiguationPerson>();
+            HashSet<string> listaNombres = new();
+            HashSet<string> listaORCID = new();
+            ConcurrentDictionary<string, DisambiguationPerson> listaPersonasAux = new();
 
-            
+
             if (true)
             {
-                // TODO: isActive en teoría todas las personas que se pidan por el ORCID han de ser personal activo.
                 string select = "SELECT DISTINCT ?persona ?nombreCompleto ?orcid ";
                 string where = $@"WHERE {{
                                     <{pGnossId}> <http://w3id.org/roh/ORCID> ?orcid. 
@@ -545,16 +543,16 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    PersonaPub persona = new PersonaPub();
-                    if(fila.ContainsKey("orcid") && !string.IsNullOrEmpty(fila["nombreCompleto"].value))
+                    PersonaPub persona = new();
+                    if (fila.ContainsKey("orcid") && !string.IsNullOrEmpty(fila["nombreCompleto"].value))
                     {
                         listaORCID.Add(fila["orcid"].value);
-                        persona.orcid = fila["orcid"].value;
-                    }                    
+                        persona.Orcid = fila["orcid"].value;
+                    }
 
-                    persona.name = new Name();
-                    persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
-                    persona.idGnoss = pGnossId;
+                    persona.Name = new ();
+                    persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                    persona.IdGnoss = pGnossId;
                     DisambiguationPerson person = GetDisambiguationPerson(persona);
                     person.ID = pGnossId;
 
@@ -566,15 +564,15 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             //Selecciono el nombre completo o la firma.
             foreach (Publication item in listadoAux)
             {
-                for (int i = 0; i < item.seqOfAuthors.Count; i++)
+                for (int i = 0; i < item.SeqOfAuthors.Count; i++)
                 {
-                    if (!string.IsNullOrEmpty(item.seqOfAuthors[i].orcid))
+                    if (!string.IsNullOrEmpty(item.SeqOfAuthors[i].Orcid))
                     {
-                        listaORCID.Add(item.seqOfAuthors[i].orcid);
+                        listaORCID.Add(item.SeqOfAuthors[i].Orcid);
                     }
-                    if (!string.IsNullOrEmpty(item.seqOfAuthors[i].name.nombre_completo.FirstOrDefault()))
+                    if (!string.IsNullOrEmpty(item.SeqOfAuthors[i].Name.Nombre_completo.FirstOrDefault()))
                     {
-                        listaNombres.Add(item.seqOfAuthors[i].name.nombre_completo.First());
+                        listaNombres.Add(item.SeqOfAuthors[i].Name.Nombre_completo.First());
                     }
                 }
             }
@@ -589,14 +587,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
                 }
             });
-                        
+
             Dictionary<string, DisambiguationPerson> personasBBDD = ObtenerPersonasORCID(listaORCID.ToList());
             foreach (KeyValuePair<string, DisambiguationPerson> valuePair in personasBBDD)
             {
                 listaPersonasAux[valuePair.Key.Trim()] = valuePair.Value;
             }
 
-            Dictionary<string, DisambiguationPerson> listaPersonas = new Dictionary<string, DisambiguationPerson>();
+            Dictionary<string, DisambiguationPerson> listaPersonas = new();
             {
                 List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
                 foreach (List<string> listaIn in listaListasPersonas)
@@ -607,12 +605,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     // Consulta sparql.
                     while (true)
                     {
-                      
+
                         //Obtenemos todas las personas hasta con 2 niveles de coautoria tanto en researchObjects como en Documentos               
-                        string select = $@"SELECT *
+                        string selectPersona = $@"SELECT *
                                       WHERE {{ 
                                           SELECT DISTINCT ?persona ?orcid ?usuarioFigShare ?usuarioGitHub ?nombreCompleto";
-                        string where = $@"WHERE {{
+                        string wherePersona = $@"WHERE {{
                                 ?persona a <http://xmlns.com/foaf/0.1/Person>
                                 OPTIONAL{{?persona <http://w3id.org/roh/ORCID> ?orcid. }}
                                 OPTIONAL{{?persona <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare. }}
@@ -621,19 +619,19 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 FILTER(?persona in (<{string.Join(">,<", listaIn)}>))
                             }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "person" ,"document", "researchobject" });
-                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                        SparqlObject resultadoQueryPersona = mResourceApi.VirtuosoQueryMultipleGraph(selectPersona, wherePersona, new() { "person", "document", "researchobject" });
+                        if (resultadoQueryPersona != null && resultadoQueryPersona.results != null && resultadoQueryPersona.results.bindings != null && resultadoQueryPersona.results.bindings.Count > 0)
                         {
                             offset += limit;
-                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryPersona.results.bindings)
                             {
-                                PersonaPub persona = new PersonaPub();
+                                PersonaPub persona = new();
                                 if (fila.ContainsKey("orcid"))
                                 {
-                                    persona.orcid = fila["orcid"].value;
+                                    persona.Orcid = fila["orcid"].value;
                                 }
-                                persona.name = new Name();
-                                persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                                persona.Name = new ();
+                                persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                                 DisambiguationPerson person = GetDisambiguationPerson(persona);
                                 person.ID = fila["persona"].value;
                                 if (fila.ContainsKey("usuarioFigShare"))
@@ -646,7 +644,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 }
                                 listaPersonas.Add(fila["persona"].value, person);
                             }
-                            if (resultadoQuery.results.bindings.Count < limit)
+                            if (resultadoQueryPersona.results.bindings.Count < limit)
                             {
                                 break;
                             }
@@ -659,7 +657,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 }
             }
 
-            Dictionary<string, HashSet<string>> autoresDocRos = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> autoresDocRos = new();
             {
                 List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
                 foreach (List<string> listaIn in listaListasPersonas)
@@ -671,26 +669,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     // Consulta sparql.
                     while (true)
                     {
-                    
+
                         //Obtenemos las coautorias
-                        string select = $@"SELECT * 
+                        string selectAutores = $@"SELECT * 
                                       WHERE {{
                                           SELECT DISTINCT ?documento ?persona ";
-                        string where = $@"WHERE {{
+                        string whereAutores = $@"WHERE {{
                                 ?documento a ?rdfType. 
                                 FILTER(?rdfType in (<http://purl.org/ontology/bibo/Document>,<http://w3id.org/roh/ResearchObject>))
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores. 
                                 ?listaAutores <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?persona. 
                                 ?documento <http://purl.org/ontology/bibo/authorList> ?listaAutores2. 
                                 ?listaAutores2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?personaList. 
-                                FILTER(?personaList in (<{string.Join(">,<",listaIn)}>))
+                                FILTER(?personaList in (<{string.Join(">,<", listaIn)}>))
                             }} ORDER BY DESC(?documento) DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "person" , "document", "researchobject" });
-                        if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
+                        SparqlObject resultadoQueryAutores = mResourceApi.VirtuosoQueryMultipleGraph(selectAutores, whereAutores, new() { "person", "document", "researchobject" });
+                        if (resultadoQueryAutores != null && resultadoQueryAutores.results != null && resultadoQueryAutores.results.bindings != null && resultadoQueryAutores.results.bindings.Count > 0)
                         {
                             offset += limit;
-                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
+                            foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQueryAutores.results.bindings)
                             {
                                 string persona = fila["persona"].value;
                                 string documento = fila["documento"].value;
@@ -700,7 +698,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 }
                                 autoresDocRos[documento].Add(persona);
                             }
-                            if (resultadoQuery.results.bindings.Count < limit)
+                            if (resultadoQueryAutores.results.bindings.Count < limit)
                             {
                                 break;
                             }
@@ -821,10 +819,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         public static ConcurrentDictionary<string, DisambiguationPerson> ObtenerPersonasRelacionaBBDDRO(string OrcidAutor, [Optional] List<ResearchObjectZenodo> listadoZenodo,
             [Optional] List<ResearchObjectGitHub> listadoGitHub, [Optional] List<ResearchObjectFigShare> listadoFigShare)
         {
-            HashSet<string> listaNombres = new HashSet<string>();
-            HashSet<string> listaORCID = new HashSet<string>();
-            HashSet<string> listaGitHub = new HashSet<string>();
-            ConcurrentDictionary<string, DisambiguationPerson> listaPersonasAux = new ConcurrentDictionary<string, DisambiguationPerson>();
+            HashSet<string> listaNombres = new();
+            HashSet<string> listaORCID = new();
+            HashSet<string> listaGitHub = new();
+            ConcurrentDictionary<string, DisambiguationPerson> listaPersonasAux = new();
 
             listaORCID.Add(OrcidAutor);
             if (true)
@@ -839,11 +837,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 SparqlObject resultadoQuery = mResourceApi.VirtuosoQuery(select, where, "person");
                 foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                 {
-                    PersonaPub persona = new PersonaPub();
-                    persona.orcid = OrcidAutor;
+                    PersonaPub persona = new();
+                    persona.Orcid = OrcidAutor;
 
-                    persona.name = new Name();
-                    persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                    persona.Name = new ();
+                    persona.Name.Nombre_completo = new() { fila["nombreCompleto"].value };
                     DisambiguationPerson person = GetDisambiguationPerson(persona);
                     person.ID = fila["persona"].value;
 
@@ -894,7 +892,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
             }
 
 
-            Dictionary<string, DisambiguationPerson> listaPersonas = new Dictionary<string, DisambiguationPerson>();
+            Dictionary<string, DisambiguationPerson> listaPersonas = new();
             {
                 List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
                 foreach (List<string> listaIn in listaListasPersonas)
@@ -915,22 +913,22 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 OPTIONAL{{?persona <http://w3id.org/roh/usuarioFigShare> ?usuarioFigShare. }}
                                 OPTIONAL{{?persona <http://w3id.org/roh/usuarioGitHub> ?usuarioGitHub. }}
                                 ?persona <http://xmlns.com/foaf/0.1/name> ?nombreCompleto.
-                                FILTER(?persona in (<{string.Join(">,<",listaIn)}>))
+                                FILTER(?persona in (<{string.Join(">,<", listaIn)}>))
                             }} ORDER BY DESC(?persona) }} LIMIT {limit} OFFSET {offset}";
 
-                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where,new() { "person" ,"document", "researchobject" });
+                        SparqlObject resultadoQuery = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "person", "document", "researchobject" });
                         if (resultadoQuery != null && resultadoQuery.results != null && resultadoQuery.results.bindings != null && resultadoQuery.results.bindings.Count > 0)
                         {
                             offset += limit;
                             foreach (Dictionary<string, SparqlObject.Data> fila in resultadoQuery.results.bindings)
                             {
-                                PersonaPub persona = new PersonaPub();
+                                PersonaPub persona = new();
                                 if (fila.ContainsKey("orcid"))
                                 {
-                                    persona.orcid = fila["orcid"].value;
+                                    persona.Orcid = fila["orcid"].value;
                                 }
-                                persona.name = new Name();
-                                persona.name.nombre_completo = new List<string>() { fila["nombreCompleto"].value };
+                                persona.Name = new ();
+                                persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                                 DisambiguationPerson person = GetDisambiguationPerson(persona);
                                 person.ID = fila["persona"].value;
                                 if (fila.ContainsKey("usuarioFigShare"))
@@ -956,7 +954,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 }
             }
 
-            Dictionary<string, HashSet<string>> autoresDocRos = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> autoresDocRos = new();
             {
                 List<List<string>> listaListasPersonas = Utility.SplitList(listaPersonasAux.Keys.ToList(), 100).ToList();
                 foreach (List<string> listaIn in listaListasPersonas)
@@ -1113,7 +1111,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosOrganizacionPersona(List<string> personas)
         {
-            Dictionary<string, HashSet<string>> organizaciones = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> organizaciones = new();
             string select = $@"select distinct ?person ?organization";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
@@ -1121,7 +1119,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                     ?person <http://w3id.org/roh/hasRole> ?organization .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae" ,"person", "group" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae", "person", "group" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Organizaciones
@@ -1147,7 +1145,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosDepartamentoPersona(List<string> personas)
         {
-            Dictionary<string, HashSet<string>> departamentos = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> departamentos = new();
             string select = $@"select distinct ?person ?departament";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
@@ -1181,7 +1179,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosProyectoPersona(List<string> personas)
         {
-            Dictionary<string, HashSet<string>> proyectos = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> proyectos = new();
             string select = $@"select distinct ?person ?project";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .
@@ -1192,7 +1190,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                     ?rol <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?person .
                                     FILTER(?person in (<{string.Join(">,<", personas)}>))
                                 }} ";
-            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae" , "person", "project" });
+            SparqlObject resultData = mResourceApi.VirtuosoQueryMultipleGraph(select, where, new() { "curriculumvitae", "person", "project" });
             foreach (Dictionary<string, Data> fila in resultData.results.bindings)
             {
                 //Proyectos
@@ -1218,7 +1216,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
         /// <returns></returns>
         public static Dictionary<string, HashSet<string>> DatosGrupoPersona(List<string> personas)
         {
-            Dictionary<string, HashSet<string>> grupos = new Dictionary<string, HashSet<string>>();
+            Dictionary<string, HashSet<string>> grupos = new();
             string select = $@"select distinct ?person ?group";
             string where = $@" where {{
                                     ?s <http://w3id.org/roh/cvOf> ?person .

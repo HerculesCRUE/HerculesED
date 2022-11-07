@@ -20,11 +20,11 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new ()
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configDescripcionPaCoFoDo,"descripcion",Descripcion),
-                new DisambiguationData(configFechaPaCoFoDo,"fecha",Fecha),
-                new DisambiguationData(configEntOrgPaCoFoDo,"entidadOrganizadora",EntidadOrganizadora)
+                new DisambiguationData(configDescripcionPaCoFoDo, "descripcion", Descripcion),
+                new DisambiguationData(configFechaPaCoFoDo, "fecha", Fecha),
+                new DisambiguationData(configEntOrgPaCoFoDo, "entidadOrganizadora", EntidadOrganizadora)
             };
             return data;
         }
@@ -42,7 +42,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosPaCoFoDo = new ();
+            Dictionary<string, DisambiguableEntity> resultadosPaCoFoDo = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -59,7 +59,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadDocenteSubclases
                 SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, graph);
                 foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                 {
-                    ParticipacionCongresosFormacionDocente participacionCongresos = new ()
+                    ParticipacionCongresosFormacionDocente participacionCongresos = new()
                     {
                         ID = fila["item"].value,
                         Descripcion = fila["itemTitle"].value,

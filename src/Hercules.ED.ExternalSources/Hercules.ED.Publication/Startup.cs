@@ -1,18 +1,12 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using PublicationAPI.Controllers;
 using PublicationAPI.Middlewares;
 using Serilog;
@@ -119,7 +113,7 @@ namespace PublicationConnect
             if (string.IsNullOrEmpty(_LogPath))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string logPath = string.Empty;
+                string logPath;
                 if (environmentVariables.Contains("LogPath"))
                 {
                     logPath = environmentVariables["LogPath"] as string;
@@ -133,7 +127,7 @@ namespace PublicationConnect
             return _LogPath;
         }
 
-        private string CreateTimeStamp()
+        private static string CreateTimeStamp()
         {
             DateTime time = DateTime.Now;
             string month = time.Month.ToString();
@@ -146,7 +140,7 @@ namespace PublicationConnect
             {
                 day = $"0{day}";
             }
-            string timeStamp = $"{time.Year.ToString()}{month}{day}";
+            string timeStamp = $"{time.Year}{month}{day}";
             return timeStamp;
         }
     }

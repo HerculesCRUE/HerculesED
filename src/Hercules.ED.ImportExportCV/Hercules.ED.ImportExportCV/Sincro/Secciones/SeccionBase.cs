@@ -54,8 +54,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             {
                 int numLimit = 10000;
                 int offset = 0;
-                bool cargar = true;
-                while (cargar)
+                while (true)
                 {
                     string selectID = "select * where{ select distinct ?s ?p ?o";
                     string whereID = $"where{{?x <http://gnoss/hasEntidad> <{pId}> . ?x <http://gnoss/hasEntidad> ?s . ?s ?p ?o }}order by desc(?s) desc(?p) desc(?o)}} limit {numLimit} offset {offset}";
@@ -71,7 +70,7 @@ namespace ImportadorWebCV.Sincro.Secciones
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
                     {
-                        cargar = false;
+                        break;
                     }
                 }
             }
@@ -686,17 +685,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                                         continue;
                                     }
 
-                                    Notification notificacion = new();
-                                    notificacion.IdRoh_trigger = idPersona;
-                                    notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                                    notificacion.Roh_entity = idBBDD;
-                                    notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
-                                    notificacion.Dct_issued = DateTime.Now;
-                                    notificacion.Roh_type = "create";
-                                    notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                    Notification notificacionDuplicar = new();
+                                    notificacionDuplicar.IdRoh_trigger = idPersona;
+                                    notificacionDuplicar.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                    notificacionDuplicar.Roh_entity = idBBDD;
+                                    notificacionDuplicar.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
+                                    notificacionDuplicar.Dct_issued = DateTime.Now;
+                                    notificacionDuplicar.Roh_type = "create";
+                                    notificacionDuplicar.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
                                         .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
-                                    notificaciones.Add(notificacion);
+                                    notificaciones.Add(notificacionDuplicar);
                                 }
                             }
                         }
@@ -732,17 +731,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     continue;
                                 }
 
-                                Notification notificacion = new();
-                                notificacion.IdRoh_trigger = idPersona;
-                                notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                                notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
-                                notificacion.Dct_issued = DateTime.Now;
-                                notificacion.Roh_type = "edit";
-                                notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                Notification notificacionFusionar = new();
+                                notificacionFusionar.IdRoh_trigger = idPersona;
+                                notificacionFusionar.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                notificacionFusionar.Roh_entity = idBBDD;
+                                notificacionFusionar.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
+                                notificacionFusionar.Dct_issued = DateTime.Now;
+                                notificacionFusionar.Roh_type = "edit";
+                                notificacionFusionar.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
                                     .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
-                                notificaciones.Add(notificacion);
+                                notificaciones.Add(notificacionFusionar);
                             }
                         }
 
@@ -777,17 +776,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                                     continue;
                                 }
 
-                                Notification notificacion = new();
-                                notificacion.IdRoh_trigger = idPersona;
-                                notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                                notificacion.Roh_entity = idBBDD;
-                                notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
-                                notificacion.Dct_issued = DateTime.Now;
-                                notificacion.Roh_type = "edit";
-                                notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                                Notification notificacionSobre = new();
+                                notificacionSobre.IdRoh_trigger = idPersona;
+                                notificacionSobre.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                                notificacionSobre.Roh_entity = idBBDD;
+                                notificacionSobre.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
+                                notificacionSobre.Dct_issued = DateTime.Now;
+                                notificacionSobre.Roh_type = "edit";
+                                notificacionSobre.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
                                     .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
-                                notificaciones.Add(notificacion);
+                                notificaciones.Add(notificacionSobre);
                             }
                         }
 
@@ -860,17 +859,17 @@ namespace ImportadorWebCV.Sincro.Secciones
                                 continue;
                             }
 
-                            Notification notificacion = new();
-                            notificacion.IdRoh_trigger = idPersona;
-                            notificacion.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
-                            notificacion.Roh_entity = idBBDD;
-                            notificacion.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
-                            notificacion.Dct_issued = DateTime.Now;
-                            notificacion.Roh_type = "edit";
-                            notificacion.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
+                            Notification notificacionActCient = new();
+                            notificacionActCient.IdRoh_trigger = idPersona;
+                            notificacionActCient.Roh_tabPropertyCV = "http://w3id.org/roh/scientificActivity";
+                            notificacionActCient.Roh_entity = idBBDD;
+                            notificacionActCient.IdRoh_owner = equivalencias.FirstOrDefault(x => x.Value.Any(y => y.Split('|')[1].Equals(autor.ID))).Key;
+                            notificacionActCient.Dct_issued = DateTime.Now;
+                            notificacionActCient.Roh_type = "edit";
+                            notificacionActCient.CvnCode = UtilityCV.IdentificadorFECYT(entityXML.properties
                                 .Where(x => x.prop.Equals("http://w3id.org/roh/scientificActivityDocument")).SelectMany(x => x.values).FirstOrDefault());
 
-                            notificaciones.Add(notificacion);
+                            notificaciones.Add(notificacionActCient);
                         }
                     }
                 }
@@ -1031,11 +1030,11 @@ namespace ImportadorWebCV.Sincro.Secciones
                 propertyIDs.RemoveAt(propertyIDs.Count - 1);
                 propertyIDs.Add(pPropertyCV);
                 List<string> entityIDs = new()
-                    {
-                        idTab,
-                        idEntity,
-                        entityCVID
-                    };
+                {
+                    idTab,
+                    idEntity,
+                    entityCVID
+                };
 
                 Entity entityToLoad = new();
                 entityToLoad.id = entityCVID;
@@ -1225,7 +1224,8 @@ namespace ImportadorWebCV.Sincro.Secciones
                 Dictionary<Guid, List<TriplesToInclude>> triplesToInclude = new()
                 {
                     {
-                        mResourceApi.GetShortGuid(pCvID), listaTriples
+                        mResourceApi.GetShortGuid(pCvID),
+                        listaTriples
                     }
                 };
 
@@ -1619,7 +1619,7 @@ namespace ImportadorWebCV.Sincro.Secciones
         /// <returns></returns>
         private OntologyEntity ProcesarEntidadAuxiliar(string pProperty, EntityRdf pEntidadAuxiliar)
         {
-            List<string> prefList = new ();
+            List<string> prefList = new();
             foreach (string key in UtilityCV.GetDicPrefix().Keys)
             {
                 prefList.Add($"xmlns:{key}=\"{UtilityCV.GetDicPrefix()[key]}\"");

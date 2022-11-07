@@ -47,8 +47,7 @@ namespace ZenodoConnect.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public string GetROs([FromQuery][Required] string ID)
         {
-            ROZenodoLogic ZenodoObject = new ROZenodoLogic();//,"0grEw8zOOPjtlxyHLOQtUjTSSSx3FFrywNNb3YivsvpYZ4bIiCNCQBrbY7xh");
-            //, "10e8a3a2417b7ae1d864b5558136c56b78ed3eb8");//"adf94bebeeba8c3042ad5193455740e2");
+            ROZenodoLogic ZenodoObject = new ROZenodoLogic();
             string publication = ZenodoObject.getPublications(ID);
             return publication;
         }

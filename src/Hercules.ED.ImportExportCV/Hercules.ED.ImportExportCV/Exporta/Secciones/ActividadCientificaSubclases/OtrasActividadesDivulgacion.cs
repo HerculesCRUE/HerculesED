@@ -1,18 +1,20 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
-    public class OtrasActividadesDivulgacion:SeccionBase
+    public class OtrasActividadesDivulgacion : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity", 
-            "http://w3id.org/roh/otherDisseminationActivities", "http://vivoweb.org/ontology/core#relatedBy"};
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/otherDisseminationActivities",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "activity";
         public OtrasActividadesDivulgacion(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
         {
@@ -25,19 +27,19 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaOtrasActividadesDivulgacion(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<Tuple<string, string>> listadoIdentificadoresOtrActDiv = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadoresOtrActDiv, listaId))
             {
                 return;
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesOtrActDiv = GetListLoadedEntity(listadoIdentificadoresOtrActDiv, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesOtrActDiv)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "060.010.040.000",
                     Items = new List<CVNObject>()
@@ -64,12 +66,12 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubNombre),
                     "060.010.040.360", keyValue.Value);
 
-                Dictionary<string, string> propiedadesPubVol = new ();
+                Dictionary<string, string> propiedadesPubVol = new();
                 propiedadesPubVol.Add("Volumen", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubVolumen));
                 propiedadesPubVol.Add("Numero", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubNumero));
-                UtilityExportar.AddCvnItemBeanCvnVolumeBean(itemBean,propiedadesPubVol, "060.010.040.220", keyValue.Value);
+                UtilityExportar.AddCvnItemBeanCvnVolumeBean(itemBean, propiedadesPubVol, "060.010.040.220", keyValue.Value);
 
-                Dictionary<string, string> propiedadesPagIniPagFin = new ();
+                Dictionary<string, string> propiedadesPagIniPagFin = new();
                 propiedadesPagIniPagFin.Add("PaginaInicial", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagIni));
                 propiedadesPagIniPagFin.Add("PaginaFinal", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulPubPagFin));
                 UtilityExportar.AddCvnItemBeanCvnPageBean(itemBean, propiedadesPagIniPagFin, "060.010.040.230", keyValue.Value);
@@ -120,7 +122,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.040.120", keyValue.Value);
 
                 // Divulgacion Autores 
-                Dictionary<string,string> listadoPropiedadesAutor = new ();
+                Dictionary<string, string> listadoPropiedadesAutor = new();
                 listadoPropiedadesAutor.Add("Orden", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAutorOrden));
                 listadoPropiedadesAutor.Add("Firma", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAutorFirma));
                 listadoPropiedadesAutor.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulAutorNombre));
@@ -135,7 +137,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.040.400", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBean(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDPubDigitalPMID),
                     "060.010.040.400", keyValue.Value);
-                Dictionary<string, string> dicNombreID = new ();
+                Dictionary<string, string> dicNombreID = new();
                 dicNombreID.Add("Nombre", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulNombreOtroIDPubDigital));
                 dicNombreID.Add("ID", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.otrasActDivulIDOtroPubDigital));
                 UtilityExportar.AddCvnItemBeanCvnExternalPKBeanOthers(itemBean, dicNombreID, "060.010.040.400", keyValue.Value);

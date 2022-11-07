@@ -1,33 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace Hercules.ED.ResearcherObjectLoad.Config
 {
     public class ConfigService
     {
         // Archivo de configuración.
-        public static IConfigurationRoot configuracion;
+        private static readonly IConfigurationRoot configuracion = new ConfigurationBuilder().AddJsonFile($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}appsettings{Path.DirectorySeparatorChar}appsettings.json").Build();
 
-        // Rutas
-        private string rutaDirectorioLectura { get; set; }
-        private string rutaDirectorioEscritura { get; set; }
+        // Rutas.
+        private string RutaDirectorioLectura { get; set; }
+        private string RutaDirectorioEscritura { get; set; }
 
-        //Configuración Rabbit para el desnormalizador
+        // Ruta Logs
+        private string LogPath { get; set; }
+
+        // Configuración Rabbit para el desnormalizador.
         private string RabbitConnectionString { get; set; }
         private string DenormalizerQueueRabbit { get; set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public ConfigService()
-        {
-            configuracion = new ConfigurationBuilder().AddJsonFile($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/appsettings/appsettings.json").Build();
-        }
 
         /// <summary>
         /// Obtiene la ruta de lectura de los ficheros.
@@ -35,10 +27,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
         /// <returns>Ruta de lectura.</returns>
         public string GetRutaDirectorioLectura()
         {
-            if (string.IsNullOrEmpty(rutaDirectorioLectura))
+            if (string.IsNullOrEmpty(RutaDirectorioLectura))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+
                 if (environmentVariables.Contains("DirectorioLectura"))
                 {
                     connectionString = environmentVariables["DirectorioLectura"] as string;
@@ -48,10 +41,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
                     connectionString = configuracion["DirectorioLectura"];
                 }
 
-                rutaDirectorioLectura = connectionString;
+                RutaDirectorioLectura = connectionString;
             }
 
-            return rutaDirectorioLectura;
+            return RutaDirectorioLectura;
         }
 
         /// <summary>
@@ -60,10 +53,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
         /// <returns>Ruta de escritura.</returns>
         public string GetRutaDirectorioEscritura()
         {
-            if (string.IsNullOrEmpty(rutaDirectorioEscritura))
+            if (string.IsNullOrEmpty(RutaDirectorioEscritura))
             {
-                string connectionString = string.Empty;
+                string connectionString;
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+
                 if (environmentVariables.Contains("DirectorioEscritura"))
                 {
                     connectionString = environmentVariables["DirectorioEscritura"] as string;
@@ -73,10 +67,10 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
                     connectionString = configuracion["DirectorioEscritura"];
                 }
 
-                rutaDirectorioEscritura = connectionString;
+                RutaDirectorioEscritura = connectionString;
             }
 
-            return rutaDirectorioEscritura;
+            return RutaDirectorioEscritura;
         }
 
         /// <summary>
@@ -88,7 +82,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
             if (string.IsNullOrEmpty(RabbitConnectionString))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string rabbitConnectionString = string.Empty;
+                string rabbitConnectionString;
+
                 if (environmentVariables.Contains("RabbitMQ"))
                 {
                     rabbitConnectionString = environmentVariables["RabbitMQ"] as string;
@@ -97,9 +92,35 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
                 {
                     rabbitConnectionString = configuracion.GetConnectionString("RabbitMQ");
                 }
+
                 RabbitConnectionString = rabbitConnectionString;
             }
             return RabbitConnectionString;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta de los logs que ha sido configurado.
+        /// </summary>
+        /// <returns>Ruta.</returns>
+        public string GetLogPath()
+        {
+            if (string.IsNullOrEmpty(LogPath))
+            {
+                string connectionString;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+                if (environmentVariables.Contains("LogPath"))
+                {
+                    connectionString = environmentVariables["LogPath"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["LogPath"];
+                }
+
+                LogPath = connectionString;
+            }
+
+            return LogPath;
         }
 
         /// <summary>
@@ -111,7 +132,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
             if (string.IsNullOrEmpty(DenormalizerQueueRabbit))
             {
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string queue = string.Empty;
+                string queue;
+
                 if (environmentVariables.Contains("DenormalizerQueueRabbit"))
                 {
                     queue = environmentVariables["DenormalizerQueueRabbit"] as string;
@@ -120,6 +142,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Config
                 {
                     queue = configuracion["DenormalizerQueueRabbit"];
                 }
+
                 DenormalizerQueueRabbit = queue;
             }
             return DenormalizerQueueRabbit;

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,9 +10,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
 {
     public class PublicacionesDocumentos : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/scientificActivity",
-            "http://w3id.org/roh/scientificPublications", "http://w3id.org/roh/relatedScientificPublicationCV",
-            "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/scientificActivity",
+            "http://w3id.org/roh/scientificPublications",
+            "http://w3id.org/roh/relatedScientificPublicationCV",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "document";
 
         public PublicacionesDocumentos(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -29,23 +32,23 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
         /// <param name="listaId"></param>
         public void ExportaPublicacionesDocumentos(string seccion, Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             //Selecciono los identificadores de las entidades de la seccion, en caso de que se pase un listado de exportación se comprueba que el 
             // identificador esté en el listado. Si tras comprobarlo el listado es vacio salgo del metodo
-            List<Tuple<string, string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
-            if (listaId != null && listaId.Count != 0 && listadoIdentificadores != null)
+            List<Tuple<string, string, string>> listadoIdentificadoresPubDoc = UtilityExportar.GetListadoEntidadesCV(mResourceApi, propiedadesItem, mCvID);
+            if (listaId != null && listaId.Count != 0 && listadoIdentificadoresPubDoc != null)
             {
-                listadoIdentificadores = listadoIdentificadores.Where(x => listaId.Contains(x.Item3)).ToList();
-                if (listadoIdentificadores.Count == 0)
+                listadoIdentificadoresPubDoc = listadoIdentificadoresPubDoc.Where(x => listaId.Contains(x.Item3)).ToList();
+                if (listadoIdentificadoresPubDoc.Count == 0)
                 {
                     return;
                 }
             }
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntityCV(listadoIdentificadores, graph, MultilangProp, new List<string>() { "maindocument" });
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesPubDoc = GetListLoadedEntityCV(listadoIdentificadoresPubDoc, graph, MultilangProp, new List<string>() { "maindocument" });
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesPubDoc)
             {
-                CvnItemBean itemBean = new ();
+                CvnItemBean itemBean = new();
                 itemBean.Code = "060.010.010.000";
                 if (itemBean.Items == null)
                 {
@@ -163,25 +166,25 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.160", keyValue.Value);
 
                 // Citas 
-                List<Tuple<string, string, string>> dicCodigosWOS = new ();
+                List<Tuple<string, string, string>> dicCodigosWOS = new();
                 dicCodigosWOS.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasWOS)));
                 dicCodigosWOS.Add(new Tuple<string, string, string>("String", "060.010.010.320", "WOS"));
                 UtilityExportar.AddCitas(itemBean, dicCodigosWOS,
                     "060.010.010.310", keyValue.Value);
 
-                List<Tuple<string, string, string>> dicCodigosScopus = new ();
+                List<Tuple<string, string, string>> dicCodigosScopus = new();
                 dicCodigosScopus.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScopus)));
                 dicCodigosScopus.Add(new Tuple<string, string, string>("String", "060.010.010.320", "SCOPUS"));
                 UtilityExportar.AddCitas(itemBean, dicCodigosScopus,
                     "060.010.010.310", keyValue.Value);
 
-                List<Tuple<string, string, string>> dicCodigosInrecs = new ();
+                List<Tuple<string, string, string>> dicCodigosInrecs = new();
                 dicCodigosInrecs.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasInrecs)));
                 dicCodigosInrecs.Add(new Tuple<string, string, string>("String", "060.010.010.320", "INRECS"));
                 UtilityExportar.AddCitas(itemBean, dicCodigosInrecs,
                     "060.010.010.310", keyValue.Value);
 
-                List<Tuple<string, string, string>> dicCodigosGoogleScholar = new ();
+                List<Tuple<string, string, string>> dicCodigosGoogleScholar = new();
                 dicCodigosGoogleScholar.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasGoogleScholar)));
                 dicCodigosGoogleScholar.Add(new Tuple<string, string, string>("String", "060.010.010.320", "GOOGLE"));
                 dicCodigosGoogleScholar.Add(new Tuple<string, string, string>("String", "060.010.010.370", "Google Scholar"));
@@ -189,7 +192,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.010.310", keyValue.Value);
 
 
-                List<Tuple<string, string, string>> dicCodigosScholar = new ();
+                List<Tuple<string, string, string>> dicCodigosScholar = new();
                 dicCodigosScholar.Add(new Tuple<string, string, string>("Double", "060.010.010.310", UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosCitasScholar)));
                 dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.010.320", "SCHOLAR"));
                 dicCodigosScholar.Add(new Tuple<string, string, string>("String", "060.010.010.370", "Semantic Scholar"));

@@ -27,16 +27,26 @@ Microservicio encargado de conectar GitHub con HerculesED a través de un modelo
 Para realizar las pruebas, se ha implementado una interfaz Swagger con la ruta: https://[dominio]:[puerto]/swagger/index.html
 
 ## Estructura
-La estructura es una estructura NVC con un endpoint para realizar las peticones. 
+La estructura es una estructura MVC con un API Rest para recibir las peticiones. 
 
 
-### Constroladores
+### Controladores
 Tenemos un único controlador para realizar las peticiones y obtener así la información desde GitHub del investigador:
 
 #### APIController
-Éste controlador contiene un único método, y es el encargado de obtener los repositorios y la información de GitHub y devolver el objeto con todos los repositorios
+Este controlador contiene un único método, y es el encargado de obtener los repositorios y la información de GitHub y devolver el objeto con todos los repositorios
 
-Petición curl para obtener los items desde GitHub:
+
+### Modelos
+Los modelos se corresponden a los modelos de datos devueltos por GitHub, tenemos los siguientes
+- DataGitHub: Modelo principal de los datos de GitHub
+- ObjEnriquecimiento: Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
+- Repositories: Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
+
+## Petición para el enriquecimiento de datos
+Se realizará una petición GET desde la propia API ha GitHub para obtener los datos enriquecidos.
+
+Ejemplo de petición curl:
 ```
 curl -X 'GET' \
   'https://[host]:[port]/github/GetData?pUser=[user]&pToken=[GitHubToken]' \
@@ -49,20 +59,27 @@ curl -X 'GET' \
 
 *Podría haber limitaciones de peticiones por causa de las limitaciones de GitHub*
 
-### Modelos
-Los modelos se corresponden a los modelos de datos devueltos por GitHub:
+## Configuración en el appsetting.json
+```json{
+{
+	"Logging": {
+		"LogLevel": {
+			"Default": "",
+			"Microsoft": "",
+			"Microsoft.Hosting.Lifetime": ""
+		}
+	},
+	"AllowedHosts": "*",
+	"LogPath": ""
+}
+```
 
-#### DataGitHub
-Modelo principal de los datos de GitHub
-#### ObjEnriquecimiento
-Modelo correspondiente al modelo de enriquecimiento de datos de los ROs obtenidos
-#### Repositories
-Clase que contiene los modelos de los repositorios del investigador con todos los datos necesarios
-
-## Configuración del servicio
-El servicio no requiere ninguna configuración especial.
+- LogLevel.Default: Nivel de error por defecto.
+- LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
+- LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
+- LogPath: Ruta de guardado del fichero de logs.
 
 ## Dependencias
-- Newtonsoft.Json
-- Serilog.AspNetCore
-- Swashbuckle.AspNetCore
+- **Newtonsoft.Json**: v13.0.1
+- **Serilog.AspNetCore**: v4.1.0
+- **Swashbuckle.AspNetCore**: v6.1.4

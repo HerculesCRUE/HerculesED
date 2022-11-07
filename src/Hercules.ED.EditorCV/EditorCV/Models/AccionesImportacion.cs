@@ -96,7 +96,7 @@ namespace EditorCV.Models
                 }
             }
 
-            petitionStatus[petitionID].subTotalWorks = listaId.Count();
+            petitionStatus[petitionID].subTotalWorks = listaId.Count;
 
             //Petición al exportador
             var multipartFormData = new MultipartFormDataContent();
@@ -204,7 +204,7 @@ namespace EditorCV.Models
         /// <param name="section"></param>
         /// <param name="preimport"></param>
         /// <returns></returns>
-        private API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
+        private static API.Response.TabSection GetPersonalDataSection(ItemEdit section, Preimport preimport)
         {
             string lang = "es";
             API.Response.TabSection tabSection = new API.Response.TabSection();
@@ -334,7 +334,7 @@ namespace EditorCV.Models
                         propFecytID.Add("http://w3id.org/roh/RelatedWorkSubmittedSeminarsCV", "060.010.030.000");
                         propFecytID.Add("http://purl.org/ontology/bibo/Patent", "050.030.010.000");
 
-                        foreach(string prop in propFecytID.Keys)
+                        foreach (string prop in propFecytID.Keys)
                         {
                             if (section.presentation.listItemsPresentation.rdftype_cv != null &&
                             section.presentation.listItemsPresentation.rdftype_cv.Equals(prop))
@@ -384,10 +384,10 @@ namespace EditorCV.Models
 
                         tabSectionItem.identifier = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
                             .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
-                            .Where(x => x.Count() > 0).FirstOrDefault()?.Select(x => x.guid).FirstOrDefault();
+                            .FirstOrDefault(x => x.Any())?.Select(x => x.guid).FirstOrDefault();
                         tabSectionItem.idBBDD = preimport.secciones.Where(x => x.id.Equals("070.010.000.000") || x.id.Equals("060.010.060.010"))?
                             .Select(w => w.subsecciones.Where(q => q.propiedades.Count != 0 && q.propiedades.Any(x => x.prop.Equals(itemEditSection.property))))?
-                            .Where(p => p.Count() > 0).FirstOrDefault()?.Select(x => x.idBBDD).FirstOrDefault();
+                            .FirstOrDefault(p => p.Any())?.Select(x => x.idBBDD).FirstOrDefault();
 
                         tabSectionItem.properties.Add(tsip);
 
@@ -408,7 +408,7 @@ namespace EditorCV.Models
         /// <param name="tabSectionListItem"></param>
         /// <param name="subseccionItem"></param>
         /// <returns></returns>
-        private TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
+        private static TabSectionItem GetItemImport(TabSectionListItem tabSectionListItem, SubseccionItem subseccionItem)
         {
             string lang = "es";
 
@@ -573,7 +573,7 @@ namespace EditorCV.Models
                     if (valor != null && valor.Count != 0 && valor.All(x => !string.IsNullOrEmpty(x)))
                     {
                         string value = valor.First().Split("@@@").Last();
-                        if (value.StartsWith("http://gnoss.com/items/") && value.Split("_").Count() > 1 && !string.IsNullOrEmpty(graph))
+                        if (value.StartsWith("http://gnoss.com/items/") && value.Split("_").Length > 1 && !string.IsNullOrEmpty(graph))
                         {
                             string prop = GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").Last();
 
@@ -610,7 +610,7 @@ namespace EditorCV.Models
                         tsip.name = UtilityCV.GetTextLang(lang, property.name);
                         tsip.values = new List<string>();
 
-                        if (GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").Count() != 1 &&
+                        if (GetPropCompleteWithoutRelatedBy(propComplete).Split("@@@").Length != 1 &&
                             dicPropiedades.ContainsKey(value) && dicPropiedades[value].ContainsKey(lang))
                         {
                             tsip.values.Add(dicPropiedades[value][lang].First());
@@ -650,7 +650,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pPropImport"></param>
         /// <returns></returns>
-        private string GetPropCompleteImport(string pPropImport)
+        private static string GetPropCompleteImport(string pPropImport)
         {
             if (string.IsNullOrEmpty(pPropImport))
             {
@@ -664,7 +664,7 @@ namespace EditorCV.Models
         /// </summary>
         /// <param name="pPropCompelte"></param>
         /// <returns></returns>
-        private string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
+        private static string GetPropCompleteWithoutRelatedBy(string pPropCompelte)
         {
             return pPropCompelte.Replace("http://vivoweb.org/ontology/core#relatedBy@@@", "");
         }

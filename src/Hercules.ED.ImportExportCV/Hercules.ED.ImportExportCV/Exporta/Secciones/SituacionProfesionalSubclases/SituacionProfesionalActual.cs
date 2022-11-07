@@ -1,10 +1,8 @@
-﻿using ImportadorWebCV;
-using Models;
+﻿using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -12,8 +10,12 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
 {
     public class SituacionProfesionalActual : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/professionalSituation",
-                "http://w3id.org/roh/currentProfessionalSituation", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/professionalSituation",
+            "http://w3id.org/roh/currentProfessionalSituation",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "position";
 
         public SituacionProfesionalActual(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -27,7 +29,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
         /// <param name="listaId"></param>
         public void ExportaSituacionProfesional(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
-            List<CvnItemBean> listado = new ();
+            List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
             List<Tuple<string, string>> listadoIdentificadoresSitPro = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
@@ -39,7 +41,7 @@ namespace ImportadorWebCV.Exporta.Secciones.SituacionProfesionalSubclases
             Dictionary<string, Entity> listaEntidadesSitPro = GetListLoadedEntity(listadoIdentificadoresSitPro, graph, MultilangProp);
             foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSitPro)
             {
-                CvnItemBean itemBean = new ();
+                CvnItemBean itemBean = new();
                 itemBean.Code = "010.010.000.000";
                 if (itemBean.Items == null)
                 {

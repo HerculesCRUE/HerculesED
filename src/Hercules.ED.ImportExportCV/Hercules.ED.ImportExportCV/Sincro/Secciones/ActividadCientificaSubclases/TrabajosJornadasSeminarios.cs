@@ -26,9 +26,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
         {
             List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configTituloTraJorSem,"titulo",Titulo),
-                new DisambiguationData(configFechaTraJorSem,"fecha",Fecha),
-                new DisambiguationData(configAutoresTraJorSem,"autores",Autores)
+                new DisambiguationData(configTituloTraJorSem, "titulo", Titulo),
+                new DisambiguationData(configFechaTraJorSem, "fecha", Fecha),
+                new DisambiguationData(configAutoresTraJorSem, "autores", Autores)
             };
 
             return data;
@@ -47,7 +47,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosTraJorSem = new ();
+            Dictionary<string, DisambiguableEntity> resultadosTraJorSem = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();
@@ -88,7 +88,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
 
-            HashSet<string> listaNombres = new HashSet<string>();
+            HashSet<string> listaNombresTJS = new HashSet<string>();
             ConcurrentDictionary<string, List<Persona>> listaPersonasAux = new ConcurrentDictionary<string, List<Persona>>();
 
             //Selecciono el nombre completo o la firma.
@@ -96,14 +96,14 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             {
                 for (int i = 0; i < item.autores.Count; i++)
                 {
-                    listaNombres.Add(item.autores[i].NombreBuscar);
+                    listaNombresTJS.Add(item.autores[i].NombreBuscar);
                 }
             }
 
             //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaNombres = UtilitySecciones.SplitList(listaNombres.ToList(), 10).ToList();
+            List<List<string>> listaListaNombresTJS = UtilitySecciones.SplitList(listaNombresTJS.ToList(), 10).ToList();
 
-            Parallel.ForEach(listaListaNombres, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
+            Parallel.ForEach(listaListaNombresTJS, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
             {
                 Dictionary<string, List<Persona>> personasBBDD = Utility.ObtenerPersonasFirma(pResourceApi, firma);
                 foreach (KeyValuePair<string, List<Persona>> valuePair in personasBBDD)
@@ -113,9 +113,9 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
             });
 
             //Divido la lista en listas de elementos
-            List<List<string>> listaListasIdPersonas = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).Distinct().ToList(), Utility.splitListNum).ToList();
+            List<List<string>> listaListasIdPersonasTJS = UtilitySecciones.SplitList(listaPersonasAux.SelectMany(x => x.Value).Select(x => x.personid).Distinct().ToList(), Utility.splitListNum).ToList();
 
-            foreach (List<string> lista in listaListasIdPersonas)
+            foreach (List<string> lista in listaListasIdPersonasTJS)
             {
                 //Selecciono los datos de grupos, proyectos comperititvos, proyectos no competitivos, organizaciones y departamentos para la posterior desambiguacion de la persona.
                 Dictionary<string, HashSet<string>> departamentos = Utility.DatosDepartamentoPersona(lista);
@@ -163,8 +163,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 int limit = 10000;
                 while (true)
                 {
-                    string selectX = $@"select * where{{ SELECT distinct ?item ?autor ";
-                    string whereX = $@"where {{
+                    string selectTJS = $@"select * where{{ SELECT distinct ?item ?autor ";
+                    string whereTJS = $@"where {{
                                         ?item a <http://purl.org/ontology/bibo/Document> . 
                                         ?item <http://purl.org/ontology/bibo/authorList> ?authorList . 
                                         ?authorList <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autorIn .                                        
@@ -172,7 +172,7 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                                         ?authorList2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#member> ?autor .
                                         FILTER(?autorIn in (<{string.Join(">,<", lista)}>))                                        
                                     }}order by desc(?item) desc(?autor)}} offset {offset} limit {limit}";
-                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectX, whereX, graph);
+                    SparqlObject resultDataX = pResourceApi.VirtuosoQuery(selectTJS, whereTJS, graph);
                     foreach (Dictionary<string, Data> fila in resultDataX.results.bindings)
                     {
                         string doc = fila["item"].value;

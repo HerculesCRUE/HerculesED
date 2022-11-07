@@ -13,17 +13,17 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
         public string Categoria { get; set; }
         public string FechaIni { get; set; }
 
-        private static readonly DisambiguationDataConfig configNombreCarAct = new (DisambiguationDataConfigType.equalsTitle, 0.8f);
-        private static readonly DisambiguationDataConfig configCategoriaCarAct = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
-        private static readonly DisambiguationDataConfig configFechaIniCarAct = new (DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configNombreCarAct = new(DisambiguationDataConfigType.equalsTitle, 0.8f);
+        private static readonly DisambiguationDataConfig configCategoriaCarAct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
+        private static readonly DisambiguationDataConfig configFechaIniCarAct = new(DisambiguationDataConfigType.equalsItem, 0.5f, 0.5f);
 
         public override List<DisambiguationData> GetDisambiguationData()
         {
-            List<DisambiguationData> data = new ()
+            List<DisambiguationData> data = new()
             {
-                new DisambiguationData(configNombreCarAct,"nombre",Nombre),
-                new DisambiguationData(configCategoriaCarAct,"categoria",Categoria),
-                new DisambiguationData(configFechaIniCarAct,"fechaIni",FechaIni)
+                new DisambiguationData(configNombreCarAct, "nombre", Nombre),
+                new DisambiguationData(configCategoriaCarAct, "categoria", Categoria),
+                new DisambiguationData(configFechaIniCarAct, "fechaIni", FechaIni)
             };
 
             return data;
@@ -42,7 +42,7 @@ namespace ImportadorWebCV.Sincro.Secciones.SituacionProfesionalSubclases
             //Obtenemos IDS
             HashSet<string> ids = UtilitySecciones.GetIDS(pResourceApi, pCVID, propiedadesItem);
 
-            Dictionary<string, DisambiguableEntity> resultadosCarAct = new ();
+            Dictionary<string, DisambiguableEntity> resultadosCarAct = new();
 
             //Divido la lista en listas de elementos
             List<List<string>> listaListas = UtilitySecciones.SplitList(ids.ToList(), Utility.splitListNum).ToList();

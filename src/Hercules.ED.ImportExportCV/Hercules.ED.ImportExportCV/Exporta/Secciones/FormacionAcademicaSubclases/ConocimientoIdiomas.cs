@@ -1,9 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Utils;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -11,8 +9,12 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
 {
     public class ConocimientoIdiomas : SeccionBase
     {
-        private readonly List<string> propiedadesItem = new () { "http://w3id.org/roh/qualifications",
-            "http://w3id.org/roh/languageSkills", "http://vivoweb.org/ontology/core#relatedBy" };
+        private readonly List<string> propiedadesItem = new()
+        {
+            "http://w3id.org/roh/qualifications",
+            "http://w3id.org/roh/languageSkills",
+            "http://vivoweb.org/ontology/core#relatedBy"
+        };
         private readonly string graph = "languagecertificate";
 
         public ConocimientoIdiomas(cvnRootResultBean cvn, string cvID) : base(cvn, cvID)
@@ -25,21 +27,21 @@ namespace ImportadorWebCV.Exporta.Secciones.FormacionAcademicaSubclases
         /// </summary>
         /// <param name="MultilangProp"></param>
         /// <param name="listaId"></param>
-        public void ExportaConocimientoIdiomas(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp,[Optional] List<string> listaId)
+        public void ExportaConocimientoIdiomas(Dictionary<string, List<Dictionary<string, Data>>> MultilangProp, [Optional] List<string> listaId)
         {
             List<CvnItemBean> listado = new();
 
             // Selecciono los identificadores de las entidades de la seccion
-            List<Tuple<string, string>> listadoIdentificadores = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
-            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadores, listaId))
+            List<Tuple<string, string>> listadoIdentificadoresConIdi = UtilityExportar.GetListadoEntidades(mResourceApi, propiedadesItem, mCvID);
+            if (!UtilityExportar.Iniciar(mResourceApi, propiedadesItem, mCvID, listadoIdentificadoresConIdi, listaId))
             {
                 return;
             }
 
-            Dictionary<string, Entity> listaEntidadesSP = GetListLoadedEntity(listadoIdentificadores, graph, MultilangProp);
-            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesSP)
+            Dictionary<string, Entity> listaEntidadesConIdi = GetListLoadedEntity(listadoIdentificadoresConIdi, graph, MultilangProp);
+            foreach (KeyValuePair<string, Entity> keyValue in listaEntidadesConIdi)
             {
-                CvnItemBean itemBean = new ()
+                CvnItemBean itemBean = new()
                 {
                     Code = "020.060.000.000",
                     Items = new List<CVNObject>()

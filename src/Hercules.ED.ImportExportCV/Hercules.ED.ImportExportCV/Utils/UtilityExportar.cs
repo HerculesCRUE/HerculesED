@@ -2,14 +2,10 @@
 using Gnoss.ApiWrapper.ApiModel;
 using ImportadorWebCV;
 using Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
 namespace Utils
@@ -69,7 +65,7 @@ namespace Utils
         ?person in (<{string.Join(">,<", dicPersonas.Keys)}>)
     ) 
 }}";
-            List<Tuple<string, string, string>> listaResultado = new ();
+            List<Tuple<string, string, string>> listaResultado = new();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "person");
             if (resultData.results.bindings.Count == 0)
@@ -125,7 +121,7 @@ namespace Utils
 }}";
 
 
-            List<Tuple<string, string, string>> listaResultado = new ();
+            List<Tuple<string, string, string>> listaResultado = new();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (resultData.results.bindings.Count == 0)
@@ -226,7 +222,7 @@ namespace Utils
             where += $"FILTER(?cv=<{pCVID}>) }}";
 
 
-            List<Tuple<string, string>> listaResultado = new ();
+            List<Tuple<string, string>> listaResultado = new();
 
             SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "curriculumvitae");
             if (resultData.results.bindings.Count == 0)
@@ -379,9 +375,9 @@ namespace Utils
         /// <returns>Hijos del listado de palabras clave sin los padres</returns>
         public static Dictionary<string, string> GetHijosListadoPalabrasClave(List<string> listaPalabrasClave)
         {
-            List<decimal> ld = new ();
+            List<decimal> ld = new();
 
-            Dictionary<string, string> codigos = new ();
+            Dictionary<string, string> codigos = new();
             foreach (string palabraClave in listaPalabrasClave)
             {
                 string key = palabraClave.Split("@@@").First();
@@ -739,7 +735,7 @@ namespace Utils
         /// <returns>Listado de tuplas con persona, nombre, apellidos</returns>
         public static List<Tuple<string, string, string>> GetNombreApellidoAutor(string propiedad, Entity entity, ResourceApi resourceApi)
         {
-            List<Tuple<string, string, string>> autorNombreApellido = new ();
+            List<Tuple<string, string, string>> autorNombreApellido = new();
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))))
                 &&
                 Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedad))).Select(x => x.values).First())
@@ -788,7 +784,7 @@ namespace Utils
         /// <returns>Lista de tuplas con las citas de other</returns>
         public static List<Tuple<string, string>> GetCitasOther(string propiedadNombre, string propiedadNumero, Entity entity, ResourceApi resourceApi)
         {
-            List<Tuple<string, string>> nombreCitas = new ();
+            List<Tuple<string, string>> nombreCitas = new();
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNombre))))
                 &&
                 Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(propiedadNombre))).Select(x => x.values).First())
@@ -832,7 +828,7 @@ namespace Utils
             //PublicationPosition
             //JournalNumberInCat
             //Cuartil
-            List<Tuple<string, string, string, string, string, string, string>> impacts = new ();
+            List<Tuple<string, string, string, string, string, string, string>> impacts = new();
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource))))
                 &&
                 Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource))).Select(x => x.values).First())
@@ -841,7 +837,7 @@ namespace Utils
                 List<string[]> listadoSource = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSource)))
                 .Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
 
-                List<string[]> listadoSourceOther = new ();
+                List<string[]> listadoSourceOther = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))).Select(x => x.values).First())
@@ -849,7 +845,7 @@ namespace Utils
                 {
                     listadoSourceOther = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoSourceOther))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 }
-                List<string[]> listadoCategoria = new ();
+                List<string[]> listadoCategoria = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))).Select(x => x.values).First())
@@ -857,7 +853,7 @@ namespace Utils
                 {
                     listadoCategoria = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCategoria))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 }
-                List<string[]> listadoImpactindex = new ();
+                List<string[]> listadoImpactindex = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))).Select(x => x.values).First())
@@ -865,7 +861,7 @@ namespace Utils
                 {
                     listadoImpactindex = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoIndexInYear))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 }
-                List<string[]> listadoPublicationPosition = new ();
+                List<string[]> listadoPublicationPosition = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))).Select(x => x.values).First())
@@ -873,7 +869,7 @@ namespace Utils
                 {
                     listadoPublicationPosition = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoPublicationPosition))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 }
-                List<string[]> listadoJournalNumberInCat = new ();
+                List<string[]> listadoJournalNumberInCat = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))).Select(x => x.values).First())
@@ -881,7 +877,7 @@ namespace Utils
                 {
                     listadoJournalNumberInCat = entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoJournalNumberInCat))).Select(x => x.values).First().Select(x => x.Split("@@@")).ToList();
                 }
-                List<string[]> listadoCuartil = new ();
+                List<string[]> listadoCuartil = new();
                 if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCuartil))))
                     &&
                     Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(EliminarRDF(ImportadorWebCV.Variables.ActividadCientificaTecnologica.pubDocumentosIndiceImpactoCuartil))).Select(x => x.values).First())
@@ -1168,7 +1164,7 @@ namespace Utils
             }
 
             //Tipodato, Codigo, Propiedad, ID, Valor
-            List<Tuple<string, string, string, string, string>> listadoTuplas = new ();
+            List<Tuple<string, string, string, string, string>> listadoTuplas = new();
             foreach (Tuple<string, string, string> tuple in dicCodigos)
             {
                 if (!Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).Equals(tuple.Item3))))
@@ -1202,8 +1198,8 @@ namespace Utils
                 CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
                 codeGroup.Code = code;
 
-                List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new ();
-                List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new ();
+                List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new();
+                List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new();
 
                 //Tipodato, Codigo, Propiedad, Valor
                 var tupla = listado.ElementAt(i).Select(x => new Tuple<string, string, string, string>(x.Item1, x.Item2, x.Item3, x.Item5));
@@ -1304,8 +1300,8 @@ namespace Utils
             CvnItemBeanCvnCodeGroup codeGroup = new CvnItemBeanCvnCodeGroup();
             codeGroup.Code = code;
 
-            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new ();
-            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new ();
+            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new();
+            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new();
 
             if (dicCodigos.ElementAt(1).Item3.Equals("WOS") && Comprobar(entity.properties.Where(x => x.prop.Equals(dicCodigos.ElementAt(0).Item3))))
             {
@@ -1453,13 +1449,13 @@ namespace Utils
 
 
             //Inicializacion de valores
-            CvnItemBeanCvnCodeGroup codeGroup = new ();
+            CvnItemBeanCvnCodeGroup codeGroup = new();
             codeGroup.Code = "060.010.010.180";
 
             CvnItemBeanCvnCodeGroupCvnTitleBean titleBean = null;
             CvnItemBeanCvnCodeGroupCvnBoolean boolBean = null;
-            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new ();
-            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new ();
+            List<CvnItemBeanCvnCodeGroupCvnString> listadoStrings = new();
+            List<CvnItemBeanCvnCodeGroupCvnDouble> listadoDouble = new();
 
 
             if (!string.IsNullOrEmpty(source))
@@ -2062,8 +2058,8 @@ namespace Utils
                 return;
             }
 
-            List<string> listaNombres = new ();
-            List<string> listaIdentificadores = new ();
+            List<string> listaNombres = new();
+            List<string> listaIdentificadores = new();
 
             if (Comprobar(entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(propertyList["Nombre"]))))
             {

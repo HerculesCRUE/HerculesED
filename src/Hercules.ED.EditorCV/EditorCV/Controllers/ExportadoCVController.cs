@@ -36,8 +36,8 @@ namespace EditorCV.Controllers
         /// <summary>
         /// Añade un archivo descargable al CV
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="lang"></param>
+        /// <param name="userID">Identificador del usuario</param>
+        /// <param name="lang">Lenguaje</param>
         /// <param name="listaId">listado de Identificadores concatenados por "@@@"</param>
         [HttpPost("GetCV")]
         public IActionResult GetCV([Required][FromForm] string userID, [Required][FromForm] string lang, [Required][FromForm] string nombreCV,
@@ -59,7 +59,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
 
                 //Añado el archivo
@@ -102,7 +102,7 @@ namespace EditorCV.Controllers
         /// Obtiene los datos de todas las pestaña dentro del editor
         /// </summary>
         /// <param name="userID">Identificador del usuario</param>
-        /// <param name="pLang">lenguaje </param>
+        /// <param name="pLang">Lenguaje </param>
         /// <returns></returns>
         [HttpGet("GetAllTabs")]
         public IActionResult GetAllTabs([Required] string userID, [Required] string petitionID, [Required] string pLang)
@@ -117,7 +117,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
 
                 petitionStatus.TryAdd(petitionID, new PetitionStatus(1, 3, "LEYENDO_DATOS_CV"));
@@ -169,7 +169,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
                 List<FilePdf> pListId = AccionesExportacion.GetListPDFFile(pCVId, baseUrl, timezoneOffset);
                 return Ok(pListId);
@@ -198,7 +198,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
                 Dictionary<string, List<string>> resultado = accionesExportacion.GetPerfilExportacion(pCVId);
@@ -230,7 +230,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
 
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
@@ -262,7 +262,7 @@ namespace EditorCV.Controllers
                 string pCVId = UtilityCV.GetCVFromUser(userID);
                 if (string.IsNullOrEmpty(pCVId))
                 {
-                    throw new Exception("Usuario no encontrado " + userID);
+                    throw new ArgumentException("Usuario no encontrado " + userID);
                 }
                 AccionesExportacion accionesExportacion = new AccionesExportacion();
                 bool resultado = accionesExportacion.DeletePerfilExportacion(pCVId, title);

@@ -1,5 +1,4 @@
 ﻿using Gnoss.ApiWrapper;
-using Gnoss.ApiWrapper.Model;
 using Hercules.ED.ImportExportCV.Controllers;
 using Hercules.ED.ImportExportCV.Models;
 using ImportadorWebCV;
@@ -9,15 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Hercules.ED.ImportExportCV
 {
     public class AccionesImportacion : SincroDatos
     {
-        private static readonly ResourceApi mResourceApi = new ($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         readonly ConfigService mConfiguracion;
 
         public AccionesImportacion(ConfigService Configuracion, string cvID, string fileData) : base(Configuracion, cvID, fileData)
@@ -25,23 +22,62 @@ namespace Hercules.ED.ImportExportCV
             this.mConfiguracion = Configuracion;
         }
 
-        private readonly List<string> listadoSecciones = new ()
+        private readonly List<string> listadoSecciones = new()
         {
             //Datos identificacion
-            "000.010.000.000", "000.020.000.000",
+            "000.010.000.000",
+            "000.020.000.000",
             //Situación profesional
-            "010.010.000.000","010.020.000.000",
+            "010.010.000.000",
+            "010.020.000.000",
             //Formacion academica
-            "020.010.010.000","020.010.020.000","020.010.030.000","020.020.000.000","020.050.000.000","020.060.000.000",
+            "020.010.010.000",
+            "020.010.020.000",
+            "020.010.030.000",
+            "020.020.000.000",
+            "020.050.000.000",
+            "020.060.000.000",
             //Actividad docente
-            "030.040.000.000","030.010.000.000","030.050.000.000","030.060.000.000","030.070.000.000","030.080.000.000",
-            "030.090.000.000","060.030.080.000","030.100.000.000","030.110.000.000",
+            "030.040.000.000",
+            "030.010.000.000",
+            "030.050.000.000",
+            "030.060.000.000",
+            "030.070.000.000",
+            "030.080.000.000",
+            "030.090.000.000",
+            "060.030.080.000",
+            "030.100.000.000",
+            "030.110.000.000",
             //Experiencia cientifica tecnologica
-            "050.020.010.000","050.020.020.000","050.030.010.000","050.010.000.000","050.020.030.000","050.030.020.000",
+            "050.020.010.000",
+            "050.020.020.000",
+            "050.030.010.000",
+            "050.010.000.000",
+            "050.020.030.000",
+            "050.030.020.000",
             //Actividad cientifica tecnologica
-            "060.010.000.000", "060.010.060.000", "060.010.060.010","060.010.010.000","060.010.020.000", "060.010.030.000", "060.010.040.000", "060.020.010.000",
-            "060.020.030.000", "060.020.040.000", "060.020.050.000", "060.020.060.000", "060.010.050.000", "060.030.010.000", "060.020.020.000",
-            "060.030.020.000", "060.030.030.000", "060.030.040.000", "060.030.050.000", "060.030.060.000", "060.030.070.000", "060.030.090.000",
+            "060.010.000.000",
+            "060.010.060.000",
+            "060.010.060.010",
+            "060.010.010.000",
+            "060.010.020.000",
+            "060.010.030.000",
+            "060.010.040.000",
+            "060.020.010.000",
+            "060.020.030.000",
+            "060.020.040.000",
+            "060.020.050.000",
+            "060.020.060.000",
+            "060.010.050.000",
+            "060.030.010.000",
+            "060.020.020.000",
+            "060.030.020.000",
+            "060.030.030.000",
+            "060.030.040.000",
+            "060.030.050.000",
+            "060.030.060.000",
+            "060.030.070.000",
+            "060.030.090.000",
             "060.030.100.000",
             //Texto libre
             "070.010.000.000"
@@ -233,12 +269,12 @@ namespace Hercules.ED.ImportExportCV
             }
 
             //Listado de Identificadores DOI
-            List<string> listaDOI = new ();
+            List<string> listaDOI = new();
 
             //Asigno los cvnRoot dependiendo de cada tipo de acción.
-            cvnRootResultBean duplicadosResultBean = new () { cvnRootBean = listadoDuplicar.ToArray() };
-            cvnRootResultBean fusionResultBean = new () { cvnRootBean = listadoFusionar.ToArray() };
-            cvnRootResultBean sobrescribirResultBean = new () { cvnRootBean = listadoSobrescribir.ToArray() };
+            cvnRootResultBean duplicadosResultBean = new() { cvnRootBean = listadoDuplicar.ToArray() };
+            cvnRootResultBean fusionResultBean = new() { cvnRootBean = listadoFusionar.ToArray() };
+            cvnRootResultBean sobrescribirResultBean = new() { cvnRootBean = listadoSobrescribir.ToArray() };
 
 
             //Duplicar

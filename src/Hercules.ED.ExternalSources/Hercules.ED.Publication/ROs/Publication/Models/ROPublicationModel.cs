@@ -1,185 +1,115 @@
-using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using PublicationAPI.ROs.Publication.Models;
 
 namespace PublicationConnect.ROs.Publications.Models
 {
-
     public class Publication
     {
-        public List<string> problema { get; set; }
-        public string typeOfPublication { get; set; } //no es un atributo de la ontologia!!
-        public string title { get; set; }
-        public List<FreetextKeywords> freetextKeywords { get; set; }
+        public string TypeOfPublication { get; set; }
+        public string Title { get; set; }
+        public List<FreetextKeywords> FreetextKeywords { get; set; }
         public string Abstract { get; set; }
-        public string language { get; set; }
-        public string doi { get; set; }
-        // public string identifier {get;set;}
-        public DateTimeValue dataIssued { get; set; }
-
-        public HashSet<string> url { get; set; }
-        public string pdf { get; set; }
-        public List<Knowledge_enriquecidos> topics_enriquecidos { get; set; }
-        public List<Knowledge_enriquecidos> freetextKeyword_enriquecidas { get; set; }
-
-        public Person correspondingAuthor { get; set; }
-
-        public List<Person> seqOfAuthors { get; set; }
-        //  public Organization correspondingOrganization { get; set; }
-        public List<KnowledgeAreas> hasKnowledgeAreas { get; set; }
-        public string pageEnd { get; set; }
-
-        public string pageStart { get; set; }
-        //public Status documentStatus { get; set; }
-        //public string eanucc13 { get; set; }
-        public string volume { get; set; }
-        public string articleNumber { get; set; }
-        public bool? openAccess { get; set; }
+        public string Language { get; set; }
+        public string Doi { get; set; }
+        public DateTimeValue DataIssued { get; set; }
+        public HashSet<string> Url { get; set; }
+        public string Pdf { get; set; }
+        public List<KnowledgeEnriquecidos> Topics_enriquecidos { get; set; }
+        public List<KnowledgeEnriquecidos> FreetextKeyword_enriquecidas { get; set; }
+        public Person CorrespondingAuthor { get; set; }
+        public List<Person> SeqOfAuthors { get; set; }
+        public List<KnowledgeAreas> HasKnowledgeAreas { get; set; }
+        public string PageEnd { get; set; }
+        public string PageStart { get; set; }
+        public string Volume { get; set; }
+        public string ArticleNumber { get; set; }
+        public bool? OpenAccess { get; set; }
         public List<string> IDs { get; set; }
-        public string presentedAt { get; set; }
-        //todo no creo que esto en nuestra ontologia sea un string y no esta contemplado de mommento rellenarlo! 
-
-        public Source hasPublicationVenue { get; set; }
-
-        public List<PublicationMetric> hasMetric { get; set; }
-        public List<PubReferencias> bibliografia { get; set; }
-        //public List<Publication> citas {get;set;}
-        
-        public HashSet<string> dataOriginList { get; set; }
-
-        public Conferencia conferencia { get; set; }
-
-        public string dataOrigin { get; set; }
-
-
+        public string PresentedAt { get; set; }
+        public Source HasPublicationVenue { get; set; }
+        public List<PublicationMetric> HasMetric { get; set; }
+        public List<PubReferencias> Bibliografia { get; set; }
+        public HashSet<string> DataOriginList { get; set; }
+        public Conferencia Conferencia { get; set; }
+        public string DataOrigin { get; set; }
     }
     public class FreetextKeywords
     {
-        public string source { get; set; }
-        public List<string> freetextKeyword { get; set; }
+        public string Source { get; set; }
+        public List<string> FreetextKeyword { get; set; }
     }
 
     public class Conferencia
     {
-        public int id { get; set; }
-        public string titulo { get; set; }
-        public string fechaInicio { get; set; }
-        public string fechaFin { get; set; }
-        public string pais { get; set; }
-        public string ciudad { get; set; }
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public string FechaInicio { get; set; }
+        public string FechaFin { get; set; }
+        public string Pais { get; set; }
+        public string Ciudad { get; set; }
     }
 
     public class PublicationMetric
     {
-        public string citationCount { get; set; }
-        public string metricName { get; set; }
+        public string CitationCount { get; set; }
+        public string MetricName { get; set; }
     }
+
     public class DateTimeValue
     {
-        public string datimeTime { get; set; }
+        public string DatimeTime { get; set; }
     }
 
     public class Source
     {
-        // public KnowledgeArea hasKnowledgeArea { get; set; }
-        //  public JournalMetric hasMetric { get; set; }
-        // public string abbreviation { get; set; }
-        //public string language { get; set; }
-        //  public Organization publisher { get; set; }
-        //public Organization correspongingOrganization { get; set; }
-        public string type { get; set; }
-        public List<string> issn { get; set; }
-        public List<string> isbn { get; set; }
-        public string name { get; set; }
-        public string eissn { get; set; }
-        public List<JournalMetric> hasMetric { get; set; }
-
-        //  public string oclcnum { get; set; }
+        public string Type { get; set; }
+        public List<string> Issn { get; set; }
+        public List<string> Isbn { get; set; }
+        public string Name { get; set; }
+        public string Eissn { get; set; }
     }
-
-
-    public class JournalMetric
-    {
-        public string quartile { get; set; }
-        public string ranking { get; set; }
-        public string impactFactorName { get; set; }
-        public string impactFactor { get; set; }
-        public string metricName { get; set; }
-    }
-
-    // public class Status
-    // {
-    //     public string status { get; set; }
-    //     public DateTimeValue dateIssued { get; set; }
-    // }
 
     public class Person
     {
-        //public string id_persona {get;set;}
-        //public DateTimeValue birthdate { get; set; }
-        public Name name { get; set; }
-        //public string surname { get; set; }
+        public Name Name { get; set; }
         public string ORCID { get; set; }
         public List<string> IDs { get; set; }
-        public List<string> links { get; set; }
-        public string fuente { get; set; }
-        public string researcherID { get; set; }
-        public string nick { get; set; }
-        public int? orden { get; set; }
+        public List<string> Links { get; set; }
+        public string Fuente { get; set; }
+        public string ResearcherID { get; set; }
+        public string Nick { get; set; }
+        public int? Orden { get; set; }
     }
 
     public class Name
     {
-        public List<string> given { get; set; }
-        //
-        public List<string> familia { get; set; }
-        public List<string> nombre_completo { get; set; }
+        public List<string> Given { get; set; }
+        public List<string> Familia { get; set; }
+        public List<string> Nombre_completo { get; set; }
     }
-    public class Organization
-    {
-        public string title { get; set; }
 
-    }
-    public class Conference
-    {
-        public string abbreviation { get; set; }
-        public DateTimeInterval dateTimeInterval { get; set; }
-        public string description { get; set; }
-        public List<string> IDs { get; set; }
-        public string title { get; set; }
-        public string freetextKeyword { get; set; }
-        public string locality { get; set; }
-        //public ParticipatedBy participatedBy { get; set; }
-        public List<KnowledgeAreas> hasKnowledgeArea { get; set; }
-
-    }
     public class KnowledgeAreas
     {
-        public List<KnowledgeArea> knowledgeArea { get; set; }
-        public string resource { get; set; }
+        public List<KnowledgeArea> KnowledgeArea { get; set; }
+        public string Resource { get; set; }
     }
 
     public class KnowledgeArea
     {
-        public string name { get; set; }
-        // public string abbreviation { get; set; }
-        public string hasCode { get; set; }
-
-
+        public string Name { get; set; }
+        public string HasCode { get; set; }
     }
-
-    public class DateTimeInterval
-    {
-        public DateTimeValue end { get; set; }
-        public DateTimeValue start { get; set; }
-    }
-
-
-
 
     public class ObjEnriquecimientoSinPdf
     {
+        public ObjEnriquecimientoSinPdf(string rotype, string title, string abstract_)
+        {
+            this.rotype = rotype;
+            this.title = title;
+            this.abstract_ = abstract_;
+        }
+
         public string rotype { get; set; }
 
         public string title { get; set; }
@@ -201,16 +131,16 @@ namespace PublicationConnect.ROs.Publications.Models
         public string abstract_ { get; set; }
     }
 
-    public class Topics_enriquecidos
+    public class TopicsEnriquecidos
     {
-        public string pdf_url { get; set; }
-        public string rotype { get; set; }
-        public List<Knowledge_enriquecidos> topics { get; set; }
+        public string Pdf_url { get; set; }
+        public string Rotype { get; set; }
+        public List<KnowledgeEnriquecidos> Topics { get; set; }
     }
 
-    public class Knowledge_enriquecidos
+    public class KnowledgeEnriquecidos
     {
-        public string word { get; set; }
-        public string porcentaje { get; set; }
+        public string Word { get; set; }
+        public string Porcentaje { get; set; }
     }
 }
