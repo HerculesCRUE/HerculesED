@@ -25,9 +25,20 @@ Servicio encargado de obtener la información de OpenAire. Documentación del AP
 
 ## Controladores
 
-**APIController**  
-[GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
-[GET] GetRoByDoi -> Obtiene los datos de una publicación.
+### APIController
+
+**[GET] GetROs**
+- Resumen: Obtiene los datos de las publicaciones de un autor.  
+- Parámetros: 
+	- orcid: El identificador ORCID del autor
+	- date: La fecha en formato "YYYY-MM-DD" desde la que se quiere obtener
+- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.OpenAireConnect/ROs/OpenAire/Models/ROPublicationModel.cs)
+
+**[GET] GetRoByDoi**
+- Resumen: Obtiene los datos de una publicación.
+- Parámetros: 
+	- pDoi: El identificador DOI de la publicación a obtener sus datos
+- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.OpenAireConnect/ROs/OpenAire/Models/ROPublicationModel.cs)
 
 ## Configuración en el appsetting.json
 ```json{
