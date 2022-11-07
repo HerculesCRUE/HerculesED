@@ -26,7 +26,8 @@ Servicio encargado de obtener la información de CrossRef. Documentación del AP
 ## Controladores
 
 **ROCrossRefController**
-[GET] GetROs
+
+[GET] **GetROs**
 - Resumen: Obiene los datos de una publicación
 - Parámetros: 
 	- **DOI**: El identificador DOI de la publicación a obtener sus datos
