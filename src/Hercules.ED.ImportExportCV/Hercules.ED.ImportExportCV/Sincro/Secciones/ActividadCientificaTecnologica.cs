@@ -1854,7 +1854,11 @@ namespace ImportadorWebCV.Sincro.Secciones
         {
             //Compruebo si existe alguna revista con ese nombre
             string nombreRevista = item.GetStringPorIDCampo("060.010.010.210");
-            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, nombreRevista);
+            List<CvnItemBeanCvnExternalPKBean> listadoIssn = item.GetListaElementosPorIDCampo<CvnItemBeanCvnExternalPKBean>("060.010.010.160");
+            string issn = listadoIssn.Where(x=>x.Type.Equals("020")).Select(x=>x.Value).FirstOrDefault();
+            string eissn = listadoIssn.Where(x => x.Type.Equals("020")).Select(x => x.Value).FirstOrDefault();
+            string editorial = item.GetStringPorIDCampo("060.010.010.100");
+            string revista = UtilitySecciones.GetNombreRevista(mResourceApi, nombreRevista, issn, eissn, editorial);
 
             //Si existe añado como tipo de soporte revista directamente.
             if (!string.IsNullOrEmpty(revista))

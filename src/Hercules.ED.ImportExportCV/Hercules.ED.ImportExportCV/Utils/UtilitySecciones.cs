@@ -17,7 +17,11 @@ namespace Utils
 {
     public class UtilitySecciones
     {
-        private static Dictionary<string, string> mListaRevistas = new();
+        /// <summary>
+        /// Identificador, {nombre(1), issn(2), eissn(3), editor(4)}
+        /// </summary>
+        private static Dictionary<string, Tuple<string, string, string, string>> mListaRevistas = new();
+
         private static readonly Dictionary<string, string> mListaPalabrasClave = new();
         private static readonly List<Tuple<string, string>> Lenguajes = new();
         private static Dictionary<string, string> mOrgsNombreIds = new();
@@ -186,7 +190,7 @@ where{{
         /// <param name="pResourceApi">pResourceApi</param>
         /// <param name="nombreRevista">nombreRevista</param>
         /// <returns>string</returns>
-        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista)
+        public static string GetNombreRevista(ResourceApi pResourceApi, string nombreRevista, string issn, string eissn, string editorial)
         {
             //Si el nombre de la revista es nulo o vacio
             if (string.IsNullOrEmpty(nombreRevista))
@@ -199,25 +203,48 @@ where{{
 
             if (mListaRevistas.Count == 0)
             {
-                Dictionary<string, string> listaRevistasAux = new();
+                Dictionary<string, Tuple<string, string, string, string>> listaRevistasAux = new();
                 while (true)
                 {
                     //Si tengo más de 10.000 resultados repito la consulta, sino salgo del bucle
-                    string select = $@"SELECT distinct ?identificador ?nombreRevista {{ select *";
+                    string select = $@"SELECT distinct ?identificador ?nombreRevista ?issn ?eissn ?editorial {{ select *";
                     string where = $@"where {{
                                 ?identificador a <http://w3id.org/roh/MainDocument> .
                                 ?identificador <http://w3id.org/roh/title> ?nombreRevista .
+                                OPTIONAL{{?identificador <http://purl.org/ontology/bibo/issn> ?issn}}
+                                OPTIONAL{{?identificador <http://purl.org/ontology/bibo/eissn> ?eissn}}
+                                OPTIONAL{{?identificador <http://purl.org/ontology/bibo/editor> ?editorial}}
                              }} ORDER BY ?nombreRevista
                         }} LIMIT {limit} OFFSET {offsetInt} ";
                     SparqlObject resultData = pResourceApi.VirtuosoQuery(select, where, "maindocument");
 
                     string nombreRevistaConsulta = "";
                     string identificadorRevistaConsulta = "";
-                    for (int i = 0; i < resultData.results.bindings.Count; i++)
+                    string issnRevistaConsulta = "";
+                    string eissnRevistaConsulta = "";
+                    string editorialRevistaConsulta = "";
+                    foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
-                        nombreRevistaConsulta = resultData.results.bindings.Select(x => x["nombreRevista"].value).ElementAt(i).ToLower();
-                        identificadorRevistaConsulta = resultData.results.bindings.Select(x => x["identificador"].value).ElementAt(i);
-                        listaRevistasAux[nombreRevistaConsulta] = identificadorRevistaConsulta;
+                        nombreRevistaConsulta = fila["nombreRevista"].value;
+                        identificadorRevistaConsulta = fila["identificador"].value;
+
+                        issnRevistaConsulta = "";
+                         eissnRevistaConsulta = "";
+                         editorialRevistaConsulta = "";
+                        if (fila.ContainsKey("issn"))
+                        {
+                            issnRevistaConsulta = fila["issn"].value;
+                        }
+                        if (fila.ContainsKey("eissn"))
+                        {
+                            eissnRevistaConsulta = fila["eissn"].value;
+                        }
+                        if (fila.ContainsKey("editorial"))
+                        {
+                            editorialRevistaConsulta = fila["editorial"].value;
+                        }
+                        listaRevistasAux[nombreRevistaConsulta] = new Tuple<string, string, string, string>(identificadorRevistaConsulta, issnRevistaConsulta, eissnRevistaConsulta, editorialRevistaConsulta);
+
                     }
                     offsetInt += limit;
                     if (resultData.results.bindings.Count < limit)
@@ -227,9 +254,27 @@ where{{
                 }
                 mListaRevistas = listaRevistasAux;
             }
-            if (mListaRevistas.ContainsKey(nombreRevista.ToLower()))
+
+            //Si tienen el mismo issn
+            if (mListaRevistas.Any(x => x.Value.Item2.Equals(issn)))
             {
-                return mListaRevistas.Where(x => x.Key.Equals(nombreRevista.ToLower())).Select(x => x.Value).FirstOrDefault();
+                return mListaRevistas.Where(x => x.Value.Item2.Equals(issn)).Select(x => x.Key).FirstOrDefault();
+            }
+            //Si el titulo es el mismo y el editor es el mismo
+            else if (mListaRevistas.Any(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower()))
+                  && mListaRevistas.Any(x => x.Value.Item4.Equals(editorial)))
+            {
+                return mListaRevistas.Where(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower()) && x.Value.Item4.Equals(editorial)).Select(x => x.Key).FirstOrDefault();
+            }
+            //Si el titulo es el mismo y el eissn es el mismo
+            else if (mListaRevistas.Any(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower()))
+                 && mListaRevistas.Any(x => x.Value.Item3.Equals(eissn)))
+            {
+                return mListaRevistas.Where(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower()) && x.Value.Item3.Equals(eissn)).Select(x => x.Key).FirstOrDefault();
+            }
+            else if (mListaRevistas.Any(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower())))
+            {
+                return mListaRevistas.Where(x => x.Value.Item1.ToLower().Equals(nombreRevista.ToLower())).Select(x => x.Key).FirstOrDefault();
             }
             else
             {
@@ -843,7 +888,7 @@ where{{
                 //Si es ISBN (020)
                 if (isbn.Type.Equals("020"))
                 {
-                    entidadAux.properties.AddRange(UtilitySecciones.AddProperty(
+                    entidadAux.properties.AddRange(AddProperty(
                         new Property(propiedadISBN, isbn.Value)
                     ));
                 }
