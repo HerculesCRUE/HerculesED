@@ -229,8 +229,8 @@ where{{
                         identificadorRevistaConsulta = fila["identificador"].value;
 
                         issnRevistaConsulta = "";
-                         eissnRevistaConsulta = "";
-                         editorialRevistaConsulta = "";
+                        eissnRevistaConsulta = "";
+                        editorialRevistaConsulta = "";
                         if (fila.ContainsKey("issn"))
                         {
                             issnRevistaConsulta = fila["issn"].value;
