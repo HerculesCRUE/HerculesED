@@ -34,8 +34,12 @@ La estructura es una estructura MVC con un API Rest para recibir las peticiones.
 Tenemos un único controlador para realizar las peticiones y obtener así la información desde GitHub del investigador:
 
 #### APIController
-Este controlador contiene un único método, y es el encargado de obtener los repositorios y la información de GitHub y devolver el objeto con todos los repositorios
-
+**[GET] GetData**
+- Resumen: Obtiene los datos de un usuario 
+- Parámetros: 
+	- pUser: Nombre del repositorio
+	- pToken: Token de usuario
+- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.GitHubConnect/Models/Data/DataGitHub.cs)
 
 ### Modelos
 Los modelos se corresponden a los modelos de datos devueltos por GitHub, tenemos los siguientes
