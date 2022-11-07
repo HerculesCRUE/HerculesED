@@ -550,7 +550,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                         persona.Orcid = fila["orcid"].value;
                     }
 
-                    persona.Name = new ();
+                    persona.Name = new();
                     persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                     persona.IdGnoss = pGnossId;
                     DisambiguationPerson person = GetDisambiguationPerson(persona);
@@ -630,7 +630,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 {
                                     persona.Orcid = fila["orcid"].value;
                                 }
-                                persona.Name = new ();
+                                persona.Name = new();
                                 persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                                 DisambiguationPerson person = GetDisambiguationPerson(persona);
                                 person.ID = fila["persona"].value;
@@ -840,7 +840,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                     PersonaPub persona = new();
                     persona.Orcid = OrcidAutor;
 
-                    persona.Name = new ();
+                    persona.Name = new();
                     persona.Name.Nombre_completo = new() { fila["nombreCompleto"].value };
                     DisambiguationPerson person = GetDisambiguationPerson(persona);
                     person.ID = fila["persona"].value;
@@ -927,7 +927,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                                 {
                                     persona.Orcid = fila["orcid"].value;
                                 }
-                                persona.Name = new ();
+                                persona.Name = new();
                                 persona.Name.Nombre_completo = new List<string>() { fila["nombreCompleto"].value };
                                 DisambiguationPerson person = GetDisambiguationPerson(persona);
                                 person.ID = fila["persona"].value;

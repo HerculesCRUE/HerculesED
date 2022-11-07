@@ -1105,7 +1105,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         publicacion.Title = fila["titulo"].value;
                         if (fila.ContainsKey("id") && fila.ContainsKey("fuenteId"))
                         {
-                            publicacion.IDs = new ();
+                            publicacion.IDs = new();
                             publicacion.IDs.Add(fila["fuenteId"].value + ":" + fila["id"].value);
                         }
 

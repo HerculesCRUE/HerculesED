@@ -1,9 +1,7 @@
-﻿using Gnoss.ApiWrapper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hercules.ED.ResearcherObjectLoad.Models.ObjetoJson;
-using Hercules.ED.ResearcherObjectLoad.Models;
 using ResearchobjectOntology;
 
 namespace Hercules.ED.ResearcherObjectLoad.Utils
