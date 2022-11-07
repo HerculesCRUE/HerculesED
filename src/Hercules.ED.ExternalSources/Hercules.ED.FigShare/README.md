@@ -37,13 +37,13 @@ Servicio encargado de obtener la información de FigShare. Documentación del AP
 - Resumen: Permite obtener la información de los artículos de un investigador.
 - Parámetros: 
 	- pToken: Token de usuario
-- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.FigShare/Models/Data/Article.cs)
+- Devuelve: Un objeto Article que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.FigShare/Models/Data/Article.cs)
 
 **[GET] GetROs**
 - Resumen: Permite obtener la lista de objetos RO con los datos necesarios de los artículos.
 - Parámetros: 
 	- pToken: Token de usuario
-- Devuelve: Un objeto que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.FigShare/Models/Data/RO.cs)
+- Devuelve: Un objeto RO que sigue este [modelo](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.FigShare/Models/Data/RO.cs)
 
 ## Configuración en el appsetting.json
 ```json{
