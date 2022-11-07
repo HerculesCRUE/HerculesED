@@ -26,8 +26,14 @@ Servicio encargado de obtener la información de SemanticScholar. Documentación
 ## Controladores
 
 **APIController**  
+
 [GET] GetROs -> Obtiene los datos de una publicación.  
-[GET] GetReferences -> Obtiene los datos de las referencias de una publicación.
+doi: Código DOI de la publicación a buscar.  
+Resultado: Objeto [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar/ROs/SemanticScholar/Models/ROPublicationModel.cs)  
+
+[GET] GetReferences -> Obtiene los datos de las referencias de una publicación.  
+pDoi: Código DOI de la publicación a obtener referencias.  
+Resultado: Tupla cuyo Item1 es un objeto [Publication](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar/ROs/SemanticScholar/Models/ROPublicationModel.cs) e Item2 es una lista de objetos [PubReferencias](https://github.com/HerculesCRUE/HerculesED/blob/main/src/Hercules.ED.ExternalSources/Hercules.ED.SemanticScholar/ROs/SemanticScholar/Models/PubReferencias.cs).
 
 ## Configuración en el appsetting.json
 ```json{
