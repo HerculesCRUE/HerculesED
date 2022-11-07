@@ -26,6 +26,7 @@ Servicio encargado de obtener la información de Scopus. Documentación del API 
 ## Controladores
 
 **APIControllerScopus**  
+
 [GET] GetROs -> Obtiene los datos de las publicaciones de un autor.  
 orcid: Código ORCID de la persona.  
 date: A partir de que fecha va a buscar las publicaciones.  
