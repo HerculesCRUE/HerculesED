@@ -26,6 +26,7 @@ Servicio encargado de obtener la información de FigShare. Documentación del AP
 ## Controladores
 
 **APIController**
+
 **[GET] GetIdentifiers**
 - Resumen: Permite obtener la lista de identficadores de los artículos de un investigador.
 - Parámetros: 
