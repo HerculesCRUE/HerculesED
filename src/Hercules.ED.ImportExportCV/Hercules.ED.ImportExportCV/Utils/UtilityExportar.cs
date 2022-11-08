@@ -423,7 +423,7 @@ namespace Utils
                     Code = code,
                     Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
                         .Select(x => x.values).First().First().Split("_").Last()
-                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n").Split("@@@").Last()
                 });
             }
         }
