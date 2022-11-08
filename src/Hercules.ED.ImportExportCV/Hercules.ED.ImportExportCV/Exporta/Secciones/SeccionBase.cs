@@ -225,25 +225,25 @@ namespace ImportadorWebCV.Exporta.Secciones
                 bool cargar = true;
                 while (cargar)
                 {
-                    string selectID = "select * where{ select distinct ?lEntity ?p ?o ?q ?w";
+                    string selectID = "select * where{ select distinct ?s ?p ?o ?q ?w";
                     string whereID = $@"where{{
-        ?x <http://gnoss/hasEntidad> ?lEntity . 
-        ?lEntity ?p ?o .
+        ?x <http://gnoss/hasEntidad> ?s . 
+        ?s ?p ?o .
         OPTIONAL{{
             ?o ?q ?w .
         }}
-        FILTER(?lEntity in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
+        FILTER(?s in (<{string.Join(">,<", listadoId.Select(x => x.Item1))}>))
     }}
-    order by desc(?lEntity) desc(?p) desc(?o)
+    order by desc(?s) desc(?p) desc(?o)
 }} limit {numLimit} offset {offset}";
                     SparqlObject resultData = mResourceApi.VirtuosoQuery(selectID, whereID, pGraph);
                     foreach (Dictionary<string, Data> fila in resultData.results.bindings)
                     {
-                        if (!listResult.ContainsKey(fila["lEntity"].value))
+                        if (!listResult.ContainsKey(fila["s"].value))
                         {
-                            listResult.Add(fila["lEntity"].value, new List<Dictionary<string, Data>>());
+                            listResult.Add(fila["s"].value, new List<Dictionary<string, Data>>());
                         }
-                        listResult[fila["lEntity"].value].Add(fila);
+                        listResult[fila["s"].value].Add(fila);
                     }
                     offset += numLimit;
                     if (resultData.results.bindings.Count < numLimit)
