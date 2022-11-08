@@ -463,36 +463,6 @@ namespace Utils
         }
 
         /// <summary>
-        ///  Añade en <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/> 
-        ///  concatenado por "@@@"
-        /// </summary>
-        /// <param name="itemBean">CvnItemBean</param>
-        /// <param name="property">Propiedad</param>
-        /// <param name="code">Codigo</param>
-        /// <param name="entity">Entity</param>
-        public static void AddCvnItemBeanCvnStringTipoSoporte(CvnItemBean itemBean, string property, string code, Entity entity)
-        {
-            //Compruebo si el codigo pasado está bien formado
-            if (Utility.CodigoIncorrecto(code))
-            {
-                return;
-            }
-
-            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
-            {
-                itemBean.Items.Add(new CvnItemBeanCvnString()
-                {
-                    Code = code,
-                    Value = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
-                        .Select(x => x.values).First().First().Split("_").Last()
-                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n")
-                        .Split("@@@").Last()
-                });
-            }
-
-        }
-
-        /// <summary>
         /// Añade un listado de <paramref name="itemBean"/> un CvnItemBeanCvnString con codigo <paramref name="code"/> si existe algun valor con propiedad <paramref name="property"/>
         /// </summary>
         /// <param name="itemBean">CvnItemBean</param>
