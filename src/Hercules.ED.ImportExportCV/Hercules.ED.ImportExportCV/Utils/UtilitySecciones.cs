@@ -994,8 +994,7 @@ where{{
         {
             try
             {
-                MailAddress mail = new(emailAddress);
-
+                _ = new MailAddress(emailAddress);
                 return true;
             }
             catch (FormatException)
