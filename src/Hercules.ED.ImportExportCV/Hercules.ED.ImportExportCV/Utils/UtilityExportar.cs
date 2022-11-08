@@ -428,6 +428,30 @@ namespace Utils
             }
         }
 
+        public static void AddCvnItemBeanPubNombre(CvnItemBean itemBean, string property, string code, Entity entity)
+        {
+            //Compruebo si el codigo pasado está bien formado
+            if (Utility.CodigoIncorrecto(code))
+            {
+                return;
+            }
+            if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))
+            {
+                string valorRevista = entity.properties.Where(x => EliminarRDF(x.prop).EndsWith(property))
+                        .Select(x => x.values).First().First().Split("_").Last()
+                        .Replace("<br>", "\r\n").Replace("<br/>", "\r\n").Replace("<br />", "\r\n");
+                if (valorRevista.Contains("@@@"))
+                {
+                    valorRevista = valorRevista.Split("@@@").Last();
+                }
+                itemBean.Items.Add(new CvnItemBeanCvnString()
+                {
+                    Code = code,
+                    Value = valorRevista
+                });
+            }
+        }
+
         public static bool CheckCvnString(string property, Entity entity)
         {
             if (entity.properties.Any(x => EliminarRDF(x.prop).EndsWith(property)))

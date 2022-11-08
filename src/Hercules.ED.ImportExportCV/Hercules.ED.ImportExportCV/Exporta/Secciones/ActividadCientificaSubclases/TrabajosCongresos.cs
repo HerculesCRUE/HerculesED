@@ -60,7 +60,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     "060.010.020.220", keyValue.Value);
                 UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubTitulo),
                     "060.010.020.230", keyValue.Value);
-                UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre),
+                UtilityExportar.AddCvnItemBeanPubNombre(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.trabajosCongresosPubNombre),
                     "060.010.020.370", keyValue.Value);
 
                 Dictionary<string, string> propiedadesPubVol = new Dictionary<string, string>();

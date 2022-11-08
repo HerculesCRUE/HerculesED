@@ -125,13 +125,13 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     }
                     else
                     {
-                        UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+                        UtilityExportar.AddCvnItemBeanPubNombre(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                         "060.010.010.210", keyValue.Value);
                     }
                 }
                 else
                 {
-                    UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
+                    UtilityExportar.AddCvnItemBeanPubNombre(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosPubNombre),
                     "060.010.010.210", keyValue.Value);
                 }
 
