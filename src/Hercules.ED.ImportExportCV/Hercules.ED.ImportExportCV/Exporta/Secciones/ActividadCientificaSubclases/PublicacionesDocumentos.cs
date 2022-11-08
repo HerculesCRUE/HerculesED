@@ -120,7 +120,7 @@ namespace ImportadorWebCV.Exporta.Secciones.ActividadCientificaSubclases
                     CvnItemBeanCvnString itemBeanCvnString = (CvnItemBeanCvnString)itemBean.Items.First(x => x.Code.Equals("060.010.010.070"));
                     if (itemBeanCvnString.Value.Equals("057"))
                     {
-                        UtilityExportar.AddCvnItemBeanCvnStringTipoSoporte(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
+                        UtilityExportar.AddCvnItemBeanCvnString(itemBean, UtilityExportar.EliminarRDF(Variables.ActividadCientificaTecnologica.pubDocumentosNombreRevista),
                         "060.010.010.210", keyValue.Value);
                     }
                     else
