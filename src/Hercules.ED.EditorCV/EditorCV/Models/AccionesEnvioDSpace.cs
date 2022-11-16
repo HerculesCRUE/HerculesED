@@ -232,13 +232,14 @@ namespace EditorCV.Models
         /// <param name="idPublication"></param>
         private static void GetDatosPublicacion(string pIdRecurso, Publication publication, ref string idPublication)
         {
-            string select = "SELECT distinct ?doc ?idDspace ?titulo ?anioPublicacion ?issn ?isbn ?handle ?descripcion ?pagIni ?pagFin ?editorial ?isOpenAccess ?idTipo";
+            string select = "SELECT distinct ?doc ?idDspace ?titulo ?proyect ?anioPublicacion ?issn ?isbn ?handle ?descripcion ?pagIni ?pagFin ?editorial ?isOpenAccess ?idTipo";
             string where = $@"WHERE{{
                                     ?doc a <http://purl.org/ontology/bibo/Document>.
                                     <{pIdRecurso}> ?p ?doc .
                                     OPTIONAL{{?doc <http://w3id.org/roh/idDspace> ?idDspace }}
                                     OPTIONAL{{?doc <http://w3id.org/roh/title> ?titulo }}
 
+                                    OPTIONAL{{?doc <http://w3id.org/roh/project> ?proyId . ?proyId <http://w3id.org/roh/title> ?proyect}}
                                     OPTIONAL{{?doc <http://w3id.org/roh/year> ?anioPublicacion}}
                                     OPTIONAL{{?doc <http://purl.org/ontology/bibo/issn> ?issn}}
                                     OPTIONAL{{?doc <http://w3id.org/roh/isbn> ?isbn}}
@@ -269,6 +270,10 @@ namespace EditorCV.Models
                         publication.tituloRecurso = res["titulo"].value.ToString();
                     }
 
+                    if (res.ContainsKey("proyect") && !string.IsNullOrEmpty(res["proyect"].value))
+                    {
+                        publication.proyect = res["proyect"].value.ToString();
+                    }
                     if (res.ContainsKey("anioPublicacion") && !string.IsNullOrEmpty(res["anioPublicacion"].value))
                     {
                         publication.anioPublicacion = res["anioPublicacion"].value.ToString();
@@ -397,6 +402,13 @@ namespace EditorCV.Models
                 }
             }
 
+            //Proyecto
+            if (!string.IsNullOrEmpty(publication.proyect))
+            {
+                Metadata metadataEntryProyect = new Metadata("dc.relation", publication.proyect);
+                listadoValores.Add(metadataEntryProyect);
+            }
+            
             //Año de publicación
             if (!string.IsNullOrEmpty(publication.anioPublicacion))
             {
