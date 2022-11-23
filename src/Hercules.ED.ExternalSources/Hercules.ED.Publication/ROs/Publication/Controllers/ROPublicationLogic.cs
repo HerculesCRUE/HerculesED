@@ -474,6 +474,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
+            // Cualquier publicación que no sea "Journal Article", quitarle la revista.
+            foreach (Publication publicacion in listaPubsFinal)
+            {
+                if (publicacion.TypeOfPublication != "Journal Article")
+                {
+                    publicacion.HasPublicationVenue = null;
+                }
+            }
+
             return listaPubsFinal;
         }
 
