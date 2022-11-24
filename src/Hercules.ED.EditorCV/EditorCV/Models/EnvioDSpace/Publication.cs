@@ -18,6 +18,7 @@ namespace EditorCV.Models.EnvioDSpace
         public string idRecursoDspace { get; set; }
         public string tituloRecurso { get; set; }
 
+        public string proyect { get; set; }
         public string anioPublicacion { get; set; }
         public string issn { get; set; }
         public string isbn { get; set; }

@@ -474,6 +474,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 }
             }
 
+            // Cualquier publicación que no sea "Journal Article", quitarle la revista.
+            foreach (Publication publicacion in listaPubsFinal)
+            {
+                if (publicacion.TypeOfPublication != "Journal Article")
+                {
+                    publicacion.HasPublicationVenue = null;
+                }
+            }
+
             return listaPubsFinal;
         }
 
@@ -752,10 +761,15 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 pub2 = true;
             }
 
-            if (pub_1.OpenAccess != null)
+            if (pub_1.OpenAccess != null && pub_1.OpenAccess == true)
             {
                 pub.OpenAccess = pub_1.OpenAccess;
                 pub1 = true;
+            }
+            else if (pub_2.OpenAccess == null)
+            {
+                pub.OpenAccess = false;
+                pub2 = true;
             }
             else
             {
