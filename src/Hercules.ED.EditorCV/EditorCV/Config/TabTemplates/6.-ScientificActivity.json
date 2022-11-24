@@ -385,7 +385,7 @@
                 "name": {
                   "es": "Tipo de soporte"
                 },
-                "showMiniBold": true,
+                "showMiniBold": false,
                 "child": {
                   "property": "http://vivoweb.org/ontology/core#relatedBy",
                   "graph": "document",
