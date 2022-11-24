@@ -383,6 +383,23 @@
               },
               {
                 "name": {
+                  "es": "Tipo de soporte"
+                },
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/supportType",
+                    "graph": "documentformat",
+                    "child": {
+                      "property": "http://purl.org/dc/elements/1.1/title"
+                    }
+                  }
+                }
+              },
+              {
+                "name": {
                   "es": "Nombre de la revista"
                 },
                 "showMiniBold": true,
@@ -391,6 +408,19 @@
                   "graph": "document",
                   "child": {
                     "property": "http://w3id.org/roh/hasPublicationVenueJournalText"
+                  }
+                }
+              },
+              {
+                "name": {
+                  "es": "Nombre de la publicación"
+                },
+                "showMiniBold": true,
+                "child": {
+                  "property": "http://vivoweb.org/ontology/core#relatedBy",
+                  "graph": "document",
+                  "child": {
+                    "property": "http://w3id.org/roh/hasPublicationVenueText"
                   }
                 }
               },
