@@ -71,6 +71,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
             {
                 foreach (var fichero in directorio.GetFiles("*.json"))
                 {
+                    string jsonString = String.Empty;
                     try
                     {
                         // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
@@ -94,8 +95,6 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         //Diccionario para almacenar las notificaciones
                         ConcurrentBag<NotificationOntology.Notification> notificaciones = new();
-
-                        string jsonString = String.Empty;
 
                         string idPersona = null;
 
@@ -888,6 +887,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     catch (Exception ex)
                     {
                         FileLogger.Log($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                        // Hace una copia del fichero y elimina el original.
+                        CrearZip(pRutaEscritura, "ERROR_"+fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
                     }
                 }
@@ -1972,7 +1973,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null)
+            if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null && pPublicacionB.HasPublicationVenue!=null)
             {
                 // Comprobar si la revista existe o no.
                 string idRevista = string.Empty;
