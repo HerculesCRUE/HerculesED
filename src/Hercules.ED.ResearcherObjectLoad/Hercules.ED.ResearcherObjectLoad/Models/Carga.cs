@@ -1946,6 +1946,12 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
 
+                // Comprobar EISSN
+                if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.HasPublicationVenue.Eissn))
+                {
+                    idRevista = ComprobarRevistaEISSN(pPublicacion.HasPublicationVenue.Eissn);
+                }
+
                 // Comprobar Título 
                 if (string.IsNullOrEmpty(idRevista) && !string.IsNullOrEmpty(pPublicacion.HasPublicationVenue.Name))
                 {
