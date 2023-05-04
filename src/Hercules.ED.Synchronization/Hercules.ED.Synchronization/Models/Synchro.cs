@@ -153,21 +153,40 @@ namespace Hercules.ED.Synchronization.Models
                         // Obtiene la diferencia entre horas.
                         CronExpression expression = new(mConfiguracion.CronExternalSource);
                         DateTimeOffset? time = expression.GetTimeAfter(DateTimeOffset.UtcNow);
-                        Thread.Sleep(time.Value.UtcDateTime - DateTimeOffset.UtcNow);
-
-                        // Obtención de los ORCID de las personas.
-                        Dictionary<string, string> listaOrcids = GetPersons();
-
-                        foreach (KeyValuePair<string, string> item in listaOrcids)
+                        if (time.HasValue)
                         {
-                            // Obtención de la última fecha de modificación.
-                            string ultimaFechaMod = GetLastUpdatedDate(item.Key);
+                            Thread.Sleep(time.Value.UtcDateTime - DateTimeOffset.UtcNow);
 
-                            // Obtención de los datos necesarios de FigShare y GitHub.
-                            Dictionary<string, string> dicIDs = GetUsersIDs(item.Key);
+                            // Obtención de los ORCID de las personas.
+                            Dictionary<string, string> listaOrcids = GetPersons();
 
-                            // Inserción a la cola de Rabbit.
-                            colaRabbit.InsertToQueueFuentesExternas(item.Value, colaRabbit, ultimaFechaMod, dicIDs, item.Key);
+                            FileLogger.Log(mConfiguracion.GetLogPath(), $@"Recuperados {listaOrcids.Count} ORCID");
+
+                            int num = 0;
+                            foreach (KeyValuePair<string, string> item in listaOrcids)
+                            {
+                                num++;
+
+                                // Obtención de la última fecha de modificación.
+                                string ultimaFechaMod = GetLastUpdatedDate(item.Key);
+
+                                FileLogger.Log(mConfiguracion.GetLogPath(), $@"{num}/{listaOrcids.Count} LastUpdatedDate Persona:{item.Key} ORCID: {item.Value} Fecha: {ultimaFechaMod}");
+
+                                // Obtención de los datos necesarios de FigShare y GitHub.
+                                Dictionary<string, string> dicIDs = GetUsersIDs(item.Key);
+
+                                FileLogger.Log(mConfiguracion.GetLogPath(), $@"{num}/{listaOrcids.Count} Recuperados {dicIDs.Count} IDs adicionales");
+
+                                // Inserción a la cola de Rabbit.
+                                colaRabbit.InsertToQueueFuentesExternas(item.Value, colaRabbit, ultimaFechaMod, dicIDs, item.Key);
+
+                                FileLogger.Log(mConfiguracion.GetLogPath(), $@"{num}/{listaOrcids.Count} Insertado ren Rabbit");
+                            }
+                        }
+                        else
+                        {
+                            FileLogger.Log(mConfiguracion.GetLogPath(), $@"La expresión CRON {mConfiguracion.CronExternalSource} no ofrece ninguna fecha futura");
+                            Thread.Sleep(3600000); // 1hora.
                         }
 
                     }
