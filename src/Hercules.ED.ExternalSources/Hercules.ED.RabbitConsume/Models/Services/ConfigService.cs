@@ -50,13 +50,13 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 IDictionary environmentVariables = Environment.GetEnvironmentVariables();
                 string connectionString;
 
-                if (environmentVariables.Contains("LogPath"))
+                if (environmentVariables.Contains("logPath"))
                 {
-                    connectionString = environmentVariables["LogPath"] as string;
+                    connectionString = environmentVariables["logPath"] as string;
                 }
                 else
                 {
-                    connectionString = Configuration["LogPath"];
+                    connectionString = Configuration["logPath"];
                 }
 
                 LogPath = connectionString;
