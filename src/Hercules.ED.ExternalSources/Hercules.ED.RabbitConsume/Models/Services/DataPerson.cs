@@ -28,7 +28,6 @@ namespace Hercules.ED.RabbitConsume.Models.Services
         {
             // Obtención de datos antiguos.
             string fechaAntigua = string.Empty;
-            string idRecurso = string.Empty;
 
             SparqlObject resultadoQuery;
 
@@ -48,8 +47,6 @@ namespace Hercules.ED.RabbitConsume.Models.Services
                     {
                         fechaAntigua = fila["fecha"].value;
                     }
-
-                    idRecurso = fila["s"].value;
                 }
             }
 
@@ -58,7 +55,7 @@ namespace Hercules.ED.RabbitConsume.Models.Services
 
             // Inserción/Modificación de triples.
             mResourceApi.ChangeOntoly("person");
-            Guid guid = mResourceApi.GetShortGuid(idRecurso);
+            Guid guid = mResourceApi.GetShortGuid(pIdGnoss);
 
             if (!string.IsNullOrEmpty(fechaAntigua))
             {
