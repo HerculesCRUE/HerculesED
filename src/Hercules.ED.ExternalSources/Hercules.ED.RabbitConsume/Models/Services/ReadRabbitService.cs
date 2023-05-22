@@ -173,24 +173,30 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         {
             // Listado con los datos.
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
-
+            EscribirLogInfo($"Procesando item '{pMessage}'");
             if (message != null && message.Count == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
             {
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlDoi = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}&pNombreCompletoAutor={1}", message[1], message[3]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultDoi = HttpCall(urlDoi.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
                     DateTime fecha = DateTime.Now;
                     string id = message[2].Substring(message[2].LastIndexOf('/') + 1);
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultDoi);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultDoi);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[2]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -209,18 +215,25 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlInv = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetROs?orcid={0}&date={1}", message[1], message[2]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultInv = HttpCall(urlInv.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
+                    EscribirLogInfo($"Guardado de la información en formato JSON");
                     DateTime fecha = DateTime.Now;
                     string id = message[3].Substring(message[3].LastIndexOf('/') + 1);
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultInv);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{id}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultInv);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[3]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[3], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -239,17 +252,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlPub = new(string.Format(_configService.GetUrlPublicacion() + "Publication/GetRoPublication?pDoi={0}", message[1]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultPub = HttpCall(urlPub.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
+                    EscribirLogInfo($"Guardado de la información en formato JSON");
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json", resultPub);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{message[1]}___{fecha.ToString().Replace('/', '-').Replace(' ', '_').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultPub);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[1]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -268,17 +288,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlZenodo = new(string.Format(_configService.GetUrlZenodo() + "Zenodo/GetOntologyData?pOrcid={0}", message[1]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultZenodo = HttpCall(urlZenodo.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
+                    EscribirLogInfo($"Guardado de la información en formato JSON");
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultZenodo);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultZenodo);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[1]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[1], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -297,17 +324,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlFigShare = new(string.Format(_configService.GetUrlFigShare() + "FigShare/GetROs?pToken={0}", message[1]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultFigShare = HttpCall(urlFigShare.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
+                    EscribirLogInfo($"Guardado de la información en formato JSON");
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultFigShare);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[1]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultFigShare);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[2]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -326,17 +360,24 @@ namespace Gnoss.Web.ReprocessData.Models.Services
                 try
                 {
                     // Creación de la URL.
+                    EscribirLogInfo($"Creación de la URL");
                     Uri urlGitHub = new(string.Format(_configService.GetUrlFigShare() + "github/GetData?pUser={0}&pToken={1}", message[2], message[1]));
 
                     // Obtención de datos con la petición.
+                    EscribirLogInfo($"Obtención de datos con la petición");
                     string resultGitHub = HttpCall(urlGitHub.ToString(), "GET", headers).Result;
 
                     // Creación del directorio si no existe.
+                    EscribirLogInfo($"Creación del directorio si no existe");
                     ComprobarDirectorio();
 
                     // Guardado de la información en formato JSON.
+                    EscribirLogInfo($"Guardado de la información en formato JSON");
                     DateTime fecha = DateTime.Now;
-                    File.WriteAllText($@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json", resultGitHub);
+                    string ruta = $@"{_configService.GetRutaDirectorioEscritura()}{message[0]}___{message[2]}___{fecha.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-')}.json";
+                    EscribirLogInfo($"Guardado de la información en formato JSON en la ruta: '{ruta}'");
+                    File.WriteAllText(ruta, resultGitHub);
+                    EscribirLogInfo($"Modificamos los datos de la persona '{message[2]}' '{fecha}'");
                     Hercules.ED.RabbitConsume.Models.Services.DataPerson.ModifyDate(message[2], fecha);
                 }
                 catch (System.Net.Sockets.SocketException e)
@@ -373,6 +414,15 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         {
             FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.Message}");
             FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.StackTrace}");
+        }
+
+        /// <summary>
+        /// Escribe el mensaje de error.
+        /// </summary>
+        /// <param name="pError">Excepción.</param>
+        public void EscribirLogInfo(string info)
+        {
+            FileLogger.Log(_configService.GetLogPath(), $@"[INFO] {DateTime.Now} - {info}");
         }
     }
 }
