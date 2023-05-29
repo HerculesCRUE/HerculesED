@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
 using static Hercules.ED.RabbitConsume.Program;
+using Gnoss.ApiWrapper;
 
 namespace Gnoss.Web.ReprocessData.Models.Services
 {
@@ -17,6 +18,9 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         private readonly ConnectionFactory connectionFactory;
         private readonly IConnection connection;
         private readonly Dictionary<string, string> headers = new();
+
+        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+
 
         /// <summary>
         /// ReceivedDelegate.
@@ -412,8 +416,8 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="pError">Excepción.</param>
         public void EscribirLog(Exception pError)
         {
-            FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.Message}");
-            FileLogger.Log(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.StackTrace}");
+            mResourceApi.Log.Error(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.Message}");
+            mResourceApi.Log.Error(_configService.GetLogPath(), $@"[ERROR] {DateTime.Now} - {pError.StackTrace}");
         }
 
         /// <summary>
@@ -422,7 +426,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         /// <param name="pError">Excepción.</param>
         public void EscribirLogInfo(string info)
         {
-            FileLogger.Log(_configService.GetLogPath(), $@"[INFO] {DateTime.Now} - {info}");
+            mResourceApi.Log.Info(_configService.GetLogPath(), $@"[INFO] {DateTime.Now} - {info}");
         }
     }
 }

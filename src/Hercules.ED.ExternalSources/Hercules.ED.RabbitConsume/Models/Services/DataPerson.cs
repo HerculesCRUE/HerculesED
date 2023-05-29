@@ -26,6 +26,12 @@ namespace Hercules.ED.RabbitConsume.Models.Services
         /// <param name="pDate">Fecha a guardar.</param>
         public static void ModifyDate(string pIdGnoss, DateTime pDate)
         {
+            //Se comprueba que el Id no es vacío
+            if (string.IsNullOrEmpty(pIdGnoss))
+            {
+                mResourceApi.Log.Error("El pIdGnoss es nulo o vacío");
+                return;
+            }
             // Obtención de datos antiguos.
             string fechaAntigua = string.Empty;
 
