@@ -176,6 +176,7 @@ namespace Gnoss.Web.ReprocessData.Models.Services
         public bool ProcessItem(string pMessage)
         {
             // Listado con los datos.
+            EscribirLogInfo($"Conversión item {pMessage}");
             List<string> message = JsonConvert.DeserializeObject<List<string>>(pMessage);
             EscribirLogInfo($"Procesando item '{pMessage}'");
             if (message != null && message.Count == 4 && message[0] == "doi" && !string.IsNullOrEmpty(message[1]) && !string.IsNullOrEmpty(message[2]))
