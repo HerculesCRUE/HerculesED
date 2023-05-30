@@ -455,7 +455,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 }
                 catch
                 {
-                    Console.Write("No se encuentra enla taxonomia el siguiente area: " + area_wos_obtenida.name);
+                    Console.Write("No se encuentra en la taxonomia el siguiente area: " + area_wos_obtenida.name);
                     Console.Write("\n");
                 }
             }
