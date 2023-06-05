@@ -74,6 +74,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     string jsonString = String.Empty;
                     try
                     {
+                        mResourceApi.Log.Info($"[INFO] Procesamos el fichero {fichero.Name}");
+
                         // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
                         Dictionary<HashSet<string>, string> dicGnossIdPerson = new();
 
@@ -275,20 +277,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         else
                         {
+                            mResourceApi.Log.Info($"[INFO] Obtenemos al propietario del JSON");
                             //Obtenemos al propietario del JSON
                             string idAutor = "http://gnoss.com/items/" + fichero.Name.Split("___")[0];
                             List<string> lista = new() { idAutor };
                             DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
+                            mResourceApi.Log.Info($"[INFO] Obtención de los datos del JSON");
                             // Obtención de los datos del JSON.
                             jsonString = File.ReadAllText(fichero.FullName);
                             List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
                             HashSet<string> listadoDOI = new();
 
+                            mResourceApi.Log.Info($"[INFO] El fichero {fichero.Name} contiene {listaPublicaciones.Count} publicaciones");
+                            int numPublicacion = 0;
                             if (listaPublicaciones != null && listaPublicaciones.Any())
                             {
                                 foreach (Publication publication in listaPublicaciones)
                                 {
+                                    numPublicacion++;
+                                    mResourceApi.Log.Info($"[INFO] Procesando publicación {numPublicacion}/{listaPublicaciones.Count}");
                                     // --- Publicación
                                     DisambiguationPublication disambiguationPub = GetDisambiguationPublication(publication);
                                     listadoDOI.Add(disambiguationPub.doi);
@@ -336,6 +344,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     dicIdDatosPub.Add(idPub, publication);
                                     dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
                                 }
+                                mResourceApi.Log.Info($"[INFO] Obtención de los datos cargados de BBDD");
                                 // Obtención de los datos cargados de BBDD.                        
                                 Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorGnossId(listadoDOI, idAutor);
                                 ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
@@ -347,6 +356,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                         {
+                            mResourceApi.Log.Info($"[INFO] Las publicaciones que nos vengan del JSON siempre son diferentes");
                             // Las publicaciones que nos vengan del JSON siempre son diferentes.
                             List<string> idsPubicacionesJSON = listaDesambiguar.Where(x => x is DisambiguationPublication).Select(x => ((DisambiguationPublication)x).ID).ToList();
                             foreach (DisambiguableEntity disambiguableEntity in listaDesambiguar)
@@ -362,7 +372,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             HashSet<string> idsDocumentosActualizar = new();
                             HashSet<string> idsResearchObjectsActualizar = new();
 
-
+                            mResourceApi.Log.Info($"[INFO] Obtención de la lista de equivalencias");
                             // Obtención de la lista de equivalencias.
                             Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
 
@@ -393,6 +403,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             //Datos de los objetos encontrados en la BBDD
                             List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
 
+                            mResourceApi.Log.Info($"[INFO] 1º PERSONAS Procesamos las personas, actualizando las que corresponda");
                             #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
                             Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new();
                             foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
@@ -455,6 +466,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                             #endregion
 
+                            mResourceApi.Log.Info($"[INFO] 2º PUBLICACIONES");
                             #region 2º PUBLICACIONES
                             Dictionary<Document, HashSet<string>> listaDocumentosCargarEquivalencias = new();
                             Dictionary<string, string> listaDocumentosCargados = new();
@@ -628,6 +640,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                             #endregion
 
+                            mResourceApi.Log.Info($"[INFO] 3º RESEARCHOBJECT");
                             #region 3º RESEARCHOBJECT 
                             Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> listaROsCargarEquivalencias = new();
                             Dictionary<string, string> listaROsCargados = new();
@@ -770,13 +783,17 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             #endregion
 
                             // ------------------------------ CARGA
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaPersonasCargar)");
                             idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaDocumentosCargar)");
                             idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaROsCargar)");
                             idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                             idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
                             idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
 
+                            mResourceApi.Log.Info($"[INFO] Modificación Publicaciones {listaDocumentosModificar.Count}");
                             //Modificación
                             Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                             {
@@ -799,6 +816,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }
                             });
 
+                            mResourceApi.Log.Info($"[INFO] Modificación Ros {listaROsModificar.Count}");
                             //Modificación
                             Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
                             {
@@ -821,6 +839,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 }
                             });
 
+                            mResourceApi.Log.Info($"[INFO] Insertamos en la cola del desnormalizador");
                             //Insertamos en la cola del desnormalizador
                             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new(configuracion);
                             if (idsPersonasActualizar.Count > 0)
@@ -836,7 +855,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 rabbitServiceWriterDenormalizer.PublishMessage(new(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
                             }
 
-
+                            mResourceApi.Log.Info($"[INFO] Cargamos las notificaciones");
                             //Cargamos las notificaciones
                             List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                             mResourceApi.ChangeOntoly("notification");
@@ -857,6 +876,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             });
                         }
 
+                        mResourceApi.Log.Info($"[INFO] Notificación de fin de la carga");
                         // Notificación de fin de la carga
                         if (!string.IsNullOrEmpty(idPersona))
                         {
@@ -880,13 +900,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
 
+                        mResourceApi.Log.Info($"[INFO] Hace una copia del fichero y elimina el original");
                         // Hace una copia del fichero y elimina el original.
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
                     }
                     catch (Exception ex)
                     {
-                        FileLogger.Log($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                        mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         // Hace una copia del fichero y elimina el original.
                         CrearZip(pRutaEscritura, "ERROR_"+fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
