@@ -39,26 +39,5 @@ namespace Hercules.ED.ResearcherObjectLoad
             Carga.configuracion = new ConfigService();
             Carga.CargaMain();
         }
-
-        /// <summary>
-        /// Clase FileLogger.
-        /// </summary>
-        public static class FileLogger
-        {
-            /// <summary>
-            /// Sobreescribe el método Log para pintar el mensaje de error en un fichero.
-            /// </summary>
-            /// <param name="messsage"></param>
-            public static void Log(string messsage)
-            {
-                string fecha = DateTime.Now.ToString().Split(" ")[0].Replace("/", "-");
-                string ruta = $@"{Carga.configuracion.GetLogPath()}{Path.DirectorySeparatorChar}ResearcherLoadObject_{fecha}.log";
-                if (!File.Exists(ruta))
-                {
-                    using (FileStream fs = File.Create(ruta)) { }
-                }
-                File.AppendAllText(ruta, messsage + Environment.NewLine);
-            }
-        }
     }
 }
