@@ -350,6 +350,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
                                 listaDesambiguarBBDD.AddRange(documentosBBDD.Values.ToList());
                                 listaDesambiguarBBDD.AddRange(personasBBDD.Values.ToList());
+
                                 idPersona = idAutor;
                             }
                         }
@@ -783,11 +784,11 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             #endregion
 
                             // ------------------------------ CARGA
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaPersonasCargar)");
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaPersonasCargar) {listaPersonasCargar.Count} personas nuevas");
                             idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaDocumentosCargar)");
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaDocumentosCargar) {listaDocumentosCargar.Count} publicaciones nuevas");
                             idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaROsCargar)");
+                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaROsCargar)  {listaROsCargar.Count} ROs nuevos");
                             idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                             idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
@@ -909,7 +910,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     {
                         mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         // Hace una copia del fichero y elimina el original.
-                        CrearZip(pRutaEscritura, "ERROR_"+fichero.Name, jsonString);
+                        CrearZip(pRutaEscritura, "ERROR_" + fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
                     }
                 }
@@ -2000,7 +2001,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     }
                 }
             }
-            if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null && pPublicacionB.HasPublicationVenue!=null)
+            if (string.IsNullOrEmpty(document.IdVivo_hasPublicationVenue) && pPublicacionB != null && pPublicacionB.HasPublicationVenue != null)
             {
                 // Comprobar si la revista existe o no.
                 string idRevista = string.Empty;
