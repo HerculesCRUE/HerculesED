@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.7" />
+    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.33" />
     <PackageReference Include="RabbitMQ.Client" Version="6.3.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>

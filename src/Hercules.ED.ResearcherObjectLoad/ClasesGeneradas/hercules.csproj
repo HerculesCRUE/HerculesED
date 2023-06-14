@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
 	  <PackageReference Include="EnterpriseLibrary.Data.NetCore" Version="6.3.2" />
-	  <PackageReference Include="GnossApiWrapper.NetCore" Version="1.0.4" />
+	  <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.33" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.100" />
 	<Reference Include="Es.Riam.Gnoss.Web.MVC.Models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Es.Riam.Gnoss.Web.MVC.Models.dll</HintPath>
