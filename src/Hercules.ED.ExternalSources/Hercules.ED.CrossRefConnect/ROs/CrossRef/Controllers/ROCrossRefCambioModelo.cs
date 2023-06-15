@@ -480,17 +480,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 
         public List<PublicationMetric> getPublicationMetric(PublicacionInicial objInicial)
         {
-
-            if (objInicial.IsReferencedByCount != null)
-            {
-                List<PublicationMetric> metricList = new List<PublicationMetric>();
-                PublicationMetric metricPublicacion = new PublicationMetric();
-                metricPublicacion.citationCount = objInicial.IsReferencedByCount.ToString();
-                metricPublicacion.metricName = "CrossRef";
-                metricList.Add(metricPublicacion);
-                return metricList;
-            }
-            return null;
+            List<PublicationMetric> metricList = new List<PublicationMetric>();
+            PublicationMetric metricPublicacion = new PublicationMetric();
+            metricPublicacion.citationCount = objInicial.IsReferencedByCount.ToString();
+            metricPublicacion.metricName = "CrossRef";
+            metricList.Add(metricPublicacion);
+            return metricList;
         }
 
         public List<Publication> getBiblografia(PublicacionInicial objInicial)
