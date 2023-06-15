@@ -132,7 +132,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="Doi"></param>
+        /// <param name="pDoi"></param>
+        /// <param name="pUri"></param>
         /// <returns></returns>
         public List<PubReferencias> getPublications(string pDoi, string pUri = "works/{0}")
         {
@@ -152,7 +153,8 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="Doi"></param>
+        /// <param name="pDoi"></param>
+        /// <param name="pUri"></param>
         /// <returns></returns>
         public Root getEnrichmentPublication(string pDoi, string pUri = "works/{0}")
         {
