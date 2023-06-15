@@ -18,6 +18,8 @@ using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using CrossRefAPI.ROs.CrossRef.Models;
+using Gnoss.ApiWrapper;
+using System.IO;
 //using Newtonsoft.Json.Linq.JObject;WoS
 
 
@@ -25,6 +27,30 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
 {
     public class ROCrossRefLogic
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         //protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
@@ -76,11 +102,12 @@ namespace CrossRefConnect.ROs.CrossRef.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
