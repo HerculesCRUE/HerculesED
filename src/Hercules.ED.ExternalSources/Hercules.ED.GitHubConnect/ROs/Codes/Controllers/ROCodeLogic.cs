@@ -15,12 +15,38 @@ using GitHubAPI.ROs.Codes.Models;
 using GitHubAPI.ROs.Codes.Models.Inicial;
 using System.Web;
 using System.Text.Json;
+using Gnoss.ApiWrapper;
+using System.IO;
+using System.Threading;
 
 namespace GitHubAPI.ROs.Codes.Controllers
 {
 
     public class ROCodeLogic : CodesInterface
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
 
         protected string bareer;
         protected string baseUri { get; set; }
@@ -62,8 +88,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     {
                         response = await httpClient.SendAsync(request);
                     }
-                    catch (System.Exception)
+                    catch (Exception ex)
                     {
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         throw new Exception("Error in the http call");
                     }
                 }
@@ -96,9 +123,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 respositories = JsonConvert.DeserializeObject<List<Repository_inicial>>(repos);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Error when deserialize the respositories: " + repos);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                throw;
             }
 
             // Get all data from each repository
@@ -240,9 +268,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 repository = JsonConvert.DeserializeObject<Repository_inicial>(repos);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Error when deserialize the respository " + repos);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                throw;
             }
             return repository;
         }
@@ -305,9 +334,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 lastCommitDate.datimeTime = date;
                 infoCommits.lastCommit = lastCommitDate;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Error when deserialize commits " + commitsJson);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                throw;
             }
             return infoCommits;
         }
@@ -389,9 +419,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 dateCreadLast.datimeTime = date;
                 infoIssues.lastIssuedOpen = dateCreadLast;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Error while deserialize Issues " + resultJson);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
             return infoIssues;
         }
@@ -444,11 +474,12 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     links.Add(link_4);
                 }
                 licencia_roh.url = links;
-                
+
                 return licencia_roh;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 vivoLicense licencia_roh = null;
                 return licencia_roh;
             }
@@ -487,8 +518,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 }
                 return contributors;
             }
-            catch 
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
         }
@@ -521,8 +553,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 readmee.title = "README.md";
                 return readmee;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
         }
@@ -558,8 +591,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     result.Add(fileFolderFinal);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return new List<FileFolderFinal>();
             }
 
@@ -580,15 +614,16 @@ namespace GitHubAPI.ROs.Codes.Controllers
             List<string> topics = new List<string>();
             string resultJson;
             url = new Uri(baseUri + string.Format(uri, userId, repositoryId));
-            
+
             // Http GET call
             resultJson = httpCall(url.ToString(), method, headers).Result;
             try
             {
                 topics = JsonConvert.DeserializeObject<List<string>>(resultJson);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 topics = null;
             }
 
@@ -632,9 +667,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     result.Add(tagFinal);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception("Error while deserialize the topics " + resultJson);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                throw;
             }
 
             return result;
@@ -702,9 +738,10 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex )
             {
-                throw new Exception("Error when deserialize Languages " + json);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                throw;
             }
 
             return languages;

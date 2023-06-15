@@ -1,8 +1,10 @@
 ﻿using GitHubAPI.Controllers;
 using GitHubAPI.Models.Data;
+using Gnoss.ApiWrapper;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -12,6 +14,30 @@ namespace GitHubAPI.ROs.Codes.Controllers
 {
     public class GitHub
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         // Configuración.
         readonly ConfigService _Configuracion;
 
@@ -60,11 +86,12 @@ namespace GitHubAPI.ROs.Codes.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -102,8 +129,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaRepositorios = JsonConvert.DeserializeObject<List<Repositories>>(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
 
@@ -213,8 +241,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaContributors = JsonConvert.DeserializeObject<List<Contributors>>(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
 
@@ -252,8 +281,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 dicLenguajes = JsonConvert.DeserializeObject<Dictionary<string, string>>(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
 
@@ -297,8 +327,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
             {
                 listaReleases = JsonConvert.DeserializeObject<List<Releases>>(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return 0;
             }
 
@@ -362,11 +393,12 @@ namespace GitHubAPI.ROs.Codes.Controllers
                     response = client.PostAsync($@"{_Configuracion.GetUrlBaseEnriquecimiento()}/{pTipo}", contentData).Result;
                     break;
                 }
-                catch
+                catch(Exception ex)
                 {
                     intentos--;
                     if (intentos == 0)
                     {
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         throw;
                     }
                     else
@@ -388,8 +420,9 @@ namespace GitHubAPI.ROs.Codes.Controllers
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     return null;
                 }
 

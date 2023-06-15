@@ -66,24 +66,10 @@ curl -X 'GET' \
 ## Configuración en el appsetting.json
 ```json{
 {
-	"Logging": {
-		"LogLevel": {
-			"Default": "",
-			"Microsoft": "",
-			"Microsoft.Hosting.Lifetime": ""
-		}
-	},
-	"AllowedHosts": "*",
-	"LogPath": ""
+	"AllowedHosts": "*"
 }
 ```
 
-- LogLevel.Default: Nivel de error por defecto.
-- LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
-- LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
-- LogPath: Ruta de guardado del fichero de logs.
-
 ## Dependencias
 - **Newtonsoft.Json**: v13.0.1
-- **Serilog.AspNetCore**: v4.1.0
 - **Swashbuckle.AspNetCore**: v6.1.4

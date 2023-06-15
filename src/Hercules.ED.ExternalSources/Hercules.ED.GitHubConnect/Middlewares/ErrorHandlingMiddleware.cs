@@ -1,21 +1,44 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Gnoss.ApiWrapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Serilog;
 using System;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GitHubAPI.Middlewares
 {
     public class ErrorHandlingMiddleware
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         private readonly RequestDelegate _next;
         private IConfiguration _configuration { get; set; }
-        private string _timeStamp;
-        private string _LogPath;
         public ErrorHandlingMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
@@ -37,12 +60,6 @@ namespace GitHubAPI.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            if (string.IsNullOrEmpty(_timeStamp) || !_timeStamp.Equals(CreateTimeStamp()))
-            {
-                _timeStamp = CreateTimeStamp();
-                CreateLoggin(_timeStamp);
-            }
-
             var code = HttpStatusCode.InternalServerError;
 
             var result = JsonConvert.SerializeObject(new { error = "Internal server error" });
@@ -52,59 +69,13 @@ namespace GitHubAPI.Middlewares
             }
             else
             {
-                Log.Error($"{ex.Message}\n{ex.StackTrace}\n");
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 
             return context.Response.WriteAsync(result);
-        }
-
-        private void CreateLoggin(string pTimestamp)
-        {
-            string pathDirectory = GetLogPath();
-            if (!Directory.Exists(pathDirectory))
-            {
-                Directory.CreateDirectory(pathDirectory);
-            }
-            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}/log_{pTimestamp}.txt").CreateLogger();
-        }
-
-        private string CreateTimeStamp()
-        {
-            DateTime time = DateTime.Now;
-            string month = time.Month.ToString();
-            if (month.Length == 1)
-            {
-                month = $"0{month}";
-            }
-            string day = time.Day.ToString();
-            if (day.Length == 1)
-            {
-                day = $"0{day}";
-            }
-            string timeStamp = $"{time.Year.ToString()}{month}{day}";
-            return timeStamp;
-        }
-
-        public string GetLogPath()
-        {
-            if (string.IsNullOrEmpty(_LogPath))
-            {
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string logPath = string.Empty;
-                if (environmentVariables.Contains("LogPath"))
-                {
-                    logPath = environmentVariables["LogPath"] as string;
-                }
-                else
-                {
-                    logPath = _configuration["LogPath"];
-                }
-                _LogPath = logPath;
-            }
-            return _LogPath;
         }
     }
 }
