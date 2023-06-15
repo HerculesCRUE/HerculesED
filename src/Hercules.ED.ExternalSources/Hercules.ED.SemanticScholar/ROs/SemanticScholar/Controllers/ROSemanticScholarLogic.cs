@@ -116,7 +116,8 @@ namespace SemanticScholarAPI.ROs.SemanticScholar.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="ID"></param>
+        /// <param name="name"></param>
+        /// <param name="uri"></param>
         /// <returns></returns>
         public Publication getPublications(string name, string uri = "graph/v1/paper/{0}?fields=externalIds,title,abstract,url,venue,year,referenceCount,citationCount,authors,authors.name,authors.externalIds")
         {
