@@ -1,5 +1,6 @@
 ﻿using FigShareAPI.Controllers;
 using FigShareAPI.Models.Data;
+using Gnoss.ApiWrapper;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,30 @@ namespace FigShareAPI.Models
 {
     public class FigShare
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{System.IO.Path.DirectorySeparatorChar}ConfigOAuth{System.IO.Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         // Configuración.
         readonly ConfigService _Configuracion;
 
@@ -60,11 +85,12 @@ namespace FigShareAPI.Models
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -320,11 +346,12 @@ namespace FigShareAPI.Models
                     response = client.PostAsync($@"{_Configuracion.GetUrlBaseEnriquecimiento()}/{pTipo}", contentData).Result;
                     break;
                 }
-                catch
+                catch(Exception ex)
                 {
                     intentos--;
                     if (intentos == 0)
                     {
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         throw;
                     }
                     else
@@ -346,8 +373,9 @@ namespace FigShareAPI.Models
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     return null;
                 }
 
