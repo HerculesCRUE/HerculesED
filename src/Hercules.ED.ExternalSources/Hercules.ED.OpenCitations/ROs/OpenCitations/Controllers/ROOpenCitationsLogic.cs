@@ -13,8 +13,6 @@ using System.Net.Http.Headers;
 using OpenCitationsConnect.ROs.OpenCitations;
 using OpenCitationsConnect.ROs.OpenCitations.Models;
 using OpenCitationsConnect.ROs.OpenCitations.Models.Inicial;
-using OpenCitationsConnect.ROs.OpenCitations.Models.Inicial;
-
 using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
@@ -135,7 +133,7 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
         /// <summary>
         /// Main function from get all repositories from the RO account
         /// </summary>
-        /// <param name="doi"></param>
+        /// <param name="name"></param>
         /// <returns></returns>
         public Publication getPublications(string name)//, string uri = "/references/{0}")
         {
