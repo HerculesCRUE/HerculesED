@@ -125,9 +125,9 @@ namespace WoSConnect.Controllers
         }
 
         /// <summary>
-        /// Permite obtener las citas de una publicación mediante el DOI.
+        /// Permite obtener las citas de una publicación mediante el WosID.
         /// </summary>
-        /// <param name="pDoi">DOI de la publicación.</param>
+        /// <param name="pWosId">WosID de la publicación.</param>
         /// <returns>Objeto con los datos recuperados.</returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
