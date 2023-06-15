@@ -87,9 +87,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     {
                         response = await httpClient.SendAsync(request);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        throw new Exception("Error in the http call");
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                        throw;
                     }
                 }
             }
@@ -1771,11 +1772,12 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     response = client.PostAsync($@"{_Configuracion.GetUrlEnriquecimiento()}/{pTipo}", contentData).Result;
                     break;
                 }
-                catch
+                catch(Exception ex)
                 {
                     intentos--;
                     if (intentos == 0)
                     {
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         throw;
                     }
                     else
@@ -1797,8 +1799,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 {
                     data = JsonConvert.DeserializeObject<TopicsEnriquecidos>(result);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     return null;
                 }
 
