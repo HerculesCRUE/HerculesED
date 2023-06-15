@@ -43,15 +43,7 @@ Servicio encargado de obtener la información de OpenAire. Documentación del AP
 ## Configuración en el appsetting.json
 ```json{
 {
-	"Logging": {
-		"LogLevel": {
-			"Default": "",
-			"Microsoft": "",
-			"Microsoft.Hosting.Lifetime": ""
-		}
-	},
 	"AllowedHosts": "*",
-	"LogPath": ""
 }
 ```
 
@@ -65,6 +57,5 @@ Servicio encargado de obtener la información de OpenAire. Documentación del AP
 - **ExcelDataReader**: v3.6.0
 - **ExcelDataReader.DataSet**: v3.6.0
 - **Newtonsoft.Json**: v13.0.1
-- **Serilog.AspNetCore**: v4.1.0
 - **Swashbuckle.AspNetCore**: v6.2.1
 - **System.Net.Http.Json**: v5.0.0

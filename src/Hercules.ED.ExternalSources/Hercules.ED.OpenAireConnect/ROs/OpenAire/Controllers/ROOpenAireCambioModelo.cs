@@ -8,11 +8,36 @@ using System.Data;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using Gnoss.ApiWrapper;
 
 namespace OpenAireConnect.ROs.OpenAire.Controllers
 {
     public class ROOpenAireControllerJSON
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         public ROOpenAireLogic OpenAireLogic;
 
         public ROOpenAireControllerJSON(ROOpenAireLogic OpenAireLogic)
@@ -73,9 +98,9 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                             listaResultado.Add(publicacion);
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     }
                 }
             }

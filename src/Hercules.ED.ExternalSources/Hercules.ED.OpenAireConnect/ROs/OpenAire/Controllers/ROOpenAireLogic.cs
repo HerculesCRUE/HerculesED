@@ -22,11 +22,35 @@ using System.Text;
 using ExcelDataReader;
 using System.IO;
 using System.Threading;
+using Gnoss.ApiWrapper;
 
 namespace OpenAireConnect.ROs.OpenAire.Controllers
 {
     public class ROOpenAireLogic
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
 
         protected string baseUri { get; set; }
 
@@ -70,11 +94,12 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -119,9 +144,9 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                 List<Publication> nuevas = info.getListPublication(objInicial);
                 listaResultados.AddRange(nuevas);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             return listaResultados;
@@ -155,8 +180,9 @@ namespace OpenAireConnect.ROs.OpenAire.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(resultado);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return publicacionFinal;
             }
 
