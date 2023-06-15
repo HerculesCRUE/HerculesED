@@ -7,11 +7,12 @@ using System.Net.Http;
 using PublicationConnect.ROs.Publications.Models;
 using System.Text;
 using PublicationAPI.Controllers;
-using Serilog;
 using PublicationAPI.ROs.Publication.Models;
 using System.Threading;
 using Person = PublicationConnect.ROs.Publications.Models.Person;
 using System.Text.RegularExpressions;
+using Gnoss.ApiWrapper;
+using System.IO;
 
 namespace PublicationConnect.ROs.Publications.Controllers
 {
@@ -20,6 +21,30 @@ namespace PublicationConnect.ROs.Publications.Controllers
     /// </summary>
     public class ROPublicationLogic
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         // Listado de DOIs.
         private readonly List<string> dois_principales = new();
 
@@ -107,11 +132,10 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a Wos...");
                     objInicial_woS = LlamadaWoSDoi(pDoi);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
                     Console.WriteLine("No se ha podido recuperar los datos de Wos...");
-                    Log.Error("No se ha podido recuperar los datos de Wos...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
 
                 try
@@ -119,11 +143,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a Scopus...");
                     objInicial_Scopus = LlamadaScopusDoi(pDoi);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("No se ha podido recuperar los datos de Scopus...");
-                    Log.Error("No se ha podido recuperar los datos de Scopus...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
 
                 try
@@ -131,11 +153,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a OpenAire...");
                     objInicial_openAire = LlamadaOpenAireDoi(pDoi);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("No se ha podido recuperar los datos de OpenAire...");
-                    Log.Error("No se ha podido recuperar los datos de OpenAire...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
             }
             else // Recuperar las publicaciones de un autor desde 'X' fecha.
@@ -145,11 +165,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a Wos...");
                     objInicial_woS = LlamadaWoS(pOrcid, pDate);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("No se ha podido recuperar los datos de Wos...");
-                    Log.Error("No se ha podido recuperar los datos de Wos...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
 
                 try
@@ -157,11 +175,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a Scopus...");
                     objInicial_Scopus = LlamadaScopus(pOrcid, pDate);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("No se ha podido recuperar los datos de Scopus...");
-                    Log.Error("No se ha podido recuperar los datos de Scopus...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
 
                 try
@@ -169,11 +185,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     Console.WriteLine("Haciendo petición a OpenAire...");
                     objInicial_openAire = LlamadaOpenAire(pOrcid, pDate);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("No se ha podido recuperar los datos de OpenAire...");
-                    Log.Error("No se ha podido recuperar los datos de OpenAire...");
-                    Log.Error(error.Message);
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
             }
 
@@ -239,10 +253,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                Log.Error(e.Message);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             Console.WriteLine($@"[WoS] Publicaciones procesadas");
@@ -298,10 +311,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                Log.Error(e.Message);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             Console.WriteLine($@"[Scopus] Publicaciones procesadas");
@@ -342,10 +354,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                Log.Error(e.Message);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             Console.WriteLine($@"[OpenAire] Publicaciones procesadas");
@@ -985,9 +996,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     objInicial_SemanticScholar = JsonConvert.DeserializeObject<Tuple<Publication, List<PubReferencias>>>(info_publication);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición SemanticScholar --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_SemanticScholar;
             }
 
@@ -1009,9 +1020,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 objInicial_Scopus = JsonConvert.DeserializeObject<List<PublicacionScopus>>(info_publication);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición Scopus --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_Scopus;
             }
             return objInicial_Scopus;
@@ -1032,9 +1043,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                 PublicacionScopus publicacion = JsonConvert.DeserializeObject<PublicacionScopus>(info_publication);
                 objInicial_Scopus = new List<PublicacionScopus>() { publicacion };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición Scopus --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_Scopus;
             }
             return objInicial_Scopus;
@@ -1068,9 +1079,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 objInicial_woS = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición WoS --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_woS;
             }
             return objInicial_woS;
@@ -1094,9 +1105,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     objInicial_woS = new List<Publication>() { publicacion };
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición WoS --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_woS;
             }
             return objInicial_woS;
@@ -1117,9 +1128,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
             {
                 objInicial_openAire = JsonConvert.DeserializeObject<List<Publication>>(info_publication);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición OpenAire --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_openAire;
             }
             return objInicial_openAire;
@@ -1143,9 +1154,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     objInicial_openAire = new List<Publication>() { publicacion };
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición OpenAire --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return objInicial_openAire;
             }
             return objInicial_openAire;
@@ -1184,9 +1195,9 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Error("Petición Zenodo --> " + e);
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return urlPdf;
             }
 

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PublicationAPI.Controllers;
 using PublicationAPI.Middlewares;
-using Serilog;
 using System.Collections;
 
 namespace PublicationConnect
@@ -57,7 +56,6 @@ namespace PublicationConnect
 
             // Configuración.
             services.AddSingleton(typeof(ConfigService));
-            CreateLoggin(CreateTimeStamp());
         }
 
         private bool ComprobarDominioEnBD(string dominio)
@@ -96,52 +94,6 @@ namespace PublicationConnect
                       });
             });
             app.UseSwaggerUI(c => c.SwaggerEndpoint("v1/swagger.json", "PublicationAPI v1"));
-        }
-
-        private void CreateLoggin(string pTimestamp)
-        {
-            string pathDirectory = GetLogPath();
-            if (!Directory.Exists(pathDirectory))
-            {
-                Directory.CreateDirectory(pathDirectory);
-            }
-            Log.Logger = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.File($"{pathDirectory}/log_{pTimestamp}.txt").CreateLogger();
-        }
-
-        public string GetLogPath()
-        {
-            if (string.IsNullOrEmpty(_LogPath))
-            {
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                string logPath;
-                if (environmentVariables.Contains("LogPath"))
-                {
-                    logPath = environmentVariables["LogPath"] as string;
-                }
-                else
-                {
-                    logPath = Configuration["LogPath"];
-                }
-                _LogPath = logPath;
-            }
-            return _LogPath;
-        }
-
-        private static string CreateTimeStamp()
-        {
-            DateTime time = DateTime.Now;
-            string month = time.Month.ToString();
-            if (month.Length == 1)
-            {
-                month = $"0{month}";
-            }
-            string day = time.Day.ToString();
-            if (day.Length == 1)
-            {
-                day = $"0{day}";
-            }
-            string timeStamp = $"{time.Year}{month}{day}";
-            return timeStamp;
-        }
+        }    
     }
 }

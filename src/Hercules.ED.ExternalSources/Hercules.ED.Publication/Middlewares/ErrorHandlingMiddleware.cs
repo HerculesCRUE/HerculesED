@@ -1,19 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Gnoss.ApiWrapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Serilog;
 using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PublicationAPI.Middlewares
 {
     public class ErrorHandlingMiddleware
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         private readonly RequestDelegate _next;
         private IConfiguration _configuration { get; set; }
-        private string _timeStamp;
 
         public ErrorHandlingMiddleware(RequestDelegate next, IConfiguration configuration)
         {
@@ -45,7 +69,7 @@ namespace PublicationAPI.Middlewares
             }
             else
             {
-                Log.Error($"{ex.Message}\n{ex.StackTrace}\n");
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
             }
 
             context.Response.ContentType = "application/json";
