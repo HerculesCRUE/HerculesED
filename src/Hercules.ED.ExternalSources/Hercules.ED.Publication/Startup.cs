@@ -15,8 +15,6 @@ namespace PublicationConnect
 {
     public class Startup
     {
-        private string _LogPath;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
