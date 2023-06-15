@@ -41,6 +41,8 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// Contruye el objeto de la publicación con los datos obtenidos.
         /// </summary>
         /// <param name="pPublicacionIn">Publicación de entrada.</param>
+        /// <param name="pResourceApi"></param>
+        /// <param name="pTuplaTesauro"></param>
         /// <returns></returns>
         public Publication getPublicacionCita(PublicacionInicial pPublicacionIn, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
@@ -381,6 +383,8 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// Obtiene las areas de conocimiento de la taxonomía unificada.
         /// </summary>
         /// <param name="pPublicacionIn">Publicación a obtener las areas.</param>
+        /// <param name="pTuplaTesauro"></param>
+        /// <param name="pResourceApi"></param>
         /// <returns>Areas.</returns>
         public List<KnowledgeAreas> getKnowledgeAreas(PublicacionInicial pPublicacionIn, Dictionary<string, string> pTuplaTesauro, ResourceApi pResourceApi)
         {
@@ -455,7 +459,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     area_taxonomia.name = equivalencia.Item2;
                     listado.Add(area_taxonomia);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} No se encuentra en la taxonomia el siguiente area: {area_wos_obtenida.name}");
                 }
