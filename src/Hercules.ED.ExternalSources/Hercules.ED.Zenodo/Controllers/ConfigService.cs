@@ -22,31 +22,6 @@ namespace ZenodoAPI.Controllers
         }
 
         /// <summary>
-        /// Obtiene la ruta de los logs que ha sido configurado.
-        /// </summary>
-        /// <returns>Ruta.</returns>
-        public string GetLogPath()
-        {
-            if (string.IsNullOrEmpty(logPath))
-            {
-                string connectionString = string.Empty;
-                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
-                if (environmentVariables.Contains("LogPath"))
-                {
-                    connectionString = environmentVariables["LogPath"] as string;
-                }
-                else
-                {
-                    connectionString = configuracion["LogPath"];
-                }
-
-                logPath = connectionString;
-            }
-
-            return logPath;
-        }
-
-        /// <summary>
         /// Obtiene la URL de la petición a Zenodo que ha sido configurada.
         /// </summary>
         /// <returns>URL.</returns>

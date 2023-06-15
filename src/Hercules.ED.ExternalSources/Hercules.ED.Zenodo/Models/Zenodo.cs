@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Gnoss.ApiWrapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,33 @@ namespace ZenodoAPI.Models
 {
     public class Zenodo
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{System.IO.Path.DirectorySeparatorChar}ConfigOAuth{System.IO.Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         // Configuración.
         readonly ConfigService _Configuracion;
 
-        // Logs.
-        private FileLogger _FileLogger;
 
         // Lista de tipos de ROs a obtener.
         private static readonly List<string> listaTiposROs = new List<string>() { "poster", "presentation", "dataset", "image", "video", "software", "lesson" };
@@ -30,7 +53,6 @@ namespace ZenodoAPI.Models
         public Zenodo(ConfigService pConfig)
         {
             _Configuracion = pConfig;
-            _FileLogger = new FileLogger(pConfig);
         }
 
         /// <summary>
@@ -71,12 +93,12 @@ namespace ZenodoAPI.Models
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch (Exception error)
+                        catch (Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
-                                _FileLogger.Log(pUrl, error.ToString());
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -313,11 +335,12 @@ namespace ZenodoAPI.Models
                     response = client.PostAsync($@"{_Configuracion.GetUrlBaseEnriquecimiento()}/{pTipo}", contentData).Result;
                     break;
                 }
-                catch
+                catch(Exception ex)
                 {
                     intentos--;
                     if (intentos == 0)
                     {
+                        ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                         throw;
                     }
                     else
@@ -339,9 +362,9 @@ namespace ZenodoAPI.Models
                 {
                     data = JsonConvert.DeserializeObject<Topics_enriquecidos>(result);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    _FileLogger.Log("getDescriptores()", error.ToString());
+                    ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     return null;
                 }
 

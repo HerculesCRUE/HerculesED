@@ -5,11 +5,37 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using ZenodoConnect.ROs.Zenodo.Models.Inicial;
 using System.Threading;
+using Gnoss.ApiWrapper;
+using System.IO;
 
 namespace ZenodoConnect.ROs.Zenodo.Controllers
 {
     public class ROZenodoLogic : ZenodoInterface
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         protected string bareer;
 
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -49,11 +75,12 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex) 
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 return null;
                             }
                             else
@@ -101,8 +128,9 @@ namespace ZenodoConnect.ROs.Zenodo.Controllers
 
                 return null;
             }
-            catch
+            catch(Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return null;
             }
         }

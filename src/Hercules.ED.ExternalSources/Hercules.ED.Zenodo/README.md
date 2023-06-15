@@ -38,27 +38,14 @@ Resultado: Lista de objetos [OntologyRO](https://github.com/HerculesCRUE/Hercule
 ## Configuración en el appsetting.json
 ```json{
 {
-	"Logging": {
-		"LogLevel": {
-			"Default": "",
-			"Microsoft": "",
-			"Microsoft.Hosting.Lifetime": ""
-		}
-	},
 	"AllowedHosts": "*",
-	"LogPath": "",
 	"UrlBaseEnriquecimiento": ""
 }
 ```
 
-- LogLevel.Default: Nivel de error por defecto.
-- LogLevel.Microsoft: Nivel de error para los errores propios de Microsoft.
-- LogLevel.Microsoft.Hosting.Lifetime: Nivel de error para los errores de host.
-- LogPath: Ruta de guardado del fichero de logs.
 - UrlBaseEnriquecimiento: URL base del API de Enriquecimiento.
 
 ## Dependencias
 - **Newtonsoft.Json**: v13.0.1
-- **Serilog.AspNetCore**: v4.1.0
 - **Swashbuckle.AspNetCore**: v6.2.1
 - **System.Net.Http.Json**: v5.0.0
