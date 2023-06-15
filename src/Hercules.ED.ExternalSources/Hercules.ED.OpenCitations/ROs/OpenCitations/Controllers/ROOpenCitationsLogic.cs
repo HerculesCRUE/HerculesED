@@ -19,6 +19,7 @@ using System.Web;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using Gnoss.ApiWrapper;
 //using Newtonsoft.Json.Linq.JObject;
 
 
@@ -27,6 +28,30 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
 {
     public class ROOpenCitationsLogic : OpenCitationsInterface
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{System.IO.Path.DirectorySeparatorChar}ConfigOAuth{System.IO.Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         protected string bareer;
         //ROScopusControllerJSON info = new ROScopusControllerJSON();
         protected string baseUri { get; set; }
@@ -80,11 +105,12 @@ namespace OpenCitationsConnect.ROs.OpenCitations.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
