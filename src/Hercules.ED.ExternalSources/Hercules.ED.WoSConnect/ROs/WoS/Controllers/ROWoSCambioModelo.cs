@@ -18,10 +18,12 @@ namespace WoSConnect.ROs.WoS.Controllers
     {
         public List<string> advertencia = null;
         public ROWoSLogic WoSLogic;
+        private ResourceApi mResourceApi;
 
-        public ROWoSControllerJSON(ROWoSLogic WoSLogic)
+        public ROWoSControllerJSON(ROWoSLogic WoSLogic, ResourceApi pResourceApi)
         {
             this.WoSLogic = WoSLogic;
+            mResourceApi = pResourceApi;
         }
 
         // TODO: Sacarlo a clase Enum.
@@ -85,9 +87,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                             listaResultados.Add(publicacion);
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex )
                     {
-
+                        mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     }
                 }
             }
@@ -453,10 +455,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                     area_taxonomia.name = equivalencia.Item2;
                     listado.Add(area_taxonomia);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Console.Write("No se encuentra en la taxonomia el siguiente area: " + area_wos_obtenida.name);
-                    Console.Write("\n");
+                    mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} No se encuentra en la taxonomia el siguiente area: {area_wos_obtenida.name}");
                 }
             }
             if (listado.Count > 0)
@@ -589,9 +590,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                             }
                         }
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         // Error en obtención del ORCID.
+                        mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     }
 
                     // RELLENAR ORCID QUE NO HEMOS CONSEGUIDO OBTENER POR ID.

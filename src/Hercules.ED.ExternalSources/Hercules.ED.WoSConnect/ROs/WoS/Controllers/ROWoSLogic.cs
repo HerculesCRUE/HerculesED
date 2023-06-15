@@ -39,7 +39,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         protected Dictionary<string, string> headers = new Dictionary<string, string>();
 
         //Resource API.
-        private static ResourceApi mResourceApi;
+        private ResourceApi mResourceApi;
 
         public ROWoSLogic(string baseUri, string bareer, Dictionary<string, string> ds, ResourceApi pResourceApi)
         {
@@ -83,11 +83,12 @@ namespace WoSConnect.ROs.WoS.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -117,7 +118,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns></returns>
         public List<Publication> getPublications(string orcid, string date = "1500-01-01")
         {
-            ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+            ROWoSControllerJSON info = new ROWoSControllerJSON(this,mResourceApi);
             int n = 0;
             List<Publication> listaResultados = new List<Publication>();
             int numItems = 100;
@@ -139,9 +140,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                         continuar = false;
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    mResourceApi.Log.Error(e.Message);
+                    mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 }
             }
 
@@ -168,7 +169,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             try
             {
                 // Clase.
-                ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+                ROWoSControllerJSON info = new ROWoSControllerJSON(this, mResourceApi);
 
                 // Petición.
                 Uri url = new Uri($@"{baseUri}api/wos/id/WOS:{pIdWos}?databaseId=WOK&count=1&firstRecord=1");
@@ -182,8 +183,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return publicacionFinal;
             }
 
@@ -194,7 +196,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// Obtiene los datos del tesauro.
         /// </summary>
         /// <returns>Tupla con los dos diccionarios.</returns>
-        private static Tuple<Dictionary<string, string>, Dictionary<string, string>> ObtenerDatosTesauro()
+        private Tuple<Dictionary<string, string>, Dictionary<string, string>> ObtenerDatosTesauro()
         {
             Dictionary<string, string> dicAreasBroader = new Dictionary<string, string>();
             Dictionary<string, string> dicAreasNombre = new Dictionary<string, string>();
@@ -240,7 +242,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             try
             {
                 // Clase.
-                ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+                ROWoSControllerJSON info = new ROWoSControllerJSON(this, mResourceApi);
 
                 // Petición.
                 Uri url = new Uri($@"{baseUri}api/wos/?databaseId=WOK&usrQuery=DO=({pDoi})&count=1&firstRecord=1");
@@ -254,8 +256,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                     publicacionFinal = info.cambioDeModeloPublicacion(publicacionInicial, true, tuplaTesauro.Item2, mResourceApi);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return publicacionFinal;
             }
 
@@ -280,7 +283,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                 while (true)
                 {
                     // Clase.
-                    ROWoSControllerJSON info = new ROWoSControllerJSON(this);
+                    ROWoSControllerJSON info = new ROWoSControllerJSON(this, mResourceApi);
 
                     // Petición.
                     string result = string.Empty;
@@ -299,8 +302,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                         {
                             objInicial = JsonConvert.DeserializeObject<Root>(result);
                         }
-                        catch (Exception)
+                        catch (Exception ex )
                         {
+                            mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                             continue; // Si no puede parsear el objeto, que pase al siguiente.
                         }
 
@@ -316,8 +320,9 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return listaPublicaciones;
             }
 
