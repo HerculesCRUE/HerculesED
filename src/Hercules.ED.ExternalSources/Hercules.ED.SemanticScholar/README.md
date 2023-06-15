@@ -38,15 +38,7 @@ Resultado: Tupla cuyo Item1 es un objeto [Publication](https://github.com/Hercul
 ## Configuración en el appsetting.json
 ```json{
 {
-	"Logging": {
-		"LogLevel": {
-			"Default": "",
-			"Microsoft": "",
-			"Microsoft.Hosting.Lifetime": ""
-		}
-	},
-	"AllowedHosts": "*",
-	"LogPath": ""
+	"AllowedHosts": "*"
 }
 ```
 
@@ -59,6 +51,5 @@ Resultado: Tupla cuyo Item1 es un objeto [Publication](https://github.com/Hercul
 - **ClosedXML**: v0.95.4
 - **ExcelDataReader.DataSet**: v3.6.0
 - **Newtonsoft.Json**: v13.0.1
-- **Serilog.AspNetCore**: v4.1.0
 - **Swashbuckle.AspNetCore**: v6.2.1
 - **System.Net.Http.Json**: v5.0.0
