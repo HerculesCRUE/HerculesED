@@ -6,11 +6,37 @@ using System.Net.Http;
 using ScopusConnect.ROs.Scopus.Models;
 using ScopusConnect.ROs.Scopus.Models.Inicial;
 using System.Threading;
+using Gnoss.ApiWrapper;
+using System.IO;
 
 namespace ScopusConnect.ROs.Scopus.Controllers
 {
     public class ROScopusLogic
     {
+        private static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+        private static ResourceApi mResourceApi = null;
+
+        private static ResourceApi ResourceApi
+        {
+            get
+            {
+                while (mResourceApi == null)
+                {
+                    try
+                    {
+                        mResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return mResourceApi;
+            }
+        }
+
         protected string bareer;
 
         protected Dictionary<string, string> headers = new();
@@ -50,11 +76,12 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                             response = await httpClient.SendAsync(request);
                             break;
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             intentos--;
                             if (intentos == 0)
                             {
+                                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                                 throw;
                             }
                             else
@@ -143,8 +170,9 @@ namespace ScopusConnect.ROs.Scopus.Controllers
                     publicacionFinal = info.CambioDeModeloPublicacion(publicacionInicial);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                 return publicacionFinal;
             }
 
