@@ -7,6 +7,9 @@ using PublicationConnect.ROs.Publications.Models;
 using Newtonsoft.Json;
 using PublicationAPI.Controllers;
 using System;
+using System.Linq;
+using PublicationAPI.Models;
+using Microsoft.Net.Http.Headers;
 
 namespace PublicationConnect.Controllers
 {
@@ -58,6 +61,76 @@ namespace PublicationConnect.Controllers
             Console.WriteLine("Obteniendo datos de publicación...");
             List<Publication> publication = PublicationObject.GetPublications("", pDoi: pDoi, pNombreCompletoAutor: pNombreCompletoAutor);
             return publication;
+        }
+
+        /// <summary>
+        /// Obtiene los ficheros en la carpeta de lectura.
+        /// </summary>
+        /// <returns>Lista con los ficheros en la carpeta de lectura.</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<FileInfoEDMA> GetFilesLectura()
+        {
+            List<FileInfoEDMA> filesInfo = new List<FileInfoEDMA>();
+            List<string> files = System.IO.Directory.EnumerateFiles(_Configuracion.GetRutaDirectorioLectura()).ToList();
+            foreach (string file in files)
+            {
+                System.IO.FileInfo fileInfo = new System.IO.FileInfo(file);
+                filesInfo.Add(new FileInfoEDMA() { Name = fileInfo.Name, LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,BytesSize=fileInfo.Length });
+            }
+            filesInfo = filesInfo.OrderByDescending(x => x.LastWriteTimeUtc).ToList();
+            return filesInfo;
+        }
+
+        /// <summary>
+        /// Obtiene un fichero de la carpeta de lectura.
+        /// </summary>
+        /// <returns>Lista con los ficheros en la carpeta de lectura.</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetFileLectura(string fileName)
+        {            
+            string path = _Configuracion.GetRutaDirectorioLectura() + fileName;
+            return File(System.IO.File.ReadAllBytes(path), "application/force-download", fileName);
+        }
+
+        /// <summary>
+        /// Obtiene los ficheros en la carpeta de escritura.
+        /// </summary>
+        /// <returns>Lista con los ficheros en la carpeta de escritura.</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public List<FileInfoEDMA> GetFilesEscritura()
+        {
+            List<FileInfoEDMA> filesInfo = new List<FileInfoEDMA>();
+            List<string> files = System.IO.Directory.EnumerateFiles(_Configuracion.GetRutaDirectorioEscritura()).ToList();
+            foreach (string file in files)
+            {
+                System.IO.FileInfo fileInfo = new System.IO.FileInfo(file);
+                filesInfo.Add(new FileInfoEDMA() { Name = fileInfo.Name, LastWriteTimeUtc = fileInfo.LastWriteTimeUtc, BytesSize = fileInfo.Length });
+            }
+            filesInfo = filesInfo.OrderByDescending(x => x.LastWriteTimeUtc).ToList();
+            return filesInfo;
+        }
+
+        /// <summary>
+        /// Obtiene un fichero de la carpeta de escritura.
+        /// </summary>
+        /// <returns>Lista con los ficheros en la carpeta de escritura.</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GetFileEscritura(string fileName)
+        {
+            string path = _Configuracion.GetRutaDirectorioEscritura() + fileName;
+            return File(System.IO.File.ReadAllBytes(path), "application/force-download", fileName);
         }
     }
 }

@@ -20,6 +20,9 @@ namespace PublicationAPI.Controllers
         private string UrlEnriquecimiento { get; set; }
         private string RutaJsonSalida { get; set; }
 
+        private string RutaDirectorioLectura { get; set; }
+        private string RutaDirectorioEscritura { get; set; }
+
         /// <summary>
         /// Obtiene la URL del API de enriquecimiento que ha sido configurada.
         /// </summary>
@@ -243,6 +246,58 @@ namespace PublicationAPI.Controllers
             }
 
             return RutaJsonSalida;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta de lectura de los ficheros.
+        /// </summary>
+        /// <returns>Ruta de lectura.</returns>
+        public string GetRutaDirectorioLectura()
+        {
+            if (string.IsNullOrEmpty(RutaDirectorioLectura))
+            {
+                string connectionString;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+
+                if (environmentVariables.Contains("DirectorioLectura"))
+                {
+                    connectionString = environmentVariables["DirectorioLectura"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["DirectorioLectura"];
+                }
+
+                RutaDirectorioLectura = connectionString;
+            }
+
+            return RutaDirectorioLectura;
+        }
+
+        /// <summary>
+        /// Obtiene la ruta de escritura de los ficheros.
+        /// </summary>
+        /// <returns>Ruta de escritura.</returns>
+        public string GetRutaDirectorioEscritura()
+        {
+            if (string.IsNullOrEmpty(RutaDirectorioEscritura))
+            {
+                string connectionString;
+                IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+
+                if (environmentVariables.Contains("DirectorioEscritura"))
+                {
+                    connectionString = environmentVariables["DirectorioEscritura"] as string;
+                }
+                else
+                {
+                    connectionString = configuracion["DirectorioEscritura"];
+                }
+
+                RutaDirectorioEscritura = connectionString;
+            }
+
+            return RutaDirectorioEscritura;
         }
     }
 }
