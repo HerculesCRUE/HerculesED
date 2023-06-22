@@ -468,18 +468,18 @@ namespace Hercules.ED.ResearcherObjectLoad.Utils
                 HashSet<int> scores = new();
                 foreach (Dictionary<string, Data> fila in sparqlObject.results.bindings.Where(x => x["nameInput"].value == Disambiguation.ObtenerTextosNombresNormalizados(firma)))
                 {
-                    string personID = fila["personID"].value;
-                    if (!diccionarioPersonas.ContainsKey(nameInput))
-                    {
-                        diccionarioPersonas[personID] = new();
-                    }
-                    string name = fila["name"].value;
+                    string personID = fila["personID"].value;                    
                     int score = int.Parse(fila["num"].value);
                     scores.Add(score);
                     if (scores.Count > 2)
                     {
                         break;
                     }
+                    if (!diccionarioPersonas.ContainsKey(nameInput))
+                    {
+                        diccionarioPersonas[personID] = new();
+                    }
+                    string name = fila["name"].value;
                     DisambiguationPerson persona = new()
                     {
                         completeName = name,
