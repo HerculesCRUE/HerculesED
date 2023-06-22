@@ -244,6 +244,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                             }
                         }
 
+                        if (pub_completa.SeqOfAuthors == null)
+                        {
+                            pub_completa.SeqOfAuthors = new List<Person>();
+                        }
+
                         // Unificar Autores.
                         pub_completa = CompararAutores(pub_completa);
 
@@ -299,6 +304,11 @@ namespace PublicationConnect.ROs.Publications.Controllers
                                         pub_completa = Compactacion(pub_completa, pub_openAire);
                                     }
                                 }
+                            }
+
+                            if (pub_completa.SeqOfAuthors == null)
+                            {
+                                pub_completa.SeqOfAuthors = new List<Person>();
                             }
 
                             // Unificar Autores.
@@ -494,7 +504,6 @@ namespace PublicationConnect.ROs.Publications.Controllers
                     publicacion.HasPublicationVenue = null;
                 }
             }
-
             return listaPubsFinal;
         }
 
