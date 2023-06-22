@@ -74,7 +74,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                     string jsonString = String.Empty;
                     try
                     {
-                        mResourceApi.Log.Info($"[INFO] Procesamos el fichero {fichero.Name}");
+                        mResourceApi.Log.Info($"Procesamos el fichero {fichero.Name}");
 
                         // Diccionarios para almacenar los vinculos de los recursos a desambiguar con los IDs de los recursos a cargar
                         Dictionary<HashSet<string>, string> dicGnossIdPerson = new();
@@ -277,26 +277,26 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                         }
                         else
                         {
-                            mResourceApi.Log.Info($"[INFO] Obtenemos al propietario del JSON");
+                            mResourceApi.Log.Info($"Obtenemos al propietario del JSON");
                             //Obtenemos al propietario del JSON
                             string idAutor = "http://gnoss.com/items/" + fichero.Name.Split("___")[0];
                             List<string> lista = new() { idAutor };
                             DisambiguationPerson personaDocumento = UtilityPersona.ObtenerDatosBasicosPersona(lista);
 
-                            mResourceApi.Log.Info($"[INFO] Obtención de los datos del JSON");
+                            mResourceApi.Log.Info($"Obtención de los datos del JSON");
                             // Obtención de los datos del JSON.
                             jsonString = File.ReadAllText(fichero.FullName);
                             List<Publication> listaPublicaciones = JsonConvert.DeserializeObject<List<Publication>>(jsonString);
                             HashSet<string> listadoDOI = new();
 
-                            mResourceApi.Log.Info($"[INFO] El fichero {fichero.Name} contiene {listaPublicaciones.Count} publicaciones");
+                            mResourceApi.Log.Info($"El fichero {fichero.Name} contiene {listaPublicaciones.Count} publicaciones");
                             int numPublicacion = 0;
                             if (listaPublicaciones != null && listaPublicaciones.Any())
                             {
                                 foreach (Publication publication in listaPublicaciones)
                                 {
                                     numPublicacion++;
-                                    mResourceApi.Log.Info($"[INFO] Procesando publicación {numPublicacion}/{listaPublicaciones.Count}");
+                                    mResourceApi.Log.Info($"Procesando publicación {numPublicacion}/{listaPublicaciones.Count}");
                                     // --- Publicación
                                     DisambiguationPublication disambiguationPub = GetDisambiguationPublication(publication);
                                     listadoDOI.Add(disambiguationPub.doi);
@@ -344,7 +344,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     dicIdDatosPub.Add(idPub, publication);
                                     dicIdPublication.Add(idPub, ConstruirDocument(publication, tupla.Item1, tupla.Item2));
                                 }
-                                mResourceApi.Log.Info($"[INFO] Obtención de los datos cargados de BBDD");
+                                mResourceApi.Log.Info($"Obtención de los datos cargados de BBDD");
                                 // Obtención de los datos cargados de BBDD.                        
                                 Dictionary<string, DisambiguableEntity> documentosBBDD = ObtenerPublicacionesBBDDPorGnossId(listadoDOI, idAutor);
                                 ConcurrentDictionary<string, DisambiguationPerson> personasBBDD = UtilityPersona.ObtenerPersonasRelacionaBBDD(listaPublicaciones, idAutor);
@@ -357,7 +357,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                         if (!string.IsNullOrEmpty(idPersona) && (dicIdDatosPub.Count > 0 || dicIdDatosRoFigshare.Count > 0 || dicIdDatosRoGitHub.Count > 0 || dicIdDatosRoZenodo.Count > 0))
                         {
-                            mResourceApi.Log.Info($"[INFO] Las publicaciones que nos vengan del JSON siempre son diferentes");
+                            mResourceApi.Log.Info($"Las publicaciones que nos vengan del JSON siempre son diferentes");
                             // Las publicaciones que nos vengan del JSON siempre son diferentes.
                             List<string> idsPubicacionesJSON = listaDesambiguar.Where(x => x is DisambiguationPublication).Select(x => ((DisambiguationPublication)x).ID).ToList();
                             foreach (DisambiguableEntity disambiguableEntity in listaDesambiguar)
@@ -373,7 +373,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             HashSet<string> idsDocumentosActualizar = new();
                             HashSet<string> idsResearchObjectsActualizar = new();
 
-                            mResourceApi.Log.Info($"[INFO] Obtención de la lista de equivalencias");
+                            mResourceApi.Log.Info($"Obtención de la lista de equivalencias");
                             // Obtención de la lista de equivalencias.
                             Dictionary<string, HashSet<string>> listaEquivalencias = Disambiguation.Disambiguate(listaDesambiguar, listaDesambiguarBBDD);
 
@@ -404,7 +404,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             //Datos de los objetos encontrados en la BBDD
                             List<Tuple<string, string, string, string, string, string>> datosPersonasBBDD = UtilityPersona.ObtenerPersonas(idPersonasBBDD);
 
-                            mResourceApi.Log.Info($"[INFO] 1º PERSONAS Procesamos las personas, actualizando las que corresponda");
+                            mResourceApi.Log.Info($"1º PERSONAS Procesamos las personas, actualizando las que corresponda");
                             #region 1º PERSONAS Procesamos las personas, actualizando las que corresponda
                             Dictionary<Person, HashSet<string>> listaPersonasCargarEquivalencias = new();
                             foreach (KeyValuePair<string, HashSet<string>> item in listaEquivalencias)
@@ -467,7 +467,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                             #endregion
 
-                            mResourceApi.Log.Info($"[INFO] 2º PUBLICACIONES");
+                            mResourceApi.Log.Info($"2º PUBLICACIONES");
                             #region 2º PUBLICACIONES
                             Dictionary<Document, HashSet<string>> listaDocumentosCargarEquivalencias = new();
                             Dictionary<string, string> listaDocumentosCargados = new();
@@ -536,6 +536,8 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                     }
                                 }
                             }
+
+                            HashSet<string> listAutores = new HashSet<string>();
 
                             //Creación de los ComplexOntologyResources.
                             List<ComplexOntologyResource> listaDocumentosCargar = new();
@@ -613,6 +615,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         }
 
                                         listaDocumentosCargar.Add(resourceDocumento);
+                                        listAutores.UnionWith(documento.Bibo_authorList.Select(x => x.IdRdf_member));
                                     }
                                     else
                                     {
@@ -636,12 +639,13 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                                         idBBDD = listaDocumentosCargados[idBBDD];
                                         listaDocumentosModificar.Add(idBBDD, documento);
+                                        listAutores.UnionWith(documento.Bibo_authorList.Select(x => x.IdRdf_member));
                                     }
                                 }
                             }
                             #endregion
 
-                            mResourceApi.Log.Info($"[INFO] 3º RESEARCHOBJECT");
+                            mResourceApi.Log.Info($"3º RESEARCHOBJECT");
                             #region 3º RESEARCHOBJECT 
                             Dictionary<ResearchobjectOntology.ResearchObject, HashSet<string>> listaROsCargarEquivalencias = new();
                             Dictionary<string, string> listaROsCargados = new();
@@ -758,6 +762,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                         }
 
                                         listaROsCargar.Add(resourceResearchObject);
+                                        listAutores.UnionWith(researchobject.Bibo_authorList.Select(x => x.IdRdf_member));
                                     }
                                     else
                                     {
@@ -777,70 +782,113 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
 
                                         idBBDD = listaROsCargados[idBBDD];
                                         listaROsModificar.Add(idBBDD, researchobject);
+                                        listAutores.UnionWith(researchobject.Bibo_authorList.Select(x => x.IdRdf_member));
                                     }
                                 }
                             }
-
                             #endregion
 
+                            listaPersonasCargar.RemoveAll(x => !listAutores.Contains(x.GnossId));
+
+
                             // ------------------------------ CARGA
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaPersonasCargar) {listaPersonasCargar.Count} personas nuevas");
+                            mResourceApi.Log.Info($"CargarDatos(listaPersonasCargar) {listaPersonasCargar.Count} personas nuevas");
                             idsPersonasActualizar.UnionWith(CargarDatos(listaPersonasCargar));
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaDocumentosCargar) {listaDocumentosCargar.Count} publicaciones nuevas");
+                            mResourceApi.Log.Info($"CargarDatos(listaDocumentosCargar) {listaDocumentosCargar.Count} publicaciones nuevas");
                             idsDocumentosActualizar.UnionWith(CargarDatos(listaDocumentosCargar));
-                            mResourceApi.Log.Info($"[INFO] CargarDatos(listaROsCargar)  {listaROsCargar.Count} ROs nuevos");
+                            mResourceApi.Log.Info($"CargarDatos(listaROsCargar)  {listaROsCargar.Count} ROs nuevos");
                             idsResearchObjectsActualizar.UnionWith(CargarDatos(listaROsCargar));
 
                             idsDocumentosActualizar.UnionWith(listaDocumentosModificar.Keys);
                             idsResearchObjectsActualizar.UnionWith(listaROsModificar.Keys);
 
-                            mResourceApi.Log.Info($"[INFO] Modificación Publicaciones {listaDocumentosModificar.Count}");
+                            mResourceApi.Log.Info($"Modificación Publicaciones {listaDocumentosModificar.Count}");
                             //Modificación
-                            Parallel.ForEach(listaDocumentosModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
+                            ConcurrentBag<string> loadedDocs = new ConcurrentBag<string>();
+                            foreach (var recursoModificar in listaDocumentosModificar)
                             {
-                                string[] idSplit = recursoModificar.Key.Split('_');
-                                Document doc = listaDocumentosModificar[recursoModificar.Key];
-                                ModificarDocumento(doc, recursoModificar.Key);
-                                ComplexOntologyResource complexOntologyResource = doc.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-
-                                int numIntentos = 0;
-                                while (!complexOntologyResource.Modified)
+                                int numIntentosGlobal = 0;
+                                bool cargado = false;
+                                while (!cargado)
                                 {
-                                    numIntentos++;
-
-                                    if (numIntentos > MAX_INTENTOS)
+                                    try
                                     {
-                                        break;
+                                        numIntentosGlobal++;
+                                        string[] idSplit = recursoModificar.Key.Split('_');
+                                        Document doc = listaDocumentosModificar[recursoModificar.Key];
+                                        ModificarDocumento(doc, recursoModificar.Key);
+                                        ComplexOntologyResource complexOntologyResource = doc.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+
+                                        int numIntentos = 0;
+                                        while (!complexOntologyResource.Modified)
+                                        {
+                                            numIntentos++;
+                                            if (numIntentos > MAX_INTENTOS)
+                                            {
+                                                throw new Exception($"Se ha superado el máximo de intentos para modificar el recurso {recursoModificar.Key}");
+                                            }
+                                            mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                        }
+                                        loadedDocs.Add(recursoModificar.Key);
+                                        mResourceApi.Log.Info($"Modificada publicación {loadedDocs.Count}/{listaDocumentosModificar.Count}");
+                                        cargado = true;
                                     }
-
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    catch (Exception ex)
+                                    {
+                                        if (numIntentosGlobal > MAX_INTENTOS)
+                                        {
+                                            mResourceApi.Log.Error($@"{ex.Message} {ex.StackTrace}");
+                                            cargado = true;
+                                        }
+                                    }
                                 }
-                            });
+                            }
 
-                            mResourceApi.Log.Info($"[INFO] Modificación Ros {listaROsModificar.Count}");
+                            mResourceApi.Log.Info($"Modificación Ros {listaROsModificar.Count}");
                             //Modificación
-                            Parallel.ForEach(listaROsModificar, new ParallelOptions { MaxDegreeOfParallelism = NUM_HILOS }, recursoModificar =>
+                            ConcurrentBag<string> loadedROs = new ConcurrentBag<string>();
+                            foreach (var recursoModificar in listaROsModificar)
                             {
-                                string[] idSplit = recursoModificar.Key.Split('_');
-                                ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
-                                ModificarRO(ro, recursoModificar.Key);
-                                ComplexOntologyResource complexOntologyResource = ro.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
-
-                                int numIntentos = 0;
-                                while (!complexOntologyResource.Modified)
+                                int numIntentosGlobal = 0;
+                                bool cargado = false;
+                                while (!cargado)
                                 {
-                                    numIntentos++;
-
-                                    if (numIntentos > MAX_INTENTOS)
+                                    try
                                     {
-                                        break;
+                                        numIntentosGlobal++;
+                                        string[] idSplit = recursoModificar.Key.Split('_');
+                                        ResearchobjectOntology.ResearchObject ro = listaROsModificar[recursoModificar.Key];
+                                        ModificarRO(ro, recursoModificar.Key);
+                                        ComplexOntologyResource complexOntologyResource = ro.ToGnossApiResource(mResourceApi, null, new Guid(idSplit[idSplit.Length - 2]), new Guid(idSplit[idSplit.Length - 1]));
+
+                                        int numIntentos = 0;
+                                        while (!complexOntologyResource.Modified)
+                                        {
+                                            numIntentos++;
+
+                                            if (numIntentos > MAX_INTENTOS)
+                                            {
+                                                throw new Exception($"Se ha superado el máximo de intentos para modificar el recurso {recursoModificar.Key}");
+                                            }
+
+                                            mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                        }
+                                        loadedROs.Add(recursoModificar.Key);
+                                        mResourceApi.Log.Info($"Modificado RO {loadedROs.Count}/{listaROsModificar.Count}");
+                                        cargado = true;
                                     }
-
-                                    mResourceApi.ModifyComplexOntologyResource(complexOntologyResource, false, true);
+                                    catch (Exception ex)
+                                    {
+                                        if (numIntentosGlobal > MAX_INTENTOS)
+                                        {
+                                            mResourceApi.Log.Error($@"{ex.Message} {ex.StackTrace}");
+                                            cargado = true;
+                                        }
+                                    }
                                 }
-                            });
+                            }
 
-                            mResourceApi.Log.Info($"[INFO] Insertamos en la cola del desnormalizador");
+                            mResourceApi.Log.Info($"Insertamos en la cola del desnormalizador");
                             //Insertamos en la cola del desnormalizador
                             RabbitServiceWriterDenormalizer rabbitServiceWriterDenormalizer = new(configuracion);
                             if (idsPersonasActualizar.Count > 0)
@@ -856,7 +904,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                                 rabbitServiceWriterDenormalizer.PublishMessage(new(DenormalizerItemQueue.ItemType.researchobject, idsResearchObjectsActualizar));
                             }
 
-                            mResourceApi.Log.Info($"[INFO] Cargamos las notificaciones");
+                            mResourceApi.Log.Info($"Cargamos las notificaciones");
                             //Cargamos las notificaciones
                             List<NotificationOntology.Notification> notificacionesCargar = notificaciones.ToList();
                             mResourceApi.ChangeOntoly("notification");
@@ -877,7 +925,7 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             });
                         }
 
-                        mResourceApi.Log.Info($"[INFO] Notificación de fin de la carga");
+                        mResourceApi.Log.Info($"Notificación de fin de la carga");
                         // Notificación de fin de la carga
                         if (!string.IsNullOrEmpty(idPersona))
                         {
@@ -901,14 +949,14 @@ namespace Hercules.ED.ResearcherObjectLoad.Models
                             }
                         }
 
-                        mResourceApi.Log.Info($"[INFO] Hace una copia del fichero y elimina el original");
+                        mResourceApi.Log.Info($"Hace una copia del fichero y elimina el original");
                         // Hace una copia del fichero y elimina el original.
                         CrearZip(pRutaEscritura, fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
                     }
                     catch (Exception ex)
                     {
-                        mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
+                        mResourceApi.Log.Error($@"{DateTime.Now} {ex.Message} {ex.StackTrace}");
                         // Hace una copia del fichero y elimina el original.
                         CrearZip(pRutaEscritura, "ERROR_" + fichero.Name, jsonString);
                         File.Delete(fichero.FullName);
