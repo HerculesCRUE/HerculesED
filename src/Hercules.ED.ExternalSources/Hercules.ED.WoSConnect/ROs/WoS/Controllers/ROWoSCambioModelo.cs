@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace WoSConnect.ROs.WoS.Controllers
 {
@@ -510,18 +513,17 @@ namespace WoSConnect.ROs.WoS.Controllers
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.names != null && pPublicacionIn.static_data.summary.names.name != null && pPublicacionIn.static_data.summary.names.name.Any())
             {
                 List<Person> listaPersonas = new List<Person>();
+                Dictionary<Models.Inicial.Name, string> authorsORCID = ObtenerORCIDsAuthors(pPublicacionIn);                
                 foreach (Models.Inicial.Name item in pPublicacionIn.static_data.summary.names.name)
                 {
                     if (!item.display_name.Contains(" ") || !item.full_name.Contains(" ") || item.display_name.ToLower().Contains("ieee") || item.full_name.ToLower().Contains("ieee") || (string.IsNullOrEmpty(item.first_name) && string.IsNullOrEmpty(item.last_name) && string.IsNullOrEmpty(item.full_name) && string.IsNullOrEmpty(item.orcid_id)))
                     {
                         continue;
                     }
-
                     if (item.role != "author")
                     {
                         continue;
                     }
-
                     Person person = new Person();
                     if (item.seq_no != null)
                     {
@@ -543,96 +545,14 @@ namespace WoSConnect.ROs.WoS.Controllers
                         person.name.nombre_completo = new List<string>() { $@"{item.full_name.Split(", ")[1]} {item.full_name.Split(", ")[0]}".Trim() };
                     }
 
-                    // RESEARCHER ID
-                    if (!string.IsNullOrEmpty(item.r_id))
+                    if (authorsORCID.ContainsKey(item) && !string.IsNullOrEmpty(authorsORCID[item]))
                     {
-                        person.researcherID = item.r_id;
-                    }
-
-                    // ORCID
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(item.orcid_id))
-                        {
-                            person.ORCID = item.orcid_id;
-                        }
-                        else if (string.IsNullOrEmpty(item.orcid_id) && !string.IsNullOrEmpty(item.r_id) && pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
-                        {
-                            foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
-                            {
-                                if (itemContributor.name.r_id == item.r_id)
-                                {
-                                    if (string.IsNullOrEmpty(person.researcherID))
-                                    {
-                                        person.researcherID = itemContributor.name.r_id;
-                                    }
-                                    person.ORCID = itemContributor.name.orcid_id;
-                                }
-                            }
-                        }
-                        else if (string.IsNullOrEmpty(item.orcid_id) && item.data_item_ids != null && item.data_item_ids.DataItemId != null && item.data_item_ids.DataItemId.Any())
-                        {
-                            foreach (DataItemId contentId in item.data_item_ids.DataItemId)
-                            {
-                                if (contentId.IdType.ToLower() == "preferredrid")
-                                {
-                                    if (pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
-                                    {
-                                        foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
-                                        {
-                                            if (itemContributor.name.r_id == contentId.content)
-                                            {
-                                                if (string.IsNullOrEmpty(person.researcherID))
-                                                {
-                                                    person.researcherID = itemContributor.name.r_id;
-                                                }
-                                                person.ORCID = itemContributor.name.orcid_id;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        // Error en obtención del ORCID.
-                        mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
-                    }
-
-                    // RELLENAR ORCID QUE NO HEMOS CONSEGUIDO OBTENER POR ID.
-                    if (string.IsNullOrEmpty(person.ORCID) && !string.IsNullOrEmpty(person.name.nombre_completo[0]))
-                    {
-                        string nombreA = person.name.nombre_completo[0];
-
-                        if (pPublicacionIn.static_data.contributors != null && pPublicacionIn.static_data.contributors.contributor != null && pPublicacionIn.static_data.contributors.contributor.Any())
-                        {
-                            foreach (Contributor itemContributor in pPublicacionIn.static_data.contributors.contributor)
-                            {
-                                string nombreB = itemContributor.name.full_name;
-                                if (!string.IsNullOrEmpty(nombreB))
-                                {
-                                    if (nombreA.ToLower().Equals(nombreB.ToLower()))
-                                    {
-                                        person.ORCID = itemContributor.name.orcid_id;
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(itemContributor.name.orcid_id))
-                                {
-                                    if (!string.IsNullOrEmpty(person.researcherID) && !string.IsNullOrEmpty(itemContributor.name.r_id) && person.researcherID == itemContributor.name.r_id)
-                                    {
-                                        person.ORCID = itemContributor.name.orcid_id;
-                                    }
-                                }
-                            }
-                        }
+                        person.ORCID = authorsORCID[item];
                     }
 
                     if (person.name.nombre_completo != null || !string.IsNullOrEmpty(person.ORCID))
                     {
                         string orcid = person.ORCID;
-                        string researcherId = person.researcherID;
                         bool encontrado = false;
 
                         foreach (Person persona in listaPersonas)
@@ -643,18 +563,274 @@ namespace WoSConnect.ROs.WoS.Controllers
                                 break;
                             }
                         }
-
                         if (!encontrado)
                         {
                             listaPersonas.Add(person);
                         }
                     }
                 }
-
                 return listaPersonas;
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Obtiene el ORCID del contributor asociado al nombre
+        /// </summary>
+        /// <param name="doc">Publicación</param>
+        /// <param name="fullName">Nombre del autor</param>
+        /// <returns>ORCID</returns>
+         private static Dictionary<Models.Inicial.Name, string> ObtenerORCIDsAuthors(PublicacionInicial doc)
+        {
+            Dictionary< Models.Inicial.Name, string> authorsORCID = new Dictionary<Models.Inicial.Name, string>();
+
+            Dictionary<Models.Inicial.Name, Dictionary<Models.Inicial.Contributor, float>> authorsContributors = new Dictionary<Models.Inicial.Name, Dictionary<Contributor, float>>();
+            foreach (Models.Inicial.Name item in doc.static_data.summary.names.name)
+            {
+                if (!item.display_name.Contains(" ") || !item.full_name.Contains(" ") || item.display_name.ToLower().Contains("ieee") || item.full_name.ToLower().Contains("ieee") || (string.IsNullOrEmpty(item.first_name) && string.IsNullOrEmpty(item.last_name) && string.IsNullOrEmpty(item.full_name) && string.IsNullOrEmpty(item.orcid_id)))
+                {
+                    continue;
+                }
+                if (item.role != "author")
+                {
+                    continue;
+                }
+
+                string nombreCompletoAutor = $@"{item.first_name} {item.last_name}".Trim();
+                if (string.IsNullOrEmpty(nombreCompletoAutor))
+                {
+                    nombreCompletoAutor = $@"{item.full_name.Split(", ")[1]} {item.full_name.Split(", ")[0]}".Trim();
+                }
+                List<string> namesAuthor = OrdenacionesNombre(nombreCompletoAutor);
+                if (doc.static_data.contributors != null && doc.static_data.contributors.contributor != null && doc.static_data.contributors.contributor.Any())
+                {
+                    foreach (Contributor itemContributor in doc.static_data.contributors.contributor)
+                    {
+                        if (itemContributor.name != null && !string.IsNullOrEmpty(itemContributor.name.full_name))
+                        {
+                            List<string> namesContributor = OrdenacionesNombre(itemContributor.name.full_name);
+                            float igualdad = CompararNombres(namesAuthor, namesContributor);
+                            if (igualdad > 0)
+                            {
+                                if (!authorsContributors.ContainsKey(item))
+                                {
+                                    authorsContributors[item] = new Dictionary<Contributor, float>();
+                                }
+                                authorsContributors[item][itemContributor] = igualdad;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Eliminamos en los autors todos los contributors duplicados y después cargamos en cada author sólo los que tengan el mayor valor (si sólo hay uno)
+            Dictionary<Contributor, int> contributorCount = new Dictionary<Contributor, int>();
+            foreach (Models.Inicial.Name author in authorsContributors.Keys)
+            {
+                foreach (Contributor contributor in authorsContributors[author].Keys)
+                {
+                    if (!contributorCount.ContainsKey(contributor))
+                    {
+                        contributorCount[contributor] = 1;
+                    }
+                    else
+                    {
+                        contributorCount[contributor]++;
+                    }
+                }
+            }
+            foreach(var contributor in contributorCount.Where(x => x.Value > 1))
+            {
+                foreach (Models.Inicial.Name author in authorsContributors.Keys.ToList())
+                {
+                    authorsContributors[author].Remove(contributor.Key);
+                }
+            }
+            foreach (Models.Inicial.Name author in authorsContributors.Keys)
+            {
+                float max = authorsContributors[author].Select(x => x.Value).Max();
+                List<Models.Inicial.Contributor> contributorsMax = authorsContributors[author].Where(x => x.Value == max).Select(x => x.Key).ToList();
+                if (contributorsMax.Count == 1 && !string.IsNullOrEmpty(contributorsMax[0].name.orcid_id))
+                {
+                    authorsORCID[author] = contributorsMax[0].name.orcid_id;
+                }
+            }
+            return authorsORCID;
+        }
+
+        /// <summary>
+        /// Genera nombres con diferentes ordenaciones
+        /// </summary>
+        /// <param name="nombre">Nombre de entrada</param>
+        /// <returns>Nombres</returns>
+        private static List<string> OrdenacionesNombre(string nombre)
+        {
+            List<string> ordenaciones = new List<string>();
+            ordenaciones.Add(nombre);
+            if (nombre.Contains(","))
+            {
+                string primeraparte = nombre.Substring(nombre.IndexOf(",") + 1).Trim();
+                string segundaparte = nombre.Substring(0, nombre.IndexOf(",")).Trim();
+                string nombre2 = primeraparte + " " + segundaparte;
+                ordenaciones.Add(nombre2);
+            }
+            return ordenaciones;
+        }
+
+        /// <summary>
+        /// Obtiene un ScoreE al comparar nombres
+        /// </summary>
+        /// <param name="nombresA">Nombres A</param>
+        /// <param name="nombresB">Nombres B</param>
+        /// <returns>Score</returns>
+        private static float CompararNombres(List<string> nombresA, List<string> nombresB)
+        {
+            float resultado = 0;
+            foreach (string nombreA in nombresA)
+            {
+                foreach (string nombreB in nombresB)
+                {
+                    float temp = 0;
+
+                    Regex reg = new Regex("[^a-zA-Z0-9]+");
+
+                    string nombreAAux = nombreA.ToLower();
+                    nombreAAux = new string(
+                        nombreAAux.Normalize(NormalizationForm.FormD)
+                        .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                        .ToArray()
+                    ).Normalize(NormalizationForm.FormC);
+
+                    string nombreBAux = nombreB.ToLower();
+                    nombreBAux = new string(
+                        nombreBAux.Normalize(NormalizationForm.FormD)
+                        .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                        .ToArray()
+                    ).Normalize(NormalizationForm.FormC);
+
+                    string[] nombreASplit = nombreAAux.Split(new string[] { " ", "-", ".", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] nombreBSplit = nombreBAux.Split(new string[] { " ", "-", ".", "," }, StringSplitOptions.RemoveEmptyEntries);
+                    List<string> nombreCorto;
+                    List<string> nombreLargo;
+                    if (nombreASplit.Count() > nombreBSplit.Count())
+                    {
+                        nombreCorto = nombreBSplit.ToList();
+                        nombreLargo = nombreASplit.ToList();
+                    }
+                    else
+                    {
+                        nombreLargo = nombreBSplit.ToList();
+                        nombreCorto = nombreASplit.ToList();
+                    }
+                    bool ok = true;
+                    bool omitidaInicial = false;
+                    int index = 0;
+                    foreach (string palabraNombreCorto in nombreCorto)
+                    {
+                        bool encontrado = false;
+                        List<string> nombreLargoAux = nombreLargo.GetRange(index, nombreLargo.Count - index);
+                        int sum = 0;
+                        foreach (string palabraNombreLargo in nombreLargoAux)
+                        {
+                            sum++;
+                            if (palabraNombreCorto.Length == 1 || palabraNombreLargo.Length == 1)
+                            {
+                                if (palabraNombreCorto[0] == palabraNombreLargo[0])
+                                {
+                                    encontrado = true;
+                                    index += sum;
+                                    temp += 0.5f;
+                                    break;
+                                }
+                                else if (!omitidaInicial && palabraNombreCorto.Length == 1)
+                                {
+                                    omitidaInicial = true;
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                int distancia = LevenshteinDistance(palabraNombreCorto, palabraNombreLargo, out float aux);
+                                if (distancia <= 1)
+                                {
+                                    encontrado = true;
+                                    index += sum;
+                                    if (distancia == 0)
+                                    {
+                                        temp += 1f;
+                                    }
+                                    else
+                                    {
+                                        temp += 0.5f;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        ok = ok && encontrado;
+                    }
+                    if (ok)
+                    {
+                        float nombreCortoLength = nombreCorto.Count;
+                        if ((nombreCortoLength == 1 && temp >= 1) ||
+                            (nombreCortoLength == 2 && temp >= 1.5f) ||
+                            (nombreCortoLength > 2 && temp + 1 >= nombreCortoLength))
+                        {
+                            resultado = Math.Max(resultado, temp);
+                        }
+                    }
+                }
+            }
+            return resultado;
+        }
+
+        /// <summary>
+        /// Computa la distancia de Levenshtein entre dos textos (https://es.wikipedia.org/wiki/Distancia_de_Levenshtein).
+        /// </summary>
+        /// <param name="str1">Cadena de texto 1</param>
+        /// <param name="str2">Cadena de texto 2</param>
+        /// <param name="similarity">Similaridad de los textos (entre 0 y 1)</param>
+        /// <returns>Distancia de Levenshtein</returns>
+        public static int LevenshteinDistance(string str1, string str2, out float similarity)
+        {
+            similarity = 0;
+
+            // d es una tabla con m+1 renglones y n+1 columnas
+            int costo = 0;
+            int m = str1.Length;
+            int n = str2.Length;
+            int[,] d = new int[m + 1, n + 1];
+
+            // Verifica que exista algo que comparar
+            if (n == 0) return m;
+            if (m == 0) return n;
+
+            // Llena la primera columna y la primera fila.
+            for (int i = 0; i <= m; d[i, 0] = i++) ;
+            for (int j = 0; j <= n; d[0, j] = j++) ;
+
+
+            /// recorre la matriz llenando cada unos de los pesos.
+            /// i columnas, j renglones
+            for (int i = 1; i <= m; i++)
+            {
+                // recorre para j
+                for (int j = 1; j <= n; j++)
+                {
+                    /// si son iguales en posiciones equidistantes el peso es 0
+                    /// de lo contrario el peso suma a uno.
+                    costo = str1[i - 1] == str2[j - 1] ? 0 : 1;
+                    d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1,  //Eliminacion
+                                  d[i, j - 1] + 1),                             //Insercion 
+                                  d[i - 1, j - 1] + costo);                     //Sustitucion
+                }
+            }
+
+            /// Calculamos el porcentaje de cambios en la palabra.
+            similarity = 1 - d[m, n] / Math.Max(str1.Length, (float)str2.Length);
+            return d[m, n];
         }
 
         /// <summary>
