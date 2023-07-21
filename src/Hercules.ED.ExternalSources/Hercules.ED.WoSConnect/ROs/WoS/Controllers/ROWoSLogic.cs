@@ -149,14 +149,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             //Eliminamos de los resultados aquellos que no tengan como autor el ORCID del autor
             listaResultados.RemoveAll(x => !x.seqOfAuthors.Exists(y => y.ORCID == orcid));
 
-            if (listaResultados.Any())
-            {
-                return listaResultados;
-            }
-            else
-            {
-                return null;
-            }
+            return listaResultados;
         }
 
         /// <summary>
