@@ -215,7 +215,40 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     public class Keywords
     {
         public int count { get; set; }
+        [JsonConverter(typeof(SingleValueArrayConverter<string>))]
         public List<string> keyword { get; set; }
+    }
+
+    public class SingleValueArrayConverter<T> : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            object retVal = new Object();
+            if (reader.TokenType == JsonToken.StartObject)
+            {
+                T instance = (T)serializer.Deserialize(reader, typeof(T));
+                retVal = new List<T>() { instance };
+            }else if (reader.TokenType == JsonToken.String)
+            {
+                T instance = (T)serializer.Deserialize(reader, typeof(T));
+                retVal = new List<T>() { instance };
+            }
+            else if (reader.TokenType == JsonToken.StartArray)
+            {
+                retVal = serializer.Deserialize(reader, objectType);
+            }
+            return retVal;
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return true;
+        }
     }
 
     public class AbstractText
