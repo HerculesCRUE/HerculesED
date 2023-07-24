@@ -117,7 +117,10 @@ namespace WoSConnect.ROs.WoS.Controllers
             publicacion.hasKnowledgeAreas = getKnowledgeAreas(objInicial, pTuplaTesauro, pResourceApi);
             publicacion.freetextKeywords = getFreetextKeyword(objInicial);
             publicacion.seqOfAuthors = getAuthors(objInicial);
-            publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
+            if (publicacion.seqOfAuthors.Count > 0)
+            {
+                publicacion.correspondingAuthor = publicacion.seqOfAuthors[0];
+            }
             publicacion.hasPublicationVenue = getJournal(objInicial);
             publicacion.hasMetric = getPublicationMetric(objInicial);
             publicacion.openAccess = getOpenAccess(objInicial);
@@ -226,9 +229,9 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Idioma.</returns>
         public string getLanguage(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.languages != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language != null && !string.IsNullOrEmpty(pPublicacionIn.static_data.fullrecord_metadata.languages.language.content))
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.languages != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language.Count>0)
             {
-                return pPublicacionIn.static_data.fullrecord_metadata.languages.language.content.Trim();
+                return pPublicacionIn.static_data.fullrecord_metadata.languages.language.First().content.Trim();
             }
 
             return null;
@@ -457,10 +460,13 @@ namespace WoSConnect.ROs.WoS.Controllers
                 try
                 {
                     Tuple<string, string> equivalencia = ObtenerEquivalencias(area_wos_obtenida.name.ToLower(), pResourceApi);
-                    KnowledgeArea area_taxonomia = new KnowledgeArea();
-                    area_taxonomia.hasCode = equivalencia.Item1;
-                    area_taxonomia.name = equivalencia.Item2;
-                    listado.Add(area_taxonomia);
+                    if (equivalencia != null)
+                    {
+                        KnowledgeArea area_taxonomia = new KnowledgeArea();
+                        area_taxonomia.hasCode = equivalencia.Item1;
+                        area_taxonomia.name = equivalencia.Item2;
+                        listado.Add(area_taxonomia);
+                    }
                 }
                 catch (Exception)
                 {
@@ -645,6 +651,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                 foreach (Models.Inicial.Name author in authorsContributors.Keys.ToList())
                 {
                     authorsContributors[author].Remove(contributor.Key);
+                    if (authorsContributors[author].Count == 0)
+                    {
+                        authorsContributors.Remove(author);
+                    }
                 }
             }
             foreach (Models.Inicial.Name author in authorsContributors.Keys)
