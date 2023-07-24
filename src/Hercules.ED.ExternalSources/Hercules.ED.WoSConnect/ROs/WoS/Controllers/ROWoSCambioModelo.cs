@@ -92,7 +92,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                             listaResultados.Add(publicacion);
                         }
                     }
-                    catch (Exception ex )
+                    catch (Exception ex)
                     {
                         mResourceApi.Log.Error($@"[ERROR] {DateTime.Now} {ex.Message} {ex.StackTrace}");
                     }
@@ -194,7 +194,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             {
                 Title title = pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item");
                 if (title != null)
-                return title.content;
+                    return title.content;
             }
 
             return null;
@@ -207,15 +207,19 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Descripción.</returns>
         public string getAbstract(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p.Any())
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract != null && pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.Count > 0)
             {
                 string descripcion = string.Empty;
-
-                foreach (string item in pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract.abstract_text.p)
+                foreach (Abstract abstractin in pPublicacionIn.static_data.fullrecord_metadata.abstracts.@abstract)
                 {
-                    descripcion += item.Trim() + " ";
+                    if(abstractin.abstract_text!=null && abstractin.abstract_text.p != null && abstractin.abstract_text.p.Count>0)
+                    {
+                        foreach (string item in abstractin.abstract_text.p)
+                        {
+                            descripcion += item.Trim() + " ";
+                        }
+                    }
                 }
-
                 return descripcion.Trim();
             }
 
@@ -229,7 +233,7 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <returns>Idioma.</returns>
         public string getLanguage(PublicacionInicial pPublicacionIn)
         {
-            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.languages != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language.Count>0)
+            if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.fullrecord_metadata != null && pPublicacionIn.static_data.fullrecord_metadata.languages != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language != null && pPublicacionIn.static_data.fullrecord_metadata.languages.language.Count > 0)
             {
                 return pPublicacionIn.static_data.fullrecord_metadata.languages.language.First().content.Trim();
             }
@@ -374,9 +378,9 @@ namespace WoSConnect.ROs.WoS.Controllers
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.pub_info != null && pPublicacionIn.static_data.summary.pub_info.page != null)
             {
                 if (pPublicacionIn.static_data.summary.pub_info.page.end != null && pPublicacionIn.static_data.summary.pub_info.page.end.ToString() != "0")
-                { 
+                {
                     return pPublicacionIn.static_data.summary.pub_info.page.end.ToString();
-                } 
+                }
                 else if (pPublicacionIn.static_data.summary.pub_info.page.page_count != 0)
                 {
                     return pPublicacionIn.static_data.summary.pub_info.page.page_count.ToString();
@@ -519,7 +523,7 @@ namespace WoSConnect.ROs.WoS.Controllers
             if (pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.names != null && pPublicacionIn.static_data.summary.names.name != null && pPublicacionIn.static_data.summary.names.name.Any())
             {
                 List<Person> listaPersonas = new List<Person>();
-                Dictionary<Models.Inicial.Name, string> authorsORCID = ObtenerORCIDsAuthors(pPublicacionIn);                
+                Dictionary<Models.Inicial.Name, string> authorsORCID = ObtenerORCIDsAuthors(pPublicacionIn);
                 foreach (Models.Inicial.Name item in pPublicacionIn.static_data.summary.names.name)
                 {
                     if (!item.display_name.Contains(" ") || !item.full_name.Contains(" ") || item.display_name.ToLower().Contains("ieee") || item.full_name.ToLower().Contains("ieee") || (string.IsNullOrEmpty(item.first_name) && string.IsNullOrEmpty(item.last_name) && string.IsNullOrEmpty(item.full_name) && string.IsNullOrEmpty(item.orcid_id)))
@@ -587,9 +591,9 @@ namespace WoSConnect.ROs.WoS.Controllers
         /// <param name="doc">Publicación</param>
         /// <param name="fullName">Nombre del autor</param>
         /// <returns>ORCID</returns>
-         private static Dictionary<Models.Inicial.Name, string> ObtenerORCIDsAuthors(PublicacionInicial doc)
+        private static Dictionary<Models.Inicial.Name, string> ObtenerORCIDsAuthors(PublicacionInicial doc)
         {
-            Dictionary< Models.Inicial.Name, string> authorsORCID = new Dictionary<Models.Inicial.Name, string>();
+            Dictionary<Models.Inicial.Name, string> authorsORCID = new Dictionary<Models.Inicial.Name, string>();
 
             Dictionary<Models.Inicial.Name, Dictionary<Models.Inicial.Contributor, float>> authorsContributors = new Dictionary<Models.Inicial.Name, Dictionary<Contributor, float>>();
             foreach (Models.Inicial.Name item in doc.static_data.summary.names.name)
@@ -646,7 +650,7 @@ namespace WoSConnect.ROs.WoS.Controllers
                     }
                 }
             }
-            foreach(var contributor in contributorCount.Where(x => x.Value > 1))
+            foreach (var contributor in contributorCount.Where(x => x.Value > 1))
             {
                 foreach (Models.Inicial.Name author in authorsContributors.Keys.ToList())
                 {
