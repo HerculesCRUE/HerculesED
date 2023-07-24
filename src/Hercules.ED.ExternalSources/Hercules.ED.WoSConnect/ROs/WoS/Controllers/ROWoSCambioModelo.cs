@@ -193,8 +193,10 @@ namespace WoSConnect.ROs.WoS.Controllers
             if (pPublicacionIn != null && pPublicacionIn.static_data != null && pPublicacionIn.static_data.summary != null && pPublicacionIn.static_data.summary.titles != null && pPublicacionIn.static_data.summary.titles.title != null && pPublicacionIn.static_data.summary.titles.title.Any())
             {
                 Title title = pPublicacionIn.static_data.summary.titles.title.FirstOrDefault(x => x.type == "item");
-                if (title != null)
-                    return title.content;
+                if (title != null && title.content.Count > 0)
+                {
+                    return title.content[0];
+                }
             }
 
             return null;
@@ -862,7 +864,10 @@ namespace WoSConnect.ROs.WoS.Controllers
                 {
                     if (title.type == "source")
                     {
-                        revista.name = title.content;
+                        if( title.content.Count > 0)
+                        {
+                            revista.name = title.content[0];
+                        }
                     }
                 }
             }
