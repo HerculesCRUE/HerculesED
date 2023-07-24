@@ -99,6 +99,20 @@ namespace PublicationConnect.Controllers
         }
 
         /// <summary>
+        /// Elimina un fichero de la carpeta de escritura.
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult RemoveFileLectura(string fileName)
+        {
+            string path = _Configuracion.GetRutaDirectorioLectura() + fileName;
+            System.IO.File.Delete(path);
+            return Ok();
+        }
+
+        /// <summary>
         /// Obtiene los ficheros en la carpeta de escritura.
         /// </summary>
         /// <returns>Lista con los ficheros en la carpeta de escritura.</returns>
@@ -131,6 +145,20 @@ namespace PublicationConnect.Controllers
         {
             string path = _Configuracion.GetRutaDirectorioEscritura() + fileName;
             return File(System.IO.File.ReadAllBytes(path), "application/force-download", fileName);
+        }
+
+        /// <summary>
+        /// Elimina un fichero de la carpeta de escritura.
+        /// </summary>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult RemoveFileEscritura(string fileName)
+        {
+            string path = _Configuracion.GetRutaDirectorioEscritura() + fileName;
+            System.IO.File.Delete(path);
+            return Ok();
         }
     }
 }
