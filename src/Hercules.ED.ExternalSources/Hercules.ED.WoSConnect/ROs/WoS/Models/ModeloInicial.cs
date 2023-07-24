@@ -267,7 +267,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     public class Abstracts
     {
         public int count { get; set; }
-        public Abstract @abstract { get; set; }
+        [JsonConverter(typeof(SingleOrArrayConverter<Abstract>))]
+        public List<Abstract> @abstract { get; set; }
     }
 
     public class FullrecordMetadata
