@@ -92,7 +92,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     public class Title
     {
         public string type { get; set; }
-        public string content { get; set; }
+        [JsonConverter(typeof(SingleOrArrayConverter<string>))]
+        public List<string> content { get; set; }
         public string translated { get; set; }
     }
 
