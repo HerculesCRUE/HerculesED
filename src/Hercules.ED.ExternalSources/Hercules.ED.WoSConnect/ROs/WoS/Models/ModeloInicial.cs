@@ -209,7 +209,8 @@ namespace WoSConnect.ROs.WoS.Models.Inicial
     public class Languages
     {
         public int count { get; set; }
-        public Language language { get; set; }
+        [JsonConverter(typeof(SingleValueArrayConverter<Language>))]
+        public List<Language> language { get; set; }
     }
 
     public class Keywords
