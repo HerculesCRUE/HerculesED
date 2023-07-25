@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static Gnoss.ApiWrapper.ApiModel.SparqlObject;
 
@@ -57,8 +58,77 @@ namespace EditorCV.Models.Utils
             {"gn", "http://www.geonames.org/ontology#" }
         };
 
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
         private static ConcurrentBag<Tab> mTabTemplates;
+
+        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}configOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
+
+        private static ResourceApi auxResourceApi = null;
+        private static CommunityApi auxCommunityApi = null;
+        private static UserApi auxUserApi = null;
+
+        public static ResourceApi mResourceApi
+        {
+            get
+            {
+                while (auxResourceApi == null)
+                {
+                    try
+                    {
+                        auxResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return auxResourceApi;
+            }
+        }
+        
+        public static CommunityApi mCommunityApi
+        {
+            get
+            {
+                while (auxCommunityApi == null)
+                {
+                    try
+                    {
+                        auxCommunityApi = new CommunityApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar CommunityApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return auxCommunityApi;
+            }
+        }
+        
+        public static UserApi mUserApi
+        {
+            get
+            {
+                while (auxUserApi == null)
+                {
+                    try
+                    {
+                        auxUserApi = new UserApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar UserApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return auxUserApi;
+            }
+        }
+
 
         /// <summary>
         /// Envia una notificación.

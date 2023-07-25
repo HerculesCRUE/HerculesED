@@ -1,4 +1,5 @@
-﻿using Gnoss.ApiWrapper;
+﻿using EditorCV.Models.Utils;
+using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,8 +15,7 @@ namespace EditorCV.Models
     public abstract class AccionesEnvio
     {
         #region --- Constantes   
-        protected readonly static string RUTA_OAUTH = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config";
-        protected readonly static ResourceApi mResourceApi = new ResourceApi(RUTA_OAUTH);
+        protected readonly static ResourceApi mResourceApi = UtilityCV.mResourceApi;
         protected readonly static string RUTA_PREFIJOS = $@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Models{Path.DirectorySeparatorChar}Utils{Path.DirectorySeparatorChar}prefijos.json";
         protected readonly static string mPrefijos = string.Join(" ", JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(RUTA_PREFIJOS)));
         #endregion

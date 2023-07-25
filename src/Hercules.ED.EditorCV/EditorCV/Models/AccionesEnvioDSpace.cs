@@ -1,4 +1,5 @@
 ﻿using EditorCV.Models.EnvioDSpace;
+using EditorCV.Models.Utils;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
 using Gnoss.ApiWrapper.Model;
@@ -23,7 +24,7 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = UtilityCV.mResourceApi;
         private static string tokenAuth = "";
 
         public static void EnvioDSpace(string pIdRecurso, IFormFile file)

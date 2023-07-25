@@ -31,7 +31,7 @@ namespace EditorCV.Models
         /// <summary>
         /// API
         /// </summary>
-        private static readonly ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = UtilityCV.mResourceApi;
         private static Tuple<Dictionary<string, string>, Dictionary<string, string>> tuplaTesauro;
         private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> dicAutocompletar = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
         private static Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>> dicCombos = new Dictionary<string, Dictionary<string, List<Dictionary<string, SparqlObject.Data>>>>();

@@ -36,7 +36,9 @@ namespace EditorCV.Controllers
         [HttpGet("Test")]
         public IActionResult Test()
         {
-            Gnoss.ApiWrapper.ResourceApi resourceApi = new Gnoss.ApiWrapper.ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+            Gnoss.ApiWrapper.ResourceApi resourceApi = UtilityCV.mResourceApi;
+            Gnoss.ApiWrapper.UserApi userapi = UtilityCV.mUserApi;
+            Gnoss.ApiWrapper.CommunityApi CommunityApi = UtilityCV.mCommunityApi;
             DateTime inicio = DateTime.Now;
             resourceApi.VirtuosoQuery("select *", "where{?s ?p ?o}limit 1", "curriculumvitae");
             DateTime fin = DateTime.Now;
