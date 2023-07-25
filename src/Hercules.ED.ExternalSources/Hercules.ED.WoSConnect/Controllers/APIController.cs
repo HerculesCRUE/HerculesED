@@ -13,6 +13,7 @@ using System.Text;
 using ExcelDataReader;
 using Gnoss.ApiWrapper;
 using Gnoss.ApiWrapper.ApiModel;
+using System.Threading;
 
 namespace WoSConnect.Controllers
 {
@@ -26,8 +27,37 @@ namespace WoSConnect.Controllers
         const string pRuta = @"Files/Taxonomy.xlsx";
 
         //Resource API.
-        private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
-        
+        //private static ResourceApi mResourceApi = new ResourceApi($@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+
+        private static string RUTA_OAUTH = $@"{System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config";
+
+        private static ResourceApi auxResourceApi = null;
+
+        private static ResourceApi mResourceApi
+        {
+            get
+            {
+                while (auxResourceApi == null)
+                {
+                    try
+                    {
+                        auxResourceApi = new ResourceApi(RUTA_OAUTH);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("No se ha podido iniciar ResourceApi");
+                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        Thread.Sleep(10000);
+                    }
+                }
+                return auxResourceApi;
+            }
+        }
+
+
+
+
+
         public APIController(ILogger<APIController> logger)
         {
             _logger = logger;
