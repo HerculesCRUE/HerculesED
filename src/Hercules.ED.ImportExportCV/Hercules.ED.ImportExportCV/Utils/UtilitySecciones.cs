@@ -29,7 +29,7 @@ namespace Utils
         private static readonly Dictionary<string, string> dicDOI = new();
         private static DateTime mDateOrgsNombreIds = DateTime.MinValue;
 
-        private static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config{Path.DirectorySeparatorChar}ConfigOAuth{Path.DirectorySeparatorChar}OAuthV3.config");
+        private static readonly ResourceApi mResourceApi = Utility.mResourceApi;
 
         public static Dictionary<string, string> GetIDPersona(string crisID)
         {

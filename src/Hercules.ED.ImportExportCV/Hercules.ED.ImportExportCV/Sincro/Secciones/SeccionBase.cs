@@ -19,7 +19,7 @@ namespace ImportadorWebCV.Sincro.Secciones
 {
     public abstract class SeccionBase
     {
-        protected static readonly ResourceApi mResourceApi = new($@"{AppDomain.CurrentDomain.SetupInformation.ApplicationBase}Config/ConfigOAuth/OAuthV3.config");
+        protected static readonly ResourceApi mResourceApi = Utility.mResourceApi;
         protected cvnRootResultBean mCvn { get; set; }
         protected string mCvID { get; set; }
         protected string mPersonID { get; set; }
