@@ -1,4 +1,5 @@
-﻿using Hercules.ED.ImportExportCV.Controllers;
+﻿using Gnoss.ApiWrapper;
+using Hercules.ED.ImportExportCV.Controllers;
 using ImportadorWebCV;
 using ImportadorWebCV.Exporta;
 using Microsoft.AspNetCore.Mvc;
@@ -90,9 +91,10 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("Exception: " + e.Message + ", stacktrace: " + e.StackTrace);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
                 return NotFound();
             }
         }
@@ -167,9 +169,10 @@ namespace Hercules.ED.ExportadorWebCV.Controllers
                 }
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("Exception: " + e.Message + ", stacktrace: " + e.StackTrace);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
                 return NotFound();
             }
 

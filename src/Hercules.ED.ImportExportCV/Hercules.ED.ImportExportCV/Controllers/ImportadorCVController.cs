@@ -65,7 +65,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
+                return BadRequest(ex);
             }
         }
 
@@ -81,7 +83,6 @@ namespace Hercules.ED.ImportExportCV.Controllers
         {
             try
             {
-
                 Utility.UpdateFechaImportacion(pCVID);
                 SincroDatos sincro = new(_Configuracion, pCVID, File);
 
@@ -101,7 +102,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
+                return BadRequest(ex);
             }
         }
 
@@ -127,7 +130,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
+                return BadRequest(ex);
             }
         }
 
@@ -191,7 +196,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
+                return BadRequest(ex);
             }
         }
 
@@ -232,7 +239,9 @@ namespace Hercules.ED.ImportExportCV.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.Write(ex.Message);
+                Console.Write(ex.StackTrace);
+                return BadRequest(ex);
             }
         }
         [HttpPost("fechaCheck")]

@@ -37,8 +37,8 @@ namespace Utils
                     }
                     catch (Exception)
                     {
-                        Console.WriteLine("No se ha podido iniciar ResourceApi");
-                        Console.WriteLine($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
+                        mResourceApi.Log.Error("No se ha podido iniciar ResourceApi");
+                        mResourceApi.Log.Error($"Contenido OAuth: {System.IO.File.ReadAllText(RUTA_OAUTH)}");
                         Thread.Sleep(10000);
                     }
                 }
@@ -443,7 +443,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -470,7 +471,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -497,7 +499,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -524,7 +527,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -551,7 +555,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -582,7 +587,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -791,7 +797,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -960,7 +967,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -1823,7 +1831,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -1978,6 +1987,7 @@ namespace Utils
             catch (Exception e)
             {
                 mResourceApi.Log.Error(e.Message);
+                mResourceApi.Log.Error(e.StackTrace);
             }
             return persona;
         }
@@ -2073,7 +2083,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -2273,7 +2284,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -2303,7 +2315,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -2355,7 +2368,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -2385,7 +2399,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }
@@ -2415,7 +2430,8 @@ namespace Utils
             }
             catch (ArgumentException ex)
             {
-                Console.Error.WriteLine("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException: " + ex.Message);
+                mResourceApi.Log.Error("ArgumentException stacktrace: " + ex.StackTrace);
                 return null;
             }
         }

@@ -532,8 +532,10 @@ where{{
                 }
                 return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                mResourceApi.Log.Error("Exception: " + ex.Message);
+                mResourceApi.Log.Error("Stacktrace: " + ex.StackTrace);
                 return false;
             }
         }

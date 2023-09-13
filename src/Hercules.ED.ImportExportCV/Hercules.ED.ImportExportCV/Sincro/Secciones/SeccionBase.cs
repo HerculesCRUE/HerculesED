@@ -77,6 +77,7 @@ namespace ImportadorWebCV.Sincro.Secciones
             catch (Exception ex)
             {
                 mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace);
             }
 
             if (listResult.Count > 0 && listResult.ContainsKey(pId))
@@ -1439,9 +1440,10 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 return new Tuple<string, string, string>(item1, item2, item3);
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException ex)
             {
-                Console.Error.WriteLine("Errores al cargar mResourceApi " + e.Message);
+                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace);
                 return null;
             }
         }

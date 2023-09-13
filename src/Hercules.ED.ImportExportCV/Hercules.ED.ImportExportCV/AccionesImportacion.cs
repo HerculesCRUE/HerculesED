@@ -302,7 +302,8 @@ namespace Hercules.ED.ImportExportCV
                 }
                 catch (Exception ex)
                 {
-                    mResourceApi.Log.Error(ex.Message);
+                    mResourceApi.Log.Error("Message: " + ex.Message);
+                    mResourceApi.Log.Error("Stacktrace: " + ex.StackTrace);
                 }
             }
 
@@ -313,7 +314,8 @@ namespace Hercules.ED.ImportExportCV
             }
             catch (Exception ex)
             {
-                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error("Message: " + ex.Message);
+                mResourceApi.Log.Error("Stacktrace: " + ex.StackTrace);
             }
 
         }

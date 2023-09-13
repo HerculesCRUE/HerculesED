@@ -123,9 +123,10 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 return entity;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine(e);
+                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace);
                 return null;
             }
         }

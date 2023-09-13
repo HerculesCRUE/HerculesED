@@ -95,9 +95,10 @@ namespace ImportadorWebCV.Sincro.Secciones
                 return fila["o"].value;
 
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException ex)
             {
-                Console.Error.WriteLine("Errores al cargar mResourceApi " + e.Message);
+                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace);
                 throw new ArgumentException("Errores al cargar mResourceApi");
             }
         }
@@ -141,9 +142,10 @@ namespace ImportadorWebCV.Sincro.Secciones
 
                 return entity;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Error.WriteLine(e);
+                mResourceApi.Log.Error(ex.Message);
+                mResourceApi.Log.Error(ex.StackTrace);
                 return null;
             }
         }
