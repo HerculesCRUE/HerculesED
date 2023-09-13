@@ -14,6 +14,7 @@ using System.IO;
 using System.Xml;
 using Models;
 using Utils;
+using Gnoss.ApiWrapper;
 
 namespace Hercules.ED.ImportExportCV.Controllers
 {
@@ -26,6 +27,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
         private static Dictionary<string, PetitionStatus> petitionStatus = new();
         public const int elementosTratados = 0;
+        private ResourceApi resourceApi = Utility.mResourceApi;
 
         public ImportadorCVController(ILogger<ImportadorCVController> logger, ConfigService pConfig)
         {
@@ -88,15 +90,34 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 List<string> listaDOI = new();
 
+                resourceApi.Log.Info("Se inicia la carga del CV " + pCVID);
+                resourceApi.Log.Info("Se inicia SincroDatosIdentificacion");
                 sincro.SincroDatosIdentificacion(Secciones);
+
+                resourceApi.Log.Info("Se inicia SincroDatosSituacionProfesional");
                 sincro.SincroDatosSituacionProfesional(Secciones);
+
+                resourceApi.Log.Info("Se inicia SincroFormacionAcademica");
                 sincro.SincroFormacionAcademica(Secciones);
+
+                resourceApi.Log.Info("Se inicia SincroActividadDocente");
                 sincro.SincroActividadDocente(Secciones);
+
+                resourceApi.Log.Info("Se inicia SincroExperienciaCientificaTecnologica");
                 sincro.SincroExperienciaCientificaTecnologica(Secciones);
+
+                resourceApi.Log.Info("Se inicia SincroActividadCientificaTecnologica");
                 sincro.SincroActividadCientificaTecnologica(Secciones, listaDOI: listaDOI);
+
+                resourceApi.Log.Info("Se inicia SincroTextoLibre");
                 sincro.SincroTextoLibre(Secciones);
 
+                resourceApi.Log.Info("Fin de las secciones del CV " + pCVID);
+
+                resourceApi.Log.Info("Inicio publicaciones fuentes externas");
                 sincro.SincroPublicacionesFuenteExternas(pCVID, listaDOI);
+
+                resourceApi.Log.Info("Actualizacion de la fecha de importación");
                 Utility.UpdateFechaImportacion(pCVID, true);
                 return Ok();
             }
