@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Hercules.ED.ImportExportCV
 {
@@ -15,6 +16,11 @@ namespace Hercules.ED.ImportExportCV
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+
+                    webBuilder.ConfigureKestrel(serverOptions =>
+                    {
+                        serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromHours(10);
+                    });
                 });
     }
 }
