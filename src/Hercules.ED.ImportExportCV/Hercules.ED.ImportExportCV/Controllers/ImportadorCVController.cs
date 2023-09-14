@@ -92,22 +92,35 @@ namespace Hercules.ED.ImportExportCV.Controllers
 
                 resourceApi.Log.Info("Se inicia la carga del CV " + pCVID);
                 resourceApi.Log.Info("Se inicia SincroDatosIdentificacion");
-                sincro.SincroDatosIdentificacion(Secciones);
+                List<Subseccion> listadoDatosIdentificacion = sincro.SincroDatosIdentificacion(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoDatosIdentificacion.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoDatosIdentificacion.Select(x=>x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroDatosSituacionProfesional");
-                sincro.SincroDatosSituacionProfesional(Secciones);
+                List<Subseccion> listadoDatosSituacionProfesional = sincro.SincroDatosSituacionProfesional(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoDatosSituacionProfesional.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoDatosSituacionProfesional.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroFormacionAcademica");
-                sincro.SincroFormacionAcademica(Secciones);
+                List<Subseccion> listadoFormacionAcademica = sincro.SincroFormacionAcademica(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoFormacionAcademica.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoFormacionAcademica.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroActividadDocente");
-                sincro.SincroActividadDocente(Secciones);
+                List<Subseccion> listadoActividadDocente = sincro.SincroActividadDocente(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoActividadDocente.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoActividadDocente.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroExperienciaCientificaTecnologica");
-                sincro.SincroExperienciaCientificaTecnologica(Secciones);
+                List<Subseccion> listadoExperienciaCientificaTecnologica = sincro.SincroExperienciaCientificaTecnologica(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoExperienciaCientificaTecnologica.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoExperienciaCientificaTecnologica.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroActividadCientificaTecnologica");
                 sincro.SincroActividadCientificaTecnologica(Secciones, listaDOI: listaDOI);
+                List<Subseccion> listadoActividadCientificaTecnologica = sincro.SincroActividadCientificaTecnologica(Secciones);
+                resourceApi.Log.Info("Numero de secciones" + listadoActividadCientificaTecnologica.Count);
+                resourceApi.Log.Info("Numero de subsecciones " + listadoActividadCientificaTecnologica.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroTextoLibre");
                 sincro.SincroTextoLibre(Secciones);
