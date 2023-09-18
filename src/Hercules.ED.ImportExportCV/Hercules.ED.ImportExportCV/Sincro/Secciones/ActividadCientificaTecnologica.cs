@@ -1678,11 +1678,15 @@ namespace ImportadorWebCV.Sincro.Secciones
                             petitionStatus.actualSubWorks++;
                         }
 
-                        string doi = PublicacionesDocumentosComprobarDOI(item);
-                        if (!string.IsNullOrEmpty(doi))
+                        string doi = "";
+                        try
                         {
-                            listaDOI.Add(doi);
-                        }
+                            doi = PublicacionesDocumentosComprobarDOI(item);
+                            if (!string.IsNullOrEmpty(doi))
+                            {
+                                listaDOI.Add(doi);
+                            }
+                        }catch (Exception ex) { }
 
                         //Carga normal de los datos
 
