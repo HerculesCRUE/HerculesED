@@ -112,7 +112,7 @@ namespace Hercules.ED.ImportExportCV.Controllers
                 resourceApi.Log.Info("Numero de subsecciones " + listadoExperienciaCientificaTecnologica.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroActividadCientificaTecnologica");
-                List<Subseccion> listadoActividadCientificaTecnologica = sincro.SincroActividadCientificaTecnologica(Secciones);
+                List<Subseccion> listadoActividadCientificaTecnologica = sincro.SincroActividadCientificaTecnologica(Secciones, listaDOI: listaDOI);
                 resourceApi.Log.Info("Numero de subsecciones " + listadoActividadCientificaTecnologica.Select(x => x.subsecciones).ToList().Count);
 
                 resourceApi.Log.Info("Se inicia SincroTextoLibre");
