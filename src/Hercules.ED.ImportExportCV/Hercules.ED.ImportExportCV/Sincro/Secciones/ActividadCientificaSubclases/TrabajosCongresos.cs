@@ -97,8 +97,8 @@ namespace ImportadorWebCV.Sincro.Secciones.ActividadCientificaSubclases
                 }
             }
 
-            //Divido la lista en listas de 10 elementos
-            List<List<string>> listaListaNombresTC = UtilitySecciones.SplitList(listaNombresTC.ToList(), 10).ToList();
+            //Divido la lista en listas de 5 elementos
+            List<List<string>> listaListaNombresTC = UtilitySecciones.SplitList(listaNombresTC.ToList(), 5).ToList();
 
             Parallel.ForEach(listaListaNombresTC, new ParallelOptions { MaxDegreeOfParallelism = 5 }, firma =>
             {
