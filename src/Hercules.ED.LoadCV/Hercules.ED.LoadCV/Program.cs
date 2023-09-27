@@ -34,7 +34,7 @@ namespace Hercules.ED.LoadCV
                 //2. Cargar CVs
                 if (opcion=="2")
                 {
-                    CargaCV.CargarCV(new ConfigService());
+                    CargaCV.CargarCVAsync(new ConfigService());
                     continue;
                 }
 
