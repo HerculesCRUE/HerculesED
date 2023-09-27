@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -31,7 +32,7 @@ namespace Hercules.ED.LoadCV
                 {
                     try
                     {
-                        string nombreArchivo = archivo.Split("\\").Last();
+                        string nombreArchivo = archivo.Split(Path.DirectorySeparatorChar).Last();
                         //Si no existe el investigador continuo con el siguiente.
                         if (!ExisteInvestigadorActivo(nombreArchivo.Split(".").First()))
                         {
@@ -40,12 +41,12 @@ namespace Hercules.ED.LoadCV
 
                         string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/ObtenerORCID";
 
-                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                        MultipartFormDataContent multipartFormData = new();
 
                         byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
                         multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
-                        HttpClient httpClient = new HttpClient();
+                        HttpClient httpClient = new();
                         HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
 
                         if (responseMessage.StatusCode != System.Net.HttpStatusCode.OK)
@@ -97,16 +98,17 @@ namespace Hercules.ED.LoadCV
         /// Comprobamos, por cada uno, si existe la persona (nombre del archivo) con ese DNI en base de datos, es investigadora y tiene CV.
         /// Se llama al servicio de importación de CV, pasandole el archivo y el identificador de CV.
         /// </summary>
-        internal static void CargarCV(ConfigService _Configuracion)
+        internal static async Task CargarCVAsync(ConfigService _Configuracion)
         {
             try
             {
                 List<string> listadoArchivos = Directory.GetFiles(_Configuracion.GetRutaCarpeta()).ToList();
                 foreach (string archivo in listadoArchivos)
                 {
+                    string nombreArchivo = "";
                     try
                     {
-                        string nombreArchivo = archivo.Split("\\").Last();
+                        nombreArchivo = archivo.Split(Path.DirectorySeparatorChar).Last();
                         string CVID = CVInvestigadorActivo(nombreArchivo.Split(".").First());
 
                         //Si no existe el CV de la persona continuo con el siguiente archivo.
@@ -116,22 +118,50 @@ namespace Hercules.ED.LoadCV
                         }
                         string urlEstado = _Configuracion.GetUrlImportadorExportador() + "/Importar";
 
-                        MultipartFormDataContent multipartFormData = new MultipartFormDataContent();
+                        MultipartFormDataContent multipartFormData = new();
                         multipartFormData.Add(new StringContent(CVID), "pCVID");
 
-                        MemoryStream ms = new MemoryStream();
+                        MemoryStream ms = new();
                         byte[] text = File.ReadAllBytes(_Configuracion.GetRutaCarpeta() + Path.DirectorySeparatorChar + nombreArchivo);
                         multipartFormData.Add(new ByteArrayContent(text), "File", nombreArchivo);
 
-                        HttpClient httpClient = new HttpClient();
-                        httpClient.Timeout = new TimeSpan(1, 15, 0);
+                        //SECCIONES
+                        //multipartFormData.Add(new StringContent("060.010.000.000"), "Secciones");
 
-                        HttpResponseMessage responseMessage = httpClient.PostAsync($"{urlEstado}", multipartFormData).Result;
-                        mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage.StatusCode);
+                        var socketsHandler = new SocketsHttpHandler
+                        {
+                            PooledConnectionLifetime = TimeSpan.FromHours(2)
+                        };
+
+                        HttpClient httpClient = new HttpClient(socketsHandler);
+                        httpClient.Timeout = TimeSpan.FromHours(2);
+
+                        httpClient.DefaultRequestHeaders.ConnectionClose = false;
+                        var response = await httpClient.PostAsync($"{urlEstado}", multipartFormData).ConfigureAwait(false);
+                        var responseMessage = response.StatusCode.ToString();
+                        mResourceApi.Log.Info("Archivo: " + nombreArchivo + ", Resultado: " + responseMessage);
+
+                        //Se comprueba la respuesta recibida para dar el archivo como completado o como error
+                        if (responseMessage.Equals("OK"))
+                        {
+                            string urlCompletados = $"{_Configuracion.GetRutaCarpeta()}{Path.DirectorySeparatorChar}completados{Path.DirectorySeparatorChar}";
+                            CheckDirectorios(urlCompletados);
+                            File.Move(archivo, urlCompletados + nombreArchivo);
+                        }
+                        else
+                        {
+                            string urlError = $"{_Configuracion.GetRutaCarpeta()}{Path.DirectorySeparatorChar}error{Path.DirectorySeparatorChar}";
+                            CheckDirectorios(urlError);
+                            File.Move(archivo, urlError + nombreArchivo);
+                        }
+
 
                     }
                     catch (Exception ex)
                     {
+                        string urlError = $"{_Configuracion.GetRutaCarpeta()}{Path.DirectorySeparatorChar}error{Path.DirectorySeparatorChar}";
+                        CheckDirectorios(urlError);
+                        File.Move(archivo, urlError + nombreArchivo);
                         mResourceApi.Log.Error(ex.Message);
                     }
                 }
@@ -139,6 +169,26 @@ namespace Hercules.ED.LoadCV
             catch (Exception ex)
             {
                 mResourceApi.Log.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Comprueba que existen los directorios del path <paramref name="pathFile"/>, en caso de no existir los crea
+        /// </summary>
+        /// <param name="pathFile">Path a comprobar</param>
+        public static void CheckDirectorios(string pathFile)
+        {
+            List<string> directorios = pathFile.Split(Path.DirectorySeparatorChar).ToList();
+            string pathInicial = directorios.ElementAt(0);
+            directorios.RemoveAt(0);
+            foreach (string dir in directorios)
+            {
+                pathInicial = $"{pathInicial}{Path.DirectorySeparatorChar}{dir}";
+                if (Directory.Exists(pathInicial))
+                {
+                    continue;
+                }
+                Directory.CreateDirectory(pathInicial);
             }
         }
 
