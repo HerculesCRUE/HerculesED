@@ -1,6 +1,9 @@
-Flask==2.0.3
+Flask==2.2.5
 flask_restful==0.3.9
 flask_httpauth==4.5.0
 flask_apispec==0.11.0
 sentence_transformers==2.2.0
 pymongo==4.1.1
+numpy>=1.22.2 # not directly required, pinned by Snyk to avoid a vulnerability
+pillow>=10.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
+werkzeug>=2.3.8 # not directly required, pinned by Snyk to avoid a vulnerability
