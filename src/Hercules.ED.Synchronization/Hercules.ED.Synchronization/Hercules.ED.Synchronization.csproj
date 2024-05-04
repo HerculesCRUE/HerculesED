@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.33" />
+    <PackageReference Include="GnossApiWrapper.NetCore" Version="6.0.54" />
     <PackageReference Include="Quartz" Version="3.4.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
